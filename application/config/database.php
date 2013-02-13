@@ -63,16 +63,16 @@ return array(
 
 		'sqlite' => array(
 			'driver'   => 'sqlite',
-			'database' => 'application',
+			'database' => 'biblionarrator',
 			'prefix'   => '',
 		),
 
 		'mysql' => array(
 			'driver'   => 'mysql',
 			'host'     => '127.0.0.1',
-			'database' => 'database',
-			'username' => 'root',
-			'password' => '',
+			'database' => 'biblionarrator',
+			'username' => 'biblionarrator',
+			'password' => 'biblionarrator',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 		),
