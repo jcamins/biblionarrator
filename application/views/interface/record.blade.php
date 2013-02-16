@@ -15,9 +15,11 @@
             <div itemscope id="recordContainer">
                 {{ $record }}
             </div>
+            @if ($editor)
             <button id="save" type="button" class="btn btn-primary">Save</button>
             <a id="tagSelectorButton" href="#tagSelector" role="button" class="btn" data-toggle="modal">Select tag</a>
             <a id="removeTag" role="button" class="btn">Remove tag</a>
+            @endif
         </div>
     </div>
 </div>
@@ -61,7 +63,9 @@ var fieldlookup = {
         '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}:{{ $field->field }}',
     @endforeach
     };
+@if ($editor)
 initializeTinyMCE(fieldlookup);
+@endif
 </script>
 <script type="text/javascript">
 $(document).ready(function() {

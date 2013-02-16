@@ -9,10 +9,6 @@ class Base_Controller extends Controller {
         Asset::add('bootstrap-js', 'js/bootstrap.min.js');
         Asset::add('bootstrap-css', 'css/bootstrap.min.css');
         Asset::add('bootstrap-css-responsive', 'css/bootstrap-responsive.min.css', 'bootstrap-css');
-        Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
-        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
-        Asset::add('datatables-css', 'css/jquery.dataTables.css');
-        Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('hotkeys', 'js/jquery.hotkeys.js');
         //Asset::add('style', 'css/style.css');
         parent::__construct();
