@@ -32,6 +32,10 @@
 |
 */
 
+Route::get('record/(:any)/html', 'record@html');
+Route::get('record/(:any)/raw', 'record@raw');
+Route::get('record/(:any)?', 'record@index');
+Route::post('record/(:any)', 'record@write');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
 

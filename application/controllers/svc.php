@@ -2,23 +2,6 @@
 
 class Svc_Controller extends Base_Controller {
     public $restful = true;
-    public function get_record() {
-        $record = Record::find(Input::get('id'));
-        return json_encode($record->to_array());
-    }
-
-    public function post_record() {
-        $record_id = Input::get('id');
-        if ($record_id) {
-            $record = Record::find($record_id);
-        }
-        if (!isset($record)) {
-            $record = new Record;
-        }
-        $record->data = Input::get('data');
-        $record->save();
-        return json_encode($record->id);
-    }
 
     public function get_list() {
     }

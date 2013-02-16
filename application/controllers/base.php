@@ -13,6 +13,7 @@ class Base_Controller extends Controller {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
+        Asset::add('hotkeys', 'js/jquery.hotkeys.js');
         //Asset::add('style', 'css/style.css');
         parent::__construct();
 
