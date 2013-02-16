@@ -16,7 +16,7 @@
             <textarea class="record_editor" name="whatever" cols="50" rows="15"></textarea>
             </form>
             <button id="save" type="button" class="btn btn-primary">Save</button>
-            <a href="#tagSelector" role="button" class="btn" data-toggle="modal">Select tag</a>
+            <a id="tagSelectorButton" href="#tagSelector" role="button" class="btn" data-toggle="modal">Select tag</a>
             <a id="removeTag" role="button" class="btn">Remove tag</a>
         </div>
     </div>
@@ -51,6 +51,36 @@
 </div>
 
 </div>
+<textarea id="saveXSLT" style="display: none;">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3">
+    <xsl:template match="span">
+        <xsl:element name="{@class}">
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+</xsl:stylesheet>
+</textarea>
+<textarea id="loadXSLT" style="display: none;">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3" exclude-result-prefixes="mods">
+    <xsl:output omit-xml-declaration="yes" />
+    <xsl:template match="*" priority="-3">
+        <span>
+            <xsl:attribute name="class"><xsl:value-of select="name()"/></xsl:attribute>
+            <xsl:apply-templates select="./node()"/>
+        </span>
+    </xsl:template>
+    <xsl:template match="record|a|abbr|address|area|article|aside|audio|b|base|bdi|bdo|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|command|datalist|dd|del|details|dfn|div|dl|dt|em|embed|fieldset|figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|keygen|label|legend|li|link|map|mark|menu|meta|meter|nav|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|span|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|u|ul|var|video|wbr|text()">
+        <xsl:copy>
+            <xsl:apply-templates/>
+        </xsl:copy>
+    </xsl:template>
+</xsl:stylesheet>
+</textarea>
 @endsection
 
 @section('scripts')
@@ -58,6 +88,8 @@
 tinyMCE.init({
     mode : "specific_textareas",
     editor_selector : "record_editor",
+    custom_shortcuts : true,
+    plugins : "autoresize",
     formats : {
         @foreach ($fields as $field)
             "{{ $field->schema }}:{{ $field->field }}" : { inline : 'span', attributes : { class: '{{ $field->schema }}:{{ $field->field }}' }, },
@@ -75,10 +107,26 @@ tinyMCE.init({
                 });
             }
         });
+        ed.onKeyDown.add(function(ed, e) {
+            // There's no good excuse for this, but I'm doing it anyway
+            if (e.keyCode === 13 && (tinyMCE.isMac ? e.metaKey : e.ctrlKey)) {
+                saveRecord();
+                return false;
+            }
+        });
     },
+    init_instance_callback : function(inst) {
+        inst.addShortcut('ctrl+j', 'add tag', addTagDialog);
+        inst.addShortcut('ctrl+k', 'close tag', closeTag);
+        inst.addShortcut('ctrl+shift+j', 'close and open tag', closeAndOpenTag);
+        inst.addShortcut("ctrl+shift+k", 'close all tags', closeAllTags);
+        inst.focus();
+    }
 });
+
 </script>
 <script type="text/javascript">
+var recordId = '{{ $recordId }}';
 var fieldlookup = {
     @foreach ($fields as $field)
         '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}:{{ $field->field }}',
@@ -96,7 +144,7 @@ $(document).ready(function() {
     });
 
     $('#save').click(function() {
-        saveData();
+        saveRecord();
     });
 
     $('#removeTag').click(function() {
@@ -120,11 +168,30 @@ $(document).ready(function() {
             }
         }
     });
+
+    $(document).bind('keydown', 'ctrl-j', addTagDialog);
+    $(document).bind('keydown', 'ctrl-k', closeTag);
+    $(document).bind('keydown', 'ctrl-shift-j', closeAndOpenTag);
+    $(document).bind('keydown', 'ctrl-shift-k', closeAllTags);
+    $(document).bind('keydown', 'ctrl-return', saveRecord);
 });
 
 $(window).load(function() {
-    loadData();
+    loadRecord();
 });
+
+function addTagDialog() {
+    $('#tagSelector').modal('show');
+}
+
+function closeAndOpenTag () {
+    closeTag();
+    addTagDialog();
+}
+
+function closeAllTags () {
+    while (closeTag()) {};
+}
 
 function setTag(field) {
     $('#tagSelector').modal('hide');
@@ -140,27 +207,33 @@ function closeTag() {
         @endforeach
     ]);
 
-    tinyMCE.activeEditor.formatter.remove(styles[0]);
-    tinyMCE.activeEditor.nodeChanged();
+    if (styles[0]) {
+        tinyMCE.activeEditor.formatter.remove(styles[0]);
+        tinyMCE.activeEditor.nodeChanged();
+        changed = true;
+    }
     tinyMCE.execCommand('mceFocus', false, tinyMCE.activeEditor.id);
+    return (styles.length);
 }
 
-function loadData() {
+function loadRecord() {
     var ed = tinyMCE.get('whatever');
 
-    // Do you ajax call here, window.setTimeout fakes ajax call
-    ed.setProgressState(1); // Show progress
-    $.ajax({
-        type: "GET",
-        url: "/svc/record",
-        data: { id: "1" }
-    }).done(function(msg) {
-        var obj = jQuery.parseJSON(msg);
-        ed.setProgressState(0); // Hide progress
-        ed.setContent(obj.data);
-    });
+    if (recordId) {
+        ed.setProgressState(1); // Show progress
+        $.ajax({
+            type: "GET",
+            url: "/svc/record",
+            data: { id: recordId }
+        }).done(function(msg) {
+            var obj = jQuery.parseJSON(msg);
+            ed.setProgressState(0); // Hide progress
+            var text = transformXML(obj.data, $('#loadXSLT').val()).replace('</?record>','').replace('&#160;', '&nbsp;');
+            ed.setContent(text);
+        });
+    }
 }
-function saveData() {
+function saveRecord() {
     var ed = tinyMCE.get('whatever');
 
     // Do you ajax call here, window.setTimeout fakes ajax call
@@ -168,10 +241,28 @@ function saveData() {
     $.ajax({
         type: "POST",
         url: "/svc/record",
-        data: { id: "1", data: ed.getContent() }
+        data: { id: recordId, data: transformXML('<record>' + ed.getContent().replace('&nbsp;', '&#160;') + '</record>', $('#saveXSLT').val()) }
     }).done(function(msg) {
+        var obj = jQuery.parseJSON(msg);
+        recordId = obj.id;
         ed.setProgressState(0); // Hide progress
     });
+}
+function transformXML(xml, xsl) {
+    var result;
+    if (!xml) {
+        return "";
+    }
+    if (window.ActiveXObject) {
+        result = new ActiveXObject("MSXML2.DOMDocument");
+        xml.transformNodeToObject(xsl, result);
+    } else {    // Other browsers
+        var parser = new DOMParser();
+        result = new XSLTProcessor();
+        result.importStylesheet(parser.parseFromString(xsl, "text/xml"));
+        result = result.transformToFragment(parser.parseFromString(xml, "text/xml"), document);
+    }
+    return (new XMLSerializer()).serializeToString(result);
 }
 </script>
 @endsection
