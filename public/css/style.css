@@ -3,3 +3,138 @@
         padding-top: 60px;
     }
 }
+
+#alerts {
+    padding-top: 16px;
+    position: relative;
+    margin: 15px 0;
+    padding: 39px 19px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+#alerts:empty {
+    display:none;
+}
+
+#alerts::after {
+    content: "System messages";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #9da0a4;
+    -webkit-border-radius: 4px 0 4px 0;
+    -moz-border-radius: 4px 0 4px 0;
+    border-radius: 4px 0 4px 0;
+}
+
+footer {
+    color: #929292;
+    font-size: 0.8em;
+    padding: 1em 10px 0 0;
+    text-align: right;
+    scroll: 10px 5px #FFFFFF;
+    border-top: 1px solid #F5F5F5;
+    clear: both;
+    margin: 2em auto 0;
+}
+
+.mce_bn_newdocument {
+    background: url('../images/icons/page_add.png') 2px 2px no-repeat !important;
+}
+
+.mce_bn_reload {
+    background: url('../images/icons/page_refresh.png') 2px 2px no-repeat !important;
+}
+
+.mce_bn_save {
+    background: url('../images/icons/page_save.png') 2px 2px no-repeat !important;
+}
+
+.mce_bn_tag {
+    background: url('../images/icons/tag_blue_add.png') 2px 2px no-repeat !important;
+}
+
+.mce_bn_closetag {
+    background: url('../images/icons/tag_blue_delete.png') 2px 2px no-repeat !important;
+}
+
+.mce_bold {
+    background: url('../images/icons/text_bold.png') 2px 2px no-repeat !important;
+}
+
+.mce_italic {
+    background: url('../images/icons/text_italic.png') 2px 2px no-repeat !important;
+}
+
+.mce_underline {
+    background: url('../images/icons/text_underline.png') 2px 2px no-repeat !important;
+}
+
+.mce_bullist {
+    background: url('../images/icons/text_list_bullets.png') 2px 2px no-repeat !important;
+}
+
+.mce_numlist {
+    background: url('../images/icons/text_list_numbers.png') 2px 2px no-repeat !important;
+}
+
+.mce_sub {
+    background: url('../images/icons/text_subscript.png') 2px 4px no-repeat !important;
+}
+
+.mce_sup {
+    background: url('../images/icons/text_superscript.png') 2px 0px no-repeat !important;
+}
+
+.mce_strikethrough {
+    background: url('../images/icons/text_strikethrough.png') 2px 2px no-repeat !important;
+}
+
+.mce_justify_left {
+    background: url('../images/icons/text_align_left.png') 2px 2px no-repeat !important;
+}
+
+.mce_outdent {
+    background: url('../images/icons/text_indent_remove.png') 2px 2px no-repeat !important;
+}
+
+.mce_indent {
+    background: url('../images/icons/text_indent.png') 2px 2px no-repeat !important;
+}
+
+.mce_justify_center {
+    background: url('../images/icons/text_align_center.png') 2px 2px no-repeat !important;
+}
+
+.mce_justify_right {
+    background: url('../images/icons/text_align_right.png') 2px 2px no-repeat !important;
+}
+
+.mce_image {
+    background: url('../images/icons/image_add.png') 2px 2px no-repeat !important;
+}
+
+.mce_link {
+    background: url('../images/icons/link.png') 2px 2px no-repeat !important;
+}
+
+.mce_unlink {
+    background: url('../images/icons/link_break.png') 2px 2px no-repeat !important;
+}
+
+.mce_hr {
+    background: url('../images/icons/text_horizontalrule.png') 2px 2px no-repeat !important;
+}
+
+.mce_charmap {
+    background: url('../images/icons/text_letter_omega.png') 2px 2px no-repeat !important;
+}

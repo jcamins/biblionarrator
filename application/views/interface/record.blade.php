@@ -11,14 +11,19 @@
 @section('content')
     <div class="row-fluid">
         <div class="span6">
+            @if ($editor)
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <button id="new" type="button" class="btn btn-small">New</button>
+                    <button id="reload" type="button" class="btn btn-small">Reload</button>
+                    <button id="save" type="button" class="btn btn-small">Save</button>
+                </div>
+            </div>
+            @endif
             <div itemscope id="recordContainer">
                 {{ $record }}
             </div>
-            @if ($editor)
-            <button id="save" type="button" class="btn btn-primary">Save</button>
-            <a id="tagSelectorButton" href="#tagSelector" role="button" class="btn" data-toggle="modal">Select tag</a>
-            <a id="removeTag" role="button" class="btn">Remove tag</a>
-            @endif
+            <div id="alerts"></div>
         </div>
         <div class="span4">
         </div>
@@ -71,6 +76,14 @@ $(document).ready(function() {
             setTag(item);
             return item;
         },
+    });
+
+    $('#new').click(function() {
+        newRecord();
+    });
+
+    $('#reload').click(function() {
+        loadRecord();
     });
 
     $('#save').click(function() {

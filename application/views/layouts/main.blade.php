@@ -45,7 +45,6 @@
                 </div>
             </div>
         </div> <!-- /container -->
-        <hr>
         <footer>
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
