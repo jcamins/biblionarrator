@@ -1,23 +1,40 @@
 
 function initializeTinyMCE() {
     var formatlist = {};
-    for (var key in fieldlookup) {
-        formatlist[key] = { 'inline' : 'span', 'attributes' : { 'class' : key } };
+    for (var key in labeltofieldlookup) {
+        formatlist[labeltofieldlookup[key]] = { 'title' : key, 'inline' : 'span', 'attributes' : { 'class' : labeltofieldlookup[key] } };
     }
     tinyMCE.init({
         mode : "exact",
         elements : "recordContainer",
+        theme_advanced_buttons1 : "mynew,mysave,separator,bold,italic,underline,strikethrough,separator,bullist,numlist,separator,pagebreak,separator,styleselect,pdw_toggle",
+        theme_advanced_buttons2 : "formatselect,fontsizeselect,sub,sup,separator,outdent,indent,justifyleft,justifycenter,justifyright,justifyfull",
+        theme_advanced_buttons3 : "image,link,unlink,separator,hr,removeformat,separator,cut,copy,paste,separator,undo,redo,separator,charmap",
+        theme_advanced_resizing_min_height : 100,
+        pdw_toggle_on : 1,
+        pdw_toggle_toolbars : "2,3",
         custom_shortcuts : true,
-        plugins : "autoresize",
+        plugins : "advimage,autoresize,inlinepopups,pagebreak,pdw,save",
+        style_formats : formatlist,
         formats : formatlist,
         setup : function(ed) {
+            ed.addButton('mynew', {
+                title : 'New Record',
+                class : 'mce_newdocument',
+                onclick : newRecord
+            });
+            ed.addButton('mysave', {
+                title : 'Save Record',
+                class : 'mce_save',
+                onclick : saveRecord
+            });
             ed.onNodeChange.add(function(ed, cm, e) {
                 if (ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function(th, o) {
                         if (o.name.substring(0, 4) == 'span') {
-                             o.name = o.name.replace(/span\./, '');
-                             o.title = fieldlist[o.name];
-                             return false;
+                            var tag = o.name.replace(/span\./, '');
+                            o.name = o.title = fieldtolabellookup[tag];
+                            return false;
                         }
                     });
                 }
@@ -55,21 +72,26 @@ function closeAllTags () {
 
 function setTag(field) {
     $('#tagSelector').modal('hide');
-    tinyMCE.activeEditor.formatter.apply(fieldlookup[field]);
-    tinyMCE.activeEditor.nodeChanged();
-    tinyMCE.execCommand('mceFocus', false, tinyMCE.activeEditor.id);
+    tinyMCE.get('recordContainer').formatter.apply(labeltofieldlookup[field]);
+    tinyMCE.get('recordContainer').nodeChanged();
+    tinyMCE.execCommand('mceFocus', false, 'recordContainer');
 }
 
 function closeTag() {
-    var styles = tinyMCE.get('recordContainer').formatter.matchAll(fieldlookup.keys);
+    var styles = tinyMCE.get('recordContainer').formatter.matchAll(fieldtolabellookup.keys);
 
     if (styles[0]) {
-        tinyMCE.activeEditor.formatter.remove(styles[0]);
-        tinyMCE.activeEditor.nodeChanged();
+        tinyMCE.get('recordContainer').formatter.remove(styles[0]);
+        tinyMCE.get('recordContainer').nodeChanged();
         changed = true;
     }
-    tinyMCE.execCommand('mceFocus', false, tinyMCE.activeEditor.id);
+    tinyMCE.execCommand('mceFocus', false, 'recordContainer');
     return (styles.length);
+}
+
+function newRecord() {
+    window.history.pushState({ 'event' : 'new' }, 'New record', '/record');
+    tinyMCE.get('recordContainer').setContent('');
 }
 
 function loadRecord() {
@@ -106,11 +128,14 @@ function saveRecord() {
     }).done(function(xsl) {
         $.ajax({
             type: "POST",
-            url: "/record/" + recordId,
-            data: { data: transformXML('<record>' + ed.getContent().replace('&nbsp;', '&#160;') + '</record>', $('#saveXSLT').val()) }
+            url: "/record/" + (typeof(recordId) === 'undefined' ? 'new' : recordId),
+            data: { data: transformXML('<record>' + ed.getContent() + '</record>', xsl) }
         }).done(function(msg) {
             var obj = jQuery.parseJSON(msg);
-            recordId = obj.id;
+            recordId = parseInt(obj.id);
+            if (typeof(recordId) !== 'undefined') {
+                window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
+            }
             ed.setProgressState(0); // Hide progress
         });
     });

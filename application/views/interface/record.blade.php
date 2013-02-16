@@ -2,16 +2,15 @@
 
 @section('navigation')
 @parent
-<li><a class="active" href="/catalog/record/{{ $recordId }}">Record {{ $recordId }}</a></li>
+<li><a class="active" href="#">Record</a></li>
+@endsection
+
+@section('sidebar')
 @endsection
 
 @section('content')
-<div class="hero-unit">
-    <div class="row">
+    <div class="row-fluid">
         <div class="span6">
-            <h1>Record editor</h1>
-            <p>This is the greatest record editor ever!</p>
-            
             <div itemscope id="recordContainer">
                 {{ $record }}
             </div>
@@ -21,16 +20,9 @@
             <a id="removeTag" role="button" class="btn">Remove tag</a>
             @endif
         </div>
+        <div class="span4">
+        </div>
     </div>
-</div>
-
-<!-- Example row of columns -->
-<div class="row">
-    <div class="span3">
-        &nbsp;
-    </div>
-</div>
-
 @endsection
 
 @section('form_modals')
@@ -58,20 +50,22 @@
 @section('scripts')
 <script type="text/javascript">
 var recordId = '{{ $recordId }}';
-var fieldlookup = {
+var labeltofieldlookup = {
     @foreach ($fields as $field)
         '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}:{{ $field->field }}',
     @endforeach
     };
+var fieldtolabellookup = {
+    @foreach ($fields as $field)
+        '{{ $field->schema }}:{{ $field->field }}': '{{ $field->field }} ({{ $field->schema }})',
+    @endforeach
+    };
 @if ($editor)
-initializeTinyMCE(fieldlookup);
-@endif
-</script>
-<script type="text/javascript">
+initializeTinyMCE();
 $(document).ready(function() {
     $('#tagEntry').typeahead({
         source: function(query, process) {
-            return Object.keys(fieldlookup);
+            return Object.keys(labeltofieldlookup);
         },
         updater: function(item) {
             setTag(item);
@@ -93,13 +87,13 @@ $(document).ready(function() {
     });
 
     $('#tagSelector').on('hidden', function () {
-        tinyMCE.execCommand('mceFocus', false, tinyMCE.activeEditor.id);
+        tinyMCE.execCommand('mceFocus', false, 'recordContainer');
     });
 
     $('#tagEntry').keydown(function(ev) {
         if (ev.keyCode == 13) {
             var field = $('#tagEntry').val();
-            if (fieldlookup[field]) {
+            if (labeltofieldlookup[field]) {
                 setTag(field);
             }
         }
@@ -111,10 +105,7 @@ $(document).ready(function() {
     $(document).bind('keydown', 'ctrl-shift-k', closeAllTags);
     $(document).bind('keydown', 'ctrl-return', saveRecord);
 });
-
-$(window).load(function() {
-//    loadRecord();
-});
+@endif
 
 </script>
 @endsection
