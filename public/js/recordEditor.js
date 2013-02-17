@@ -20,12 +20,12 @@ function initializeTinyMCE() {
             ed.addButton('mynew', {
                 title : 'New Record',
                 class : 'mce_bn_newdocument',
-                onclick : newRecord
+                onclick : confirmNew
             });
             ed.addButton('reload', {
                 title : 'Reload Record',
                 class : 'mce_bn_reload',
-                onclick : loadRecord
+                onclick : confirmReload
             });
             ed.addButton('mysave', {
                 title : 'Save Record',
@@ -45,6 +45,7 @@ function initializeTinyMCE() {
             ed.onNodeChange.add(function(ed, cm, e) {
                 if (ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function(th, o) {
+                        updateFieldsTOC(o.node);
                         if (o.name.substring(0, 4) == 'span') {
                             var tag = o.name.replace(/span\./, '');
                             o.name = o.title = fieldtolabellookup[tag];
@@ -54,12 +55,16 @@ function initializeTinyMCE() {
                 }
             });
             ed.onKeyDown.add(function(ed, e) {
+                if (e.keyCode === 13 || e.keyCode === 32 || e.metaKey || e.ctrlKey || e.altKey) {
+                    updateFieldsTOC();
+                }
                 // There's no good excuse for this, but I'm doing it anyway
                 if (e.keyCode === 13 && (tinyMCE.isMac ? e.metaKey : e.ctrlKey)) {
                     saveRecord();
                     return false;
                 }
             });
+            ed.onClick.add(updateFieldsTOC);
         },
         init_instance_callback : function(inst) {
             inst.addShortcut('ctrl+j', 'add tag', addTagDialog);
@@ -161,6 +166,7 @@ function saveRecord() {
             }
             ed.setProgressState(0); // Hide progress
             addAlert('Successfully saved record');
+            updateFieldsTOC();
         });
     });
 }
@@ -194,4 +200,31 @@ function transformXML(xml, xsl) {
 function addAlert(msg) {
     $('#alerts').append('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
     $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove() });
+}
+function confirmNew() {
+    $('#confirmNew').modal('hide');
+    newRecord();
+}
+function confirmReload() {
+    $('#confirmReload').modal('hide');
+    loadRecord();
+}
+function updateFieldsTOC(node) {
+    $('#fieldsTOC').empty();
+    var fieldNumber = 1;
+    $('#recordContainer_ifr').contents().find('span').each(function() {
+        var label = fieldtolabellookup[$(this).attr('class')];
+        if (typeof(label) !== 'undefined') {
+            var value = $(this).text();
+            if (value.length > 0) {
+                var currentNode;
+                if (typeof(o) !== 'undefined' && o.node.isSameNode(this)) {
+                    currentNode = 1;
+                }
+                $('#fieldsTOC').append('<div aria-labelledby="labelField' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></div>');
+                fieldNumber++;
+            }
+        }
+    });
+    $('#fieldsTOC.in').css('height', 'auto');
 }

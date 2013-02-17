@@ -2,23 +2,49 @@
 
 @section('navigation')
 @parent
-<li><a class="active" href="#">Record</a></li>
+@endsection
+
+@section('sidetoolbar')
+@if ($editor)
+    <div class="btn-toolbar">
+    <div class="btn-group" data-toggle="buttons-checkbox">
+    <button id="toggleTOC" type="button" data-toggle="collapse" data-target="#fieldsTOC" class="btn btn-info btn-small">TOC</button>
+    <button id="toggleEditor" type="button" class="btn btn-info btn-small active">Editor</button>
+    <button id="toggleLinks" type="button" class="btn btn-info btn-small">Links</button>
+    </div>
+    </div>
+@endif
+@endsection
+
+@section('toolbar')
+@if ($editor)
+    <div class="btn-toolbar">
+        <div class="btn-group">
+            <button id="new" type="button" data-toggle="modal" data-target="#confirmNew" class="btn btn-small">New</button>
+            <button id="reload" type="button" data-toggle="modal" data-target="#confirmReload" class="btn btn-small">Reload</button>
+            <button id="save" type="button" class="btn btn-small">Save</button>
+        </div>
+    </div>
+@endif
 @endsection
 
 @section('sidebar')
+    <div id="sidebarAffix">
+        <div id="fieldsTOC" class="collapse">
+        </div>
+    </div>
 @endsection
 
 @section('content')
     <div class="row-fluid">
         <div class="span6">
             @if ($editor)
-            <div class="btn-toolbar">
-                <div class="btn-group">
-                    <button id="new" type="button" class="btn btn-small">New</button>
-                    <button id="reload" type="button" class="btn btn-small">Reload</button>
-                    <button id="save" type="button" class="btn btn-small">Save</button>
-                </div>
+            <noscript>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                The record editor does not work without Javascript. Please enable Javascript and reload the page.
             </div>
+            </noscript>
             @endif
             <div itemscope id="recordContainer">
                 {{ $record }}
@@ -50,6 +76,30 @@
         <button id="tagSelectorOK" class="btn btn-primary">Select</button>
     </div>
 </div>
+<div id="confirmNew" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmNewLabel" aria-hidden="true">
+    <div class="modal-header">
+        <h3 id="confirmNewLabel">New record confirmation</h3>
+    </div>
+    <div class="modal-body">
+        If you create a new record, any unsaved changes will be lost. Are you sure you want to create a new record?
+    </div>
+    <div class="modal-footer">
+        <button id="confirmNewCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+        <button id="confirmNewOK" class="btn btn-primary">Yes</button>
+    </div>
+</div>
+<div id="confirmReload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmReloadLabel" aria-hidden="true">
+    <div class="modal-header">
+        <h3 id="confirmReloadLabel">Record reload confirmation</h3>
+    </div>
+    <div class="modal-body">
+        If you reload this record from the database, any unsaved changes will be lost. Are you sure you want to reload the record?
+    </div>
+    <div class="modal-footer">
+        <button id="confirmReloadCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+        <button id="confirmReloadOK" class="btn btn-primary">Yes</button>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -78,12 +128,31 @@ $(document).ready(function() {
         },
     });
 
-    $('#new').click(function() {
-        newRecord();
+    updateFieldsTOC();
+
+    $('#fieldsTOC').on('show hide', function() {
+        $(this).css('height', 'auto');
     });
 
-    $('#reload').click(function() {
-        loadRecord();
+    $('#toggleFieldsTOC').click(function() {
+        $('#fieldsTOC').collapse('toggle');
+    });
+
+    $('#toggleEditor').click(function() {
+        if (typeof(tinyMCE.get('recordContainer')) === 'undefined') {
+            initializeTinyMCE();
+        } else {
+            tinyMCE.execCommand('mceFocus', false, 'recordContainer');
+            tinyMCE.execCommand('mceRemoveControl', false, 'recordContainer');
+        }
+    });
+
+    $('#confirmNewOK').click(function() {
+        confirmNew();
+    });
+
+    $('#confirmReloadOK').click(function() {
+        confirmReload();
     });
 
     $('#save').click(function() {

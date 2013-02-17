@@ -4,6 +4,79 @@
     }
 }
 
+#navbarLogin input[type="text"], #navbarLogin input[type="password"] {
+    width: 140px;
+    margin: 4px 8px;
+    font-size: 80%;
+}
+
+#navbarLogin button {
+    float: right;
+    margin: 4px 8px;
+}
+
+#fieldsTOC.in {
+    padding-top: 16px;
+    position: relative;
+    margin: 15px 0;
+    padding: 28px 2px 2px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+#fieldsTOC.in:empty {
+    padding: 39px 19px 14px;
+}
+
+#fieldsTOC.in::after {
+    content: "Table of Contents";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #9da0a4;
+    -webkit-border-radius: 4px 0 4px 0;
+    -moz-border-radius: 4px 0 4px 0;
+    border-radius: 4px 0 4px 0;
+}
+
+.fieldEntry {
+    border: 1px solid #eee;
+    margin: 6px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.toclabel {
+    font-variant: small-caps;
+    padding-left: 4px;
+    font-weight: bold;
+    display: block;
+}
+
+#fieldsTOC .tocvalue {
+    white-space: normal;
+}
+
+footer {
+    color: #929292;
+    font-size: 0.8em;
+    padding: 1em 10px 0 0;
+    text-align: right;
+    scroll: 10px 5px #FFFFFF;
+    border-top: 1px solid #F5F5F5;
+    clear: both;
+    margin: 2em auto 0;
+}
+
 #alerts {
     padding-top: 16px;
     position: relative;
@@ -34,17 +107,6 @@
     -webkit-border-radius: 4px 0 4px 0;
     -moz-border-radius: 4px 0 4px 0;
     border-radius: 4px 0 4px 0;
-}
-
-footer {
-    color: #929292;
-    font-size: 0.8em;
-    padding: 1em 10px 0 0;
-    text-align: right;
-    scroll: 10px 5px #FFFFFF;
-    border-top: 1px solid #F5F5F5;
-    clear: both;
-    margin: 2em auto 0;
 }
 
 .mce_bn_newdocument {
