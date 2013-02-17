@@ -97,7 +97,7 @@ function setTag(field) {
 }
 
 function closeTag() {
-    var styles = tinyMCE.get('recordContainer').formatter.matchAll(fieldtolabellookup.keys);
+    var styles = tinyMCE.get('recordContainer').formatter.matchAll(Object.keys(fieldtolabellookup));
 
     if (styles[0]) {
         tinyMCE.get('recordContainer').formatter.remove(styles[0]);
