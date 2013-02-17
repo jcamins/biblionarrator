@@ -9,7 +9,7 @@
     <div class="btn-toolbar">
     <div class="btn-group" data-toggle="buttons-checkbox">
     <button id="toggleTOC" type="button" data-toggle="collapse" data-target="#fieldsTOC" class="btn btn-info btn-small">TOC</button>
-    <button id="toggleEditor" type="button" class="btn btn-info btn-small active">Editor</button>
+    <button id="toggleEditor" type="button" class="btn btn-info btn-small">Editor</button>
     <button id="toggleLinks" type="button" class="btn btn-info btn-small">Links</button>
     </div>
     </div>
@@ -116,7 +116,6 @@ var fieldtolabellookup = {
     @endforeach
     };
 @if ($editor)
-initializeTinyMCE();
 $(document).ready(function() {
     $('#tagEntry').typeahead({
         source: function(query, process) {
@@ -134,16 +133,22 @@ $(document).ready(function() {
         $(this).css('height', 'auto');
     });
 
-    $('#toggleFieldsTOC').click(function() {
-        $('#fieldsTOC').collapse('toggle');
+    $('#toggleTOC').click(function() {
+        if ($('#fieldsTOC').hasClass('in')) {
+            jQuery.cookie('show_toc', 1);
+        } else {
+            jQuery.cookie('show_toc', 0);
+        }
     });
 
     $('#toggleEditor').click(function() {
         if (typeof(tinyMCE.get('recordContainer')) === 'undefined') {
             initializeTinyMCE();
+            jQuery.cookie('show_editor', 1);
         } else {
             tinyMCE.execCommand('mceFocus', false, 'recordContainer');
             tinyMCE.execCommand('mceRemoveControl', false, 'recordContainer');
+            jQuery.cookie('show_editor', 0);
         }
     });
 
@@ -180,6 +185,16 @@ $(document).ready(function() {
             }
         }
     });
+
+    if ( jQuery.cookie('show_editor') == 1 ) {
+        initializeTinyMCE();
+        $('#toggleEditor').addClass('active');
+    }
+
+    if ( jQuery.cookie('show_toc') == 1 ) {
+        $('#fieldsTOC').collapse('show');
+        $('#toggleTOC').addClass('active');
+    }
 
     $(document).bind('keydown', 'ctrl-j', addTagDialog);
     $(document).bind('keydown', 'ctrl-k', closeTag);

@@ -132,6 +132,7 @@ function loadRecord() {
             }).done(function(msg) {
                 var text = transformXML(msg, xsl).replace('</?record>','').replace('&#160;', '&nbsp;');
                 ed.setContent(text);
+                ed.isNotDirty = 1;
                 ed.setProgressState(0); // Hide progress
                 addAlert('Successfully loaded record');
             });
@@ -164,6 +165,7 @@ function saveRecord() {
             if (typeof(recordId) !== 'undefined') {
                 window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
             }
+            ed.isNotDirty = 1;
             ed.setProgressState(0); // Hide progress
             addAlert('Successfully saved record');
             updateFieldsTOC();
@@ -212,7 +214,11 @@ function confirmReload() {
 function updateFieldsTOC(node) {
     $('#fieldsTOC').empty();
     var fieldNumber = 1;
-    $('#recordContainer_ifr').contents().find('span').each(function() {
+    var selector = $('#recordContainer_ifr');
+    if (selector.length === 0) {
+        selector = $('#recordContainer');
+    }
+    selector.contents().find('span').each(function() {
         var label = fieldtolabellookup[$(this).attr('class')];
         if (typeof(label) !== 'undefined') {
             var value = $(this).text();
