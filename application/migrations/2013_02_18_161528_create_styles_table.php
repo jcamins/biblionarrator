@@ -1,6 +1,6 @@
 <?php
 
-class Create_Fields_Table {
+class Create_Styles_Table {
 
 	/**
 	 * Make changes to the database.
@@ -9,13 +9,12 @@ class Create_Fields_Table {
 	 */
 	public function up()
 	{
-        Schema::table('fields', function($table) {
+        Schema::table('styles', function($table) {
             $table->create();
             $table->increments('id');
-            $table->string('schema');
-            $table->string('field');
-            $table->string('description')->nullable();
-            $table->unique(array('schema', 'field'));
+            $table->integer('field_id')->unsigned();
+            $table->foreign('field_id')->references('id')->on('fields');
+            $table->string('css');
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
@@ -28,7 +27,7 @@ class Create_Fields_Table {
 	 */
 	public function down()
 	{
-        Schema::drop('fields');
+        Schema::drop('styles');
 	}
 
 }

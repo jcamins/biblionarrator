@@ -66,7 +66,7 @@
     <div class="modal-body">
         <input type="text" id="tagEntry"></input>
         <select id="tags" size="8">
-            @foreach ($fields as $field)
+            @foreach (Field::all() as $field)
             <option value="{{ $field->schema }}:{{ $field->field }}">{{ $field->field }} ({{ $field->schema }})</option>
             @endforeach
         </select>
@@ -106,13 +106,13 @@
 <script type="text/javascript">
 var recordId = '{{ $recordId }}';
 var labeltofieldlookup = {
-    @foreach ($fields as $field)
-        '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}:{{ $field->field }}',
+    @foreach (Field::all() as $field)
+        '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}_{{ $field->field }}',
     @endforeach
     };
 var fieldtolabellookup = {
-    @foreach ($fields as $field)
-        '{{ $field->schema }}:{{ $field->field }}': '{{ $field->field }} ({{ $field->schema }})',
+    @foreach (Field::all() as $field)
+        '{{ $field->schema }}_{{ $field->field }}': '{{ $field->field }} ({{ $field->schema }})',
     @endforeach
     };
 @if ($editor)

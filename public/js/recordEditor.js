@@ -16,6 +16,7 @@ function initializeTinyMCE() {
         plugins : "advimage,autoresize,inlinepopups,pagebreak,pdw",
         style_formats : formatlist,
         formats : formatlist,
+        content_css : "/css/style.css",
         setup : function(ed) {
             ed.addButton('mynew', {
                 title : 'New Record',
@@ -156,7 +157,7 @@ function saveRecord() {
     }).done(function(xsl) {
         $.ajax({
             type: "POST",
-            url: "/record/" + (typeof(recordId) === 'undefined' ? 'new' : recordId),
+            url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
             data: { data: transformXML('<record>' + ed.getContent() + '</record>', xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
@@ -219,18 +220,27 @@ function updateFieldsTOC(node) {
         selector = $('#recordContainer');
     }
     selector.contents().find('span').each(function() {
-        var label = fieldtolabellookup[$(this).attr('class')];
-        if (typeof(label) !== 'undefined') {
+        var classes = $(this).attr('class').split(' ');
+        for (var ii = 0, len = classes.length; ii < len; ++ii) {
+            var label = fieldtolabellookup[classes[ii]];
             var value = $(this).text();
-            if (value.length > 0) {
+            if (typeof(label) !== 'undefined' && value.length > 0) {
+                $(this).attr('id', 'tocCorrelate' + fieldNumber);
                 var currentNode;
                 if (typeof(o) !== 'undefined' && o.node.isSameNode(this)) {
                     currentNode = 1;
                 }
-                $('#fieldsTOC').append('<div aria-labelledby="labelField' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></div>');
+                $('#fieldsTOC').append('<div aria-labelledby="labelField' + fieldNumber + '" id="fieldEntry' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></div>');
                 fieldNumber++;
             }
         }
     });
+    $('.fieldEntry').hover(function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).addClass('highlight');
+     }, function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).removeClass('highlight');
+     });
     $('#fieldsTOC.in').css('height', 'auto');
 }

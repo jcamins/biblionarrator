@@ -66,6 +66,15 @@
     white-space: normal;
 }
 
+.highlight {
+    padding: 0px 4px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #6dbae0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
 footer {
     color: #929292;
     font-size: 0.8em;
@@ -199,4 +208,10 @@ footer {
 
 .mce_charmap {
     background: url('../images/icons/text_letter_omega.png') 2px 2px no-repeat !important;
+}
+
+input[type="text"].styleRecordTypes {
+    font-size: 10pt;
+    height: 12px;
+    margin-top: 10px;
 }

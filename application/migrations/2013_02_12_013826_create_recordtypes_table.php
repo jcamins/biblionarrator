@@ -1,6 +1,6 @@
 <?php
 
-class Create_Record_Types_Table {
+class Create_RecordTypes_Table {
 
 	/**
 	 * Make changes to the database.
@@ -9,12 +9,13 @@ class Create_Record_Types_Table {
 	 */
 	public function up()
 	{
-        Schema::table('record_types', function($table) {
+        Schema::table('recordtypes', function($table) {
             $table->create();
             $table->increments('id');
             $table->string('name');
             $table->string('description');
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
 	}
 
@@ -25,7 +26,7 @@ class Create_Record_Types_Table {
 	 */
 	public function down()
 	{
-        Schema::drop('record_types');
+        Schema::drop('recordtypes');
 	}
 
 }

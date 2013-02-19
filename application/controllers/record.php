@@ -9,7 +9,7 @@ class Record_Controller extends Base_Controller {
             Asset::add('editor-js', 'js/recordEditor.js');
             Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
-		return View::make('interface.record')->with('recordId', $record_id)->with('record', Record_Controller::get_html($record_id))->with('fields', Field::all())->with('editor', $editor);
+		return View::make('interface.record')->with('recordId', $record_id)->with('record', Record_Controller::get_html($record_id))->with('editor', $editor);
     }
 
     public function get_raw($record_id = null) {
@@ -29,7 +29,7 @@ class Record_Controller extends Base_Controller {
     }
 
     public function post_write($record_id = null) {
-        if ($record_id) {
+        if ($record_id && $record_id != 'new') {
             $record = Record::find($record_id);
         }
         if (!isset($record)) {

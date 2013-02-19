@@ -2,23 +2,26 @@
 
 @section('navigation')
 @parent
-<li><a class="active" href="/cataloging/fields">Record fields</a></li>
+<!--<li><a class="active" href="/cataloging/fields">Record fields</a></li>-->
+@endsection
+
+@section('toolbar')
+    <button id="btnAddField" class="btn">Add field</button>
 @endsection
 
 @section('content')
-<div class="hero-unit">
-    <div class="row">
+    <div class="row-fluid">
         <div class="span6">
             <h1>Record fields</h1>
-            <button id="btnAddField" class="btn">Add field</button>
             <table id="fields">
                 <thead><tr><th>ID</th><th>Schema</th><th>Field</th><th>Description</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
-</div>
+@endsection
 
+@section('form_modals')
 @endsection
 
 @section('scripts')
@@ -147,7 +150,8 @@ function fnClickAddField(e) {
                     "description": fieldDescription,
                 },
                 success: function(data){
-                    $('#fields').dataTable().fnReloadAjax();
+                    var oTable = $('#fields').dataTable();
+                    oTable.fnReloadAjax();
                     oTable.fnPageChange( 'last' );
                     //$('.add_quote_button').attr('onclick', 'fnClickAddRow()'); // re-enable add button
                 },
