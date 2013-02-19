@@ -33,9 +33,12 @@ class Admin_Controller extends Base_Controller {
 
     public function post_styles_ajax()
     {
-        $obj = json_decode(Input::get('data'));
+        $obj = json_decode(Input::get('styles'));
         $changed_styles = array();
-        foreach ($obj->styles as $newstyle) {
+        if (is_null($obj)) {
+            return;
+        }
+        foreach ($obj as $newstyle) {
             $field_schema = $newstyle->schema;
             $field_field = $newstyle->field;
             $field = Field::where_schema_and_field($field_schema, $field_field)->first();
@@ -43,14 +46,15 @@ class Admin_Controller extends Base_Controller {
             $style = null;
             if (isset($newstyle->id)) {
                 $style = Style::find($newstyle->id);
-                if (is_null($style->first())) {
+                if (is_null($style)) {
                     $style = new Style;
                 }
             } else {
                 $style = new Style;
             }
             $style->css = $newstyle->css;
-            array_push($changed_styles, $field->styles()->insert($style)->id);
+            $field->styles()->save($style);
+            array_push($changed_styles, $style->id);
         }
         return json_encode($changed_styles);
     }

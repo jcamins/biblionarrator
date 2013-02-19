@@ -7,7 +7,7 @@ class Style extends Eloquent
         return $this->belongs_to('Field', 'field_id');
     }
 
-    public function recordtype() {
+    public function recordtypes() {
         return $this->has_many_and_belongs_to('RecordType');
     }
 }

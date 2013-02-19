@@ -12,7 +12,7 @@
             <div class="row-fluid">
                 <table id="styleTable">
                 <thead>
-                <tr><td>Record types</td><td>Style</td><td>Example text</td></tr>
+                <tr><th>Record types</th><th>Style</th><th>Example text</th><th></th></tr>
                 </thead>
                 <tbody>
                 @foreach ($styles as $style)
@@ -23,6 +23,9 @@
                 <td><textarea class="styleEntry">{{ $style->css }}</textarea></td>
                 <td>
                     <div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+                </td>
+                <td>
+                    <button class="btn btn-mini delEntry"><i class="icon-remove"></i></button>
                 </td>
                 </tr>
                 @endforeach
@@ -45,9 +48,10 @@ $(document).ready(function () {
         "bFilter": false,
         "bPaginate": false,
         "aoColumns": [
-                        { "sWidth": "25%" },
+                        { "sWidth": "20%" },
                         { "sWidth": "30%" },
-                        { "sWidth": "40%" },
+                        { "bSortable": false, "sWidth": "40%" },
+                        { "bSortable": false, "sWidth": "5%" },
                      ],
     });
 
@@ -56,7 +60,8 @@ $(document).ready(function () {
             [
                 '<input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>',
                 '<textarea class="styleEntry"></textarea>',
-                '<div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>'
+                '<div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>',
+                '<button class="btn btn-mini delEntry"><i class="icon-remove"></i></button>'
             ], false
         );
         oTable.fnPageChange( 'last' );
