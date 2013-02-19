@@ -6,6 +6,8 @@
         <h3 id="styleEditorLabel">{{ $field->field }} ({{ $field->schema }}) field</h3>
     </div>
         <div class="modal-body">
+        <input type="hidden" id="schema" value="{{ $field->schema }}"></input>
+        <input type="hidden" id="field" value="{{ $field->field }}"></input>
         <button id="btnAddStyle" class="btn">Add style</button>
             <div class="row-fluid">
                 <table id="styleTable">
@@ -18,7 +20,7 @@
                 <td>
                     <input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>
                 </td>
-                <td><textarea class="styleEntry"></textarea></td>
+                <td><textarea class="styleEntry">{{ $style->css }}</textarea></td>
                 <td>
                     <div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
                 </td>
@@ -26,8 +28,6 @@
                 @endforeach
                 </tbody>
                 </table>
-            </div>
-            <div class="span6">
             </div>
             </div>
         </div>
@@ -65,7 +65,11 @@ $(document).ready(function () {
     $('#styleTable').on('input', '.styleEntry', null, function() {
         $(this).parent().parent().find('.exampleText').attr('style', $(this).val());
     });
+    $('#styleEditorOK').click(saveStyles);
     createTagsManager();
+    $('.styleEntry').each(function() {
+        $(this).trigger('input');
+    });
 
 });
 function createTagsManager() {
@@ -78,6 +82,32 @@ function createTagsManager() {
             typeaheadSource: recordTypes,
             validator: function (str) {
                 return (jQuery.inArray(str, recordTypes) >= 0);
+            }
+        });
+    });
+}
+
+function saveStyles() {
+    var styles = [];
+    $('#styleTable').dataTable().$('tr').each(function () {
+        var id = $(this).attr('id') ? $(this).attr('id').replace('style', '') : null;
+        styles.push({ 'id': id, 'schema': $('#schema').val(), 'field': $('#field').val(), 'css': $(this).find('.styleEntry').val() });
+    });
+    $.ajax({
+        type: "POST",
+        url: "/admin/styles_ajax",
+        data: { 'styles': JSON.stringify(styles) },
+        dataType: "json",
+        error: function (jqXHR, err, msg) {
+            alert(msg);
+        },
+    }).done(function(msg) {
+        var obj = msg;
+        var ii = 0;
+        $('#styleTable').dataTable().$('tr').each(function () {
+            var id = obj[ii++];
+            if (typeof(id) === 'number') {
+                $(this).attr('id', 'style' + id);
             }
         });
     });
