@@ -65,7 +65,7 @@ $(document).ready(function() {
             $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect field");
             // $('td', nRow).attr("id",fieldID); /* FIXME: this is a bit of a hack */
             if (isNaN(fieldID)) {
-                noEditFields = [0,1,2,3]; /* all fields when adding a quote */
+                noEditFields = [0,1,2,3,4]; /* all fields when adding a quote */
             }
             else {
                 noEditFields = [0, 4]; /* id, timestamp */

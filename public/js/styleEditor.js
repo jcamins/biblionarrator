@@ -16,7 +16,7 @@ function loadStyle () {
                 '<input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>',
                 '<textarea class="styleEntry"></textarea>',
                 '<div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>',
-                '<button class="btn btn-mini delEntry"><i class="icon-remove"></i></button>'
+                '<button id="delNewLine" class="btn btn-mini"><i class="icon-remove"></i></button>'
             ], false
         );
         oTable.fnPageChange( 'last' );
@@ -24,6 +24,13 @@ function loadStyle () {
     });
     $('#styleTable').on('input', '.styleEntry', null, function() {
         $(this).parent().parent().find('.exampleText').attr('style', $(this).val());
+    });
+    $('#styleTable').on('click', '#delNewLine', null, function() {
+        $(this).parent().parent().remove();
+    });
+    $('#styleTable').on('click', '.delEntry', null, function() {
+        delStyle($(this).parent().parent().attr('id').replace('style', ''));
+        $(this).parent().parent().remove();
     });
     $('#styleEditorOK').click(function() {
         saveStyles();
@@ -41,13 +48,6 @@ function createTagsManager() {
         if ($(this).parent().find('input[name="hidden-styleRecordTypes"]').length > 0) {
             return;
         }
-        //var rtypes = '';
-        //$(this).parent().find('.recordType').each(function() {
-        //    if (rtypes.length > 0) {
-        //        rtypes = rtypes + ',';
-        //    }
-        //    rtypes = rtypes + $(this).val();
-        //});
         $(this).tagsManager({
             prefilled: $(this).parent().find('.recordType').text(),
             typeahead: true,
@@ -90,6 +90,18 @@ function saveStyles() {
                 $(this).attr('id', 'style' + id);
             }
         });
+    });
+}
+function delStyle(style) {
+    $.ajax({
+        type: "POST",
+        url: "/admin/styles_ajax",
+        data: { 'styles': JSON.stringify([ { 'id': style, 'delete': 1 } ] ) },
+        dataType: "json",
+        error: function (jqXHR, err, msg) {
+            alert(msg);
+        },
+    }).done(function(msg) {
     });
 }
 

@@ -9,7 +9,8 @@ class Record_Controller extends Base_Controller {
             Asset::add('editor-js', 'js/recordEditor.js');
             Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
-		return View::make('interface.record')->with('recordId', $record_id)->with('record', Record_Controller::get_html($record_id))->with('editor', $editor);
+        Asset::add('fieldstyles', 'css/fields.css');
+		return View::make('interface.record')->with('recordid', $record_id)->with('recordhtml', Record_Controller::get_html($record_id))->with('recordtype', 'Book')->with('editor', $editor);
     }
 
     public function get_raw($record_id = null) {
