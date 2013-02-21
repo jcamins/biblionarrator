@@ -10,6 +10,9 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
+        Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
+        Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
+        Asset::add('styleEditor', 'js/styleEditor.js');
 		return View::make('admin.fields');
     }
 
@@ -25,8 +28,6 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
-        Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
-        Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         $field = Field::find($field);
         return View::make('admin.styles_ajax')->with('styles', $field->styles)->with('field', $field)->with('recordtype', RecordType::find($recordtype));
     }
@@ -55,6 +56,7 @@ class Admin_Controller extends Base_Controller {
             $style->css = $newstyle->css;
             $field->styles()->save($style);
             array_push($changed_styles, $style->id);
+            $style->recordtypes()->sync($newstyle->recordtypes);
         }
         return json_encode($changed_styles);
     }

@@ -1,11 +1,11 @@
 @foreach (Style::all() as $style)
-@if ($style->recordtypes()->get())
-    @foreach ($style->recordtypes()->get() as $recordtype)
-        .{{ $recordtype->name }}
+@if ($style->recordtypes)
+    @foreach ($style->recordtypes as $recordtype)
+        .recordtype_{{ $recordtype->name }}
     @endforeach
-    .{{ $style->field()->schema }}_{{ $style->field()->field }} {
+.{{ $style->field->schema }}_{{ $style->field->field }} {
 @else
-.{{ $style->field()->first()->schema }}_{{ $style->field()->first()->field }} {
+.{{ $style->field->schema }}_{{ $style->field->field }} {
 @endif
     {{ $style->css }}
 }

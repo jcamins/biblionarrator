@@ -215,3 +215,11 @@ input[type="text"].styleRecordTypes {
     height: 12px;
     margin-top: 10px;
 }
+
+textArea.styleEntry {
+    width: auto;
+}
+
+select[name="fields_length"] {
+    width: auto;
+}

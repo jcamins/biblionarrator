@@ -12,9 +12,8 @@
 @section('content')
     <div class="row-fluid">
         <div class="span6">
-            <h1>Record fields</h1>
             <table id="fields">
-                <thead><tr><th>ID</th><th>Schema</th><th>Field</th><th>Description</th></tr></thead>
+                <thead><tr><th>ID</th><th>Schema</th><th>Field</th><th>Description</th><th></th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -22,6 +21,8 @@
 @endsection
 
 @section('form_modals')
+<div id="styleEditor" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="styleEditorLabel" aria-hidden="true">
+</div>
 @endsection
 
 @section('scripts')
@@ -33,10 +34,11 @@ $(document).ready(function() {
         "sAjaxSource": "/svc/fields",
         "sPaginationType": "full_numbers",
         "aoColumns": [
-                        { "sWidth": "10%" },
+                        { "bSortable": false, "sWidth": "5%" },
                         { "sWidth": "20%" },
                         { "sWidth": "30%" },
                         { "sWidth": "40%" },
+                        { "bSortable": false, "sWidth": "5%" },
                      ],
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
             oSettings.jqXHR = $.ajax( {
@@ -47,7 +49,7 @@ $(document).ready(function() {
                 "success": function (json) {
                     var newData = [];
                     for ( var ii = 0, iLen = json.iTotalRecords ; ii < iLen ; ii++ ) {
-                        newData.push( [json.aaData[ii]['id'], json.aaData[ii]['schema'], json.aaData[ii]['field'], json.aaData[ii]['description']] );
+                        newData.push( [json.aaData[ii]['id'], json.aaData[ii]['schema'], json.aaData[ii]['field'], json.aaData[ii]['description'], '<button id="editStyle' + json.aaData[ii]['id'] + '" class="btn btn-mini editStyle"><i class="icon-pencil"></i></button>'] );
                     }
                     json.aaData = newData;
                     fnCallback(json);
@@ -66,7 +68,7 @@ $(document).ready(function() {
                 noEditFields = [0,1,2,3]; /* all fields when adding a quote */
             }
             else {
-                noEditFields = [0]; /* id, timestamp */
+                noEditFields = [0, 4]; /* id, timestamp */
             }
             /* apply no_edit id to noEditFields */
             for (i=0; i<noEditFields.length; i++) {
@@ -122,7 +124,8 @@ $(document).ready(function() {
                 'NA',
                 '<input id="fieldSchema" type="text" style="height:14px; width:99%"/>',
                 '<input id="fieldField" type="text" style="height:14px; width:99%"/>', 
-                '<input id="fieldDescription" type="text" style="height:14px; width:99%"/>'
+                '<input id="fieldDescription" type="text" style="height:14px; width:99%"/>',
+                ''
             ],
             false
         );
@@ -130,6 +133,19 @@ $(document).ready(function() {
         $('#fieldSchema').focus();
 
         $('#fieldSchema,#fieldField,#fieldDescription').keydown(fnClickAddField);
+    });
+    $('#fields').on('click', '.editStyle', null, function() {
+        $('#styleEditor').empty();
+        $('#styleEditor').load('/admin/styles_ajax/' + $(this).attr('id').replace('editStyle', ''), function (msg, s) { 
+            if (s === 'success' || s === 'notmodified') {
+                $('#styleEditor').modal('show');
+            } else {
+                alert("There was a problem preparing the style list, sorry.");
+            }
+        });
+    });
+    $('#styleEditor').on('shown', function() {
+        loadStyle();
     });
 });
 
