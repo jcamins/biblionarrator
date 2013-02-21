@@ -16,7 +16,7 @@ function initializeTinyMCE() {
         plugins : "advimage,autoresize,inlinepopups,pagebreak,pdw",
         style_formats : formatlist,
         formats : formatlist,
-        content_css : "/css/style.css",
+        content_css : [ "/css/style.css", "/css/fields.css" ],
         setup : function(ed) {
             ed.addButton('mynew', {
                 title : 'New Record',
