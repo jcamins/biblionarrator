@@ -56,6 +56,12 @@
                                     <li><a href="/admin/users">Users</a></li>
                                 </ul>
                             </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/home/about">About</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div><!--/.nav-collapse -->
                     @section('post_navigation')

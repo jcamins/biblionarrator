@@ -220,6 +220,9 @@ function updateFieldsTOC(node) {
         selector = $('#recordContainer');
     }
     selector.contents().find('span').each(function() {
+        if (typeof($(this).attr('class')) === 'undefined') {
+            return;
+        }
         var classes = $(this).attr('class').split(' ');
         for (var ii = 0, len = classes.length; ii < len; ++ii) {
             var label = fieldtolabellookup[classes[ii]];

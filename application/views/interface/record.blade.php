@@ -47,7 +47,7 @@
             </noscript>
             @endif
             <div itemscope id="recordContainer" class="recordtype_{{ $recordtype }}">
-                {{ $recordhtml }}
+                {{ $record->format('html') }}
             </div>
             <div id="alerts"></div>
         </div>
@@ -104,7 +104,11 @@
 
 @section('scripts')
 <script type="text/javascript">
-var recordId = '{{ $recordid }}';
+@if (property_exists($record, 'id') && isset($record->id))
+var recordId = {{ $record->id }};
+@else
+var recordId;
+@endif
 var labeltofieldlookup = {
     @foreach (Field::all() as $field)
         '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}_{{ $field->field }}',

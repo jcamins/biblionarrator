@@ -32,9 +32,7 @@
 |
 */
 
-Route::get('record/(:any)/html', 'record@html');
-Route::get('record/(:any)/raw', 'record@raw');
-Route::get('record/(:any)?', 'record@index');
+Route::get('record/(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@write');
 Route::get('css/fields.css', function() {
     return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
