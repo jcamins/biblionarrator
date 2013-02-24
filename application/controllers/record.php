@@ -4,15 +4,15 @@ class Record_Controller extends Base_Controller {
     public $restful = true;
 
     public function get_index($record_id = null, $format = null) {
-        $editor = true;
-        if ($editor) {
-            Asset::add('editor-js', 'js/recordEditor.js');
-            Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
-        }
         Asset::add('fieldstyles', 'css/fields.css');
         $record = Record::find($record_id);
         if (is_null($record)) {
             $record = new Record();
+        }
+        $editor = Authority::can('edit', 'Record', $record);
+        if ($editor) {
+            Asset::add('editor-js', 'js/recordEditor.js');
+            Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
         if (is_null($format)) {
             return View::make('interface.record')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);

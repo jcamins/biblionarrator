@@ -16,6 +16,54 @@ class Admin_Controller extends Base_Controller {
 		return View::make('admin.fields');
     }
 
+
+    public function get_collections()
+    {
+        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+        Asset::add('datatables-css', 'css/jquery.dataTables.css');
+		return View::make('admin.collections');
+    }
+
+    public function post_collections()
+    {
+        $id = Input::get('id');
+        $name = Input::get('name');
+        $security = Input::get('security');
+        $delete = Input::get('delete');
+        $collection = null;
+        error_log($name);
+        if (is_numeric($id)) {
+            $collection = Collection::find($id);
+        }
+        $permitted = false;
+        if (isset($collection)) {
+            if ($delete) {
+                if (Authority::can('delete', 'Collection', $collection)) {
+                    $collection->delete();
+                    return Redirect::to('collections@admin');
+                } else {
+                    return Redirect::to('home');
+                }
+            } else {
+                if (Authority::can('edit', 'Collection', $collection)) {
+                    $permitted = true;
+                }
+            }
+        } elseif (Authority::can('create', 'Collection', $collection)) {
+            $collection = new Collection();
+            $permitted = true;
+        }
+        if ($permitted) {
+            $collection->name = $name;
+            $collection->security = $security;
+            $collection->save();
+            Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+            Asset::add('datatables-css', 'css/jquery.dataTables.css');
+            return View::make('admin.collections');
+        }
+        return Redirect::to('home');
+    }
+
     public function get_styles()
     {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');

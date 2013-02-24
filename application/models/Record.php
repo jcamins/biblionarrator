@@ -7,6 +7,10 @@ class Record extends Eloquent
         return $this->belongs_to('RecordType');
     }
 
+    public function collection() {
+        return $this->belongs_to('Collection', 'collection_id');
+    }
+
     public function format($format = 'raw') {
         switch ($format) {
             case 'raw':

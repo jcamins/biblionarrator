@@ -24,38 +24,48 @@
                             <li class=""><a href="/lists">Lists</a></li>
                             <li class=""><a href="/search">Search</a></li>
                             <li class="divider-vertical"></li>
-                            <form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
+                            <li><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
                                 <input type="text" class="search-query" placeholder="Quick search">
-                            </form>
+                            </form></li>
                         </ul>
                         <ul class="nav pull-right">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
-                                    @if ( Auth::check() )
-                                        {{ Auth::user()->username }}
-                                    @endif
-                                    <b class="caret"></b>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-user"></i><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     @if ( Auth::guest() )
                                         <form id="navbarLogin" action="/user/login" method="post" accept-charset="UTF-8">
-                                            <input id="navbarLoginUser" type="text" name="user[username]" placeholder="Username"></input>
-                                            <input id="navbarLoginPassword" type="password" name="user[password]" placeholder="Password"></input>
+                                            <input id="navbarLoginUser" type="text" name="username" placeholder="Username"></input>
+                                            <input id="navbarLoginPassword" type="password" name="password" placeholder="Password"></input>
+                                            <input type="hidden" name="redirect" value="{{ URI::current() }}"></input>
                                             <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">Sign in</button>
                                         </form>
                                     @else
+                                    <li><span>{{ Auth::user()->email }}</span></li>
                                     <li><a href="/user/preferences">Preferences</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="/user/logout">Sign out</a></li>
                                     @endif
                                 </ul>
                             </li>
+                            @if ( Auth::check() )
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/admin">Home</a></li>
+                                    @if ( Authority::can('manage', 'Field') )
                                     <li><a href="/admin/fields">Fields</a></li>
+                                    @endif
+                                    @if ( Authority::can('manage', 'User') )
                                     <li><a href="/admin/users">Users</a></li>
+                                    @endif
+                                    @if ( Authority::can('manage', 'Collection') )
+                                    <li><a href="/admin/collections">Collections</a></li>
+                                    @endif
                                 </ul>
                             </li>
+                            @endif
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -66,7 +76,6 @@
                     </div><!--/.nav-collapse -->
                     @section('post_navigation')
                     @if (Auth::check())
-                        @include('plugins.loggedin_postnav')
                     @endif
                     @yield_section
                 </div>
@@ -85,7 +94,6 @@
             <div class="row-fluid">
                 <div class="span2">
                     @yield('sidebar')
-                    @include('plugins.status')
                 </div>
                 <div class="span10">
                     @yield('content')
