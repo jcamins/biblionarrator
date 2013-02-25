@@ -9,7 +9,11 @@ class Record_Controller extends Base_Controller {
         if (is_null($record)) {
             $record = new Record();
         }
-        $editor = Authority::can('edit', 'Record', $record);
+        if (is_null($record->id)) {
+            $editor = Authority::can('create', 'Record', $record);
+        } else {
+            $editor = Authority::can('update', 'Record', $record);
+        }
         if ($editor) {
             Asset::add('editor-js', 'js/recordEditor.js');
             Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
@@ -25,12 +29,13 @@ class Record_Controller extends Base_Controller {
         if ($record_id && $record_id != 'new') {
             $record = Record::find($record_id);
         }
-        if (!isset($record)) {
+        if (is_null($record)) {
             $record = new Record;
         }
         $record->data = Input::get('data');
-        error_log($record->data);
-        $record->save();
+        if ((is_null($record->id) && Authority::can('create', 'Record')) || (isset($record->id) && Authority::can('update', 'Record', $record))) {
+            Auth::user()->collection()->first()->records()->save($record);
+        }
         return json_encode(array('id' => $record->id));
     }
 

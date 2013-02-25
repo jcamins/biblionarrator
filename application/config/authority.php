@@ -24,10 +24,25 @@ return array(
         // If a user doesn't have any roles, we don't have to give him permissions so we can stop right here.
         if(count($user->roles) === 0) return false;
 
-        Authority::allow('edit', 'Record', function ($that_record) use ($user)
+        Authority::allow('update', 'Record', function ($that_record) use ($user)
         {
-            error_log($that_record->collection()->first()->id);
-            if ($that_record->collection()->first()->security === 'Open' ||
+            if (isset($that_record->id) ||
+                $that_record->collection()->first()->security === 'Open' ||
+                $that_record->collection()->first()->id === $user->collection()->first()->id) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        Authority::allow('create', 'Record', function () use ($user)
+        {
+            return true;
+        });
+
+        Authority::allow('delete', 'Record', function ($that_record) use ($user)
+        {
+            if (isset($that_record->id) &&
                 $that_record->collection()->first()->id === $user->collection()->first()->id) {
                 return true;
             } else {
