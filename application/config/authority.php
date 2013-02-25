@@ -26,7 +26,9 @@ return array(
 
         Authority::allow('edit', 'Record', function ($that_record) use ($user)
         {
-            if ($that_record->collection_id === $user->collection_id) {
+            error_log($that_record->collection()->first()->id);
+            if ($that_record->collection()->first()->security === 'Open' ||
+                $that_record->collection()->first()->id === $user->collection()->first()->id) {
                 return true;
             } else {
                 return false;

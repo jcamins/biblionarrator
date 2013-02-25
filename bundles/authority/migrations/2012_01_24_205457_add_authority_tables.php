@@ -11,6 +11,7 @@ class Authority_add_authority_tables {
 			$table->string('password');
 			$table->string('name');
 			$table->timestamps();
+            $table->engine = 'InnoDB';
 		});
 
 		User::create(array(
@@ -33,6 +34,7 @@ class Authority_add_authority_tables {
 			$table->increments('id');
 			$table->string('name');
 			$table->timestamps();
+            $table->engine = 'InnoDB';
 		});
 
 		Role::create(array(

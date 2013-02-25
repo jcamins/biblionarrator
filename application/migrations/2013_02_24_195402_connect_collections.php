@@ -11,10 +11,16 @@ class Connect_Collections {
 	{
         Schema::table('users', function($table) {
             $table->integer('collection_id')->unsigned();
+        });
+        DB::table('users')->update(array('collection_id' => 1));
+        Schema::table('users', function($table) {
             $table->foreign('collection_id')->references('id')->on('collections');
         });
         Schema::table('records', function($table) {
             $table->integer('collection_id')->unsigned();
+        });
+        DB::table('records')->update(array('collection_id' => 1));
+        Schema::table('records', function($table) {
             $table->foreign('collection_id')->references('id')->on('collections');
         });
 	}

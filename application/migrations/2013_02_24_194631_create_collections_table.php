@@ -17,6 +17,11 @@ class Create_Collections_Table {
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
+
+        Collection::create(array(
+            'id' => 1,
+            'name' => 'Sample',
+        ));
 	}
 
 	/**
