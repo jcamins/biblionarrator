@@ -26,9 +26,9 @@ return array(
 
         Authority::allow('update', 'Record', function ($that_record) use ($user)
         {
-            if (isset($that_record->id) ||
-                $that_record->collection()->first()->security === 'Open' ||
-                $that_record->collection()->first()->id === $user->collection()->first()->id) {
+            if (isset($that_record->id) &&
+                ($that_record->collection()->first()->security === 'Open' ||
+                $that_record->collection()->first()->id === $user->collection()->first()->id)) {
                 return true;
             } else {
                 return false;

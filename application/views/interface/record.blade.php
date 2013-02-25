@@ -104,7 +104,7 @@
 
 @section('scripts')
 <script type="text/javascript">
-@if (property_exists($record, 'id') && isset($record->id))
+@if (isset($record->id))
 var recordId = {{ $record->id }};
 @else
 var recordId;

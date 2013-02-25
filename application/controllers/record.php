@@ -26,6 +26,7 @@ class Record_Controller extends Base_Controller {
     }
 
     public function post_write($record_id = null) {
+        $record = null;
         if ($record_id && $record_id != 'new') {
             $record = Record::find($record_id);
         }
@@ -33,8 +34,12 @@ class Record_Controller extends Base_Controller {
             $record = new Record;
         }
         $record->data = Input::get('data');
-        if ((is_null($record->id) && Authority::can('create', 'Record')) || (isset($record->id) && Authority::can('update', 'Record', $record))) {
+        if ((is_null($record_id) || $record_id === 'new') && Authority::can('create', 'Record')) {
             Auth::user()->collection()->first()->records()->save($record);
+        } elseif (isset($record->id) && Authority::can('update', 'Record', $record)) {
+            $record->save();
+        } else {
+            return Response::make('Permission denied', 401);
         }
         return json_encode(array('id' => $record->id));
     }

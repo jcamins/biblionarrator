@@ -135,14 +135,14 @@ function loadRecord() {
                 ed.setContent(text);
                 ed.isNotDirty = 1;
                 ed.setProgressState(0); // Hide progress
-                addAlert('Successfully loaded record');
+                addAlert('Successfully loaded record', 'success');
             });
         }
     });
 }
 function ajaxLoadFailed(jqXHR, err, msg) {
     tinyMCE.get('recordContainer').setProgressState(0); // Hide progress
-    addAlert('Failed to load record (' + err + ': ' + msg + ')');
+    addAlert('Failed to load record (' + err + ': ' + msg + ')', 'error');
 }
 function saveRecord() {
     var ed = tinyMCE.get('recordContainer');
@@ -168,14 +168,14 @@ function saveRecord() {
             }
             ed.isNotDirty = 1;
             ed.setProgressState(0); // Hide progress
-            addAlert('Successfully saved record');
+            addAlert('Successfully saved record', 'success');
             updateFieldsTOC();
         });
     });
 }
 function ajaxSaveFailed(jqXHR, err, msg) {
     tinyMCE.get('recordContainer').setProgressState(0); // Hide progress
-    addAlert('Failed to save record (' + err + ': ' + msg + ')');
+    addAlert('Failed to save record (' + err + ': ' + msg + ')', 'alert');
 }
 function transformXML(xml, xsl) {
     var result;
@@ -200,8 +200,8 @@ function transformXML(xml, xsl) {
     }
     return (new XMLSerializer()).serializeToString(result);
 }
-function addAlert(msg) {
-    $('#alerts').append('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
+function addAlert(msg, type) {
+    $('#alerts').append('<div class="alert alert-' + type + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
     $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove() });
 }
 function confirmNew() {
