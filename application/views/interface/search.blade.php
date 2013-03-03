@@ -57,6 +57,16 @@ function positionAffix() {
     }
 }
 
+function addBookmark(id) {
+    var count = parseInt($('#bookmark-count').text()) || 0;
+    $('#bookmark-count').text(count + 1);
+    $('#bookmark-dropdown').fadeIn('slow', function() {
+        setTimeout(function() {
+            $('#bookmark-dropdown').fadeOut('slow');
+        }, 2000);
+    });
+}
+
 $(document).ready(function() {
     $('.preview').click(function() {
         if ($(this).attr('title') === 'Show preview') {
@@ -98,6 +108,9 @@ $(document).ready(function() {
         $(this).find('.resultToolbar').fadeTo('fast', 1);
     }, function() {
         $(this).find('.resultToolbar').fadeTo('fast', 0);
+    });
+    $('.add-bookmark').click(function() {
+        addBookmark($(this).parents('tr').attr('data-id'));
     });
 });
 

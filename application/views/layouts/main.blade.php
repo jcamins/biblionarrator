@@ -21,7 +21,6 @@
                             @section('navigation')
                             @yield_section
                             <li class=""><a href="/record">Record</a></li>
-                            <li class=""><a href="/lists">Lists</a></li>
                             <li class=""><a href="/search">Search</a></li>
                             <li class="divider-vertical"></li>
                             <li><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
@@ -29,6 +28,9 @@
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
+                            <li class="dropdown"><a href="/bookmarks"><i class="icon-bookmark"></i><span id="bookmark-count"></span></a>
+                            <ul id="bookmark-dropdown" class="dropdown-menu"><li><span>An item has been added</span></li></ul>
+                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="icon-user"></i><b class="caret"></b>
