@@ -1,4 +1,5 @@
 <?php
+
 class Record extends Eloquent
 {
     public static $timestamps = true;
@@ -9,6 +10,16 @@ class Record extends Eloquent
 
     public function collection() {
         return $this->belongs_to('Collection', 'collection_id');
+    }
+
+    public function snippet() {
+        $snippet = current(explode('<!-- pagebreak -->', $this->data));
+        $tidy = new Tidy();
+        return new RecordSnippet($tidy->repairString($snippet, array(
+                'output-xml' => true,
+                'input-xml' => true
+            ))
+        );
     }
 
     public function format($format = 'raw') {
