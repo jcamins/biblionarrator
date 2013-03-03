@@ -25,7 +25,7 @@
                             <li class=""><a href="/search">Search</a></li>
                             <li class="divider-vertical"></li>
                             <li><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
-                                <input type="text" class="search-query" placeholder="Quick search">
+                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">

@@ -4,6 +4,16 @@
     }
 }
 
+#previewAffix {
+    margin-right: 20px;
+    display: none;
+    position: absolute;
+}
+
+#previewAffix.affix {
+    top: 90px;
+}
+
 #navbarLogin input[type="text"], #navbarLogin input[type="password"] {
     width: 140px;
     margin: 4px 8px;

@@ -6,10 +6,14 @@ class Admin_Controller extends Base_Controller {
 
     public function get_fields()
     {
+        if (!Authority::can('manage', 'Field')) {
+            return Redirect::to('home');
+        }
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
+        Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
@@ -19,9 +23,12 @@ class Admin_Controller extends Base_Controller {
 
     public function get_collections()
     {
+        if (!Authority::can('manage', 'Collection')) {
+            return Redirect::to('home');
+        }
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
-		return View::make('admin.collections');
+        return View::make('admin.collections');
     }
 
     public function post_collections()
@@ -45,7 +52,7 @@ class Admin_Controller extends Base_Controller {
                     return Redirect::to('home');
                 }
             } else {
-                if (Authority::can('edit', 'Collection', $collection)) {
+                if (Authority::can('update', 'Collection', $collection)) {
                     $permitted = true;
                 }
             }
