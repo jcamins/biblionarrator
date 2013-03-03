@@ -9,5 +9,5 @@
     <button title="Bookmark" class="add-bookmark btn btn-link"><i class="icon-bookmark"></i></button>
 </div>
 </td>
-<td><button title="Show preview" class="preview btn btn-link"><i class='icon-eye-open'></i></button></td>
+<td><button title="Show preview" class="preview btn btn-link hidden-phone"><i class='icon-eye-open'></i></button></td>
 </tr>

@@ -67,6 +67,7 @@ function addBookmark(id) {
     });
 }
 
+
 $(document).ready(function() {
     $('.preview').click(function() {
         if ($(this).attr('title') === 'Show preview') {
@@ -103,11 +104,27 @@ $(document).ready(function() {
         }
     });
 
-    $('.resultToolbar').fadeTo('fast', 0);
+    var onmobile = $(window).width() < 980;
+    if (!onmobile) {
+        $('.resultToolbar').fadeTo('fast', 0);
+    }
+    $(window).resize(function() {
+        if ($(window).width() > 980) {
+            onmobile = false;
+            $('.resultToolbar').css('opacity', 0);
+        } else {
+            onmobile = true;
+            $('.resultToolbar').css('opacity', 1);
+        }
+    });
     $('.resultRow').hover(function() {
-        $(this).find('.resultToolbar').fadeTo('fast', 1);
+        if (!onmobile) {
+            $(this).find('.resultToolbar').fadeTo('fast', 1);
+        }
     }, function() {
-        $(this).find('.resultToolbar').fadeTo('fast', 0);
+        if (!onmobile) {
+            $(this).find('.resultToolbar').fadeTo('fast', 0);
+        }
     });
     $('.add-bookmark').click(function() {
         addBookmark($(this).parents('tr').attr('data-id'));
