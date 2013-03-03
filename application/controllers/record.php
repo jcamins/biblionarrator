@@ -3,6 +3,8 @@
 class Record_Controller extends Base_Controller {
     public $restful = true;
 
+    private static $templatelist = array('interface', 'preview', 'result');
+
     public function get_index($record_id = null, $format = null) {
         Asset::add('fieldstyles', 'css/fields.css');
         $record = Record::find($record_id);
@@ -19,7 +21,10 @@ class Record_Controller extends Base_Controller {
             Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
         if (is_null($format)) {
-            return View::make('record.interface')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
+            $format = 'interface';
+        }
+        if (in_array($format, self::$templatelist)) {
+            return View::make('record.' . $format)->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
         } else {
             return $record->format($format);
         }

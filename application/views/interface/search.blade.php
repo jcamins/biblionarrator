@@ -22,19 +22,7 @@
     </thead>
     <tbody>
     @foreach ($results as $record)
-        <tr class="resultRow">
-        <td>
-        <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
-            {{ $record->format('html') }}
-        </div>
-        <div class="resultToolbar">
-            <a title="Go to record" href="/record/{{ $record->id }}" class="btn btn-link resultRecordLink"><i class="icon-cog"></i></a>
-            <button title="Comment" class="btn btn-link"><i class="icon-comment"></i></button>
-            <button title="Bookmark" class="btn btn-link"><i class="icon-bookmark"></i></button>
-        </div>
-        </td>
-        <td><button title="Show preview" class="preview btn btn-link"><i class='icon-eye-open'></i></button></td>
-        </tr>
+        @include('record.result')
     @endforeach
     </tbody>
     </table>
@@ -74,14 +62,20 @@ $(document).ready(function() {
         if ($(this).attr('title') === 'Show preview') {
             $('.preview').attr('title', 'Show preview');
             $('.preview .icon-chevron-left').removeClass('icon-chevron-left').addClass('icon-eye-open');
-            $(this).find('.icon-eye-open').removeClass('icon-eye-open').addClass('icon-chevron-left');
-            $(this).attr('title', 'Hide preview');
-            $('#recordPreview').html($(this).parents('tr').find('.recordContainer').html());
-            $('#previewRecordLink').attr('href', $(this).parents('tr').find('.resultRecordLink').attr('href'));
-            targetTop = $(this).position().top;
-            positionAffix();
-            $('#previewAffix').css('top', affixTop);
-            $('#previewAffix').show();
+            var thisButton = this;
+            $.ajax({
+                type: "GET",
+                url: "/record/" + $(thisButton).parents('tr').attr('data-id') + '/preview',
+                dataType: "html",
+            }).done(function(preview) {
+                $(thisButton).find('.icon-eye-open').removeClass('icon-eye-open').addClass('icon-chevron-left');
+                $(thisButton).attr('title', 'Hide preview');
+                $('#previewAffix').html(preview);
+                targetTop = $(thisButton).position().top;
+                positionAffix();
+                $('#previewAffix').css('top', affixTop);
+                $('#previewAffix').show();
+            });
         } else {
             $('.icon-chevron-left').removeClass('icon-chevron-left').addClass('icon-eye-open');
             $('.preview').attr('title', 'Show preview');
@@ -106,6 +100,7 @@ $(document).ready(function() {
         $(this).find('.resultToolbar').fadeTo('fast', 0);
     });
 });
+
 </script>
 @endsection
 
