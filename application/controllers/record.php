@@ -19,7 +19,7 @@ class Record_Controller extends Base_Controller {
             Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
         if (is_null($format)) {
-            return View::make('interface.record')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
+            return View::make('record.interface')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
         } else {
             return $record->format($format);
         }
