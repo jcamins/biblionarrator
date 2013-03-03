@@ -6,7 +6,7 @@
     <input type="hidden" id="schema" value="{{ $field->schema }}"></input>
     <input type="hidden" id="field" value="{{ $field->field }}"></input>
     <button id="btnAddStyle" class="btn">Add style</button>
-            <table id="styleTable">
+            <table id="styleTable" data-id="{{ $field->id }}">
             <thead>
             <tr><th>Record types</th><th>Style</th><th>Example text</th><th></th></tr>
             </thead>

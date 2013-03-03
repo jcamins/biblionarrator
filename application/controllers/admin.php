@@ -100,8 +100,8 @@ class Admin_Controller extends Base_Controller {
                 $style = Style::find($newstyle['id']);
             }
             if (array_key_exists('delete', $newstyle) && $newstyle['delete'] === 1 && isset($style)) {
-                $style->delete();
                 array_push($changed_styles, $style->id);
+                $style->delete();
                 continue;
             }
             if (is_null($style)) {

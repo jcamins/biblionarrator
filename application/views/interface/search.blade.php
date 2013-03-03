@@ -107,6 +107,7 @@ $(document).ready(function() {
     var onmobile = $(window).width() < 980;
     if (!onmobile) {
         $('.resultToolbar').fadeTo('fast', 0);
+        $('.preview').fadeTo('fast', 1);
     }
     $(window).resize(function() {
         if ($(window).width() > 980) {

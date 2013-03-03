@@ -136,16 +136,7 @@ $(document).ready(function() {
     });
     $('#fields').on('click', '.editStyle', null, function() {
         $('#styleEditor').empty();
-        $('#styleEditor').load('/admin/styles_ajax/' + $(this).attr('id').replace('editStyle', ''), function (msg, s) { 
-            if (s === 'success' || s === 'notmodified') {
-                $('#styleEditor').modal('show');
-            } else {
-                alert("There was a problem preparing the style list, sorry.");
-            }
-        });
-    });
-    $('#styleEditor').on('shown', function() {
-        loadStyle();
+        loadStyle($(this).attr('id').replace('editStyle', ''));
     });
 });
 
