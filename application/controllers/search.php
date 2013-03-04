@@ -15,6 +15,7 @@ class Search_Controller extends Base_Controller {
             })->paginate(10);
         }
         Asset::add('fieldstyles', 'css/fields.css');
+        Asset::add('bookmarks-js', 'js/bookmarks.js');
 		return View::make('interface.search')->with('records', $results)->with('query', $query);
     }
 }

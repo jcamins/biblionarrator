@@ -28,8 +28,12 @@
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown"><a href="/bookmarks"><i class="icon-bookmark"></i><span id="bookmark-count">{{ count(explode(',', Session::get('bookmarks'))) - 1 }}</span></a>
-                            <ul id="bookmark-dropdown" class="dropdown-menu"><li><span>An item has been added</span></li></ul>
+                            <li class="dropdown"><a href="/bookmarks"><i class="icon-bookmark"></i><span id="bookmark-count">
+@if (strstr(Session::get('bookmarks'), ','))
+{{ count(explode(',', Session::get('bookmarks'))) - 1 }}
+@endif
+</span></a>
+                            <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">

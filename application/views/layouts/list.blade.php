@@ -22,7 +22,23 @@
     </thead>
     <tbody>
     @foreach ($records->results as $record)
-        @include('record.listsnippet')
+        <tr class="resultRow" data-id="{{ $record->id }}">
+            <td>
+                @include('record.listsnippet')
+                <div class="resultToolbar">
+                    @section('resultToolbar')
+                    <a title="Go to record" href="/record/{{ $record->id }}" class="btn btn-link resultRecordLink"><i class="icon-cog"></i></a>
+                    <button title="Comment" class="btn btn-link"><i class="icon-comment"></i></button>
+                    <button title="Bookmark" class="add-bookmark btn btn-link"><i class="icon-bookmark"></i></button>
+                    @yield_section
+                </div>
+            </td>
+            <td class="recordPane">
+                @section('recordPane')
+                <button title="Show preview" class="preview btn btn-link hidden-phone"><i class='icon-eye-open'></i></button>
+                @yield_section
+            </td>
+        </tr>
     @endforeach
     </tbody>
     </table>
@@ -56,21 +72,6 @@ function positionAffix() {
     } else {
         affixTop = targetTop;
     }
-}
-
-function addBookmark(id) {
-    $.ajax({
-        type: "POST",
-        url: "/bookmarks/add/" + id,
-        dataType: "json",
-    }).done(function(data) {
-        $('#bookmark-count').text(data.count);
-        $('#bookmark-dropdown').fadeIn('slow', function() {
-            setTimeout(function() {
-                $('#bookmark-dropdown').fadeOut('slow');
-            }, 2000);
-        });
-    });
 }
 
 

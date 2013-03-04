@@ -4,6 +4,10 @@
     }
 }
 
+td.recordPane button {
+    display: block;
+}
+
 #bookmark-dropdown {
     display: none;
 }
