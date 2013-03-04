@@ -12,9 +12,9 @@ class Search_Controller extends Base_Controller {
                 foreach (explode(' ', $query) as $keyword) {
                     $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
                 }
-            })->get();
+            })->paginate(10);
         }
         Asset::add('fieldstyles', 'css/fields.css');
-		return View::make('interface.search')->with('results', $results)->with('query', $query);
+		return View::make('interface.search')->with('records', $results)->with('query', $query);
     }
 }
