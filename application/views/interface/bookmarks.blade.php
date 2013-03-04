@@ -1,5 +1,13 @@
 @layout('layouts/list')
 
+@section('styles')
+<style type="text/css">
+.add-bookmark {
+    display: none;
+}
+</style>
+@yield_section
+
 @section('listheading')
 <tr><th>Your bookmarks</th></tr>
 @endsection

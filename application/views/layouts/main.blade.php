@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <title>Biblionarrator</title>
         {{ Asset::styles() }}
+        @section('styles')
+        @yield_section
     </head>
 
     <body>
