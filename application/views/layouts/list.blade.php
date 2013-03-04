@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-    @if ($records->results)
+    @if ($records && $records->results)
     <div class="span8">
     <table id="recordList" class="table">
     <thead>
@@ -59,12 +59,17 @@ function positionAffix() {
 }
 
 function addBookmark(id) {
-    var count = parseInt($('#bookmark-count').text()) || 0;
-    $('#bookmark-count').text(count + 1);
-    $('#bookmark-dropdown').fadeIn('slow', function() {
-        setTimeout(function() {
-            $('#bookmark-dropdown').fadeOut('slow');
-        }, 2000);
+    $.ajax({
+        type: "POST",
+        url: "/bookmarks/add/" + id,
+        dataType: "json",
+    }).done(function(data) {
+        $('#bookmark-count').text(data.count);
+        $('#bookmark-dropdown').fadeIn('slow', function() {
+            setTimeout(function() {
+                $('#bookmark-dropdown').fadeOut('slow');
+            }, 2000);
+        });
     });
 }
 
