@@ -15,7 +15,9 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
             $this->idlist = array();
         }
         parent::__construct('Record');
-        $this->_load_collection();
+        if (count($this->idlist) > 0) {
+            $this->_load_collection();
+        }
     }
 
     public function get_comma_string() {
