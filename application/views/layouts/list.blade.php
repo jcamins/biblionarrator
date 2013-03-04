@@ -26,17 +26,19 @@
             <td>
                 @include('record.listsnippet')
                 <div class="resultToolbar">
-                    @section('resultToolbar')
                     <a title="Go to record" href="/record/{{ $record->id }}" class="btn btn-link resultRecordLink"><i class="icon-cog"></i></a>
                     <button title="Comment" class="btn btn-link"><i class="icon-comment"></i></button>
-                    <button title="Bookmark" class="add-bookmark btn btn-link"><i class="icon-bookmark"></i></button>
-                    @yield_section
+                    <a href="/bookmarks/add/{{ $record->id }}" title="Bookmark" class="add-bookmark btn btn-link"><i class="icon-bookmark"></i></a>
+                    @if (isset($recordToolbarView) && View::exists($recordToolbarView))
+                    @include ($recordToolbarView)
+                    @endif
                 </div>
             </td>
             <td class="recordPane">
-                @section('recordPane')
                 <button title="Show preview" class="preview btn btn-link hidden-phone"><i class='icon-eye-open'></i></button>
-                @yield_section
+                @if (isset($recordPaneView) && View::exists($recordPaneView))
+                @include ($recordPaneView)
+                @endif
             </td>
         </tr>
     @endforeach
@@ -136,6 +138,7 @@ $(document).ready(function() {
     });
     $('.add-bookmark').click(function() {
         addBookmark($(this).parents('tr').attr('data-id'));
+        return false;
     });
 });
 

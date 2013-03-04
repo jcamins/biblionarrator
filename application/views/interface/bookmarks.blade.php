@@ -4,11 +4,6 @@
 <tr><th>Your bookmarks</th></tr>
 @endsection
 
-@section('recordPane')
-@parent
-<button title="Remove from bookmarks" class="bookmark-remove btn btn-link"><i class="icon-remove"></i></button>
-@endsection
-
 @section('scripts')
 @parent
 <script type="text/javascript">
