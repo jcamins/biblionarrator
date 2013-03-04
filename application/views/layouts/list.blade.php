@@ -14,14 +14,14 @@
 @endsection
 
 @section('content')
-    @if ($records && $records->results)
+    @if ($records && $records->paginate(10)->results)
     <div class="span8">
     <table id="recordList" class="table">
     <thead>
         @yield('listheading')
     </thead>
     <tbody>
-    @foreach ($records->results as $record)
+    @foreach ($records->paginate(10)->results as $record)
         <tr class="resultRow" data-id="{{ $record->id }}">
             <td>
                 @include('record.listsnippet')
@@ -44,7 +44,7 @@
     @endforeach
     </tbody>
     </table>
-    {{ $records->appends(Input::except('page'))->links() }}
+    {{ $records->paginate(10)->appends(Input::except('page'))->links() }}
     </div>
     <div id="previewPane" class="span4">
         <div id="previewAffix" class="well">
@@ -54,6 +54,8 @@
         </div>
     </div>
     @else
+        @section('norecords')
+        @yield_section
     @endif
 @endsection
 

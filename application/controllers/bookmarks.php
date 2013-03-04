@@ -20,7 +20,7 @@ class Bookmarks_Controller extends Base_Controller {
     public function get_index() {
         Asset::add('fieldstyles', 'css/fields.css');
         Asset::add('bookmarks-js', 'js/bookmarks.js');
-		return View::make('interface.bookmarks', $this->viewdata)->with('records', $this->bookmarks->paginate(10));
+		return View::make('interface.bookmarks', $this->viewdata)->with('records', $this->bookmarks);
     }
 
     public function post_add($record = null) {

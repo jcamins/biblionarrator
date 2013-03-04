@@ -12,6 +12,10 @@
 <tr><th>Your bookmarks</th></tr>
 @endsection
 
+@section('norecords')
+<em>You do not have any bookmarks</em>
+@endsection
+
 @section('scripts')
 @parent
 <script type="text/javascript">

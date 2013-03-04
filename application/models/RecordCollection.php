@@ -25,6 +25,9 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function add($id) {
+        if (is_null($this->idlist) || count($this->idlist) === 0) {
+            $this->_update_idlist();
+        }
         if (!in_array($id, $this->idlist)) {
             array_push($this->idlist, $id);
             if ($this->autosave) {
@@ -38,11 +41,15 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function remove($id) {
+        if (is_null($this->idlist) || count($this->idlist) === 0) {
+            $this->_update_idlist();
+        }
         if (in_array($id, $this->idlist)) {
             $this->idlist = array_diff($this->idlist, array($id));
             if ($this->autosave) {
                 $this->save();
             }
+            $this->_load_collection();
             return 'deleted';
         } else {
             return 'notpresent';
@@ -50,15 +57,27 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function size() {
-        return count($this->idlist) - 1;
+        if (is_null($this->idlist) || count($this->idlist) === 0) {
+            $this->_update_idlist();
+        }
+        return count($this->idlist);
     }
 
     public function save() {
     }
 
     protected function _load_collection() {
-        if (isset($this->idlist)) {
+        if (isset($this->idlist) && count($this->idlist) > 0) {
+            $this->reset_where();
             $this->where_in('id', $this->idlist);
+        }
+        $this->_update_idlist();
+    }
+
+    protected function _update_idlist() {
+        $this->idlist = array();
+        foreach ($this->get() as $record) {
+            array_push($this->idlist, $record->id);
         }
     }
 }

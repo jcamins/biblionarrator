@@ -12,7 +12,7 @@ class Search_Controller extends Base_Controller {
                 foreach (explode(' ', $query) as $keyword) {
                     $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
                 }
-            })->paginate(10);
+            });
         }
         Asset::add('fieldstyles', 'css/fields.css');
         Asset::add('bookmarks-js', 'js/bookmarks.js');
