@@ -15,7 +15,11 @@ function deleteBookmark(id) {
 }
 
 function flashBookmark(data) {
-    $('#bookmark-count').text(data.count);
+    if (parseInt(data.count) > 0) {
+        $('#bookmark-count').text(data.count);
+    } else {
+        $('#bookmark-count').empty();
+    }
     if (typeof(data.message) !== 'undefined') {
         $('#bookmark-message').text(data.message);
         $('#bookmark-dropdown').fadeIn('slow', function() {
