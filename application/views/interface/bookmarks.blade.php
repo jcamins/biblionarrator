@@ -19,6 +19,7 @@ $(document).ready(function() {
     $('.bookmark-remove').click(function() {
         deleteBookmark($(this).parents('tr').attr('data-id'));
         $(this).parents('tr').remove();
+        return false;
     });
 });
 </script>
