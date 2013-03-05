@@ -40,13 +40,14 @@ class Svc_Controller extends Base_Controller {
         $field_schema = Input::get('schema');
         $field_field = Input::get('field');
         $field_description = Input::get('description');
+        $field = null;
         if ($field_id) {
             $field = Field::find($field_id);
         } else if ($field_schema && $field_field) {
             $field = Field::where_schema($field_schema)->where_field($field_field);
         }
-        if (is_null($field->first())) {
-            $field = new Field;
+        if (is_null($field) || is_null($field->first())) {
+            $field = new Field();
         }
         error_log("ID: " . $field_id . "\tSchema: " . $field_schema . "\tField: " . $field_field . "\tDescription: " . $field_description);
         if (isset($field_schema)) $field->schema = $field_schema;

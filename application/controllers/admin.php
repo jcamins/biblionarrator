@@ -17,7 +17,13 @@ class Admin_Controller extends Base_Controller {
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
-		return View::make('admin.fields');
+        Asset::add('admin-js', 'js/admin.js');
+        $columns = array(
+            array('name' => 'schema', 'label' => 'Schema', 'required' => true, 'sWidth' => '20%'),
+            array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
+            array('name' => 'description', 'label' => 'Description', 'required' => false, 'sWidth' => '40%')
+        );
+		return View::make('admin.fields')->with('posturl', '/svc/fields')->with('columns', json_encode($columns));
     }
 
 
@@ -117,5 +123,10 @@ class Admin_Controller extends Base_Controller {
             $style->recordtypes()->sync($newstyle['recordtypes']);
         }
         return json_encode($changed_styles);
+    }
+
+    public function get_users()
+    {
+        return View::make('admin.users');
     }
 }
