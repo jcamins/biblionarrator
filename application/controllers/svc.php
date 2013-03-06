@@ -56,5 +56,19 @@ class Svc_Controller extends Base_Controller {
         $field->save();
         return json_encode($field);
     }
+
+    public function get_collections() {
+        $collectionlist = array();
+        foreach (Collection::all() as $collection)
+        {
+            array_push($collectionlist, $collection->to_array());
+        }
+
+        $collections = array( "iTotalRecords" => count($collectionlist),
+        "iTotalDisplayRecords" => count($collectionlist),
+        "aaData" => $collectionlist);
+
+        return json_encode($collections);
+    }
 }
 

@@ -9,7 +9,7 @@ function initializeAdminTable() {
     var oTable = $('#admintable').dataTable( {
         "bPaginate": true,
         "bProcessing": true,
-        "sAjaxSource": posturl,
+        "sAjaxSource": sourceurl,
         "sPaginationType": "full_numbers",
         "aoColumns": dtColumns,
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
@@ -21,7 +21,12 @@ function initializeAdminTable() {
                 "success": function (json) {
                     var newData = [];
                     for ( var ii = 0, iLen = json.iTotalRecords ; ii < iLen ; ii++ ) {
-                        newData.push( [json.aaData[ii]['id'], json.aaData[ii]['schema'], json.aaData[ii]['field'], json.aaData[ii]['description'], '<button id="editStyle' + json.aaData[ii]['id'] + '" class="btn btn-mini editStyle"><i class="icon-pencil"></i></button>'] );
+                        var thisRow = [json.aaData[ii]['id']];
+                        columns.forEach(function (column) {
+                            thisRow.push(json.aaData[ii][column.name]);
+                        });
+                        thisRow.push(controlColumn);
+                        newData.push(thisRow);
                     }
                     json.aaData = newData;
                     fnCallback(json);
@@ -29,20 +34,20 @@ function initializeAdminTable() {
             } );
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-            /* do foo on the current row and its child nodes */
-            var noEditFields = [];
-            var fieldID = $('td', nRow)[0].innerHTML;
-            $(nRow).attr("id", fieldID); /* set row ids to quote id */
+            var noEditFields = [0];
+            var objectID = $('td', nRow)[0].innerHTML;
+            $(nRow).attr("data-id", objectID);
             $('td:eq(0)', nRow).click(function() {$(this.parentNode).toggleClass('selected',this.clicked);}); /* add row selectors */
-            $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect field");
-            // $('td', nRow).attr("id",fieldID); /* FIXME: this is a bit of a hack */
-            if (isNaN(fieldID)) {
-                noEditFields = [0,1,2,3,4]; /* all fields when adding a quote */
+            $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect row");
+            if (isNaN(objectID)) {
+                for (var ii = 1; ii <= columns.count + 2; ii++) {
+                    noEditFields.push(ii);
+                }
             }
             else {
-                noEditFields = [0, 4]; /* id, timestamp */
+                noEditFields.push($('td', nRow).size() - 1);
             }
-            /* apply no_edit id to noEditFields */
+            /* apply no_edit class to noEditFields */
             for (i=0; i<noEditFields.length; i++) {
                 $('td', nRow)[noEditFields[i]].setAttribute("class","no_edit");
             }
@@ -51,14 +56,17 @@ function initializeAdminTable() {
         "fnDrawCallback": fnDrawCallback,
     } );
     $('#btnAdd').click(addNewRow);
+    $('#admintable').on('click', '.cancelAdd', null, function() {
+        $('#admintable').dataTable().fnDeleteRow(this.parentNode.parentNode);
+    });
 }
 
 function addNewRow() {
     var newdata = [ 'NA' ];
     columns.forEach(function (column) {
-        newdata.push('<input id="column' + column.name + '" class=columnEntry" type="text" style="height: 14px; width: 99%;" />');
+        newdata.push('<input id="column' + column.name + '" name="' + column.name + '" class=columnEntry" type="text" style="height: 14px; width: 99%;" />');
     });
-    newdata.push('');
+    newdata.push('<button type="submit" title="Save" class="btn btn-mini"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
     var aRow = $('#admintable').dataTable().fnAddData(newdata, false);
     $('#admintable').dataTable().fnPageChange( 'last' );
     $('.columnEntry').first().focus();

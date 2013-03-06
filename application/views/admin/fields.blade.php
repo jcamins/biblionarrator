@@ -1,24 +1,4 @@
-@layout('layouts/main')
-
-@section('navigation')
-@parent
-<!--<li><a class="active" href="/cataloging/fields">Record fields</a></li>-->
-@endsection
-
-@section('toolbar')
-    <button id="btnAdd" class="btn">Add</button>
-@endsection
-
-@section('content')
-    <div class="row-fluid">
-        <div class="span6">
-            <table id="admintable">
-                <thead><tr><th>ID</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-@endsection
+@layout('layouts/admin')
 
 @section('form_modals')
 <div id="styleEditor" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="styleEditorLabel" aria-hidden="true">
@@ -26,16 +6,18 @@
 @endsection
 
 @section('scripts')
+@parent
 <script type="text/javascript">
 var columns = {{ $columns }};
-
+var sourceurl = '{{ $sourceurl }}';
 var posturl = '{{ $posturl }}';
+var controlColumn = '<button class="btn btn-mini editStyle"><i class="icon-pencil"></i></button>';
 
 $(document).ready(function() {
-    initializeAdminTable();
     $('#admintable').on('click', '.editStyle', null, function() {
         $('#styleEditor').empty();
-        loadStyle($(this).attr('id').replace('editStyle', ''));
+        loadStyle($(this).parents('tr').attr('data-id'));
+        return false;
     });
 });
 </script>
