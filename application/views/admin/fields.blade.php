@@ -8,9 +8,6 @@
 @section('scripts')
 @parent
 <script type="text/javascript">
-var columns = {{ $columns }};
-var sourceurl = '{{ $sourceurl }}';
-var posturl = '{{ $posturl }}';
 var controlColumn = '<button class="btn btn-mini editStyle"><i class="icon-pencil"></i></button>';
 
 $(document).ready(function() {

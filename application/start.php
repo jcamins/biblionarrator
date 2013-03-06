@@ -60,6 +60,7 @@ Laravel\Autoloader::$aliases = $aliases;
 
 Autoloader::map(array(
 	'Base_Controller' => path('app').'controllers/base.php',
+    'Resource_Controller' => path('app').'libraries/Resource_Controller.php',
 ));
 
 /*

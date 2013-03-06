@@ -23,7 +23,7 @@ class Admin_Controller extends Base_Controller {
             array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
             array('name' => 'description', 'label' => 'Description', 'required' => false, 'sWidth' => '40%')
         );
-		return View::make('admin.fields')->with('sourceurl', '/svc/fields')->with('posturl', '/svc/field')->with('columns', json_encode($columns));
+		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns));
     }
 
 
@@ -41,7 +41,7 @@ class Admin_Controller extends Base_Controller {
             array('name' => 'name', 'label' => 'Name', 'required' => true, 'sWidth' => '50%'),
             array('name' => 'security', 'label' => 'Security', 'required' => true, 'sWidth' => '20%'),
         );
-		return View::make('admin.collections')->with('sourceurl', '/svc/collections')->with('posturl', '/svc/collection')->with('columns', json_encode($columns));
+		return View::make('admin.collections')->with('resourcetype', 'collection')->with('columns', json_encode($columns));
     }
 
     public function post_collections()

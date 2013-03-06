@@ -9,7 +9,7 @@ function initializeAdminTable() {
     var oTable = $('#admintable').dataTable( {
         "bPaginate": true,
         "bProcessing": true,
-        "sAjaxSource": sourceurl,
+        "sAjaxSource": '/resources/' + resourcetype,
         "sPaginationType": "full_numbers",
         "aoColumns": dtColumns,
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
@@ -85,7 +85,7 @@ function fnDrawCallback() {
                 newdata[column.name] = dataRow[index + 1];
             });
             $.ajax({
-                url: posturl,
+                url: '/resources/' + resourcetype,
                 type: "POST",
                 data: newdata,
             });
@@ -129,7 +129,7 @@ function fnClickAddRow(e) {
 
         if (havereqs) {
             $.ajax({
-                url: posturl,
+                url: '/resources/' + resourcetype,
                 type: "POST",
                 data: postdata,
                 success: function(data){

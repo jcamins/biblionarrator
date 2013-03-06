@@ -7,7 +7,7 @@
 @section('content')
     <div class="row-fluid">
         <div class="span6">
-            <form action="{{ $posturl }}" method="POST">
+            <form action="/resources/{{ $resourcetype }}" method="POST">
             <table id="admintable">
                 <thead><tr><th>ID</th></tr></thead>
                 <tbody></tbody>
@@ -20,6 +20,8 @@
 
 @section('scripts')
 <script type="text/javascript">
+var columns = {{ $columns }};
+var resourcetype = '{{ $resourcetype }}';
 $(document).ready(function() {
     initializeAdminTable();
 });
