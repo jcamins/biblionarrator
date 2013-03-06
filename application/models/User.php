@@ -2,6 +2,7 @@
 class User extends Eloquent {
 
     public static $timestamps = true;
+    public static $hidden = array('password');
 
     public function collection()
     {
