@@ -17,7 +17,7 @@ class Admin_Controller extends Base_Controller {
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
-        Asset::add('admin-js', 'js/admin.js');
+        Asset::add('admin-table-js', 'js/admin-table.js');
         $columns = array(
             array('name' => 'schema', 'label' => 'Schema', 'required' => true, 'sWidth' => '20%'),
             array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
@@ -36,7 +36,7 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
-        Asset::add('admin-js', 'js/admin.js');
+        Asset::add('admin-table-js', 'js/admin-table.js');
         $columns = array(
             array('name' => 'name', 'label' => 'Name', 'required' => true, 'sWidth' => '50%'),
             array('name' => 'security', 'label' => 'Security', 'required' => true, 'sWidth' => '20%'),
