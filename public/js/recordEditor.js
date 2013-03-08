@@ -1,3 +1,11 @@
+var appliers = {};
+
+function initializeRangy() {
+    rangy.init();
+    for (var key in labeltofieldlookup) {
+        appliers[labeltofieldlookup[key]] = rangy.createCssClassApplier(labeltofieldlookup[key], { 'normalize': true });
+    }
+};
 
 function initializeTinyMCE() {
     var formatlist = {};
@@ -81,6 +89,46 @@ function addTagDialog() {
     $('#tagSelector').modal('show');
 }
 
+function replaceSelectionWithHtml(html) {
+    var range, html;
+    if (window.getSelection && window.getSelection().getRangeAt) {
+        range = window.getSelection().getRangeAt(0);
+        range.deleteContents();
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        var frag = document.createDocumentFragment(), child;
+        while ( (child = div.firstChild) ) {
+            frag.appendChild(child);
+        }
+        range.insertNode(frag);
+    } else if (document.selection && document.selection.createRange) {
+        range = document.selection.createRange();
+        html = (node.nodeType == 3) ? node.data : node.outerHTML;
+        range.pasteHTML(html);
+    }
+}
+
+
+function getSelectionHtml() {
+    var html = "";
+    if (typeof window.getSelection != "undefined") {
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+            var container = document.createElement("div");
+            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                container.appendChild(sel.getRangeAt(i).cloneContents());
+            }
+            html = container.innerHTML;
+        }
+    } else if (typeof document.selection != "undefined") {
+        if (document.selection.type == "Text") {
+            html = document.selection.createRange().htmlText;
+        }
+    }
+    alert(html);
+}
+
+
 function closeAndOpenTag () {
     closeTag();
     addTagDialog();
@@ -92,13 +140,23 @@ function closeAllTags () {
 
 function setTag(field) {
     $('#tagSelector').modal('hide');
-    tinyMCE.get('recordContainer').formatter.apply(labeltofieldlookup[field]);
-    tinyMCE.get('recordContainer').nodeChanged();
-    tinyMCE.execCommand('mceFocus', false, 'recordContainer');
+    appliers[labeltofieldlookup[field]].applyToSelection();
+    updateFieldsTOC();
 }
 
 function closeTag() {
-    var styles = tinyMCE.get('recordContainer').formatter.matchAll(Object.keys(fieldtolabellookup));
+    var found = false;
+    $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span').each(function () {
+        $(this).attr('class').split(' ').reverse().forEach(function (element, index, array) {
+            if (typeof fieldtolabellookup[element] !== undefined) {
+                appliers[element].undoToSelection();
+                found = true;
+            }
+        });
+    });
+    updateFieldsTOC();
+    return found;
+    /*var styles = tinyMCE.get('recordContainer').formatter.matchAll(Object.keys(fieldtolabellookup));
 
     if (styles[0]) {
         tinyMCE.get('recordContainer').formatter.remove(styles[0]);
@@ -106,7 +164,7 @@ function closeTag() {
         changed = true;
     }
     tinyMCE.execCommand('mceFocus', false, 'recordContainer');
-    return (styles.length);
+    return (styles.length);*/
 }
 
 function newRecord() {
@@ -131,7 +189,7 @@ function loadRecord() {
                 dataType: "xml",
                 error: ajaxLoadFailed,
             }).done(function(msg) {
-                var text = transformXML(msg, xsl).replace('</?record>','').replace('&#160;', '&nbsp;');
+                var text = transformXML(msg, xsl).replace('&#160;', '&nbsp;');
                 ed.setContent(text);
                 ed.isNotDirty = 1;
                 ed.setProgressState(0); // Hide progress
@@ -145,10 +203,8 @@ function ajaxLoadFailed(jqXHR, err, msg) {
     addAlert('Failed to load record (' + err + ': ' + msg + ')', 'error');
 }
 function saveRecord() {
-    var ed = tinyMCE.get('recordContainer');
-
     // Do you ajax call here, window.setTimeout fakes ajax call
-    ed.setProgressState(1); // Show progress
+    //ed.setProgressState(1); // Show progress
     $.ajax({
         type: "GET",
         url: "/xsl/html2raw.xsl",
@@ -158,7 +214,7 @@ function saveRecord() {
         $.ajax({
             type: "POST",
             url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-            data: { data: transformXML('<record>' + ed.getContent() + '</record>', xsl) },
+            data: { data: transformXML($('#recordContainer').html(), xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
             var obj = jQuery.parseJSON(msg);
@@ -166,8 +222,6 @@ function saveRecord() {
             if (typeof(recordId) !== 'undefined') {
                 window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
             }
-            ed.isNotDirty = 1;
-            ed.setProgressState(0); // Hide progress
             addAlert('Successfully saved record', 'success');
             updateFieldsTOC();
         });

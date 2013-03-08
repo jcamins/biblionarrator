@@ -4,6 +4,15 @@
     }
 }
 
+#add-section {
+    font-size: smaller;
+}
+
+#recordContainer header, #recordContainer section {
+    margin: 0.5em 0em;
+    min-height: 18pt;
+}
+
 .resultRow .btn-link {
     color: #777;
 }

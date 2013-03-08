@@ -47,8 +47,18 @@
             </noscript>
             @endif
             <div itemscope id="recordContainer" class="recordtype_{{ $recordtype }}">
-                {{ $record->format('html') }}
+                @if ($record->format('html'))
+                    {{ $record->format('html') }}
+                @else
+                    <article>
+                        <header></header>
+                        <section></section>
+                    </article>
+                @endif
             </div>
+            @if ($editor)
+            <div><button id="add-section" class="btn btn-link">Add section</button></div>
+            @endif
             <div id="alerts"></div>
         </div>
         <div class="span4">
@@ -121,6 +131,7 @@ var fieldtolabellookup = {
     };
 @if ($editor)
 $(document).ready(function() {
+    initializeRangy();
     $('#tagEntry').typeahead({
         source: function(query, process) {
             return Object.keys(labeltofieldlookup);
@@ -138,21 +149,22 @@ $(document).ready(function() {
     });
 
     $('#toggleTOC').click(function() {
-        if ($('#fieldsTOC').hasClass('in')) {
-            jQuery.cookie('show_toc', 1);
-        } else {
+        if ($('#fieldsTOC').hasClass('active')) {
+            $('#fieldsTOC').hide();
             jQuery.cookie('show_toc', 0);
+        } else {
+            $('#fieldsTOC').show();
+            jQuery.cookie('show_toc', 1);
         }
     });
 
     $('#toggleEditor').click(function() {
-        if (typeof(tinyMCE.get('recordContainer')) === 'undefined') {
-            initializeTinyMCE();
-            jQuery.cookie('show_editor', 1);
-        } else {
-            tinyMCE.execCommand('mceFocus', false, 'recordContainer');
-            tinyMCE.execCommand('mceRemoveControl', false, 'recordContainer');
+        if ($(this).hasClass('active')) {
+            $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
             jQuery.cookie('show_editor', 0);
+        } else {
+            $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
+            jQuery.cookie('show_editor', 1);
         }
     });
 
@@ -178,7 +190,7 @@ $(document).ready(function() {
     });
 
     $('#tagSelector').on('hidden', function () {
-        tinyMCE.execCommand('mceFocus', false, 'recordContainer');
+ //       tinyMCE.execCommand('mceFocus', false, 'recordContainer');
     });
 
     $('#tagEntry').keydown(function(ev) {
@@ -191,7 +203,7 @@ $(document).ready(function() {
     });
 
     if ( jQuery.cookie('show_editor') == 1 ) {
-        initializeTinyMCE();
+        $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
         $('#toggleEditor').addClass('active');
     }
 
@@ -200,13 +212,36 @@ $(document).ready(function() {
         $('#toggleTOC').addClass('active');
     }
 
-    $(document).bind('keydown', 'ctrl-j', addTagDialog);
-    $(document).bind('keydown', 'ctrl-k', closeTag);
-    $(document).bind('keydown', 'ctrl-shift-j', closeAndOpenTag);
-    $(document).bind('keydown', 'ctrl-shift-k', closeAllTags);
-    $(document).bind('keydown', 'ctrl-return', saveRecord);
+    $('#recordContainer span').hover(function() {
+        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).addClass('highlight');
+        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).addClass('highlight');
+     }, function() {
+        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).removeClass('highlight');
+        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).removeClass('highlight');
+     });
+
+    $("#recordContainer a").click(function(e){
+        e.stopPropagation();
+    });
+
+    $('#add-section').click(function() {
+        var newsection = document.createElement('section');
+        $('#recordContainer article').append(newsection);
+        if ($('#toggleEditor').hasClass('active')) {
+            newsection.addAttribute('contenteditable', 'true');
+        }
+        $(newsection).click();
+    });
 });
 @endif
+
+$(window).load(function() {
+    shortcut.add('Ctrl+J', addTagDialog);
+    shortcut.add('Ctrl+K', closeTag);
+    shortcut.add('Ctrl+Shift+J', closeAndOpenTag);
+    shortcut.add('Ctrl+Shift+K', closeAllTags);
+    shortcut.add('Ctrl+Return', saveRecord);
+});
 
 </script>
 @endsection

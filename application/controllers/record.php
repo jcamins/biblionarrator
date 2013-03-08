@@ -18,7 +18,10 @@ class Record_Controller extends Base_Controller {
         }
         if ($editor) {
             Asset::add('editor-js', 'js/recordEditor.js');
-            Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
+            Asset::add('shortcut-js', 'js/shortcut.js');
+            Asset::add('rangy-js', 'js/rangy/rangy-core.js');
+            Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
+            //Asset::add('tinymce', 'js/tiny_mce/tiny_mce.js');
         }
         if (is_null($format)) {
             $format = 'interface';

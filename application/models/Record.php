@@ -13,13 +13,8 @@ class Record extends Eloquent
     }
 
     public function snippet() {
-        $snippet = current(explode('<!-- pagebreak -->', $this->data));
-        $tidy = new Tidy();
-        return new RecordSnippet($tidy->repairString($snippet, array(
-                'output-xml' => true,
-                'input-xml' => true
-            ))
-        );
+        $xml = new SimpleXMLElement($this->data);
+        return new RecordSnippet($xml->header->asXML());
     }
 
     public function format($format = 'raw') {
