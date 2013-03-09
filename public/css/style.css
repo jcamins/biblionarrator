@@ -23,6 +23,14 @@
     text-decoration: none;
 }
 
+.recordPreviewArea {
+    display: none;
+}
+
+.hide-preview[disabled] {
+    opacity: 0;
+}
+
 td.recordPane button {
     display: block;
 }
@@ -38,8 +46,8 @@ td.recordPane button {
     bottom: -0.5em;
 }
 
-.preview {
-    opacity: 0;
+td.recordPane button.preview {
+    display: none;
 }
 
 #previewAffix {

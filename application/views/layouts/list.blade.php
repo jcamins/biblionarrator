@@ -24,18 +24,24 @@
     @foreach ($records->paginate(10)->results as $record)
         <tr class="resultRow" data-id="{{ $record->id }}">
             <td>
-                @include('record.listsnippet')
+                <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
+                    {{ $record->snippet()->format('html') }}
+                    <div class="recordPreviewArea">
+                        <div class="recordRemainder"></div>
+                    </div>
+                </div>
                 <div class="resultToolbar">
                     <a title="Go to record" href="/record/{{ $record->id }}" class="btn btn-link resultRecordLink"><i class="icon-cog"></i></a>
                     <button title="Comment" class="btn btn-link"><i class="icon-comment"></i></button>
                     <a href="/bookmarks/add/{{ $record->id }}" title="Bookmark" class="add-bookmark btn btn-link"><i class="icon-bookmark"></i></a>
+                    <button title="Hide preview" disabled="disabled" class="hide-preview btn btn-link"><i class='icon-chevron-up'></i></button>
                     @if (isset($recordToolbarView) && View::exists($recordToolbarView))
                     @include ($recordToolbarView)
                     @endif
                 </div>
             </td>
             <td class="recordPane">
-                <button title="Show preview" class="preview btn btn-link hidden-phone"><i class='icon-eye-open'></i></button>
+                <button title="Show preview" class="preview btn btn-link"><i class='icon-eye-open'></i></button>
                 @if (isset($recordPaneView) && View::exists($recordPaneView))
                 @include ($recordPaneView)
                 @endif
@@ -47,11 +53,6 @@
     {{ $records->paginate(10)->appends(Input::except('page'))->links() }}
     </div>
     <div id="previewPane" class="span4">
-        <div id="previewAffix" class="well">
-            <div id="recordPreview">
-            </div>
-            <a id="previewRecordLink" class="btn btn-link">Go to record</a>
-        </div>
     </div>
     @else
         @section('norecords')
@@ -65,61 +66,40 @@
 
 @section('scripts')
 <script type="text/javascript">
-var affixTop;
-var affixHeight;
-var targetTop;
-
-function positionAffix() {
-    affixHeight = $('#previewAffix').height();
-    if (targetTop + affixHeight > $(window).height() - 60) {
-        affixTop = $(window).height() - affixHeight - 60;
-    } else {
-        affixTop = targetTop;
-    }
-}
-
-
 $(document).ready(function() {
     $('.preview').click(function() {
-        if ($(this).attr('title') === 'Show preview') {
-            $('.preview').attr('title', 'Show preview');
-            $('.preview .icon-chevron-left').removeClass('icon-chevron-left').addClass('icon-eye-open');
+        if (!$(this).parents('tr').find('.recordPreviewArea').is(':visible')) {
             var thisButton = this;
             $.ajax({
                 type: "GET",
-                url: "/record/" + $(thisButton).parents('tr').attr('data-id') + '/preview',
+                url: "/record/" + $(thisButton).parents('tr').attr('data-id') + '/html',
                 dataType: "html",
             }).done(function(preview) {
-                $(thisButton).find('.icon-eye-open').removeClass('icon-eye-open').addClass('icon-chevron-left');
+                var recordPreview = $(thisButton).parents('tr').find('.recordPreviewArea');
+                $(recordPreview).find('.recordRemainder').html(preview);
+                $(recordPreview).find('.recordRemainder').find('header').remove();
                 $(thisButton).attr('title', 'Hide preview');
-                $('#previewAffix').html(preview);
-                targetTop = $(thisButton).position().top;
-                positionAffix();
-                $('#previewAffix').css('top', affixTop);
-                $('#previewAffix').show();
+                $(thisButton).find('i').removeClass('icon-eye-open').addClass('icon-chevron-up');
+                $(recordPreview).slideDown('fast', function() {
+                    $(thisButton).parents('tr').find('.hide-preview').removeAttr('disabled');
+                });
             });
         } else {
-            $('.icon-chevron-left').removeClass('icon-chevron-left').addClass('icon-eye-open');
-            $('.preview').attr('title', 'Show preview');
-            $('#previewAffix').hide();
+            $(this).parents('tr').find('.hide-preview').click();
         }
     });
-
-    $(window).scroll(function() {
-        var windowTop = $(window).scrollTop();
-        positionAffix();
-        if (affixTop < windowTop + 60) {
-            $('#previewAffix').css({ position: 'fixed', top: 60 });
-        } else {
-            $('#previewAffix').css({ position: 'absolute', top: affixTop });
-        }
+    $('.hide-preview').click(function() {
+        $(this).parents('tr').find('.hide-preview').attr('disabled', 'disabled');
+        $(this).parents('tr').find('.recordPreviewArea').slideUp('fast', function() {
+            $(this).parents('tr').find('.preview i').removeClass('icon-chevron-up').addClass('icon-eye-open');
+        });
     });
 
     var onmobile = $(window).width() < 980;
     if (!onmobile) {
         $('.resultToolbar').fadeTo('fast', 0);
-        $('.preview').fadeTo('fast', 1);
     }
+    $('.preview').show();
     $(window).resize(function() {
         if ($(window).width() > 980) {
             onmobile = false;
