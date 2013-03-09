@@ -130,6 +130,7 @@ var fieldtolabellookup = {
     @endforeach
     };
 @if ($editor)
+var currentSelection;
 $(document).ready(function() {
     initializeRangy();
     $('#tagEntry').typeahead({
@@ -212,10 +213,11 @@ $(document).ready(function() {
         $('#toggleTOC').addClass('active');
     }
 
-    $('#recordContainer span').hover(function() {
+    $('#recordContainer').on('mouseenter', 'span', null, function() {
         $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).addClass('highlight');
         $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).addClass('highlight');
-     }, function() {
+     });
+    $('#recordContainer').on('mouseleave', 'span', null, function() {
         $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).removeClass('highlight');
         $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).removeClass('highlight');
      });

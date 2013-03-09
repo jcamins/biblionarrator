@@ -86,6 +86,7 @@ function initializeTinyMCE() {
 }
 
 function addTagDialog() {
+    currentSelection = rangy.getSelection();
     $('#tagSelector').modal('show');
 }
 
@@ -140,7 +141,10 @@ function closeAllTags () {
 
 function setTag(field) {
     $('#tagSelector').modal('hide');
-    appliers[labeltofieldlookup[field]].applyToSelection();
+    for(var ii = 0; ii < currentSelection.rangeCount; ii++) {
+        appliers[labeltofieldlookup[field]].applyToRange(currentSelection.getRangeAt(ii));
+    }
+    consolidateStyles();
     updateFieldsTOC();
 }
 
@@ -214,7 +218,7 @@ function saveRecord() {
         $.ajax({
             type: "POST",
             url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-            data: { data: transformXML($('#recordContainer').html(), xsl) },
+            data: { data: transformXML($('#recordContainer').html().replace('<section[^>]*>', '<section>').replace('<header[^>]*>', '<header>'), xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
             var obj = jQuery.parseJSON(msg);
@@ -300,4 +304,29 @@ function updateFieldsTOC(node) {
         $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).removeClass('highlight');
      });
     $('#fieldsTOC.in').css('height', 'auto');
+}
+
+function consolidateStyles() {
+    $('#recordContainer span').each(function() {
+        var node = this;
+        var newNode = node;
+        for (newNode = node.previousSibling; newNode; newNode = newNode.previousSibling) {
+            if (newNode.nodeType === 1 && newNode.nodeName === 'SPAN' && newNode.getAttribute('class') === node.getAttribute('class')) {
+                newNode.innerHTML = newNode.innerHTML + node.innerHTML);
+                node.parentNode.removeChild(node);
+                node = newNode;
+            } else {
+                break;
+            }
+        }
+        for (newNode = node.nextSibling; newNode; newNode = newNode.nextSibling) {
+            if (newNode.nodeType === 1 && newNode.nodeName === 'SPAN' && newNode.getAttribute('class') === node.getAttribute('class')) {
+                newNode.innerHTML = node.innerHTML + newNode.innerHTML;
+                node.parentNode.removeChild(node);
+                node = newNode;
+            } else {
+                break;
+            }
+        }
+    });
 }
