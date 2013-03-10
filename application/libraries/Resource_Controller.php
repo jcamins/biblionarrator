@@ -39,7 +39,7 @@ class Resource_Controller extends Base_Controller {
 
     protected function _store() {
         $id = Input::get('id');
-        if (isset($id)) {
+        if (isset($id) && $id !== '') {
             return $this->_update($id);
         }
     }

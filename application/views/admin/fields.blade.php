@@ -94,6 +94,8 @@ $(document).ready(function() {
                     'schema': $('#field-schema').val(),
                     'description': $('#field-description').val()
                   }
+        }).done(function (data) {
+            $('#field-id').val(data.id);
         });
         return false;
     });

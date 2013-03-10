@@ -37,6 +37,8 @@ function initializeStyleEditor() {
     $('#saveStyles').click(function() {
         if ($('input[name="id"]').val() === '') {
             $('#saveField').click(saveStyles);
+        } else {
+            saveStyles();
         }
         return false;
         //$('#styleEditor').modal('hide');
@@ -112,7 +114,7 @@ function saveStyles() {
     var styles = [];
     $('#styleTable').dataTable().$('tr').each(function () {
         var id = $(this).attr('id') ? $(this).attr('id').replace('style', '') : null;
-        var style = { 'id': id, 'field_id': $('input[name="id"]').val(), 'css': $(this).find('.styleEntry').val(), 'recordtypes': [] };
+        var style = { 'id': id, 'field_id': $('input[name="id"]').val(), 'schema': $('input[name="schema"]').val(), 'field': $('input[name="field"]').val(), 'css': $(this).find('.styleEntry').val(), 'recordtypes': [] };
         var mytypes = $(this).find('input[name="hidden-styleRecordTypes"]').val().split(',');
         for (var ii in mytypes) {
             if (typeof(recordTypes[mytypes[ii]]) !== 'undefined') {
