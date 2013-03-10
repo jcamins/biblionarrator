@@ -6,6 +6,7 @@
     <fieldset id="fieldGeneral">
         <legend>General</legend>
         <input id="field-id" type="hidden" name="id" value="{{ $field->id }}"></input>
+        <input id="field-parent" type="hidden" name="parent" value=""></input>
         <div class="row-fluid">
             <div class="span3">
                 <label for="field-schema">Schema:</label><input id="field-schema" type="text" name="schema" value="{{ $field->schema }}"></input>

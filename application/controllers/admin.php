@@ -4,7 +4,7 @@ class Admin_Controller extends Base_Controller {
 
     public $restful = true;
 
-    public function get_fields($field = null)
+    public function get_fields($id = null)
     {
         if (!Authority::can('manage', 'Field')) {
             return Redirect::to('home');
@@ -19,7 +19,7 @@ class Admin_Controller extends Base_Controller {
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
-        Asset::add('admin-table-js', 'js/admin-table.js');
+        Asset::add('admin-tree-js', 'js/admin-tree.js');
         $columns = array(
             array('name' => 'schema', 'label' => 'Schema', 'required' => true, 'sWidth' => '20%'),
             array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
@@ -29,11 +29,16 @@ class Admin_Controller extends Base_Controller {
         foreach (Field::where_null('parent')->get() as $root) {
             array_push($fieldstree, $root);
         }*/
-        $field = Field::find($field);
+        $field = Field::find($id);
         if (is_null($field)) {
-            $field = new Field();
+            if (isset($id) && $id !== 'new') {
+                return Redirect::to_action('admin@fields', array('new'));
+            } else {
+                $field = new Field();
+            }
         }
-		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns))->with('field', $field);
+        Session::put('currentfield', $field);
+		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns))->with('field', $field)->with('id', $id);
     }
 
 
@@ -99,18 +104,6 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
 		return View::make('admin.styles');
-    }
-
-    public function get_fieldeditor($field, $recordtype = null)
-    {
-        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
-        Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
-        Asset::add('datatables-css', 'css/jquery.dataTables.css');
-        $field = Field::find($field);
-        if (is_null($field)) {
-            $field = new Field();
-        }
-        return View::make('components.fieldeditor')->with('field', $field);
     }
 
     public function get_styles_ajax($field, $recordtype = null)

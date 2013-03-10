@@ -11,6 +11,9 @@ function initializeStyleEditor() {
     });
     
     $('#btnAddStyle').click(function() {
+        if ($('input[name="id"]').val() === '') {
+            $('#saveField').click();
+        }
         var aRow = $('#styleTable').dataTable().fnAddData(
             [
                 '<input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>',
@@ -35,11 +38,7 @@ function initializeStyleEditor() {
         return false;
     });
     $('#saveStyles').click(function() {
-        if ($('input[name="id"]').val() === '') {
-            $('#saveField').click(saveStyles);
-        } else {
-            saveStyles();
-        }
+        saveStyles();
         return false;
         //$('#styleEditor').modal('hide');
     });
@@ -51,41 +50,7 @@ function initializeStyleEditor() {
 function loadStyle (id) {
     $('#styles_ajax').load('/admin/styles_ajax/' + id, function (msg, s) { 
         if (s === 'success' || s === 'notmodified') {
-            //$('#styleEditor').modal('show');
-            var oTable = $('#styleTable').dataTable( {
-                "bFilter": false,
-                "bPaginate": false,
-                "aoColumns": [
-                                { "sWidth": "20%" },
-                                { "sWidth": "30%" },
-                                { "bSortable": false, "sWidth": "35%" },
-                                { "bSortable": false, "sWidth": "5%" },
-                             ],
-            });
-            
-            $('#btnAddStyle').click(function() {
-                var aRow = $('#styleTable').dataTable().fnAddData(
-                    [
-                        '<input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>',
-                        '<textarea class="styleEntry"></textarea>',
-                        '<div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>',
-                        '<button class="btn btn-mini saveNewStyle"><i class="icon-ok"></i></button><button id="delNewLine" class="btn btn-mini"><i class="icon-remove"></i></button>'
-                    ], false
-                );
-                oTable.fnPageChange( 'last' );
-                createTagsManager();
-                return false;
-            });
-            $('#styleTable').on('input', '.styleEntry', null, function() {
-                $(this).parent().parent().find('.exampleText').attr('style', $(this).val());
-            });
-            $('#styleTable').on('click', '#delNewLine', null, function() {
-                $(this).parent().parent().remove();
-            });
-            createTagsManager();
-            $('.styleEntry').each(function() {
-                $(this).trigger('input');
-            });
+            initializeStyles();
         } else {
             alert("There was a problem preparing the style list, sorry.");
         }

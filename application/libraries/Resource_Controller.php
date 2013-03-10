@@ -17,9 +17,19 @@ class Resource_Controller extends Base_Controller {
 
     public function post_index($id = null) {
         if (isset($id) || $id = Input::get('id')) {
-            return $this->_update($id);
+            if (Input::get('delete')) {
+                return $this->_delete($id);
+            } else {
+                return $this->_update($id);
+            }
         } else {
             return $this->_store();
+        }
+    }
+
+    public function delete_index($id = null) {
+        if (isset($id) || $id = Input::get('id')) {
+            return $this->_delete($id);
         }
     }
 
@@ -34,36 +44,54 @@ class Resource_Controller extends Base_Controller {
         "iTotalDisplayRecords" => count($resourcelist),
         "aaData" => $resourcelist);
 
-        return json_encode($resources);
+        return Response::json($resources);
     }
 
     protected function _store() {
         $id = Input::get('id');
-        if (isset($id) && $id !== '') {
+        //if (isset($id) && $id !== '') {
             return $this->_update($id);
-        }
+        //}
     }
 
     protected function _show($id) {
-        return json_encode(call_user_func($this->resourceClass . '::find', $id)->to_array());
+        return Response::json(call_user_func($this->resourceClass . '::find', $id)->to_array());
     }
 
     protected function _update($id) {
-        $resource = call_user_func($this->resourceClass . '::find', $id);
-        var_dump(Input::all());
-        if (is_null($resource)) {
-            return 'Invalid ID';
+        if (isset($id) && $id !== 'new' && $id !== 'undefined' && $id !== '') {
+            $resource = call_user_func($this->resourceClass . '::find', $id);
+            if (is_null($resource)) {
+                return 'Invalid ID';
+            }
+        } else {
+            $resource = new $this->resourceClass;
         }
         foreach ($this->required_columns as $column) {
-            $resource->set_attribute($column, Input::get($column));
+            if (Input::has($column)) {
+                $resource->set_attribute($column, Input::get($column));
+            }
             if (is_null($resource->get_attribute($column))) {
                 return 'Missing data for ' . $column;
             }
         }
         foreach ($this->optional_columns as $column) {
-            $resource->set_attribute($column, Input::get($column));
+            if (Input::has($column)) {
+                $resource->set_attribute($column, Input::get($column));
+            }
         }
         $resource->save();
-        return json_encode($resource);
+        return Response::json($resource);
+    }
+
+    protected function _delete($id) {
+        $resource = call_user_func($this->resourceClass . '::find', $id);
+        if (isset($resource)) {
+            foreach ($this->foreign_keys as $fk) {
+                $resource->$fk()->delete();
+            }
+            $resource->delete();
+            return Response::json($id);
+        }
     }
 }

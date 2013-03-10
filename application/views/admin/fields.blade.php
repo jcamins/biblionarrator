@@ -1,22 +1,23 @@
 @layout('layouts/admin-tree')
 
 @section('sidetoolbar')
-<a class="btn btn-small jstree-draggable" href="/admin/fields/new">Add field</a>
+<a id="add-field" class="btn btn-small jstree-draggable" href="/admin/fields/new">Add field</a>
 @endsection
 
 @section('toolbar')
 <button class="btn btn-small" type="submit" id="saveField" form="fieldform">Save</button>
+<button class="btn btn-small" id="delField">Delete</button>
 @endsection
 
 @section('treedata')
-<ul>
-    {{ render_each('components.fieldtree', Field::roots()->get(), 'node') }}
-</ul>
+@include('components.fieldtree')
 @endsection
 
 @section('editor')
 <div id="fieldeditor">
+@if ($id)
 @include('components.fieldeditor')
+@endif
 </div>
 @endsection
 
@@ -34,68 +35,95 @@ var recordTypes = {
         '{{ $recordtype->name }}': {{ $recordtype->id }},
     @endforeach
 }; //'Book', 'Person', 'Organization', 'Stamp', 'Coin' ];
+var treeCallbacks = {
+    'move_node' : function(e, data) {
+        $.ajax({
+            url: '/resources/field',
+            type: "POST",
+            dataType: "json",
+            data: { 'id': data.rslt.o[0].getAttribute('data-id'),
+                    'parent': data.rslt.np[0].getAttribute('data-id')
+                  }
+        });
+    },
+    'create' : function(e, data) {
+        $('#fieldeditor').load('/admin/ajax/fieldeditor/new', function (msg, s) { 
+            initializeStyleEditor();
+            $('#heading').text(data.rslt.name);
+            $('#field-schema').val(data.rslt.name.replace(/^[^(]*\(/, '').replace(/\).*$/, ''));
+            $('#field-field').val(data.rslt.name.replace(/ \(.*$/, ''));
+            $('#tree .selected').removeClass('selected');
+            $(data.rslt.obj).children('a').addClass('selected');
+            if (data.args[1] === 'inside') {
+                $('#field-parent').val(data.rslt.parent[0].getAttribute('data-id'));
+            } else {
+                $('#field-parent').val('');
+            }
+            window.history.pushState({ 'event' : 'new' }, 'New field', '/admin/fields/new');
+        });
+    }
+};
+
+var resourcetype = 'field';
 
 $(document).ready(function() {
-/*    $('#admintable').on('click', '.editStyle', null, function() {
-        $('#styleEditor').empty();
-    });*/
-    $('#tree li[data-id="' + $('#fieldform').attr('data-id') + '"] a').addClass('selected');
     $('#tree').on('click', 'a', null, function() {
         $('#tree .selected').removeClass('selected');
         $(this).addClass('selected');
         //loadStyle($(this).parents('li').first().attr('data-id'));
         var id = $(this).parents('li').first().attr('data-id');
-        $('#fieldeditor').load('/admin/fieldeditor/' + id, function (msg, s) { 
+        var fieldParent = $(this).parents('li').first().parents('li').first().attr('data-id');
+        if (fieldParent === 'undefined') {
+            fieldParent = '';
+        }
+        $('#field-parent').val(fieldParent);
+        $('#fieldeditor').load('/admin/ajax/fieldeditor/' + id, function (msg, s) { 
             initializeStyleEditor();
         });
         return false;
     });
-    $('#tree').jstree({
-        "defaults": {
-            "strings": {
-                "new_node": "New field",
-            }
-        },
-        "dnd" : {
-            "drag_check": function(data) {
-                return { after : true, before : true, inside : true }; 
-            },
-            "drag_finish": function(data) {
-                $('#tree').jstree('create', data.r, data.p);
-            }
-        },
-        "themes": {
-            "theme": "apple"
-        },
-        "ui": {
-            "select_limit": 1
-        },
-        "plugins" : [ "themes", "html_data", "crrm", "dnd" ]
+    $(document).on('change', '#field-field, #field-schema', null, function() {
+        $('#heading').text($('#field-field').val() + ' (' + $('#field-schema').val() + ')');
+        $('#saveField').addClass('btn-info');
     });
-    $('#tree').bind('create.jstree', function(e, data) {
-        $('#fieldeditor').load('/admin/fieldeditor/new', function (msg, s) { 
-            initializeStyleEditor();
-            $('#heading').text(data.rslt.name);
-            var schema = data.rslt.name;
-            schema.replace('^[^(]*\(', '').replace(').*$', '');
-            var field = data.rslt.name;
-            field.replace(' \(.*$', '');
-            $('#field-schema').val(schema);
-            $('#field-field').val(field);
-        });
+    initializeTree(treeCallbacks);
+    $('#add-field').click(function() {
+        $('#tree').jstree('create', null, 'last', 'New field');
+        return false;
     });
     initializeStyleEditor();
+    $('#delField').click(function() {
+        $.ajax({
+            url: '/resources/field',
+            type: "POST",
+            dataType: "json",
+            data: { 'id': $('#field-id').val(),
+                    'delete': true,
+                  }
+        }).done(function() {
+            $('#fieldeditor').empty()
+            initializeTree(treeCallbacks);
+        });;
+    });
     $('#saveField').click(function() {
         $.ajax({
             url: '/resources/field',
             type: "POST",
+            dataType: "json",
             data: { 'id': $('#field-id').val(),
                     'field': $('#field-field').val(),
                     'schema': $('#field-schema').val(),
-                    'description': $('#field-description').val()
+                    'description': $('#field-description').val(),
+                    'parent': $('#field-parent').val(),
                   }
         }).done(function (data) {
-            $('#field-id').val(data.id);
+            $('#field-id').val(data.attributes.id);
+            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.attributes.id, '/admin/fields/' + data.attributes.id);
+            $('#tree .selected').each(function() {
+                $(this).parent().attr('data-id', data.attributes.id);
+                $(this).attr('href', '/admin/fields/' + data.attributes.id);
+            });
+            $('#saveField').removeClass('btn-info');
         });
         return false;
     });
