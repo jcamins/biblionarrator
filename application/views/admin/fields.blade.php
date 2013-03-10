@@ -51,6 +51,11 @@ $(document).ready(function() {
         return false;
     });
     $('#tree').jstree({
+        "defaults": {
+            "strings": {
+                "new_node": "New field",
+            }
+        },
         "dnd" : {
             "drag_check": function(data) {
                 return { after : true, before : true, inside : true }; 
@@ -66,6 +71,18 @@ $(document).ready(function() {
             "select_limit": 1
         },
         "plugins" : [ "themes", "html_data", "crrm", "dnd" ]
+    });
+    $('#tree').bind('create.jstree', function(e, data) {
+        $('#fieldeditor').load('/admin/fieldeditor/new', function (msg, s) { 
+            initializeStyleEditor();
+            $('#heading').text(data.rslt.name);
+            var schema = data.rslt.name;
+            schema.replace('^[^(]*\(', '').replace(').*$', '');
+            var field = data.rslt.name;
+            field.replace(' \(.*$', '');
+            $('#field-schema').val(schema);
+            $('#field-field').val(field);
+        });
     });
     initializeStyleEditor();
     $('#saveField').click(function() {

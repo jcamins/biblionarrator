@@ -30,6 +30,9 @@ class Admin_Controller extends Base_Controller {
             array_push($fieldstree, $root);
         }*/
         $field = Field::find($field);
+        if (is_null($field)) {
+            $field = new Field();
+        }
 		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns))->with('field', $field);
     }
 
@@ -104,6 +107,9 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         $field = Field::find($field);
+        if (is_null($field)) {
+            $field = new Field();
+        }
         return View::make('components.fieldeditor')->with('field', $field);
     }
 

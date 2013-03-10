@@ -1,5 +1,5 @@
 <form data-id="{{ $field->id }}" id="fieldform" action="/resources/field" method="POST">
-<h2>{{ $field->field }} ({{ $field->schema }})</h2>
+<h2 id="heading">{{ $field->field }} ({{ $field->schema }})</h2>
 
 <div class="row-fluid">
 <div class="span12">

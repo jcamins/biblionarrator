@@ -35,7 +35,9 @@ function initializeStyleEditor() {
         return false;
     });
     $('#saveStyles').click(function() {
-        saveStyles();
+        if ($('input[name="id"]').val() === '') {
+            $('#saveField').click(saveStyles);
+        }
         return false;
         //$('#styleEditor').modal('hide');
     });
