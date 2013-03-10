@@ -4,6 +4,22 @@
     }
 }
 
+* {
+    font-family: "Georgia", "Palatino Linotype", "Book Antiqua", "Palatino", serif;
+}
+
+#fieldGeneral label, #fieldGeneral input {
+    font-size: 85%;
+}
+
+#fieldGeneral input {
+    width: 120px;
+}
+
+a.selected {
+    font-weight: bold;
+}
+
 #add-section {
     font-size: smaller;
 }

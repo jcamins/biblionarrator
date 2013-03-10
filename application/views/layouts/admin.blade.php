@@ -14,6 +14,10 @@
             </table>
             </form>
         </div>
+        <div id="object-editor">
+            @section('editor')
+            @yield_section
+        </div>
     </div>
 @endsection
 

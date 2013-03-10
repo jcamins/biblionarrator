@@ -312,7 +312,7 @@ function consolidateStyles() {
         var newNode = node;
         for (newNode = node.previousSibling; newNode; newNode = newNode.previousSibling) {
             if (newNode.nodeType === 1 && newNode.nodeName === 'SPAN' && newNode.getAttribute('class') === node.getAttribute('class')) {
-                newNode.innerHTML = newNode.innerHTML + node.innerHTML);
+                newNode.innerHTML = newNode.innerHTML + node.innerHTML;
                 node.parentNode.removeChild(node);
                 node = newNode;
             } else {

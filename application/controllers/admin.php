@@ -4,7 +4,7 @@ class Admin_Controller extends Base_Controller {
 
     public $restful = true;
 
-    public function get_fields()
+    public function get_fields($field = null)
     {
         if (!Authority::can('manage', 'Field')) {
             return Redirect::to('home');
@@ -14,6 +14,8 @@ class Admin_Controller extends Base_Controller {
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
+        Asset::add('jstree', 'js/jstree/jquery.jstree.js');
+        Asset::add('jstreegrid', 'js/jstreegrid.js');
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
@@ -23,7 +25,12 @@ class Admin_Controller extends Base_Controller {
             array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
             array('name' => 'description', 'label' => 'Description', 'required' => false, 'sWidth' => '40%')
         );
-		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns));
+        /*$fieldstree = array();
+        foreach (Field::where_null('parent')->get() as $root) {
+            array_push($fieldstree, $root);
+        }*/
+        $field = Field::find($field);
+		return View::make('admin.fields')->with('resourcetype', 'field')->with('columns', json_encode($columns))->with('field', $field);
     }
 
 
@@ -91,6 +98,15 @@ class Admin_Controller extends Base_Controller {
 		return View::make('admin.styles');
     }
 
+    public function get_fieldeditor($field, $recordtype = null)
+    {
+        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+        Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
+        Asset::add('datatables-css', 'css/jquery.dataTables.css');
+        $field = Field::find($field);
+        return View::make('components.fieldeditor')->with('field', $field);
+    }
+
     public function get_styles_ajax($field, $recordtype = null)
     {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
@@ -114,15 +130,20 @@ class Admin_Controller extends Base_Controller {
             }
             if (array_key_exists('delete', $newstyle) && $newstyle['delete'] === 1 && isset($style)) {
                 array_push($changed_styles, $style->id);
+                $style->recordtypes()->delete();
                 $style->delete();
                 continue;
             }
             if (is_null($style)) {
                 $style = new Style;
             }
-            $field_schema = $newstyle['schema'];
-            $field_field = $newstyle['field'];
-            $field = Field::where_schema_and_field($field_schema, $field_field)->first();
+            if (isset($newstyle['field_id'])) {
+                $field = Field::find($newstyle['field_id']);
+            } else {
+                $field_schema = $newstyle['schema'];
+                $field_field = $newstyle['field'];
+                $field = Field::where_schema_and_field($field_schema, $field_field)->first();
+            }
             if (is_null($field) || is_null($newstyle['css'])) continue;
             $style->css = $newstyle['css'];
             $field->styles()->save($style);

@@ -49,10 +49,8 @@ class Resource_Controller extends Base_Controller {
     }
 
     protected function _update($id) {
-        $field_schema = Input::get('schema');
-        $field_field = Input::get('field');
-        $field_description = Input::get('description');
         $resource = call_user_func($this->resourceClass . '::find', $id);
+        var_dump(Input::all());
         if (is_null($resource)) {
             return 'Invalid ID';
         }
