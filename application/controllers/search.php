@@ -18,4 +18,8 @@ class Search_Controller extends Base_Controller {
         Asset::add('bookmarks-js', 'js/bookmarks.js');
 		return View::make('interface.search')->with('records', $results)->with('query', $query);
     }
+
+    public function get_links($id = null) {
+        $query = Input::get('q');
+    }
 }

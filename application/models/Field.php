@@ -22,4 +22,9 @@ class Field extends Eloquent
     {
         return $this->has_many('Field', 'parent');
     }
+
+    public function links()
+    {
+        return $this->has_many_and_belongs_to('RecordType', 'field_links');
+    }
 }

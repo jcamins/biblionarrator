@@ -4,6 +4,14 @@ class Record extends Eloquent
 {
     public static $timestamps = true;
 
+    public function sources() {
+        return $this->has_many_and_belongs_to('Record', 'record_links', 'target_id', 'source_id');
+    }
+
+    public function targets() {
+        return $this->has_many_and_belongs_to('Record', 'record_links', 'source_id', 'target_id');
+    }
+
     public function record_type() {
         return $this->belongs_to('RecordType');
     }

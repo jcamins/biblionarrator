@@ -70,7 +70,6 @@ $(document).ready(function() {
     $('#tree').on('click', 'a', null, function() {
         $('#tree .selected').removeClass('selected');
         $(this).addClass('selected');
-        //loadStyle($(this).parents('li').first().attr('data-id'));
         var id = $(this).parents('li').first().attr('data-id');
         var fieldParent = $(this).parents('li').first().parents('li').first().attr('data-id');
         if (fieldParent === 'undefined') {
@@ -126,6 +125,8 @@ $(document).ready(function() {
             $('#saveField').removeClass('btn-info');
         });
         return false;
+    });
+    $('#saveLinks').click(function() {
     });
 });
 </script>

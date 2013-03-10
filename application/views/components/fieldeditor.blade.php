@@ -35,6 +35,9 @@
 <div class="span6">
     <fieldset id="fieldLinks">
     <legend>Links</legend>
+        @if ($field)
+        @include('components.linkeditor')
+        @endif
     </fieldset>
 </div>
 </div>
