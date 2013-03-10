@@ -10,7 +10,7 @@
     <div class="btn-group" data-toggle="buttons-checkbox">
     <button id="toggleTOC" type="button" data-toggle="collapse" data-target="#fieldsTOC" class="btn btn-info btn-small">TOC</button>
     <button id="toggleEditor" type="button" class="btn btn-info btn-small">Editor</button>
-    <button id="toggleLinks" type="button" class="btn btn-info btn-small">Links</button>
+    <button id="toggleLinks" type="button" class="btn btn-info btn-small active">Links</button>
     </div>
     </div>
 @endif
@@ -174,6 +174,16 @@ $(document).ready(function() {
         }
     });
 
+    $('#toggleLinks').click(function() {
+        if ($('#linksPane').is(':visible')) {
+            $('#linksPane').hide();
+            jQuery.cookie('show_links', 0);
+        } else {
+            $('#linksPane').show();
+            jQuery.cookie('show_links', 1);
+        }
+    });
+
     $('#confirmNewOK').click(function() {
         confirmNew();
     });
@@ -216,6 +226,11 @@ $(document).ready(function() {
     if ( jQuery.cookie('show_toc') == 1 ) {
         $('#fieldsTOC').collapse('show');
         $('#toggleTOC').addClass('active');
+    }
+
+    if ( jQuery.cookie('show_links') == 0 ) {
+        $('#linksPane').hide();
+        $('#toggleLinks').removeClass('active');
     }
 
     $('#recordContainer').on('mouseenter', 'span', null, function() {

@@ -4,11 +4,13 @@
     </div>
     <div id="linkblock{{ $link->id }}" class="accordion-body collapse">
         <div class="accordion-inner">
-            @foreach ($link->sources as $record)
+            @foreach ($link->sources as $linkrecord)
+                @if ($record->id !== $linkrecord->id)
                 <div class="well linkrecordview">
-                    {{ $record->format('html') }}
-                    <a href="/record/{{ $record->id }}"><i class="icon-play"></i></a>
+                    {{ $linkrecord->format('html') }}
+                    <a href="/record/{{ $linkrecord->id }}"><i class="icon-play"></i></a>
                 </div>
+                @endif
             @endforeach
         </div>
     </div>
