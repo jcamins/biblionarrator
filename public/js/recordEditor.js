@@ -270,94 +270,46 @@ function confirmReload() {
     $('#confirmReload').modal('hide');
     loadRecord();
 }
-function updateFieldsTOC(node) {
-    $('#fieldsTOC').empty();
-    var fieldNumber = 1;
-    var selector = $('#recordContainer_ifr');
-    if (selector.length === 0) {
-        selector = $('#recordContainer');
-    }
-    selector.contents().find('span').each(function() {
-        if (typeof($(this).attr('class')) === 'undefined') {
-            return;
-        }
-        var classes = $(this).attr('class').split(' ');
-        for (var ii = 0, len = classes.length; ii < len; ++ii) {
-            var label = fieldtolabellookup[classes[ii]];
-            var value = $(this).text();
-            if (typeof(label) !== 'undefined' && value.length > 0) {
-                $(this).attr('id', 'tocCorrelate' + fieldNumber);
-                var currentNode;
-                if (typeof(o) !== 'undefined' && o.node.isSameNode(this)) {
-                    currentNode = 1;
-                }
-                $('#fieldsTOC').append('<div aria-labelledby="labelField' + fieldNumber + '" id="fieldEntry' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></div>');
-                fieldNumber++;
-            }
-        }
-    });
-    $('.fieldEntry').hover(function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).addClass('highlight');
-     }, function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).removeClass('highlight');
-     });
-    $('#fieldsTOC.in').css('height', 'auto');
-}
-
 var tocindex;
 
 function traverseTOC(node, depth) {
     var notclause = new Array(depth + 2).join(' span');
     var innerhtml = '';
+    var found = false;
     $(node).find('span').not('#recordContainer' . notclause).each(function () {
-        innerhtml += '<li>' + $(this).attr('class');
+        var classes = $(this).attr('class').split(' ');
+        for (var ii = 0, len = classes.length; ii < len; ++ii) {
+            var label = fieldtolabellookup[classes[ii]];
+            var value = $(this).text();
+            if (typeof(label) !== 'undefined' && value.length > 0) {
+                $(this).attr('id', 'tocCorrelate' + tocindex);
+                var currentNode;
+                innerhtml += '<li aria-labelledby="labelField' + tocindex + '" id="fieldEntry' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + label + '</a>';
+                innerhtml += '<ul><li><a class="tocvalue">' + value + '</li></a>';
+                tocindex++;
+                found = true;
+            }
+        }
         innerhtml += traverseTOC(this, depth + 1);
-        innerhtml += '</li>';
+        if (found) {
+            innerhtml += '</ul></li>';
+        }
     });
 
-    if (innerhtml.size > 0) {
-        return '<ul>' + innerhtml + '</ul>';
+    if (innerhtml.length > 0) {
+        return innerhtml;
     } else {
         return '';
     }
 }
 
 function updateFieldsTOCTree(node) {
-    $('#fieldsTOC').html('<ul></ul>');
-    var fieldNumber = 1;
-    var selector = $('#recordContainer_ifr');
-    if (selector.length === 0) {
-        selector = $('#recordContainer');
-    }
-    selector.contents().find('span').each(function() {
-        if (typeof($(this).attr('class')) === 'undefined') {
-            return;
-        }
-        var classes = $(this).attr('class').split(' ');
-        for (var ii = 0, len = classes.length; ii < len; ++ii) {
-            var label = fieldtolabellookup[classes[ii]];
-            var value = $(this).text();
-            if (typeof(label) !== 'undefined' && value.length > 0) {
-                $(this).attr('id', 'tocCorrelate' + fieldNumber);
-                var currentNode;
-                if (typeof(o) !== 'undefined' && o.node.isSameNode(this)) {
-                    currentNode = 1;
-                }
-                $('#fieldsTOC ul').append('<li aria-labelledby="labelField' + fieldNumber + '" id="fieldEntry' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></li>');
-                fieldNumber++;
-            }
-        }
+    tocindex = 1;
+    $('#fieldsTOC').html('<ul>' + traverseTOC($('#recordContainer'), 1) + '</ul>');
+    $('#fieldsTOC').jstree({
+        "plugins" : [ "themes", "html_data", "types", "ui" ],
+        "themes" : { "icons": false },
     });
-    $('.fieldEntry').hover(function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).addClass('highlight');
-     }, function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).removeClass('highlight');
-     });
-    $('#fieldsTOC.in').css('height', 'auto');
 }
 
 function consolidateStyles() {

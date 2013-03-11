@@ -86,6 +86,30 @@ td.recordPane button.preview {
     float: right;
     margin: 4px 8px;
 }
+#fieldsTOC::after {
+    content: "Table of Contents";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 3px 7px;
+    font-size: 12pt;
+    font-weight: bold;
+    color: #555;
+}
+
+#fieldsTOC {
+    display: none;
+    padding-top: 18px;
+    position: relative;
+    margin: 15px 0;
+    padding: 28px 2px 2px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
 
 .dropdown-menu > li > span {
     display: block;
@@ -97,65 +121,28 @@ td.recordPane button.preview {
     white-space: nowrap;
 }
 
-#fieldsTOC.in {
-    padding-top: 16px;
-    position: relative;
-    margin: 15px 0;
-    padding: 28px 2px 2px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-
-#fieldsTOC.in:empty {
-    padding: 39px 19px 14px;
-}
-
-#fieldsTOC.in::after {
-    content: "Table of Contents";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    padding: 3px 7px;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #9da0a4;
-    -webkit-border-radius: 4px 0 4px 0;
-    -moz-border-radius: 4px 0 4px 0;
-    border-radius: 4px 0 4px 0;
-}
-
-.fieldEntry {
-    border: 1px solid #eee;
-    margin: 6px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-
 .toclabel {
     font-variant: small-caps;
-    padding-left: 4px;
-    font-weight: bold;
-    display: block;
 }
 
 #fieldsTOC .tocvalue {
-    white-space: normal;
 }
 
 .highlight {
-    padding: 0px 4px;
-    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-    background-color: #6dbae0;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
+    padding: 0 2px 0 1px;
+    background-color: #e7f4f9;
+    border: 1px solid #d8f0fa;
 }
+
+#fieldsTOC.jstree a {
+    white-space:normal !important;
+    height: auto;
+} 
+
+.jstree-default li > ins {
+    vertical-align: top;
+}
+
 
 footer {
     color: #929292;

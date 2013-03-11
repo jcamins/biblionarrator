@@ -30,7 +30,7 @@
 
 @section('sidebar')
     <div id="sidebarAffix">
-        <div id="fieldsTOC" class="collapse">
+        <div id="fieldsTOC" class="">
         </div>
     </div>
 @endsection
@@ -148,14 +148,14 @@ $(document).ready(function() {
         },
     });
 
-    updateFieldsTOC();
+    updateFieldsTOCTree();
 
-    $('#fieldsTOC').on('show hide', function() {
+    $('#fieldsTOC').on('show hide click', function() {
         $(this).css('height', 'auto');
     });
 
     $('#toggleTOC').click(function() {
-        if ($('#fieldsTOC').hasClass('active')) {
+        if ($('#fieldsTOC').is(':visible')) {
             $('#fieldsTOC').hide();
             jQuery.cookie('show_toc', 0);
         } else {
@@ -224,8 +224,7 @@ $(document).ready(function() {
     }
 
     if ( jQuery.cookie('show_toc') == 1 ) {
-        $('#fieldsTOC').collapse('show');
-        $('#toggleTOC').addClass('active');
+        $('#fieldsTOC').show();
     }
 
     if ( jQuery.cookie('show_links') == 0 ) {
@@ -233,13 +232,22 @@ $(document).ready(function() {
         $('#toggleLinks').removeClass('active');
     }
 
+    $('#fieldsTOC').on('mouseenter', '.fieldEntry', null, function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
+    });
+    $('#fieldsTOC').on('mouseleave', '.fieldEntry', null, function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
+    });
     $('#recordContainer').on('mouseenter', 'span', null, function() {
-        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).addClass('highlight');
-        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).addClass('highlight');
+        var fieldentry = $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'));
+        $('#fieldsTOC').jstree('save_opened');
+        $('#fieldsTOC').jstree('open_node', fieldentry);
+        $('#fieldsTOC').jstree('select_node', fieldentry);
      });
     $('#recordContainer').on('mouseleave', 'span', null, function() {
-        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')).removeClass('highlight');
-        $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'), $('#recordContainer_ifr').contents()).removeClass('highlight');
+        $('#fieldsTOC').jstree('deselect_node', $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')));
+        $('#fieldsTOC').jstree('close_all');
+        $('#fieldsTOC').jstree('reopen');
      });
 
     $("#recordContainer a").click(function(e){
