@@ -4,6 +4,10 @@ class Record extends Eloquent
 {
     public static $timestamps = true;
 
+    public function primaries() {
+        return $this->has_many('Primary', 'record_id');
+    }
+
     public function sources() {
         return $this->has_many_and_belongs_to('Record', 'record_links', 'target_id', 'source_id');
     }
@@ -58,6 +62,15 @@ class Record extends Eloquent
     }
 
     public function save() {
+        $xml = new SimpleXMLElement($this->data);
+        $fields = Field::where_primary('1')->get();
+        $this->primaries()->delete();
+        foreach ($fields as $field) {
+            foreach ($xml->xpath('//' . $field->schema . '_' . $field->field) as $node) {
+                $primary = new Primary(array('key' => $node[0]));
+                $this->primaries()->insert($primary);
+            }
+        }
         parent::save();
         BiblioNarrator\ElasticSearch::saveRecord($this->data);
     }

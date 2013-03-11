@@ -114,6 +114,7 @@ $(document).ready(function() {
                     'schema': $('#field-schema').val(),
                     'description': $('#field-description').val(),
                     'parent': $('#field-parent').val(),
+                    'primary': $('#field-primary').is(':checked') ? 1 : 0
                   }
         }).done(function (data) {
             $('#field-id').val(data.attributes.id);

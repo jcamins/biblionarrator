@@ -16,7 +16,16 @@
             </div>
         </div>
         <div class="row-fluid">
-            <label for="field-description">Description:</label><textarea id="field-description" name="description">{{ $field->description }}</textarea>
+            <div class="span3">
+                <label for="field-description">Description:</label><textarea id="field-description" name="description">{{ $field->description }}</textarea>
+            </div>
+            <div class="span3">
+                <label for="field-primary">Primary field:</label><input type="checkbox" name="primary"
+                @if ($field->primary)
+                checked="checked"
+                @endif
+                id="field-primary"></input>
+            </div>
         </div>
     </fieldset>
 </div>
