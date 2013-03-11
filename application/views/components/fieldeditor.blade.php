@@ -43,7 +43,7 @@
 </div>
 <div class="span6">
     <fieldset id="fieldLinks">
-    <legend>Links</legend>
+    <legend>Relationships</legend>
         @if ($field)
         @include('components.linkeditor')
         @endif

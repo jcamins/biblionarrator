@@ -22,6 +22,7 @@ class Record_Controller extends Base_Controller {
             Asset::add('rangy-js', 'js/rangy/rangy-core.js');
             Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
         }
+        Asset::add('jstree', 'js/jstree/jquery.jstree.js');
         if (is_null($format)) {
             $format = 'interface';
         }

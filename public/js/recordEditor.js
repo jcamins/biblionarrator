@@ -306,6 +306,60 @@ function updateFieldsTOC(node) {
     $('#fieldsTOC.in').css('height', 'auto');
 }
 
+var tocindex;
+
+function traverseTOC(node, depth) {
+    var notclause = new Array(depth + 2).join(' span');
+    var innerhtml = '';
+    $(node).find('span').not('#recordContainer' . notclause).each(function () {
+        innerhtml += '<li>' + $(this).attr('class');
+        innerhtml += traverseTOC(this, depth + 1);
+        innerhtml += '</li>';
+    });
+
+    if (innerhtml.size > 0) {
+        return '<ul>' + innerhtml + '</ul>';
+    } else {
+        return '';
+    }
+}
+
+function updateFieldsTOCTree(node) {
+    $('#fieldsTOC').html('<ul></ul>');
+    var fieldNumber = 1;
+    var selector = $('#recordContainer_ifr');
+    if (selector.length === 0) {
+        selector = $('#recordContainer');
+    }
+    selector.contents().find('span').each(function() {
+        if (typeof($(this).attr('class')) === 'undefined') {
+            return;
+        }
+        var classes = $(this).attr('class').split(' ');
+        for (var ii = 0, len = classes.length; ii < len; ++ii) {
+            var label = fieldtolabellookup[classes[ii]];
+            var value = $(this).text();
+            if (typeof(label) !== 'undefined' && value.length > 0) {
+                $(this).attr('id', 'tocCorrelate' + fieldNumber);
+                var currentNode;
+                if (typeof(o) !== 'undefined' && o.node.isSameNode(this)) {
+                    currentNode = 1;
+                }
+                $('#fieldsTOC ul').append('<li aria-labelledby="labelField' + fieldNumber + '" id="fieldEntry' + fieldNumber + '" class="fieldEntry' + (currentNode ? ' currentEntry' : '') + '"><span id="labelField' + fieldNumber + '" class="toclabel">' + label + '</span><span class="label tocvalue">' + value + '</span></li>');
+                fieldNumber++;
+            }
+        }
+    });
+    $('.fieldEntry').hover(function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).addClass('highlight');
+     }, function() {
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
+        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate'), $('#recordContainer_ifr').contents()).removeClass('highlight');
+     });
+    $('#fieldsTOC.in').css('height', 'auto');
+}
+
 function consolidateStyles() {
     $('#recordContainer span').each(function() {
         var node = this;

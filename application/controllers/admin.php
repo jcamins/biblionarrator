@@ -15,7 +15,6 @@ class Admin_Controller extends Base_Controller {
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
-        Asset::add('jstreegrid', 'js/jstreegrid.js');
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
         Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
