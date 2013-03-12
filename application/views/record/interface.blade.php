@@ -8,7 +8,7 @@
 @if ($editor)
     <div class="btn-toolbar">
     <div class="btn-group" data-toggle="buttons-checkbox">
-    <button id="toggleTOC" type="button" data-toggle="collapse" data-target="#fieldsTOC" class="btn btn-info btn-small">TOC</button>
+    <button id="toggleTOC" type="button" class="btn btn-info btn-small">TOC</button>
     <button id="toggleEditor" type="button" class="btn btn-info btn-small">Editor</button>
     <button id="toggleLinks" type="button" class="btn btn-info btn-small active">Links</button>
     </div>
@@ -30,7 +30,12 @@
 
 @section('sidebar')
     <div id="sidebarAffix">
-        <div id="fieldsTOC" class="">
+        <div id="table-of-contents">
+            <div id="toc-header">
+                Table of Contents
+            </div>
+            <div id="fieldsTOC">
+            </div>
         </div>
     </div>
 @endsection
@@ -150,16 +155,16 @@ $(document).ready(function() {
 
     updateFieldsTOCTree();
 
-    $('#fieldsTOC').on('show hide click', function() {
+    $('#table-of-contents').on('show hide click', function() {
         $(this).css('height', 'auto');
     });
 
     $('#toggleTOC').click(function() {
-        if ($('#fieldsTOC').is(':visible')) {
-            $('#fieldsTOC').hide();
+        if ($('#table-of-contents').is(':visible')) {
+            $('#table-of-contents').hide();
             jQuery.cookie('show_toc', 0);
         } else {
-            $('#fieldsTOC').show();
+            $('#table-of-contents').show();
             jQuery.cookie('show_toc', 1);
         }
     });
@@ -224,7 +229,8 @@ $(document).ready(function() {
     }
 
     if ( jQuery.cookie('show_toc') == 1 ) {
-        $('#fieldsTOC').show();
+        $('#table-of-contents').show();
+        $('#toggleTOC').addClass('active');
     }
 
     if ( jQuery.cookie('show_links') == 0 ) {
@@ -232,22 +238,18 @@ $(document).ready(function() {
         $('#toggleLinks').removeClass('active');
     }
 
-    $('#fieldsTOC').on('mouseenter', '.fieldEntry', null, function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).addClass('highlight');
-    });
-    $('#fieldsTOC').on('mouseleave', '.fieldEntry', null, function() {
-        $('#' + $(this).attr('id').replace('fieldEntry', 'tocCorrelate')).removeClass('highlight');
-    });
     $('#recordContainer').on('mouseenter', 'span', null, function() {
-        var fieldentry = $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry'));
-        $('#fieldsTOC').jstree('save_opened');
+        var fieldentry = $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]');
+        //$('#fieldsTOC').jstree('save_opened');
         $('#fieldsTOC').jstree('open_node', fieldentry);
         $('#fieldsTOC').jstree('select_node', fieldentry);
+        return false;
      });
     $('#recordContainer').on('mouseleave', 'span', null, function() {
-        $('#fieldsTOC').jstree('deselect_node', $('#' + $(this).attr('id').replace('tocCorrelate', 'fieldEntry')));
-        $('#fieldsTOC').jstree('close_all');
-        $('#fieldsTOC').jstree('reopen');
+        $('#fieldsTOC').jstree('deselect_node', $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]'));
+        //$('#fieldsTOC').jstree('close_all');
+        //$('#fieldsTOC').jstree('reopen');
+        return false;
      });
 
     $("#recordContainer a").click(function(e){

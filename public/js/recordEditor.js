@@ -274,30 +274,36 @@ var tocindex;
 
 function traverseTOC(node, depth) {
     var notclause = new Array(depth + 2).join(' span');
+    var outerhtml = '';
     var innerhtml = '';
     var found = false;
     $(node).find('span').not('#recordContainer' . notclause).each(function () {
+        if ($(this).attr('data-match')) {
+            return;
+        }
         var classes = $(this).attr('class').split(' ');
         for (var ii = 0, len = classes.length; ii < len; ++ii) {
             var label = fieldtolabellookup[classes[ii]];
             var value = $(this).text();
             if (typeof(label) !== 'undefined' && value.length > 0) {
-                $(this).attr('id', 'tocCorrelate' + tocindex);
+                $(this).attr('data-match', tocindex);
                 var currentNode;
-                innerhtml += '<li aria-labelledby="labelField' + tocindex + '" id="fieldEntry' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + label + '</a>';
-                innerhtml += '<ul><li><a class="tocvalue">' + value + '</li></a>';
-                tocindex++;
+                outerhtml += '<li aria-labelledby="labelField' + tocindex + '" data-match="' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + label + '</a><ul>';
+                innerhtml += '<li><a class="tocvalue">' + value + '</a></li>';
                 found = true;
             }
         }
-        innerhtml += traverseTOC(this, depth + 1);
+        tocindex++;
+        innerhtml += traverseTOC(this, depth + 1) + '</li></ul>';
+        outerhtml += innerhtml;
+        innerhtml = '';
         if (found) {
-            innerhtml += '</ul></li>';
+            //innerhtml += '</ul></li>';
         }
     });
 
-    if (innerhtml.length > 0) {
-        return innerhtml;
+    if (outerhtml.length > 0) {
+        return outerhtml;
     } else {
         return '';
     }
@@ -305,11 +311,41 @@ function traverseTOC(node, depth) {
 
 function updateFieldsTOCTree(node) {
     tocindex = 1;
+    $('#fieldsTOC').remove();
+    $('#table-of-contents').append('<div id="fieldsTOC"></div>');
+    $('#recordContainer span').each(function () {
+        $(this).removeAttr('data-match');
+    });
     $('#fieldsTOC').html('<ul>' + traverseTOC($('#recordContainer'), 1) + '</ul>');
+    initializeTOC();
+}
+
+function initializeTOC() {
     $('#fieldsTOC').jstree({
         "plugins" : [ "themes", "html_data", "types", "ui" ],
         "themes" : { "icons": false },
     });
+    $('#fieldsTOC').bind('hover_node.jstree', function (e, data) {
+        var obj = data.rslt.obj[0];
+        while (typeof(obj) !== 'undefined' && !obj.hasAttribute('data-match')) {
+            obj = obj.parentNode;
+        }
+        if (typeof(obj) !== 'undefined' && obj.hasAttribute('data-match')) {
+            $('#recordContainer span[data-match="' + obj.getAttribute('data-match') + '"]').addClass('highlight');
+            return false;
+        }
+    });
+    $('#fieldsTOC').bind('dehover_node.jstree', function (e, data) {
+        $('#recordContainer span').each(function () { $(this).removeClass('highlight') });
+            return false;
+    });
+    /*$('#fieldsTOC').on('mouseenter', '.fieldEntry', null, function() {
+        $('#recordContainer span[data-match="' + tocindex + '"]').addClass('highlight');
+    });
+    $('#fieldsTOC').on('mouseleave', '.fieldEntry', null, function() {
+        $('#recordContainer span[data-match="' + tocindex + '"]').removeClass('highlight');
+        return false;
+    });*/
 }
 
 function consolidateStyles() {

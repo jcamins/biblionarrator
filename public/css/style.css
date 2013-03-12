@@ -86,28 +86,29 @@ td.recordPane button.preview {
     float: right;
     margin: 4px 8px;
 }
-#fieldsTOC::after {
-    content: "Table of Contents";
-    position: absolute;
-    top: -1px;
-    left: -1px;
+
+#toc-header {
     padding: 3px 7px;
     font-size: 12pt;
     font-weight: bold;
     color: #555;
 }
 
-#fieldsTOC {
+#table-of-contents {
     display: none;
     padding-top: 18px;
     position: relative;
     margin: 15px 0;
-    padding: 28px 2px 2px;
-    background-color: #fff;
+    padding: 2px;
     border: 1px solid #ddd;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+    background-color: #ffffee;
+}
+
+#fieldsTOC {
+    width: 90%;
 }
 
 
