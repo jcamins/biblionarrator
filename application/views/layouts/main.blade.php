@@ -23,7 +23,13 @@
                             @section('navigation')
                             @yield_section
                             <li class=""><a href="/record">Record</a></li>
-                            <li class=""><a href="/search">Search</a></li>
+                            <li class=""><a class="caret-before" href="/search">Search</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle caret-after" data-toggle="dropdown"><b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><span>Saved searches</span></li>
+                                </ul>
+                            </li>
                             <li class="divider-vertical"></li>
                             <li><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
                                 <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input>

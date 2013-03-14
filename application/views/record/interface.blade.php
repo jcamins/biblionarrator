@@ -129,14 +129,18 @@ var recordId = {{ $record->id }};
 @else
 var recordId;
 @endif
+
 var labeltofieldlookup = {
     @foreach (Field::all() as $field)
         '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}_{{ $field->field }}',
     @endforeach
     };
-var fieldtolabellookup = {
+var fieldlist = {
     @foreach (Field::all() as $field)
-        '{{ $field->schema }}_{{ $field->field }}': '{{ $field->field }} ({{ $field->schema }})',
+        '{{ $field->schema }}_{{ $field->field }}': {
+            'label': '{{ $field->field }} ({{ $field->schema }})',
+            'link': {{ $field->link ? 'true' : 'false' }}
+        },
     @endforeach
     };
 @if ($editor)
@@ -151,6 +155,14 @@ $(document).ready(function() {
             setTag(item);
             return item;
         },
+    });
+
+    $('.popover-link').popover({
+        "html" : true,
+        "placement" : "left",
+        "container" : "body"
+    }).click(function () {
+        return false;
     });
 
     updateFieldsTOCTree();

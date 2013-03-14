@@ -29,6 +29,12 @@ class Record extends Eloquent
         return new RecordSnippet($xml->header->asXML());
     }
 
+    public function remainder() {
+        $xml = new SimpleXMLElement($this->data);
+        unset($xml->header);
+        return new RecordSnippet($xml->asXML());
+    }
+
     public function format($format = 'raw') {
         switch ($format) {
             case 'raw':
@@ -38,11 +44,23 @@ class Record extends Eloquent
                 $xmlstylesheet = 'raw2html.xsl';
                 break;
 
+            case 'escaped':
+                $xmlstylesheet = 'raw2html.xsl';
+                $postprocess = function ($data) {
+                    return str_replace('"', "'", htmlentities($data));
+                };
+                break;
+
             default:
         }
 
         if (isset($xmlstylesheet)) {
-            return $this->_crosswalkRecordXml($xmlstylesheet);
+            $crosswalkedData = $this->_crosswalkRecordXml($xmlstylesheet);
+            if (isset($postprocess)) {
+                return $postprocess($crosswalkedData);
+            } else {
+                return $crosswalkedData;
+            }
         } else {
             return $this->data;
         }

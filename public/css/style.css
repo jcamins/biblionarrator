@@ -4,6 +4,18 @@
     }
 }
 
+.record-view-link {
+    color: #000;
+}
+
+.navbar .nav > li > a.caret-before {
+    padding-right: 2px;
+}
+
+.navbar .nav > li > a.caret-after {
+    padding-left: 2px;
+}
+
 * {
     font-family: "Georgia", "Palatino Linotype", "Book Antiqua", "Palatino", serif;
 }
@@ -27,6 +39,18 @@ a.selected {
 #recordContainer header, #recordContainer section {
     margin: 0.5em 0em;
     min-height: 18pt;
+}
+
+.linkrecordview a {
+    text-decoration: none;
+}
+
+.linkrecordview header {
+    display: inline;
+}
+
+.linkrecordview, .linkdescription {
+    margin-bottom: 8px;
 }
 
 .resultRow .btn-link {

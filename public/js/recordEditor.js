@@ -2,88 +2,13 @@ var appliers = {};
 
 function initializeRangy() {
     rangy.init();
-    for (var key in labeltofieldlookup) {
-        appliers[labeltofieldlookup[key]] = rangy.createCssClassApplier(labeltofieldlookup[key], { 'normalize': true });
+    for (var key in fieldlist) {
+        appliers[key] = rangy.createCssClassApplier(key, {
+                'elementTagName' : (fieldlist[key].link ? 'a' : 'span'),
+                'normalize': true
+        });
     }
 };
-
-function initializeTinyMCE() {
-    var formatlist = {};
-    for (var key in labeltofieldlookup) {
-        formatlist[labeltofieldlookup[key]] = { 'title' : key, 'inline' : 'span', 'attributes' : { 'class' : labeltofieldlookup[key] } };
-    }
-    tinyMCE.init({
-        mode : "exact",
-        elements : "recordContainer",
-        theme_advanced_buttons1 : "mynew,reload,mysave,separator,bold,italic,underline,separator,bullist,numlist,separator,pagebreak,separator,tag,closetag,styleselect,pdw_toggle",
-        theme_advanced_buttons2 : "formatselect,fontsizeselect,sub,sup,strikethrough,separator,outdent,indent,justifyleft,justifycenter,justifyright",
-        theme_advanced_buttons3 : "image,link,unlink,separator,hr,removeformat,separator,undo,redo,separator,charmap",
-        pdw_toggle_on : 1,
-        pdw_toggle_toolbars : "2,3",
-        custom_shortcuts : true,
-        plugins : "advimage,autoresize,inlinepopups,pagebreak,pdw",
-        style_formats : formatlist,
-        formats : formatlist,
-        content_css : [ "/css/style.css", "/css/fields.css" ],
-        setup : function(ed) {
-            ed.addButton('mynew', {
-                title : 'New Record',
-                class : 'mce_bn_newdocument',
-                onclick : confirmNew
-            });
-            ed.addButton('reload', {
-                title : 'Reload Record',
-                class : 'mce_bn_reload',
-                onclick : confirmReload
-            });
-            ed.addButton('mysave', {
-                title : 'Save Record',
-                class : 'mce_bn_save',
-                onclick : saveRecord
-            });
-            ed.addButton('tag', {
-                title : 'Add Tag',
-                class : 'mce_bn_tag',
-                onclick : addTagDialog
-            });
-            ed.addButton('closetag', {
-                title : 'Add Tag',
-                class : 'mce_bn_closetag',
-                onclick : closeTag
-            });
-            ed.onNodeChange.add(function(ed, cm, e) {
-                if (ed.theme.onResolveName) {
-                    ed.theme.onResolveName.add(function(th, o) {
-                        updateFieldsTOC(o.node);
-                        if (o.name.substring(0, 4) == 'span') {
-                            var tag = o.name.replace(/span\./, '');
-                            o.name = o.title = fieldtolabellookup[tag];
-                            return false;
-                        }
-                    });
-                }
-            });
-            ed.onKeyDown.add(function(ed, e) {
-                if (e.keyCode === 13 || e.keyCode === 32 || e.metaKey || e.ctrlKey || e.altKey) {
-                    updateFieldsTOC();
-                }
-                // There's no good excuse for this, but I'm doing it anyway
-                if (e.keyCode === 13 && (tinyMCE.isMac ? e.metaKey : e.ctrlKey)) {
-                    saveRecord();
-                    return false;
-                }
-            });
-            ed.onClick.add(updateFieldsTOC);
-        },
-        init_instance_callback : function(inst) {
-            inst.addShortcut('ctrl+j', 'add tag', addTagDialog);
-            inst.addShortcut('ctrl+k', 'close tag', closeTag);
-            inst.addShortcut('ctrl+shift+j', 'close and open tag', closeAndOpenTag);
-            inst.addShortcut('ctrl+shift+k', 'close all tags', closeAllTags);
-            inst.focus();
-        }
-    });
-}
 
 function addTagDialog() {
     currentSelection = rangy.getSelection();
@@ -145,30 +70,21 @@ function setTag(field) {
         appliers[labeltofieldlookup[field]].applyToRange(currentSelection.getRangeAt(ii));
     }
     consolidateStyles();
-    updateFieldsTOC();
+    updateFieldsTOCTree();
 }
 
 function closeTag() {
     var found = false;
     $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span').each(function () {
         $(this).attr('class').split(' ').reverse().forEach(function (element, index, array) {
-            if (typeof fieldtolabellookup[element] !== undefined) {
+            if (typeof fieldlist[element] !== undefined) {
                 appliers[element].undoToSelection();
                 found = true;
             }
         });
     });
-    updateFieldsTOC();
+    updateFieldsTOCTree();
     return found;
-    /*var styles = tinyMCE.get('recordContainer').formatter.matchAll(Object.keys(fieldtolabellookup));
-
-    if (styles[0]) {
-        tinyMCE.get('recordContainer').formatter.remove(styles[0]);
-        tinyMCE.get('recordContainer').nodeChanged();
-        changed = true;
-    }
-    tinyMCE.execCommand('mceFocus', false, 'recordContainer');
-    return (styles.length);*/
 }
 
 function newRecord() {
@@ -227,7 +143,7 @@ function saveRecord() {
                 window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
             }
             addAlert('Successfully saved record', 'success');
-            updateFieldsTOC();
+            updateFieldsTOCTree();
         });
     });
 }
@@ -283,12 +199,11 @@ function traverseTOC(node, depth) {
         }
         var classes = $(this).attr('class').split(' ');
         for (var ii = 0, len = classes.length; ii < len; ++ii) {
-            var label = fieldtolabellookup[classes[ii]];
             var value = $(this).text();
-            if (typeof(label) !== 'undefined' && value.length > 0) {
+            if (typeof(fieldlist[classes[ii]]) !== 'undefined' && value.length > 0) {
                 $(this).attr('data-match', tocindex);
                 var currentNode;
-                outerhtml += '<li aria-labelledby="labelField' + tocindex + '" data-match="' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + label + '</a><ul>';
+                outerhtml += '<li aria-labelledby="labelField' + tocindex + '" data-match="' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + fieldlist[classes[ii]].label + '</a><ul>';
                 innerhtml += '<li><a class="tocvalue">' + value + '</a></li>';
                 found = true;
             }
@@ -325,7 +240,8 @@ function initializeTOC() {
         "plugins" : [ "themes", "html_data", "types", "ui" ],
         "themes" : { "icons": false },
     });
-    $('#fieldsTOC').bind('hover_node.jstree', function (e, data) {
+    $('#fieldsTOC').bind('select_node.jstree', function (e, data) {
+        $('#recordContainer span').each(function () { $(this).removeClass('highlight') });
         var obj = data.rslt.obj[0];
         while (typeof(obj) !== 'undefined' && !obj.hasAttribute('data-match')) {
             obj = obj.parentNode;
@@ -335,17 +251,9 @@ function initializeTOC() {
             return false;
         }
     });
-    $('#fieldsTOC').bind('dehover_node.jstree', function (e, data) {
+    $('#fieldsTOC').bind('deselect_node.jstree', function (e, data) {
         $('#recordContainer span').each(function () { $(this).removeClass('highlight') });
-            return false;
     });
-    /*$('#fieldsTOC').on('mouseenter', '.fieldEntry', null, function() {
-        $('#recordContainer span[data-match="' + tocindex + '"]').addClass('highlight');
-    });
-    $('#fieldsTOC').on('mouseleave', '.fieldEntry', null, function() {
-        $('#recordContainer span[data-match="' + tocindex + '"]').removeClass('highlight');
-        return false;
-    });*/
 }
 
 function consolidateStyles() {

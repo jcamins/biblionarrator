@@ -14,6 +14,11 @@
             <div class="span3">
                 <label for="field-field">Field:</label><input id="field-field" type="text" name="field" value="{{ $field->field }}"></input>
             </div>
+                <label for="field-link">Link:</label><input id="field-link" type="checkbox" name="link"
+                @if ($field->link)
+                checked="checked"
+                @endif
+                ></input>
         </div>
         <div class="row-fluid">
             <div class="span3">
