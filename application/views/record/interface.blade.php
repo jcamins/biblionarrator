@@ -8,9 +8,9 @@
 @if ($editor)
     <div class="btn-toolbar">
     <div class="btn-group" data-toggle="buttons-checkbox">
-    <button id="toggleTOC" type="button" class="btn btn-info btn-small">TOC</button>
+    <button id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc" type="button" class="btn btn-info btn-small">TOC</button>
     <button id="toggleEditor" type="button" class="btn btn-info btn-small">Editor</button>
-    <button id="toggleLinks" type="button" class="btn btn-info btn-small active">Links</button>
+    <button id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links" type="button" class="btn btn-info btn-small active">Links</button>
     </div>
     </div>
 @endif
@@ -171,16 +171,6 @@ $(document).ready(function() {
         $(this).css('height', 'auto');
     });
 
-    $('#toggleTOC').click(function() {
-        if ($('#table-of-contents').is(':visible')) {
-            $('#table-of-contents').hide();
-            jQuery.cookie('show_toc', 0);
-        } else {
-            $('#table-of-contents').show();
-            jQuery.cookie('show_toc', 1);
-        }
-    });
-
     $('#toggleEditor').click(function() {
         if ($(this).hasClass('active')) {
             $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
@@ -191,31 +181,13 @@ $(document).ready(function() {
         }
     });
 
-    $('#toggleLinks').click(function() {
-        if ($('#linksPane').is(':visible')) {
-            $('#linksPane').hide();
-            jQuery.cookie('show_links', 0);
-        } else {
-            $('#linksPane').show();
-            jQuery.cookie('show_links', 1);
-        }
-    });
+    $('#confirmNewOK').click(confirmNew);
 
-    $('#confirmNewOK').click(function() {
-        confirmNew();
-    });
+    $('#confirmReloadOK').click(confirmReload);
 
-    $('#confirmReloadOK').click(function() {
-        confirmReload();
-    });
+    $('#save').click(saveRecord);
 
-    $('#save').click(function() {
-        saveRecord();
-    });
-
-    $('#removeTag').click(function() {
-        closeTag();
-    });
+    $('#removeTag').click(closeTag);
 
     $('#tagSelector').on('shown', function () {
         $('#tagEntry').val('');
@@ -240,27 +212,13 @@ $(document).ready(function() {
         $('#toggleEditor').addClass('active');
     }
 
-    if ( jQuery.cookie('show_toc') == 1 ) {
-        $('#table-of-contents').show();
-        $('#toggleTOC').addClass('active');
-    }
-
-    if ( jQuery.cookie('show_links') == 0 ) {
-        $('#linksPane').hide();
-        $('#toggleLinks').removeClass('active');
-    }
-
     $('#recordContainer').on('mouseenter', 'span', null, function() {
         var fieldentry = $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]');
-        //$('#fieldsTOC').jstree('save_opened');
         $('#fieldsTOC').jstree('open_node', fieldentry);
         $('#fieldsTOC').jstree('select_node', fieldentry);
         return false;
-     });
-    $('#recordContainer').on('mouseleave', 'span', null, function() {
+     }).on('mouseleave', 'span', null, function() {
         $('#fieldsTOC').jstree('deselect_node', $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]'));
-        //$('#fieldsTOC').jstree('close_all');
-        //$('#fieldsTOC').jstree('reopen');
         return false;
      });
 

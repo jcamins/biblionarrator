@@ -16,6 +16,7 @@ class Record_Controller extends Base_Controller {
         } else {
             $editor = Authority::can('update', 'Record', $record);
         }
+        Asset::add('common-js', 'js/biblionarrator.js');
         if ($editor) {
             Asset::add('editor-js', 'js/recordEditor.js');
             Asset::add('shortcut-js', 'js/shortcut.js');
