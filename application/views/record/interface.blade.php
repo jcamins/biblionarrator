@@ -67,13 +67,7 @@
             @endif
             <div id="alerts"></div>
         </div>
-        <div id="linksPane" class="span4">
-            <div id="linkaccordion" class="accordion">
-            @foreach ($record->targets as $link)
-                @include('record.linkview')
-            @endforeach
-            </div>
-        </div>
+        @include('components.linkpane')
     </div>
 @endsection
 
