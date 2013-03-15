@@ -4,6 +4,10 @@
     }
 }
 
+.editor-toolbar {
+    display: none;
+}
+
 .record-view-link {
     color: #000;
 }

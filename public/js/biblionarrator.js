@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('[data-toggle="cookie-view"]').click(function () {
         var target = $($(this).attr('data-target'));
         target.toggle();
+        target.trigger('cookietoggle');
         if (target.is(':visible')) {
             jQuery.cookie($(this).attr('data-cookie'), 1);
         } else {

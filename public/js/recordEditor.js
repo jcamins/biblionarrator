@@ -89,13 +89,10 @@ function closeTag() {
 
 function newRecord() {
     window.history.pushState({ 'event' : 'new' }, 'New record', '/record');
-    tinyMCE.get('recordContainer').setContent('');
+    $('#recordContainer').html('<article><header contenteditable="true"></header><section contenteditable="true"></section></article>');
 }
 
 function loadRecord() {
-    var ed = tinyMCE.get('recordContainer');
-
-    ed.setProgressState(1); // Show progress
     $.ajax({
         type: "GET",
         url: "/xsl/raw2html.xsl",
@@ -110,21 +107,16 @@ function loadRecord() {
                 error: ajaxLoadFailed,
             }).done(function(msg) {
                 var text = transformXML(msg, xsl).replace('&#160;', '&nbsp;');
-                ed.setContent(text);
-                ed.isNotDirty = 1;
-                ed.setProgressState(0); // Hide progress
+                $('#recordContainer').html(text);
                 addAlert('Successfully loaded record', 'success');
             });
         }
     });
 }
 function ajaxLoadFailed(jqXHR, err, msg) {
-    tinyMCE.get('recordContainer').setProgressState(0); // Hide progress
     addAlert('Failed to load record (' + err + ': ' + msg + ')', 'error');
 }
 function saveRecord() {
-    // Do you ajax call here, window.setTimeout fakes ajax call
-    //ed.setProgressState(1); // Show progress
     $.ajax({
         type: "GET",
         url: "/xsl/html2raw.xsl",
@@ -134,7 +126,7 @@ function saveRecord() {
         $.ajax({
             type: "POST",
             url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-            data: { data: transformXML($('#recordContainer').html().replace('<section[^>]*>', '<section>').replace('<header[^>]*>', '<header>'), xsl) },
+            data: { data: transformXML($('#recordContainer').html(), xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
             var obj = jQuery.parseJSON(msg);
@@ -148,7 +140,6 @@ function saveRecord() {
     });
 }
 function ajaxSaveFailed(jqXHR, err, msg) {
-    tinyMCE.get('recordContainer').setProgressState(0); // Hide progress
     addAlert('Failed to save record (' + err + ': ' + msg + ')', 'alert');
 }
 function transformXML(xml, xsl) {
@@ -212,9 +203,6 @@ function traverseTOC(node, depth) {
         innerhtml += traverseTOC(this, depth + 1) + '</li></ul>';
         outerhtml += innerhtml;
         innerhtml = '';
-        if (found) {
-            //innerhtml += '</ul></li>';
-        }
     });
 
     if (outerhtml.length > 0) {
@@ -279,4 +267,12 @@ function consolidateStyles() {
             }
         }
     });
+}
+
+function initializeContentEditable() {
+    if ($('#editor-toolbar').is(':visible')) {
+        $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
+    } else {
+        $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
+    }
 }

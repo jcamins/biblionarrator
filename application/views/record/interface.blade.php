@@ -9,7 +9,7 @@
     <div class="btn-toolbar">
     <div class="btn-group" data-toggle="buttons-checkbox">
     <button id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc" type="button" class="btn btn-info btn-small">TOC</button>
-    <button id="toggleEditor" type="button" class="btn btn-info btn-small">Editor</button>
+    <button id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor" type="button" class="btn btn-info btn-small">Editor</button>
     <button id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links" type="button" class="btn btn-info btn-small active">Links</button>
     </div>
     </div>
@@ -19,10 +19,11 @@
 @section('toolbar')
 @if ($editor)
     <div class="btn-toolbar">
-        <div class="btn-group">
+        <div id="editor-toolbar" class="btn-group">
             <button id="new" type="button" data-toggle="modal" data-target="#confirmNew" class="btn btn-small">New</button>
             <button id="reload" type="button" data-toggle="modal" data-target="#confirmReload" class="btn btn-small">Reload</button>
             <button id="save" type="button" class="btn btn-small">Save</button>
+            <button id="duplicate" type="button" class="btn btn-small">Duplicate</button>
         </div>
     </div>
 @endif
@@ -147,6 +148,7 @@ var fieldlist = {
 var currentSelection;
 $(document).ready(function() {
     initializeRangy();
+    initializeContentEditable();
     $('#tagEntry').typeahead({
         source: function(query, process) {
             return Object.keys(labeltofieldlookup);
@@ -169,16 +171,6 @@ $(document).ready(function() {
 
     $('#table-of-contents').on('show hide click', function() {
         $(this).css('height', 'auto');
-    });
-
-    $('#toggleEditor').click(function() {
-        if ($(this).hasClass('active')) {
-            $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
-            jQuery.cookie('show_editor', 0);
-        } else {
-            $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
-            jQuery.cookie('show_editor', 1);
-        }
     });
 
     $('#confirmNewOK').click(confirmNew);
@@ -207,10 +199,7 @@ $(document).ready(function() {
         }
     });
 
-    if ( jQuery.cookie('show_editor') == 1 ) {
-        $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
-        $('#toggleEditor').addClass('active');
-    }
+    $('#editor-toolbar').on('cookietoggle', null, null, initializeContentEditable);
 
     $('#recordContainer').on('mouseenter', 'span', null, function() {
         var fieldentry = $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]');
@@ -222,14 +211,10 @@ $(document).ready(function() {
         return false;
      });
 
-    $("#recordContainer a").click(function(e){
-        e.stopPropagation();
-    });
-
     $('#add-section').click(function() {
         var newsection = document.createElement('section');
         $('#recordContainer article').append(newsection);
-        if ($('#toggleEditor').hasClass('active')) {
+        if ($('#editor-toolbar').is(':visible')) {
             newsection.addAttribute('contenteditable', 'true');
         }
         $(newsection).click();
