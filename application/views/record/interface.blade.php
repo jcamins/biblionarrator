@@ -19,11 +19,22 @@
 @section('toolbar')
 @if ($editor)
     <div class="btn-toolbar">
-        <div id="editor-toolbar" class="btn-group">
-            <button id="new" type="button" data-toggle="modal" data-target="#confirmNew" class="btn btn-small">New</button>
-            <button id="reload" type="button" data-toggle="modal" data-target="#confirmReload" class="btn btn-small">Reload</button>
-            <button id="save" type="button" class="btn btn-small">Save</button>
-            <button id="duplicate" type="button" class="btn btn-small">Duplicate</button>
+        <div id="editor-toolbar">
+            <div class="btn-group dropdown">
+                <button id="new" type="button" data-toggle="modal" data-target="#confirmNew" class="btn btn-small">New</button>
+                <button id="dropdown-new" type="button" data-toggle="dropdown" class="btn btn-small dropdown-toggle"><b class="caret"></b></button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
+                    <li><a id="new-related">Related record</a></li>
+                    <li><a id="duplicate">Duplicate record</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="save" type="button" class="btn btn-small">Save</button>
+            </div>
+            <div class="btn-group">
+                <button id="reload" type="button" data-toggle="modal" data-target="#confirmReload" class="btn btn-small">Reload</button>
+            </div>
         </div>
     </div>
 @endif

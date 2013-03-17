@@ -38,6 +38,7 @@ Route::get('css/fields.css', function() {
     return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
 });
 Route::controller('admin.ajax');
+Route::controller('admin.styles');
 Route::controller('admin');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
@@ -110,7 +111,10 @@ Route::filter('csrf', function()
 	if (Request::forged()) return Response::error('500');
 });
 
-Route::filter('auth', function()
+Route::filter('auth', function($action, $object)
 {
 	if (Auth::guest()) return Redirect::to('login');
+    if (!Authority::can($action, $object)) {
+        return Redirect::to('home');
+    }
 });

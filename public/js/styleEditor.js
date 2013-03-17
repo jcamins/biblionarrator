@@ -48,7 +48,7 @@ function initializeStyleEditor() {
     });
 }
 function loadStyle (id) {
-    $('#styles_ajax').load('/admin/styles_ajax/' + id, function (msg, s) { 
+    $('#styles_ajax').load('/admin/styles/ajax/' + id, function (msg, s) { 
         if (s === 'success' || s === 'notmodified') {
             initializeStyles();
         } else {
@@ -90,7 +90,7 @@ function saveStyles() {
     });
     $.ajax({
         type: "POST",
-        url: "/admin/styles_ajax",
+        url: "/admin/styles/ajax",
         data: { 'styles': JSON.stringify(styles) },
         dataType: "json",
         error: function (jqXHR, err, msg) {
@@ -110,7 +110,7 @@ function saveStyles() {
 function delStyle(style) {
     $.ajax({
         type: "POST",
-        url: "/admin/styles_ajax",
+        url: "/admin/styles/ajax",
         data: { 'styles': JSON.stringify([ { 'id': style, 'delete': 1 } ] ) },
         dataType: "json",
         error: function (jqXHR, err, msg) {

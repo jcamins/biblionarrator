@@ -69,13 +69,13 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="/admin">Home</a></li>
                                     @if ( Authority::can('manage', 'Field') )
-                                    <li><a href="/admin/fields">Fields</a></li>
+                                    <li><a href="/resources/field/admin">Fields</a></li>
                                     @endif
                                     @if ( Authority::can('manage', 'User') )
-                                    <li><a href="/admin/users">Users</a></li>
+                                    <li><a href="/resources/user/admin">Users</a></li>
                                     @endif
                                     @if ( Authority::can('manage', 'Collection') )
-                                    <li><a href="/admin/collections">Collections</a></li>
+                                    <li><a href="/resources/collection/admin">Collections</a></li>
                                     @endif
                                 </ul>
                             </li>

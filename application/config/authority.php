@@ -18,14 +18,27 @@ return array(
         // The $user variable is a instantiated User Object (application/models/user.php)
 
         // First, let's group together some "Actions" so we can later give a user access to multiple actions at once
-        Authority::action_alias('manage', array('create', 'view', 'update', 'delete'));
-        Authority::action_alias('edit', array('create', 'update', 'delete'));
+        /*Authority::action_alias('manage', array('create', 'view', 'update', 'delete'));
+        Authority::action_alias('edit', array('create', 'update', 'delete'));*/
 
         // If a user doesn't have any roles, we don't have to give him permissions so we can stop right here.
         if(count($user->roles) === 0) return false;
 
+        if($user->has_role('cataloger'))
+        {
+            Authority::allow('edit', 'Record', function ($that_record) use ($user)
+            {
+                if (isset($that_record->id)) {
+                    if ($that_record->collection()->first()->id === $user->collection()->first()->id) return true;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        };
 
-        Authority::allow('update', 'Record', function ($that_record) use ($user)
+
+        /*Authority::allow('update', 'Record', function ($that_record) use ($user)
         {
             if (isset($that_record->id) &&
                 ($that_record->collection()->first()->security === 'Open' ||
@@ -49,12 +62,20 @@ return array(
             } else {
                 return false;
             }
-        });
+        });*/
 
-        if($user->has_role('administrator'))
+        if($user->has_role('manager') || $user->has_role('administrator'))
         {
             // The logged in user is an admin, we allow him to perform manage actions (create, read, update, delete) on "all" "Resources".
-            Authority::allow('manage', 'all');
+            Authority::allow('manage', 'all', function ($that_resource) use ($user) {
+                if ($user->has_role('administrator')) return true;
+                if (isset($that_resource->id)) {
+                    if ($that_resource->collection()->first()->id === $user->collection()->first()->id) return true;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
             // Authority::allow('edit', 'all');
 
             // Let's say we want to "Deny" the admin from adding accounts if his age is below 21 (i don't mean to discriminate ;) 
