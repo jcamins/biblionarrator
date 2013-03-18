@@ -37,6 +37,8 @@ Route::post('record/(:any)?', 'record@write');
 Route::get('css/fields.css', function() {
     return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
 });
+Route::get('resources/field/(:any)/styles', 'resources.field@styles');
+Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::controller('admin.ajax');
 Route::controller('admin.styles');
 Route::controller('admin');

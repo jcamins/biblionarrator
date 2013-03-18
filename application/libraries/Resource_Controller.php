@@ -25,15 +25,7 @@ class Resource_Controller extends Base_Controller {
     }
 
     public function post_index($id = null) {
-        if (isset($id) || $id = Input::get('id')) {
-            if (Input::get('delete')) {
-                return $this->_delete($id);
-            } else {
-                return $this->_update($id);
-            }
-        } else {
-            return $this->_store();
-        }
+        return $this->_update($id);
     }
 
     public function delete_index($id = null) {
@@ -63,18 +55,14 @@ class Resource_Controller extends Base_Controller {
         return Response::json($resources);
     }
 
-    protected function _store() {
-        $id = Input::get('id');
-        //if (isset($id) && $id !== '') {
-            return $this->_update($id);
-        //}
-    }
-
     protected function _show($id) {
         return Response::json(call_user_func($this->resourceClass . '::find', $id));
     }
 
     protected function _update($id) {
+        if (is_null($id)) {
+            $id = Input::get('id');
+        }
         if (isset($id) && $id !== 'new' && $id !== 'undefined' && $id !== '') {
             $resource = call_user_func($this->resourceClass . '::find', $id);
             if (is_null($resource)) {
