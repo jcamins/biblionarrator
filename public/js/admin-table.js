@@ -57,8 +57,12 @@ function initializeAdminTable() {
 
 function addNewRow() {
     var newdata = [ 'NA' ];
-    columns.forEach(function (column) {
-        newdata.push('<input id="column' + column.name + '" name="' + column.name + '" class=columnEntry" type="text" style="height: 14px; width: 99%;" />');
+    Object.keys(columns).forEach(function (column) {
+        if (columns[column].type === 'string') {
+            newdata.push('<input id="column' + column + '" name="' + column + '" class=columnEntry" type="text" style="height: 14px; width: 99%;" />');
+        } else if (columns[column].type === 'options') {
+            newdata.push(generateSelect(eval(columns[column]['options']), ''));
+        }
     });
     newdata.push('<button type="submit" title="Save" class="btn btn-mini"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
     var aRow = $('#admintable').dataTable().fnAddData(newdata, false);
@@ -116,31 +120,27 @@ function fnClickAddRow(e) {
     node = this.parentNode.parentNode;
     if (e.keyCode == 13) {
         var postdata = new Object();
+        var missing;
         var havereqs = true;
-        columns.forEach(function(column) {
-            postdata[column.name] = $('#column' + column.name).val();
-            if (column.required && $('#column' + column.name).val().length === 0) {
-                havereqs = false;
+        Object.keys(columns).forEach(function(column) {
+            var val;
+            if (columns[column].type === 'string') {
+                val = $('#column' + column).val();
+            } else if (columns[column].type === 'options') {
+                val = $('#column' + column).text();
+            }
+            postdata[column] = val;
+            if (columns[column].required && val.length === 0) {
+                missing.push(columns[column].label);
             }
         });
 
-        if (havereqs) {
-            $.ajax({
-                url: '/resources/' + resourcetype,
-                type: "POST",
-                data: postdata,
-                success: function(data){
-                    var oTable = $('#admintable').dataTable();
-                    oTable.fnReloadAjax();
-                    oTable.fnPageChange( 'last' );
-                    $('#btnAdd').click(addNewRow);
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert(textStatus);
-                    alert(errorThrown);
-                },
-            });
+        if (missing.length === 0) {
+            saveRow(node, postdata);
+        } else {
+            alert("You must provide values for " . missing.join(', '));
         }
+        return false;
     }
     else if (e.keyCode == 27) {
         if (confirm("Are you sure you want to cancel adding this quote?")) {
@@ -178,6 +178,11 @@ function saveRow(row, updates) {
         url: '/resources/' + resourcetype,
         type: "POST",
         data: newdata,
+    }).success(function () {
+        var oTable = $('#admintable').dataTable();
+        oTable.fnReloadAjax();
+        oTable.fnPageChange( 'last' );
+        $('#btnAdd').click(addNewRow);
     });
 }
 
