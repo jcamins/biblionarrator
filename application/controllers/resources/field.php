@@ -56,4 +56,22 @@ class Resources_Field_Controller extends Resource_Controller {
         }
         return json_encode($changed_styles);
     }
+
+    public function get_editor($field = null)
+    {
+        $field = Field::find($field);
+        if (is_null($field)) {
+            $field = new Field();
+        }
+        return View::make('components.fieldeditor')->with('field', $field);
+    }
+
+    public function get_tree($field = null) {
+        $field = Field::find($field);
+        if (is_null($field)) {
+            $field = new Field();
+        }
+        Session::put('currentfield', $field);
+        return View::make('components.fieldtree');
+    }
 }

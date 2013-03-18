@@ -39,8 +39,9 @@ Route::get('css/fields.css', function() {
 });
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
-Route::controller('admin.ajax');
-Route::controller('admin.styles');
+Route::get('resources/field/(:any)?/?admin', 'resources.field@admin');
+Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
+Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
 Route::controller('admin');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');

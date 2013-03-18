@@ -1,7 +1,7 @@
 @layout('layouts/admin-tree')
 
 @section('sidetoolbar')
-<a id="add-field" class="btn btn-small jstree-draggable" href="/admin/fields/new">Add field</a>
+<a id="add-field" class="btn btn-small jstree-draggable" href="/resources/field/new/admin">Add field</a>
 @endsection
 
 @section('toolbar')
@@ -47,7 +47,7 @@ var treeCallbacks = {
         });
     },
     'create' : function(e, data) {
-        $('#fieldeditor').load('/admin/ajax/fieldeditor/new', function (msg, s) { 
+        $('#fieldeditor').load('/resources/field/new/editor', function (msg, s) { 
             initializeStyleEditor();
             $('#heading').text(data.rslt.name);
             $('#field-schema').val(data.rslt.name.replace(/^[^(]*\(/, '').replace(/\).*$/, ''));
@@ -59,7 +59,7 @@ var treeCallbacks = {
             } else {
                 $('#field-parent').val('');
             }
-            window.history.pushState({ 'event' : 'new' }, 'New field', '/admin/fields/new');
+            window.history.pushState({ 'event' : 'new' }, 'New field', '/resources/field/new/admin');
         });
     }
 };
@@ -76,7 +76,7 @@ $(document).ready(function() {
             fieldParent = '';
         }
         $('#field-parent').val(fieldParent);
-        $('#fieldeditor').load('/admin/ajax/fieldeditor/' + id, function (msg, s) { 
+        $('#fieldeditor').load('/resources/field/' + id + '/editor', function (msg, s) { 
             initializeStyleEditor();
         });
         return false;
@@ -118,10 +118,10 @@ $(document).ready(function() {
                   }
         }).done(function (data) {
             $('#field-id').val(data.attributes.id);
-            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.attributes.id, '/admin/fields/' + data.attributes.id);
+            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.attributes.id, '/resources/field/' + data.attributes.id + '/admin');
             $('#tree .selected').each(function() {
                 $(this).parent().attr('data-id', data.attributes.id);
-                $(this).attr('href', '/admin/fields/' + data.attributes.id);
+                $(this).attr('href', '/resources/field/' + data.attributes.id + '/admin');
             });
             $('#saveField').removeClass('btn-info');
         });
