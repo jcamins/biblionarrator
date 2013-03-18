@@ -6,12 +6,14 @@ class Resource_Controller extends Base_Controller {
     public $interface_columns = array();
     public $required_columns = array();
     public $optional_columns = array();
+    public $hashed_columns = array();
+    public $fk_columns = array();
     public $resourceClass;
 
     public function __construct()
     {
         parent::__construct();
-        $this->filter('before', 'auth', array('manage', $this->resourceClass));
+        $this->filter('before', 'auth', array('manage', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))));
     }
 
     public function get_index($id = null) {
@@ -42,7 +44,14 @@ class Resource_Controller extends Base_Controller {
 
     protected function _index() {
         $resourcelist = array();
-        foreach (call_user_func($this->resourceClass . '::all') as $resource)
+        if (Auth::user()->has_role('administrator')) {
+            $resources = call_user_func($this->resourceClass . '::all');
+        } else if ($this->resourceClass === 'Collection') {
+            $resources = array(Auth::user()->collection);
+        } else {
+            $resources = call_user_func(array(Auth::user()->collection, strtolower($this->resourceClass) . 's'))->get();
+        }
+        foreach ($resources as $resource)
         {
             array_push($resourcelist, $resource->to_array());
         }
@@ -62,7 +71,7 @@ class Resource_Controller extends Base_Controller {
     }
 
     protected function _show($id) {
-        return Response::json(call_user_func($this->resourceClass . '::find', $id)->to_array());
+        return Response::json(call_user_func($this->resourceClass . '::find', $id));
     }
 
     protected function _update($id) {
@@ -85,6 +94,17 @@ class Resource_Controller extends Base_Controller {
         foreach ($this->optional_columns as $column) {
             if (Input::has($column)) {
                 $resource->set_attribute($column, Input::get($column));
+            }
+        }
+        foreach ($this->hashed_columns as $column) {
+            if (Input::has($column)) {
+                $resource->set_attribute($column, Hash::make(Input::get($column)));
+            }
+        }
+        foreach ($this->fk_columns as $column) {
+            if (Input::has($column)) {
+                call_user_func(array(call_user_func(array($resource, $column . 's')), 'delete'));
+                call_user_func(array(call_user_func(array($resource, $column . 's')), 'attach'), Input::get($column));
             }
         }
         $resource->save();

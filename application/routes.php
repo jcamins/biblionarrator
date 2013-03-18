@@ -111,10 +111,10 @@ Route::filter('csrf', function()
 	if (Request::forged()) return Response::error('500');
 });
 
-Route::filter('auth', function($action, $object)
+Route::filter('auth', function($action, $resource, $object)
 {
 	if (Auth::guest()) return Redirect::to('login');
-    if (!Authority::can($action, $object)) {
+    if (!Authority::can($action, $resource, $object)) {
         return Redirect::to('home');
     }
 });

@@ -69,7 +69,7 @@ return array(
             // The logged in user is an admin, we allow him to perform manage actions (create, read, update, delete) on "all" "Resources".
             Authority::allow('manage', 'all', function ($that_resource) use ($user) {
                 if ($user->has_role('administrator')) return true;
-                if (isset($that_resource->id)) {
+                if (isset($that_resource->id) && isset($that_resource->collection)) {
                     if ($that_resource->collection()->first()->id === $user->collection()->first()->id) return true;
                     return false;
                 } else {

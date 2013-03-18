@@ -17,7 +17,13 @@ var collectionlist = {
 };
 
 $(document).ready(function () {
-    $('.user-security').click(function () {
+    $('#admintable').on('draw', null, null, function () {
+        $('.user-security').click(function (e) {
+            $('#user-security-dialog').load('/resources/user/security/' + $(this).parents('tr').first().attr('data-id'));
+            $('#user-security-dialog').modal('show');
+            e.preventDefault();
+            return false;
+        });
     });
 });
 </script>

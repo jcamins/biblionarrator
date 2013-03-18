@@ -8,7 +8,12 @@ class Resources_User_Controller extends Resource_Controller {
         'collection' => array('type' => 'options', 'target' => 'collection_id', 'options' => 'collectionlist', 'label' => 'Collection', 'required' => false, 'sWidth' => '20%'),
     );
     public $required_columns = array('name', 'email', 'collection_id');
+    public $hashed_columns = array('password');
+    public $fk_columns = array('role');
     public $resourceClass = 'User';
 
+    public function get_security($id) {
+        return View::make('components.user-security')->with('user', User::find($id));
+    }
 }
 
