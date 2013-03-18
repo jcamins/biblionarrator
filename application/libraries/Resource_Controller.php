@@ -56,7 +56,7 @@ class Resource_Controller extends Base_Controller {
     }
 
     protected function _show($id) {
-        return Response::json(call_user_func($this->resourceClass . '::find', $id));
+        return Response::json(call_user_func($this->resourceClass . '::find', $id)->to_array());
     }
 
     protected function _update($id) {
@@ -90,13 +90,17 @@ class Resource_Controller extends Base_Controller {
             }
         }
         foreach ($this->fk_columns as $column) {
-            if (Input::has($column)) {
+            if (Input::has("$column.0")) {
                 call_user_func(array(call_user_func(array($resource, $column . 's')), 'delete'));
-                call_user_func(array(call_user_func(array($resource, $column . 's')), 'attach'), Input::get($column));
+                $ii = 0;
+                while (Input::has("$column.$ii")) {
+                    call_user_func(array(call_user_func(array($resource, $column . 's')), 'attach'), Input::get("$column.$ii"));
+                    $ii++;
+                }
             }
         }
         $resource->save();
-        return Response::json($resource);
+        return Response::json($resource->to_array());
     }
 
     protected function _delete($id) {

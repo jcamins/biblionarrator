@@ -1,9 +1,17 @@
 <?php
 
-class Record_Controller extends Base_Controller {
-    public $restful = true;
+class Record_Controller extends Resource_Controller {
 
+    public $required_columns = array('data');
     private static $templatelist = array('interface', 'preview', 'result');
+    public $resourceClass = 'Record';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->filter('before', 'auth', array('edit', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->except(array('index'));
+        $this->filter('before', 'auth', array('view', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->only(array('index'));
+    }
 
     public function get_index($record_id = null, $format = null) {
         Asset::add('fieldstyles', 'css/fields.css');
@@ -11,18 +19,12 @@ class Record_Controller extends Base_Controller {
         if (is_null($record)) {
             $record = new Record();
         }
-        if (is_null($record->id)) {
-            $editor = Authority::can('create', 'Record', $record);
-        } else {
-            $editor = Authority::can('update', 'Record', $record);
-        }
+        $editor = Authority::can('edit', 'Record', $record);
         Asset::add('common-js', 'js/biblionarrator.js');
-        if ($editor) {
-            Asset::add('editor-js', 'js/recordEditor.js');
-            Asset::add('shortcut-js', 'js/shortcut.js');
-            Asset::add('rangy-js', 'js/rangy/rangy-core.js');
-            Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
-        }
+        Asset::add('editor-js', 'js/recordEditor.js');
+        Asset::add('shortcut-js', 'js/shortcut.js');
+        Asset::add('rangy-js', 'js/rangy/rangy-core.js');
+        Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
         if (is_null($format)) {
             $format = 'interface';
@@ -33,24 +35,4 @@ class Record_Controller extends Base_Controller {
             return $record->format($format);
         }
     }
-
-    public function post_write($record_id = null) {
-        $record = null;
-        if ($record_id && $record_id != 'new') {
-            $record = Record::find($record_id);
-        }
-        if (is_null($record)) {
-            $record = new Record;
-        }
-        $record->data = Input::get('data');
-        if ((is_null($record_id) || $record_id === 'new') && Authority::can('create', 'Record')) {
-            Auth::user()->collection()->first()->records()->save($record);
-        } elseif (isset($record->id) && Authority::can('update', 'Record', $record)) {
-            $record->save();
-        } else {
-            return Response::make('Permission denied', 401);
-        }
-        return json_encode(array('id' => $record->id));
-    }
-
 }

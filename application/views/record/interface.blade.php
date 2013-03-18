@@ -5,15 +5,15 @@
 @endsection
 
 @section('sidetoolbar')
-@if ($editor)
     <div class="btn-toolbar">
     <div class="btn-group" data-toggle="buttons-checkbox">
     <button id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc" type="button" class="btn btn-info btn-small">TOC</button>
-    <button id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor" type="button" class="btn btn-info btn-small">Editor</button>
+    @if ($editor)
+        <button id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor" type="button" class="btn btn-info btn-small">Editor</button>
+    @endif
     <button id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links" type="button" class="btn btn-info btn-small active">Links</button>
     </div>
     </div>
-@endif
 @endsection
 
 @section('toolbar')
@@ -84,6 +84,7 @@
 
 @section('form_modals')
 @parent
+@if ($editor)
 <div id="tagSelector" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="tagSelectorLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -126,6 +127,7 @@
         <button id="confirmReloadOK" class="btn btn-primary">Yes</button>
     </div>
 </div>
+@endif
 @endsection
 
 @section('scripts')
@@ -149,62 +151,15 @@ var fieldlist = {
         },
     @endforeach
     };
-@if ($editor)
 var currentSelection;
 $(document).ready(function() {
-    initializeRangy();
-    initializeContentEditable();
-    $('#tagEntry').typeahead({
-        source: function(query, process) {
-            return Object.keys(labeltofieldlookup);
-        },
-        updater: function(item) {
-            setTag(item);
-            return item;
-        },
-    });
-
-    $('.popover-link').popover({
-        "html" : true,
-        "placement" : "left",
-        "container" : "body"
-    }).click(function () {
-        return false;
-    });
-
-    updateFieldsTOCTree();
+    @if ($editor)
+        initializeEditor();
+    @endif
 
     $('#table-of-contents').on('show hide click', function() {
         $(this).css('height', 'auto');
     });
-
-    $('#confirmNewOK').click(confirmNew);
-
-    $('#confirmReloadOK').click(confirmReload);
-
-    $('#save').click(saveRecord);
-
-    $('#removeTag').click(closeTag);
-
-    $('#tagSelector').on('shown', function () {
-        $('#tagEntry').val('');
-        $('#tagEntry').focus();
-    });
-
-    $('#tagSelector').on('hidden', function () {
- //       tinyMCE.execCommand('mceFocus', false, 'recordContainer');
-    });
-
-    $('#tagEntry').keydown(function(ev) {
-        if (ev.keyCode == 13) {
-            var field = $('#tagEntry').val();
-            if (labeltofieldlookup[field]) {
-                setTag(field);
-            }
-        }
-    });
-
-    $('#editor-toolbar').on('cookietoggle', null, null, initializeContentEditable);
 
     $('#recordContainer').on('mouseenter', 'span', null, function() {
         var fieldentry = $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]');
@@ -216,16 +171,8 @@ $(document).ready(function() {
         return false;
      });
 
-    $('#add-section').click(function() {
-        var newsection = document.createElement('section');
-        $('#recordContainer article').append(newsection);
-        if ($('#editor-toolbar').is(':visible')) {
-            newsection.addAttribute('contenteditable', 'true');
-        }
-        $(newsection).click();
-    });
+    updateFieldsTOCTree();
 });
-@endif
 
 $(window).load(function() {
     shortcut.add('Ctrl+J', addTagDialog);

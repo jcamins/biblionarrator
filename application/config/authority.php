@@ -20,13 +20,15 @@ return array(
         // First, let's group together some "Actions" so we can later give a user access to multiple actions at once
         /*Authority::action_alias('manage', array('create', 'view', 'update', 'delete'));
         Authority::action_alias('edit', array('create', 'update', 'delete'));*/
+        Authority::action_alias('catalog', array('edit', 'view'));
+
 
         // If a user doesn't have any roles, we don't have to give him permissions so we can stop right here.
         if(count($user->roles) === 0) return false;
 
         if($user->has_role('cataloger'))
         {
-            Authority::allow('edit', 'Record', function ($that_record) use ($user)
+            Authority::allow('catalog', 'Record', function ($that_record) use ($user)
             {
                 if (isset($that_record->id)) {
                     if ($that_record->collection()->first()->id === $user->collection()->first()->id) return true;

@@ -1,3 +1,62 @@
+function initializeEditor() {
+    initializeRangy();
+    initializeContentEditable();
+    $('#tagEntry').typeahead({
+        source: function(query, process) {
+            return Object.keys(labeltofieldlookup);
+        },
+        updater: function(item) {
+            setTag(item);
+            return item;
+        },
+    });
+
+    $('.popover-link').popover({
+        "html" : true,
+        "placement" : "left",
+        "container" : "body"
+    }).click(function () {
+        return false;
+    });
+
+    $('#confirmNewOK').click(confirmNew);
+
+    $('#confirmReloadOK').click(confirmReload);
+
+    $('#save').click(saveRecord);
+
+    $('#removeTag').click(closeTag);
+
+    $('#tagSelector').on('shown', function () {
+        $('#tagEntry').val('');
+        $('#tagEntry').focus();
+    });
+
+    $('#tagSelector').on('hidden', function () {
+ //       tinyMCE.execCommand('mceFocus', false, 'recordContainer');
+    });
+
+    $('#tagEntry').keydown(function(ev) {
+        if (ev.keyCode == 13) {
+            var field = $('#tagEntry').val();
+            if (labeltofieldlookup[field]) {
+                setTag(field);
+            }
+        }
+    });
+
+    $('#editor-toolbar').on('cookietoggle', null, null, initializeContentEditable);
+
+    $('#add-section').click(function() {
+        var newsection = document.createElement('section');
+        $('#recordContainer article').append(newsection);
+        if ($('#editor-toolbar').is(':visible')) {
+            newsection.addAttribute('contenteditable', 'true');
+        }
+        $(newsection).click();
+    });
+}
+
 var appliers = {};
 
 function initializeRangy() {
@@ -129,8 +188,7 @@ function saveRecord() {
             data: { data: transformXML($('#recordContainer').html(), xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
-            var obj = jQuery.parseJSON(msg);
-            recordId = parseInt(obj.id);
+            recordId = parseInt(msg.id);
             if (typeof(recordId) !== 'undefined') {
                 window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
             }
@@ -176,72 +234,6 @@ function confirmNew() {
 function confirmReload() {
     $('#confirmReload').modal('hide');
     loadRecord();
-}
-var tocindex;
-
-function traverseTOC(node, depth) {
-    var notclause = new Array(depth + 2).join(' span');
-    var outerhtml = '';
-    var innerhtml = '';
-    var found = false;
-    $(node).find('span').not('#recordContainer' . notclause).each(function () {
-        if ($(this).attr('data-match')) {
-            return;
-        }
-        var classes = $(this).attr('class').split(' ');
-        for (var ii = 0, len = classes.length; ii < len; ++ii) {
-            var value = $(this).text();
-            if (typeof(fieldlist[classes[ii]]) !== 'undefined' && value.length > 0) {
-                $(this).attr('data-match', tocindex);
-                var currentNode;
-                outerhtml += '<li aria-labelledby="labelField' + tocindex + '" data-match="' + tocindex + '" class="fieldEntry' + '"><a id="labelField' + tocindex + '" class="toclabel">' + fieldlist[classes[ii]].label + '</a><ul>';
-                innerhtml += '<li><a class="tocvalue">' + value + '</a></li>';
-                found = true;
-            }
-        }
-        tocindex++;
-        innerhtml += traverseTOC(this, depth + 1) + '</li></ul>';
-        outerhtml += innerhtml;
-        innerhtml = '';
-    });
-
-    if (outerhtml.length > 0) {
-        return outerhtml;
-    } else {
-        return '';
-    }
-}
-
-function updateFieldsTOCTree(node) {
-    tocindex = 1;
-    $('#fieldsTOC').remove();
-    $('#table-of-contents').append('<div id="fieldsTOC"></div>');
-    $('#recordContainer span').each(function () {
-        $(this).removeAttr('data-match');
-    });
-    $('#fieldsTOC').html('<ul>' + traverseTOC($('#recordContainer'), 1) + '</ul>');
-    initializeTOC();
-}
-
-function initializeTOC() {
-    $('#fieldsTOC').jstree({
-        "plugins" : [ "themes", "html_data", "types", "ui" ],
-        "themes" : { "icons": false },
-    });
-    $('#fieldsTOC').bind('select_node.jstree', function (e, data) {
-        $('#recordContainer span').each(function () { $(this).removeClass('highlight') });
-        var obj = data.rslt.obj[0];
-        while (typeof(obj) !== 'undefined' && !obj.hasAttribute('data-match')) {
-            obj = obj.parentNode;
-        }
-        if (typeof(obj) !== 'undefined' && obj.hasAttribute('data-match')) {
-            $('#recordContainer span[data-match="' + obj.getAttribute('data-match') + '"]').addClass('highlight');
-            return false;
-        }
-    });
-    $('#fieldsTOC').bind('deselect_node.jstree', function (e, data) {
-        $('#recordContainer span').each(function () { $(this).removeClass('highlight') });
-    });
 }
 
 function consolidateStyles() {

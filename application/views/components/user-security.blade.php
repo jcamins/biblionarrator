@@ -9,7 +9,7 @@
         <div>
             <?php $matches = $user->roles()->pivot()->lists('role_id') ?>
             @foreach (Role::all() as $role)
-                    <div><input type="checkbox" name="role" value="{{ $role->id }}"
+                    <div><input type="checkbox" name="role[]" value="{{ $role->id }}"
                     @if (in_array($role->id, $matches))
                         checked="checked"
                     @endif
