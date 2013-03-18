@@ -9,7 +9,7 @@
 @section('scripts')
 @parent
 <script type="text/javascript">
-var controlColumn = '<button class="btn btn-mini user-security"><i class="icon-lock"></i></button>';
+var controlColumn = '<button class="btn btn-mini user-security"><i class="icon-lock"></i></button><button class="btn btn-mini delete-object"><i class="icon-remove"></i></button>';
 var collectionlist = {
 @foreach (Collection::all() as $collection)
 '{{ $collection->name }}': '{{ $collection->id }}',

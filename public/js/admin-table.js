@@ -55,6 +55,11 @@ function initializeAdminTable() {
         return false;
     });
     $('#btnAdd').click(addNewRow);
+    $('#admintable').on('click', '.delete-object', null, function (e) {
+        deleteObject($(this).parents('tr').first());
+        e.preventDefault();
+        return false;
+    });
     $('#admintable').on('click', '.cancelAdd', null, function() {
         $('#admintable').dataTable().fnDeleteRow(this.parentNode.parentNode);
     });
@@ -217,4 +222,14 @@ function saveNew() {
     } else {
         alert("You must provide values for " . missing.join(', '));
     }
+}
+
+function deleteObject(obj) {
+    $.ajax({
+        url: '/resources/' + resourcetype,
+        type: "DELETE",
+        data: { 'id': $(obj).attr('data-id') }
+    }).success(function () {
+        $('#admintable').dataTable().fnDeleteRow(obj);
+    });
 }
