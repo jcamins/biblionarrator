@@ -49,6 +49,11 @@ function initializeAdminTable() {
         },
         "fnDrawCallback": fnDrawCallback,
     } );
+    $('.new-form').submit(function (e) {
+        saveNew();
+        e.preventDefault();
+        return false;
+    });
     $('#btnAdd').click(addNewRow);
     $('#admintable').on('click', '.cancelAdd', null, function() {
         $('#admintable').dataTable().fnDeleteRow(this.parentNode.parentNode);
@@ -59,17 +64,16 @@ function addNewRow() {
     var newdata = [ 'NA' ];
     Object.keys(columns).forEach(function (column) {
         if (columns[column].type === 'string') {
-            newdata.push('<input id="column' + column + '" name="' + column + '" class=columnEntry" type="text" style="height: 14px; width: 99%;" />');
+            newdata.push('<input id="column' + column + '" name="' + column + '" data-column="' + column + '" class="form-column" type="text" style="height: 14px; width: 99%;" />');
         } else if (columns[column].type === 'options') {
-            newdata.push(generateSelect(eval(columns[column]['options']), ''));
+            newdata.push(generateSelect(column, '', { 'select-class': 'form-column' }));
         }
     });
-    newdata.push('<button type="submit" title="Save" class="btn btn-mini"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
+    newdata.push('<button title="Save" type="submit" class="btn btn-mini"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
     var aRow = $('#admintable').dataTable().fnAddData(newdata, false);
     $('#admintable').dataTable().fnPageChange( 'last' );
-    $('.columnEntry').first().focus();
-
-    $('.columnEntry').keydown(fnClickAddRow);
+    $('.form-column').first().focus();
+    $('.form-column').keydown(fnClickAddRow);
 }
 
 function fnDrawCallback() {
@@ -104,13 +108,17 @@ function fnDrawCallback() {
             return true;
         }
         var cur = $(this).text();
-        var options = eval(columns[$(this).attr('data-column')]['options']);
         var html = '<form>';
-        html += generateSelect(options, cur);
+        html += generateSelect($(this).attr('data-column'), cur);
         html += '</form>';
         $(this).html(html);
         $(this).find('select').change(function () {
-            $(this).parents('span').first().text($(this).find('option:selected').text());
+            var updates = {};
+            var value = $(this).find('option:selected').text();
+            var row = $(this).parents('tr').first();
+            $(this).parents('span').first().text(value);
+            updates[$(this).attr('data-column')] = value;
+            saveRow(row, updates);
         });
         $(this).find('select').click();
     } );
@@ -119,27 +127,7 @@ function fnDrawCallback() {
 function fnClickAddRow(e) {
     node = this.parentNode.parentNode;
     if (e.keyCode == 13) {
-        var postdata = new Object();
-        var missing;
-        var havereqs = true;
-        Object.keys(columns).forEach(function(column) {
-            var val;
-            if (columns[column].type === 'string') {
-                val = $('#column' + column).val();
-            } else if (columns[column].type === 'options') {
-                val = $('#column' + column).text();
-            }
-            postdata[column] = val;
-            if (columns[column].required && val.length === 0) {
-                missing.push(columns[column].label);
-            }
-        });
-
-        if (missing.length === 0) {
-            saveRow(node, postdata);
-        } else {
-            alert("You must provide values for " . missing.join(', '));
-        }
+        saveNew();
         return false;
     }
     else if (e.keyCode == 27) {
@@ -154,8 +142,18 @@ function fnClickAddRow(e) {
 
 function saveRow(row, updates) {
     var newdata = { 'id': $(row).attr('data-id') };
-    $(row).find('.editable-column').each(function () {
-        newdata[$(this).attr('data-column')] = $(this).text();
+    $(row).find('.editable-column, .form-column').each(function () {
+        switch ($(this).prop('tagName')) {
+            case 'INPUT':
+                newdata[$(this).attr('data-column')] = $(this).val();
+                break;
+            case 'SELECT':
+                newdata[$(this).attr('data-column')] = $(this).find('option:selected').text() || $(this).find('option:first').text();
+                break;
+            default:
+                newdata[$(this).attr('data-column')] = $(this).text();
+                break;
+        }
     })
     for (var attrname in updates) { newdata[attrname] = updates[attrname]; }
     Object.keys(newdata).forEach(function (key) {
@@ -186,8 +184,9 @@ function saveRow(row, updates) {
     });
 }
 
-function generateSelect(options, cur) {
-    var html = '<select>';
+function generateSelect(column, cur, opt) {
+    var options = eval(columns[column]['options']);
+    var html = '<select class="' + (opt && opt['select-class'] ? opt['select-class'] : '') + '" data-column="' + column + '">';
     Object.keys(options).sort().forEach(function (obj) {
         html += '<option';
         if (obj === cur) {
@@ -197,4 +196,25 @@ function generateSelect(options, cur) {
     });
     html += '</select>';
     return html;
+}
+
+function saveNew() {
+    var postdata = new Object();
+    var missing = [];
+    var havereqs = true;
+    Object.keys(columns).forEach(function(column) {
+        var val;
+        if (columns[column].type === 'string') {
+            val = $('#column' + column).val();
+        }
+        if (columns[column].required && val.length === 0) {
+            missing.push(columns[column].label);
+        }
+    });
+    
+    if (missing.length === 0) {
+        saveRow(node, postdata);
+    } else {
+        alert("You must provide values for " . missing.join(', '));
+    }
 }
