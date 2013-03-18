@@ -42,7 +42,6 @@ Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?admin', 'resources.field@admin');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
 Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
-Route::controller('admin');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
 
