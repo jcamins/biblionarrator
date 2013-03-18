@@ -30,7 +30,7 @@ class Resources_Field_Controller extends Resource_Controller {
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-css', 'css/jquery.dataTables.css');
         $field = Field::find($id);
-        return View::make('admin.styles_ajax')->with('styles', $field->styles)->with('field', $field)->with('recordtype', RecordType::find($recordtype));
+        return View::make('ajax.styles')->with('styles', $field->styles)->with('field', $field)->with('recordtype', RecordType::find($recordtype));
     }
 
     public function post_styles($id)
@@ -63,7 +63,7 @@ class Resources_Field_Controller extends Resource_Controller {
         if (is_null($field)) {
             $field = new Field();
         }
-        return View::make('components.fieldeditor')->with('field', $field);
+        return View::make('ajax.field-editor')->with('field', $field);
     }
 
     public function get_tree($field = null) {
@@ -72,6 +72,6 @@ class Resources_Field_Controller extends Resource_Controller {
             $field = new Field();
         }
         Session::put('currentfield', $field);
-        return View::make('components.fieldtree');
+        return View::make('ajax.field-tree');
     }
 }

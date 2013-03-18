@@ -41,7 +41,7 @@
     <legend>Styles</legend>
     <div id="styles_ajax">
         @if ($field)
-        @include('admin.styles_ajax')
+        @include('ajax.styles')
         @endif
     </div>
     </fieldset>

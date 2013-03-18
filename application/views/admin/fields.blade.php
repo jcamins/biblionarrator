@@ -1,4 +1,4 @@
-@layout('layouts/admin-tree')
+@layout('layouts/admin.tree')
 
 @section('sidetoolbar')
 <a id="add-field" class="btn btn-small jstree-draggable" href="/resources/field/new/admin">Add field</a>
@@ -10,13 +10,13 @@
 @endsection
 
 @section('treedata')
-@include('components.fieldtree')
+@include('ajax.field-tree')
 @endsection
 
 @section('editor')
 <div id="fieldeditor">
 @if ($id)
-@include('components.fieldeditor')
+@include('ajax.field-editor')
 @endif
 </div>
 @endsection

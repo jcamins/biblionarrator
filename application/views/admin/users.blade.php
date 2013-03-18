@@ -1,4 +1,4 @@
-@layout ('layouts/admin-table')
+@layout ('layouts/admin.table')
 
 @section('form_modals')
 @parent
