@@ -1,10 +1,13 @@
 function initializeAdminTable() {
-    columns.forEach(function(column) {
-        $('#admintable thead tr').append('<th>' + column.label + '</th>');
+    Object.keys(columns).forEach(function(column) {
+        $('#admintable thead tr').append('<th>' + columns[column].label + '</th>');
     });
     $('#admintable thead tr').append('<th></th>');
     var dtColumns = [ { "bSortable": false, "sWidth": "5%" } ];
-    dtColumns = dtColumns.concat(columns, { "bSortable": false, "sWidth": "5%" });
+    Object.keys(columns).forEach(function(column) {
+        dtColumns = dtColumns.concat({ "sWidth": columns[column].sWidth });
+    });
+    dtColumns = dtColumns.concat({ "bSortable": false, "sWidth": "5%" });
 
     var oTable = $('#admintable').dataTable( {
         "bPaginate": true,
@@ -22,8 +25,8 @@ function initializeAdminTable() {
                     var newData = [];
                     for ( var ii = 0, iLen = json.iTotalRecords ; ii < iLen ; ii++ ) {
                         var thisRow = [json.aaData[ii]['id']];
-                        columns.forEach(function (column) {
-                            thisRow.push(json.aaData[ii][column.name]);
+                        Object.keys(columns).forEach(function (column) {
+                            thisRow.push('<span data-column="' + column + '" class="editable-column editable-' + columns[column].type + '">' + json.aaData[ii][column] + '</span>');
                         });
                         thisRow.push(controlColumn);
                         newData.push(thisRow);
@@ -36,20 +39,11 @@ function initializeAdminTable() {
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
             var noEditFields = [0];
             var objectID = $('td', nRow)[0].innerHTML;
-            $(nRow).attr("data-id", objectID);
-            $('td:eq(0)', nRow).click(function() {$(this.parentNode).toggleClass('selected',this.clicked);}); /* add row selectors */
-            $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect row");
             if (isNaN(objectID)) {
-                for (var ii = 1; ii <= columns.count + 2; ii++) {
-                    noEditFields.push(ii);
-                }
-            }
-            else {
-                noEditFields.push($('td', nRow).size() - 1);
-            }
-            /* apply no_edit class to noEditFields */
-            for (i=0; i<noEditFields.length; i++) {
-                $('td', nRow)[noEditFields[i]].setAttribute("class","no_edit");
+                $('td:eq(0)', nRow).click(function() {$(this.parentNode).toggleClass('selected',this.clicked);}); /* add row selectors */
+                $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect row");
+            } else {
+                $(nRow).attr("data-id", objectID);
             }
             return nRow;
         },
@@ -76,42 +70,45 @@ function addNewRow() {
 
 function fnDrawCallback() {
     var oTable = $('#admintable').dataTable();
-    $('#admintable tbody td[class!="no_edit"]').editable(
+    $('.editable-string').editable(
         function(value, settings) {
-            var dataRow = oTable.fnGetData(oTable.fnGetPosition(this)[0]);
-            dataRow[oTable.fnGetPosition(this)[2]] = value;
-            var newdata = { 'id': dataRow[0] };
-            columns.forEach(function(column, index) {
-                newdata[column.name] = dataRow[index + 1];
-            });
-            $.ajax({
-                url: '/resources/' + resourcetype,
-                type: "POST",
-                data: newdata,
-            });
+            var updates = {};
+            updates[$(this).attr('data-column')] = value;
+            saveRow($(this).parents('tr').first(), updates );
             return value;
         } ,
         {
             "onblur" : "submit",
             "select" : true,
-            "callback": function( sValue, y ) {
-                var aPos = oTable.fnGetPosition( this );
-                oTable.fnUpdate( sValue, aPos[0], aPos[1], false, false );
-            },
-            "height": "14px"
+            "height": "16px"
         }
     );
-    $('#admintable tbody td[class!="no_edit"]').keydown(function(evt) {
+    $('.editable-string').keydown(function(evt) {
         if(evt.keyCode==9) {
             /* Submit the current element */
             $('input', this)[0].blur();
         
             /* Activate the next element */
-            if ( $(this).next('#admintable tbody td[class!="no_edit"]').length == 1 ) {
-                $(this).next('#admintable tbody td[class!="no_edit"]').click();
+            if ( $(this.parentNode).nextAll('td').find('.editable-column').first().length == 1 ) {
+                $(this.parentNode).nextAll('td').find('.editable-column').first().click();
             }
             return false;
         }
+    } );
+    $('.editable-options').click(function () {
+        if ($(this).find('select').length > 0) {
+            return true;
+        }
+        var cur = $(this).text();
+        var options = eval(columns[$(this).attr('data-column')]['options']);
+        var html = '<form>';
+        html += generateSelect(options, cur);
+        html += '</form>';
+        $(this).html(html);
+        $(this).find('select').change(function () {
+            $(this).parents('span').first().text($(this).find('option:selected').text());
+        });
+        $(this).find('select').click();
     } );
 }
 
@@ -153,4 +150,46 @@ function fnClickAddRow(e) {
             return;
         }
     }
+}
+
+function saveRow(row, updates) {
+    var newdata = { 'id': $(row).attr('data-id') };
+    $(row).find('.editable-column').each(function () {
+        newdata[$(this).attr('data-column')] = $(this).text();
+    })
+    for (var attrname in updates) { newdata[attrname] = updates[attrname]; }
+    Object.keys(newdata).forEach(function (key) {
+        if (typeof(columns[key]) === 'undefined') {
+            return;
+        }
+        var target = key;
+        var val = newdata[key];
+        if (typeof(columns[key].target) !== 'undefined') {
+            target = columns[key].target;
+            delete newdata[key];
+        }
+        if (columns[key].type === 'string') {
+            newdata[target] = val;
+        } else if (columns[key].type === 'options') {
+            newdata[target] = eval(columns[key]['options'])[val];
+        }
+    });
+    $.ajax({
+        url: '/resources/' + resourcetype,
+        type: "POST",
+        data: newdata,
+    });
+}
+
+function generateSelect(options, cur) {
+    var html = '<select>';
+    Object.keys(options).sort().forEach(function (obj) {
+        html += '<option';
+        if (obj === cur) {
+            html += ' selected="selected"';
+        }
+        html += '>' + obj + '</option>';
+    });
+    html += '</select>';
+    return html;
 }

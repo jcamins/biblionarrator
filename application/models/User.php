@@ -44,5 +44,12 @@ class User extends Eloquent {
 
         return false;
     }
+
+    public function to_array ()
+    {
+        $array = parent::to_array();
+        $array['collection'] = $this->collection->name;
+        return $array;
+    }
 }
 

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row-fluid">
-        <div class="span6">
+        <div class="span9">
             <form action="/resources/{{ $resourcetype }}" method="POST">
             <table id="admintable">
                 <thead><tr><th>ID</th></tr></thead>
