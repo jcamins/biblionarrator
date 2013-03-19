@@ -139,7 +139,7 @@ function setTag(field) {
 
 function closeTag() {
     var found = false;
-    $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span').each(function () {
+    $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span, a').each(function () {
         $(this).attr('class').split(' ').reverse().forEach(function (element, index, array) {
             if (typeof fieldlist[element] !== undefined) {
                 appliers[element].undoToSelection();
@@ -242,11 +242,11 @@ function confirmReload() {
 }
 
 function consolidateStyles() {
-    $('#recordContainer span').each(function() {
+    $('#recordContainer span, #recordContainer a').each(function() {
         var node = this;
         var newNode = node;
         for (newNode = node.previousSibling; newNode; newNode = newNode.previousSibling) {
-            if (newNode.nodeType === 1 && newNode.nodeName === 'SPAN' && newNode.getAttribute('class') === node.getAttribute('class')) {
+            if (newNode.nodeType === 1 && (newNode.nodeName === 'SPAN' || newNode.nodeName === 'A') && newNode.getAttribute('class') === node.getAttribute('class')) {
                 newNode.innerHTML = newNode.innerHTML + node.innerHTML;
                 node.parentNode.removeChild(node);
                 node = newNode;

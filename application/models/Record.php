@@ -93,7 +93,9 @@ class Record extends Eloquent
         $this->targets()->delete();
         foreach ($fields as $field) {
             foreach ($xml->xpath('//' . $field->schema . '_' . $field->field) as $node) {
-                $this->primaries()->attach(str_replace('/record/', '', $node->xpath('@href')));
+                if ($node->xpath('@link')) {
+                    $this->targets()->attach(str_replace('/record/', '', join('', $node->xpath('@link'))));
+                }
             }
         }
         parent::save();
