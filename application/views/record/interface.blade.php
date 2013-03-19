@@ -163,12 +163,12 @@ $(document).ready(function() {
         $(this).css('height', 'auto');
     });
 
-    $('#recordContainer').on('mouseenter', 'span', null, function() {
+    $('#recordContainer').on('mouseenter', 'span, a', null, function() {
         var fieldentry = $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]');
         $('#fieldsTOC').jstree('open_node', fieldentry);
         $('#fieldsTOC').jstree('select_node', fieldentry);
         return false;
-     }).on('mouseleave', 'span', null, function() {
+     }).on('mouseleave', 'span, a', null, function() {
         $('#fieldsTOC').jstree('deselect_node', $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]'));
         return false;
      });
