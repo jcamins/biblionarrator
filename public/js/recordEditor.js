@@ -129,6 +129,11 @@ function setTag(field) {
         appliers[labeltofieldlookup[field]].applyToRange(currentSelection.getRangeAt(ii));
     }
     consolidateStyles();
+    if ($(currentSelection.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
+        $(currentSelection.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
+        addLink();
+    }
+
     updateFieldsTOCTree();
 }
 
@@ -267,4 +272,23 @@ function initializeContentEditable() {
     } else {
         $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
     }
+}
+
+function addLink() {
+    $('#link-select').on('hidden', function () {
+        $('#curlink').removeAttr('id');
+    });
+    $('#link-select').load('/record/' + recordId + '/link/select', function () {
+        $('#link-results').on('click', '.record-view-link', null, function () {
+            var link = $(this).parents('tr').first().attr('data-id');
+            $('#curlink').attr('href', '/record/' + link);
+            $('#link-select').modal('hide');
+            return false;
+        });
+        $('#link-form').submit(function (e) {
+            $('#link-results').load('/record/' + recordId + '/link/list?q=' + $('#link-q').val());
+            return false;
+        });
+    });
+    $('#link-select').modal('show');
 }

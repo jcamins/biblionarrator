@@ -1,25 +1,23 @@
 <?php
 
-class Search_Controller extends Base_Controller {
+class Search_Controller extends List_Controller {
 
-    public $restful = true;
+    protected $view = 'interface.search';
+    protected $viewdata = array (
+            'recordToolbarView' => 'components.result-toolbar-common',
+            'recordPaneView' => 'components.result-pane-common'
+            );
 
     public function get_index() {
         $query = Input::get('q');
-        $results = new RecordCollection();
+        $this->records = new RecordCollection();
         if (isset($query)) {
-            $results = $results->where(function($dbquery) use ($query) {
+            $this->records = $this->records->where(function($dbquery) use ($query) {
                 foreach (explode(' ', $query) as $keyword) {
                     $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
                 }
             });
         }
-        Asset::add('fieldstyles', 'css/fields.css');
-        Asset::add('bookmarks-js', 'js/bookmarks.js');
-		return View::make('interface.search')->with('records', $results)->with('query', $query);
-    }
-
-    public function get_links($id = null) {
-        $query = Input::get('q');
+        return parent::get_index()->with('query', $query);
     }
 }

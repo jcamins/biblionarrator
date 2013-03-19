@@ -1,26 +1,18 @@
 <?php
 
-class Bookmarks_Controller extends Base_Controller {
+class Bookmarks_Controller extends List_Controller {
 
-    public $restful = true;
-    
-    protected $bookmarks;
-
-    public function __construct() {
-        parent::__construct();
-        $this->bookmarks = new Bookmarks();
-        $this->bookmarks->autosave = true;
-    }
+    protected $view = 'interface.bookmarks';
 
     protected $viewdata = array (
-            'recordToolbarView' => 'components.bookmarksrecordtoolbar',
+            'recordToolbarView' => 'components.result-toolbar-common',
             'recordPaneView' => 'components.bookmarksrecordpane'
             );
 
-    public function get_index() {
-        Asset::add('fieldstyles', 'css/fields.css');
-        Asset::add('bookmarks-js', 'js/bookmarks.js');
-		return View::make('interface.bookmarks', $this->viewdata)->with('records', $this->bookmarks);
+    public function __construct() {
+        parent::__construct();
+        $this->records = new Bookmarks();
+        $this->records->autosave = true;
     }
 
     public function post_add($record = null) {

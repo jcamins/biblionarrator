@@ -5,5 +5,5 @@
 @endsection
 
 @section('norecords')
-<em>Your search for {{ $query }} found no records</em>
+<div id="norecords"><em>Your search for {{ $query }} found no records</em></div>
 @endsection

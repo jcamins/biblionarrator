@@ -4,6 +4,32 @@
     }
 }
 
+.button-box {
+    border-radius: 15px;
+}
+
+.button-box > input {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    margin-bottom: 0px;
+    border-right: 0px;
+    padding: 4px 14px;
+}
+
+.button-box > button {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    height: 30px;
+}
+
+.link-results {
+    margin-top: 20px;
+}
+
 .editor-toolbar {
     display: none;
 }

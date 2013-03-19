@@ -89,6 +89,13 @@ class Record extends Eloquent
                 $this->primaries()->insert($primary);
             }
         }
+        $fields = Field::where_link('1')->get();
+        $this->targets()->delete();
+        foreach ($fields as $field) {
+            foreach ($xml->xpath('//' . $field->schema . '_' . $field->field) as $node) {
+                $this->primaries()->attach(str_replace('/record/', '', $node->xpath('@href')));
+            }
+        }
         parent::save();
         BiblioNarrator\ElasticSearch::saveRecord($this->data);
     }

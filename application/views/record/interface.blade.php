@@ -127,6 +127,8 @@
         <button id="confirmReloadOK" class="btn btn-primary">Yes</button>
     </div>
 </div>
+<div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">
+</div>
 @endif
 @endsection
 

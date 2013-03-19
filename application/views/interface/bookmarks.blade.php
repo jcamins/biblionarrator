@@ -6,7 +6,7 @@
     display: none;
 }
 </style>
-@yield_section
+@endsection
 
 @section('listheading')
 <tr><th>Your bookmarks</th></tr>

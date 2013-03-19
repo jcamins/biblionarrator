@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="link-select-label">Find link</h3>
+</div>
+<div class="modal-body">
+    <form id="link-form">
+        <input type="hidden" name="record" value="{{ $id }}"></input>
+        <input type="hidden" name="link" value=""></input>
+        <div class="button-box">
+            <input id='link-q' type="text" name="q" placeholder="Link search"></input>
+            <button type="submit" id='search-links' class="btn"><i class="icon-search"></i></button>
+        </div>
+    </form>
+    <div id="link-results">
+    </div>
+</div>
+<div class="modal-footer">
+    <button id="link-select-cancel" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button type="submit" id="link-select-ok" class="btn btn-primary">Save</button>
+</div>
