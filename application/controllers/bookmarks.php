@@ -18,28 +18,28 @@ class Bookmarks_Controller extends List_Controller {
     public function post_add($record = null) {
         return json_encode(
             array(
-                'message' => __('bookmarks.' . $this->bookmarks->add($record) . 'flash')->get(),
-                'count' => $this->bookmarks->size()
+                'message' => __('bookmarks.' . $this->records->add($record) . 'flash')->get(),
+                'count' => $this->records->size()
             )
         );
     }
 
     public function get_add($record = null) {
-        $this->bookmarks->add($record);
+        $this->records->add($record);
         return Redirect::to('bookmarks');
     }
 
     public function post_delete($record = null) {
         return json_encode(
             array(
-                'message' => __('bookmarks.' . $this->bookmarks->remove($record) . 'flash')->get(),
-                'count' => $this->bookmarks->size()
+                'message' => __('bookmarks.' . $this->records->remove($record) . 'flash')->get(),
+                'count' => $this->records->size()
             )
         );
     }
 
     public function get_delete($record = null) {
-        $this->bookmarks->remove($record);
+        $this->records->remove($record);
         return Redirect::to('bookmarks');
     }
 
