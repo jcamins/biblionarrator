@@ -41,6 +41,7 @@ class Record extends Eloquent
                 break;
             
             case 'html':
+            case 'html4':
                 $xmlstylesheet = 'raw2html.xsl';
                 break;
 

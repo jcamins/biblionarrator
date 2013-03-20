@@ -13,8 +13,9 @@ class Search_Controller extends List_Controller {
         $this->query = Input::get('q');
         $this->records = new RecordCollection();
         if (isset($this->query)) {
-            $this->records = $this->records->where(function($dbquery) {
-                foreach (explode(' ', $this->query) as $keyword) {
+            $query = $this->query;
+            $this->records = $this->records->where(function($dbquery) use ($query) {
+                foreach (explode(' ', $query) as $keyword) {
                     $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
                 }
             });

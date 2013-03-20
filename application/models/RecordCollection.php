@@ -66,6 +66,32 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     public function save() {
     }
 
+    public function format($format = 'raw') {
+        $output = '';
+        foreach ($this->get() as $record) {
+            $output .= $record->format($format);
+        }
+        switch ($format) {
+            case 'raw':
+                $output = '<records>' . $output . '</records>';
+                break;
+            
+            case 'html4':
+                $output = preg_replace('/<(\/)?(section|header)>/', '<$1p>', $output);
+
+            case 'html':
+            case 'escaped':
+                $output = '<html><body>' . $output . '</body></html>';
+                libxml_use_internal_errors(true);
+                $emogrifier = new Emogrifier($output, View::make('assets.fieldscss')->render());
+                $output = $emogrifier->emogrify();
+                break;
+
+            default:
+        }
+        return $output;
+    }
+
     protected function _load_collection() {
         if (isset($this->idlist) && count($this->idlist) > 0) {
             $this->reset_where();
