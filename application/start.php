@@ -62,6 +62,7 @@ Autoloader::map(array(
 	'Base_Controller' => path('app').'controllers/base.php',
     'Resource_Controller' => path('app').'libraries/Resource_Controller.php',
     'List_Controller' => path('app').'libraries/List_Controller.php',
+    'Emogrifier' => path('app').'libraries/emogrifier.php',
 ));
 
 /*

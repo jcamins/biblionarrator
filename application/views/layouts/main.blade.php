@@ -3,6 +3,12 @@
     <head>
         <meta charset="utf-8">
         <title>Biblionarrator</title>
+        <script src="/js/html5shiv.js"></script>
+        <script src="/js/html5shiv-printshiv.js"></script>
+        <!--[if lt IE 9]>
+            <link rel="stylesheet" type="text/css" href="/css/style-ie.css" />
+        <![endif]-->
+
         {{ Asset::styles() }}
         @section('styles')
         @yield_section
