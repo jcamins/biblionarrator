@@ -43,8 +43,8 @@
                         </ul>
                         <ul class="nav pull-right">
                             <li class="dropdown"><a href="/bookmarks"><i class="icon-bookmark"></i><span id="bookmark-count">
-@if (strstr(Session::get('bookmarks'), ','))
-{{ count(explode(',', Session::get('bookmarks'))) - 1 }}
+@if (strlen(Session::get('bookmarks')) > 0)
+{{ count(explode(',', Session::get('bookmarks'))) }}
 @endif
 </span></a>
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
