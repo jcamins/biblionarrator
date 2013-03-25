@@ -10,11 +10,11 @@
 @section('toolbar')
     @if (Auth::check())
         <div class="btn-group dropdown">
-            <button id="save-results" type="button" data-toggle="modal" data-target="#save-modal" class="btn btn-small">Save</button>
-            <button id="dropdown-save-results" type="button" data-toggle="dropdown" class="btn btn-small dropdown-toggle"><b class="caret"></b></button>
+            <button id="download-results" type="button" data-toggle="modal" data-target="#download-modal" class="btn btn-small">Download</button>
+            <button id="dropdown-download-results" type="button" data-toggle="dropdown" class="btn btn-small dropdown-toggle"><b class="caret"></b></button>
             <ul class="dropdown-menu">
-                <li><a id="save-citations-html">Citations (HTML)</a></li>
-                <li><a id="save-full-html">Full list (HTML)</a></li>
+                <li><a target="_blank" href="{{ URL::current() }}/export/html/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
+                <li><a target="_blank" href="{{ URL::current() }}/export/html?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
             </ul>
         </div>
     @endif

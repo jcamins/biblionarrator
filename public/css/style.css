@@ -4,9 +4,14 @@
     }
 }
 
-.table th.recordtypes {
+.resultcount {
+    text-align: right;
+}
+
+.header-shown {
     font-size: 90%;
     font-weight: normal;
+    margin-bottom: 8px;
 }
 
 .recordtypes a {
@@ -25,6 +30,10 @@
 
 .recordtypes a.selected {
     color: #000;
+}
+
+.header-hidden {
+    display: none;
 }
 
 .button-box {

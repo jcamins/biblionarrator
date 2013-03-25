@@ -4,10 +4,12 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
 {
     protected $idlist;
     public $autosave = false;
+    public $snippet = false;
     public $results;
     protected $facets = array();
 
     public function __construct($ids = null, $result = null) {
+        //debug_print_backtrace();
         if (gettype($ids) === 'array') {
             $this->idlist = $ids;
         } elseif (in_array(gettype($ids), array('string', 'integer'))) {
@@ -27,9 +29,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function add($id) {
-        if (is_null($this->idlist)) {
-            $this->_update_idlist();
-        }
+        $this->_update_idlist();
         if (!in_array($id, $this->idlist)) {
             array_push($this->idlist, $id);
             if ($this->autosave) {
@@ -43,9 +43,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function remove($id) {
-        if (is_null($this->idlist)) {
-            $this->_update_idlist();
-        }
+        $this->_update_idlist();
         if (in_array($id, $this->idlist)) {
             $this->idlist = array_diff($this->idlist, array($id));
             if ($this->autosave) {
@@ -59,13 +57,16 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function size() {
-        if (is_null($this->idlist)) {
-            $this->_update_idlist();
-        }
+        $this->_update_idlist();
         return count($this->idlist);
     }
 
     public function save() {
+    }
+
+    public function snippets($disable = false) {
+        $this->snippet = !$disable;
+        return $this;
     }
 
     public function format($format = 'raw') {
@@ -95,9 +96,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function facet($name) {
-        if (is_null($this->idlist)) {
-            $this->_update_idlist();
-        }
+        $this->_update_idlist();
         foreach ($this->facets as $facet) {
             if ($facet->name === $name) {
                 return $facet;
@@ -108,12 +107,41 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
         return $facet;
     }
 
+    public function drop_facet($name) {
+        foreach ($this->facets as $facet) {
+            if ($facet->name === $name) {
+                $this->facets = array_diff($this->facets, array($facet));
+                return;
+            }
+        }
+    }
+
+    public function sort($field) {
+        $parts = explode('_', $field);
+        if (Field::where_schema_and_field($parts[0], $parts[1])->first()) {
+            $this->results->order_by(DB::raw('ExtractValue(data,\'//' . $parts[0] . '_' . $parts[1] . '\')'));
+        }
+    }
+
     public function get_query() {
         if (count($this->idlist) > 0) {
             return Record::where_in('records.id', $this->idlist);
         } else {
             return Record::where_null('records.id');
         }
+    }
+
+	public function get($columns = array('*')) {
+        if ($this->snippet) {
+            $results = array();
+            $recs = parent::get($columns);
+            foreach ($recs as $record) {
+                array_push($results, $record->snippet());
+            }
+        } else {
+            $results = parent::get($columns);
+        }
+        return $results;
     }
 
     protected function _update_results() {
@@ -132,14 +160,16 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
                 $this->where_null('id');
             }
         }
-        $this->_update_idlist();
+        $this->_update_idlist(true);
         $this->_update_results();
     }
 
-    protected function _update_idlist() {
-        $this->idlist = array();
-        foreach ($this->get() as $record) {
-            array_push($this->idlist, $record->id);
+    protected function _update_idlist($force = false) {
+        if (is_null($this->idlist) || $force) {
+            $this->idlist = array();
+            foreach (parent::get() as $record) {
+                array_push($this->idlist, $record->id);
+            }
         }
     }
 }
