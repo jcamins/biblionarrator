@@ -4,6 +4,29 @@
     }
 }
 
+.table th.recordtypes {
+    font-size: 90%;
+    font-weight: normal;
+}
+
+.recordtypes a {
+    text-decoration: none;
+    color: #444;
+    margin-left: 1em;
+}
+
+.recordtypes a:hover {
+    text-decoration: underline;
+}
+
+.recordtypes a i {
+    opacity: 0.5;
+}
+
+.recordtypes a.selected {
+    color: #000;
+}
+
 .button-box {
     border-radius: 15px;
 }

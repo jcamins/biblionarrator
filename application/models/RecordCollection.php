@@ -5,18 +5,20 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     protected $idlist;
     public $autosave = false;
     public $results;
+    protected $facets = array();
 
-    public function __construct($ids = null) {
+    public function __construct($ids = null, $result = null) {
         if (gettype($ids) === 'array') {
             $this->idlist = $ids;
         } elseif (in_array(gettype($ids), array('string', 'integer'))) {
             $this->idlist = array($ids);
-        } else {
-            $this->idlist = array();
         }
         parent::__construct('Record');
         if (count($this->idlist) > 0) {
             $this->_load_collection();
+        }
+        if (is_null($result)) {
+            $this->_update_results();
         }
     }
 
@@ -92,8 +94,37 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
         return $output;
     }
 
+    public function facet($name) {
+        if (is_null($this->idlist)) {
+            $this->_update_idlist();
+        }
+        foreach ($this->facets as $facet) {
+            if ($facet->name === $name) {
+                return $facet;
+            }
+        }
+        $facet = new Facet($this, $name);
+        array_push($this->facets, $facet);
+        return $facet;
+    }
+
+    public function get_query() {
+        if (count($this->idlist) > 0) {
+            return Record::where_in('records.id', $this->idlist);
+        } else {
+            return Record::where_null('records.id');
+        }
+    }
+
+    protected function _update_results() {
+        $this->results = new RecordCollection($this->idlist, true);
+        foreach ($this->facets as $facet) {
+            $facet->select();
+        }
+    }
+
     protected function _load_collection() {
-        if (isset($this->idlist)) { 
+        if (isset($this->idlist)) {
             $this->reset_where();
             if (count($this->idlist) > 0) {
                 $this->where_in('id', $this->idlist);
@@ -102,6 +133,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
             }
         }
         $this->_update_idlist();
+        $this->_update_results();
     }
 
     protected function _update_idlist() {

@@ -1,10 +1,20 @@
-@if ($records && $records->paginate(10)->results)
+@if ($records && $records->results->paginate(10)->results)
     <table id="recordList" class="table">
     <thead>
+        <tr><th class='recordtypes'>
+        @if (isset($query) && strlen($query) > 0)
+            Your search for <em>{{ $query }}</em> found:
+        @else
+            Found:
+        @endif
+        @foreach ($records->facet('recordtype')->counts() as $format)
+            <a class="{{ $format['selected'] ? 'selected' : '' }}" href="{{ URL::current() }}?{{ http_build_query(Input::except('recordtype')) }}&recordtype={{ $format['name'] }}"><i class="icon-leaf"></i> {{ $format['count'] }} {{ $format['name'] }}s</a>
+        @endforeach
+        </th></tr>
         @yield('listheading')
     </thead>
     <tbody>
-    @foreach ($records->paginate(10)->results as $record)
+    @foreach ($records->results->paginate(10)->results as $record)
         <tr class="resultRow" data-id="{{ $record->id }}">
             <td>
                 <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
@@ -28,7 +38,7 @@
     @endforeach
     </tbody>
     </table>
-    {{ $records->paginate(10)->appends(Input::except('page'))->links() }}
+    {{ $records->results->paginate(10)->appends(Input::except('page'))->links() }}
 @else
     @section('norecords')
     @yield_section
