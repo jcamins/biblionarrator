@@ -55,7 +55,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     public function size() {
-        $this->_update_idlist();
+        $this->_update_idlist(true);
         return count($this->idlist);
     }
 
@@ -81,6 +81,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
                 $output = preg_replace('/<(\/)?(section|header)>/', '<$1p>', $output);
 
             case 'html':
+            case 'htmlnolink':
             case 'escaped':
                 $output = '<html><body>' . $output . '</body></html>';
                 libxml_use_internal_errors(true);
