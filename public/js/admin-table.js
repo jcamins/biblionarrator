@@ -13,7 +13,8 @@ function initializeAdminTable() {
         "bPaginate": true,
         "bProcessing": true,
         "sAjaxSource": '/resources/' + resourcetype,
-        "sPaginationType": "full_numbers",
+        "sDom": '<"dataTables_controls top"lf>rt<"dataTables_controls"ip>',
+        'sPaginationType': 'full_numbers',
         "aoColumns": dtColumns,
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
             oSettings.jqXHR = $.ajax( {
