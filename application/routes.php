@@ -32,6 +32,9 @@
 |
 */
 
+Route::any('admin/(:any)/?(:any)?', function($controller,$params=null) {
+    return Controller::call('resources.'.$controller.'@admin', (array) $params);
+});
 Route::post('record/(:any)/link/add/(:any)', 'record.link@add');
 Route::get('record/(:any)?/?link/list', 'record.link@list');
 Route::get('record/(:any)?/?link/select', 'record.link@select');
@@ -42,7 +45,6 @@ Route::get('css/fields.css', function() {
 });
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
-Route::get('resources/field/(:any)?/?admin', 'resources.field@admin');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
 Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
 Route::controller(Controller::detect());

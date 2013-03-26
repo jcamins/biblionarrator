@@ -10,15 +10,17 @@ class Search_Controller extends List_Controller {
             );
 
     public function __construct() {
-        $this->query = Input::get('q');
         $this->records = new RecordCollection();
-        if (isset($this->query)) {
-            $query = $this->query;
-            $this->records = $this->records->where(function($dbquery) use ($query) {
-                foreach (explode(' ', $query) as $keyword) {
-                    $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
-                }
-            });
+        if (Input::get('q') != '/' . URI::current()) {
+            $this->query = Input::get('q');
+            if (isset($this->query)) {
+                $query = $this->query;
+                $this->records = $this->records->where(function($dbquery) use ($query) {
+                    foreach (explode(' ', $query) as $keyword) {
+                        $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
+                    }
+                });
+            }
         }
         parent::__construct();
     }
