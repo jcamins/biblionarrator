@@ -124,9 +124,6 @@
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
         @section('form_modals')
-        @if (Auth::check())
-            @include('plugins.upload_modal')
-        @endif
         @yield_section
         
         {{ Asset::scripts() }}
