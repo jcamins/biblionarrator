@@ -10,9 +10,9 @@ class Bookmarks_Controller extends List_Controller {
             );
 
     public function __construct() {
-        parent::__construct();
         $this->records = new Bookmarks();
         $this->records->autosave = true;
+        parent::__construct();
     }
 
     public function post_add($record = null) {
