@@ -8,7 +8,7 @@ class Record_Controller extends Resource_Controller {
 
     public function __construct()
     {
-        parent::__construct();
+        Base_Controller::__construct();
         $this->filter('before', 'auth', array('edit', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->except(array('index'));
         $this->filter('before', 'auth', array('view', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->only(array('index'));
     }

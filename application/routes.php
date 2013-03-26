@@ -120,7 +120,8 @@ Route::filter('csrf', function()
 
 Route::filter('auth', function($action, $resource, $object)
 {
-	if (Auth::guest()) return Redirect::to('login');
+//	if (Auth::guest()) return Redirect::to('login');
+
     if (!Authority::can($action, $resource, $object)) {
         return Redirect::to('home');
     }

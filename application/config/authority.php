@@ -24,7 +24,16 @@ return array(
 
 
         // If a user doesn't have any roles, we don't have to give him permissions so we can stop right here.
-        if(count($user->roles) === 0) return false;
+        //if(count($user->roles) === 0) return false;
+
+        Authority::allow('view', 'Record');/*, function ($that_record) use ($user)
+        {
+            error_log($that_record->collection()->first()->id);
+            if (isset($that_record->id) && 
+                $that_record->collection()->first()->id === $user->collection()->first()->id) {
+                     return true;
+            }
+        });*/
 
         if($user->has_role('cataloger'))
         {
@@ -93,27 +102,6 @@ return array(
             });
         }
 
-/*        if($user->has_role('store_owner'))
-        {
-            // What if the logged in User has the role "store_owner", let's allow the user to manage his own store
-            Authority::allow('manage', 'Store', function($store) use ($user)
-            {
-                return is_null(DB::table('stores')->where_id($store->id)->where_user_id($user->id)->first());
-            });
-
-            // We can also allow "Actions" on certain "Resources" by results we get from somewhere else, look closely at the next example
-            foreach(DB::table('permissions')->where_user_id($user->id)->get() as $permission)
-            {
-                if($permission->type === 'allow')
-                {
-                    Authority::allow($permission->action, $permission->resource);
-                }
-                else
-                {
-                    Authority::deny($permission->action, $permission->resource);    
-                }
-            }
-        } */
     }
 
 );

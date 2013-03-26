@@ -1,4 +1,4 @@
-.dataTables_wrapper select, .dataTables_wrapper input {
+.dataTables_controls select, .dataTables_controls input {
     width: auto;
     height: auto;
     padding: 0;
