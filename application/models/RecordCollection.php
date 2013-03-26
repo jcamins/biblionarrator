@@ -7,8 +7,9 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     public $snippet = false;
     public $results;
     protected $facets = array();
+    protected $inner = false;
 
-    public function __construct($ids = null, $result = null) {
+    public function __construct($ids = null, $inner = null) {
         //debug_print_backtrace();
         if (gettype($ids) === 'array') {
             $this->idlist = $ids;
@@ -16,10 +17,10 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
             $this->idlist = array($ids);
         }
         parent::__construct('Record');
-        if (count($this->idlist) > 0) {
+        if (isset($inner)) $this->inner = true;
+        if (isset($this->idlist)) {
             $this->_load_collection();
-        }
-        if (is_null($result)) {
+        } else {
             $this->_update_results();
         }
     }
@@ -145,9 +146,11 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     }
 
     protected function _update_results() {
-        $this->results = new RecordCollection($this->idlist, true);
-        foreach ($this->facets as $facet) {
-            $facet->select();
+        if (!$this->inner) {
+            $this->results = new RecordCollection($this->idlist, true);
+            foreach ($this->facets as $facet) {
+                $facet->select();
+            }
         }
     }
 
