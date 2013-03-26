@@ -7,17 +7,14 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     public $snippet = false;
     public $results;
     protected $facets = array();
-    protected $inner = false;
 
-    public function __construct($ids = null, $inner = null) {
-        //debug_print_backtrace();
+    public function __construct($ids = null) {
         if (gettype($ids) === 'array') {
             $this->idlist = $ids;
         } elseif (in_array(gettype($ids), array('string', 'integer'))) {
             $this->idlist = array($ids);
         }
         parent::__construct('Record');
-        if (isset($inner)) $this->inner = true;
         if (isset($this->idlist)) {
             $this->_load_collection();
         } else {
@@ -145,12 +142,17 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
         return $results;
     }
 
+    public function where($column, $operator = null, $value = null, $connector = 'AND') {
+        $res = parent::where($column, $operator, $value, $connector);
+        $this->_update_results();
+        return $res;
+    }
+
     protected function _update_results() {
-        if (!$this->inner) {
-            $this->results = new RecordCollection($this->idlist, true);
-            foreach ($this->facets as $facet) {
-                $facet->select();
-            }
+        $this->_update_idlist(true);
+        $this->results = new ResultRecordCollection($this->idlist, true);
+        foreach ($this->facets as $facet) {
+            $facet->select();
         }
     }
 

@@ -4,6 +4,11 @@
     }
 }
 
+article [contenteditable="true"] {
+    border: 1px #eee solid;
+    border-radius: 6px;
+}
+
 .resultcount {
     text-align: right;
 }
