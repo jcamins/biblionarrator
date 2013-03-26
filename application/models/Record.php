@@ -52,6 +52,13 @@ class Record extends Eloquent
                 };
                 break;
 
+            case 'htmlnolink':
+                $xmlstylesheet = 'raw2html.xsl';
+                $postprocess = function ($data) {
+                    return preg_replace('/<(\/)?a(\W)/', '<$1span$2', $data);
+                };
+                break;
+
             default:
         }
 

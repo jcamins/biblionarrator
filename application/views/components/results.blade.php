@@ -23,7 +23,7 @@
         <tr class="resultRow" data-id="{{ $record->id }}">
             <td>
                 <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
-                    <a class="record-view-link" href="/record/{{ $record->id }}">{{ $record->snippet()->format('html') }}</a>
+                    <a class="record-view-link" href="/record/{{ $record->id }}">{{ $record->snippet()->format('htmlnolink') }}</a>
                     <div class="recordPreviewArea">
                         <div class="recordRemainder"></div>
                     </div>
