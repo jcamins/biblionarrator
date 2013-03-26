@@ -13,7 +13,7 @@ class Resources_User_Controller extends Resource_Controller {
     public $resourceClass = 'User';
 
     public function get_security($id) {
-        return View::make('components.user-security')->with('user', User::find($id));
+        return View::make('ajax.user-security')->with('user', User::find($id));
     }
 }
 
