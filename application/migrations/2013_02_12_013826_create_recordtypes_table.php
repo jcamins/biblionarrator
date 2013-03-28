@@ -26,6 +26,7 @@ class Create_RecordTypes_Table {
 	 */
 	public function up()
 	{
+        DB::query('set foreign_key_checks = 0;');
         Schema::table('recordtypes', function($table) {
             $table->create();
             $table->increments('id');
@@ -34,6 +35,11 @@ class Create_RecordTypes_Table {
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
+        Schema::table('records', function($table) {
+            $table->integer('recordtype_id')->unsigned();
+            $table->foreign('recordtype_id')->references('id')->on('recordtype');
+        });
+        DB::query('set foreign_key_checks = 1;');
 	}
 
 	/**

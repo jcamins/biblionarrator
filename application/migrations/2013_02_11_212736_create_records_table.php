@@ -28,8 +28,6 @@ class Create_Records_Table {
         Schema::table('records', function($table) {
             $table->create();
             $table->increments('id');
-            $table->integer('recordtype_id')->unsigned();
-            $table->foreign('recordtype_id')->references('id')->on('recordtype');
             $table->text('data');
             $table->timestamps();
             $table->engine = 'InnoDB';
