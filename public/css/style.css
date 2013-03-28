@@ -4,6 +4,16 @@
     }
 }
 
+.row-fluid .pull-left[class*="span"]:last-child { margin-left: 0; }
+
+@media (max-width: 767px) {
+    .row-fluid .pull-right[class*="span"] { float: none; }
+}
+
+#sidebarAffix {
+    clear: both;
+}
+
 article [contenteditable="true"] {
     border: 1px #eee solid;
     border-radius: 6px;

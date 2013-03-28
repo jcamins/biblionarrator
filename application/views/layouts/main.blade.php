@@ -107,19 +107,19 @@
 
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span2">
-                    @yield('sidetoolbar')
-                </div>
-                <div class="span10">
+                <div class="span10 pull-right">
                     @yield('toolbar')
+                </div>
+                <div class="span2 pull-left">
+                    @yield('sidetoolbar')
                 </div>
             </div>
             <div class="row-fluid">
-                <div class="span2">
-                    @yield('sidebar')
-                </div>
-                <div class="span10">
+                <div class="span10 pull-right">
                     @yield('content')
+                </div>
+                <div class="span2 pull-left">
+                    @yield('sidebar')
                 </div>
             </div>
         </div> <!-- /container -->
