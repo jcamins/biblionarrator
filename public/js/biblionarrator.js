@@ -25,7 +25,7 @@ var toctree;
 
 function traverseTOC(node, depth) {
     $(node).find('span, a').each(function () {
-        if ($(this).attr('data-match')) {
+        if ($(this).attr('data-match') || $(this).attr('class').length === 0) {
             return;
         }
         var classes = $(this).attr('class').split(' ');

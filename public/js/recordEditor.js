@@ -141,6 +141,9 @@ function closeTag() {
     var found = false;
     $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span, a').each(function () {
         $(this).attr('class').split(' ').reverse().forEach(function (element, index, array) {
+            if (found) {
+                return;
+            }
             if (typeof fieldlist[element] !== undefined) {
                 appliers[element].undoToSelection();
                 found = true;
@@ -172,6 +175,7 @@ function loadRecord() {
             }).done(function(msg) {
                 var text = transformXML(msg, xsl).replace('&#160;', '&nbsp;');
                 $('#recordContainer').html(text);
+                initializeContentEditable();
                 addAlert('Successfully loaded record', 'success');
             });
         }
@@ -190,7 +194,7 @@ function saveRecord() {
         $.ajax({
             type: "POST",
             url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-            data: { data: transformXML($('#recordContainer').html(), xsl) },
+            data: { data: transformXML($('#recordContainer').html().replace('&nbsp;', '&#160;'), xsl) },
             error: ajaxSaveFailed,
         }).done(function(msg) {
             recordId = parseInt(msg.id);
