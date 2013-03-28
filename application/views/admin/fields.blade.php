@@ -1,7 +1,7 @@
 @layout('layouts/admin.tree')
 
 @section('sidetoolbar')
-<a id="add-field" class="btn btn-small jstree-draggable" href="/resources/field/new/admin">Add field</a>
+<a id="add-field" class="btn btn-small jstree-draggable" href="/admin/field/new">Add field</a>
 @endsection
 
 @section('toolbar')
@@ -59,7 +59,7 @@ var treeCallbacks = {
             } else {
                 $('#field-parent').val('');
             }
-            window.history.pushState({ 'event' : 'new' }, 'New field', '/resources/field/new/admin');
+            window.history.pushState({ 'event' : 'new' }, 'New field', '/admin/field/new');
         });
     }
 };
@@ -117,11 +117,11 @@ $(document).ready(function() {
                     'primary': $('#field-primary').is(':checked') ? 1 : 0
                   }
         }).done(function (data) {
-            $('#field-id').val(data.attributes.id);
-            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.attributes.id, '/resources/field/' + data.attributes.id + '/admin');
+            $('#field-id').val(data.id);
+            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.id, '/admin/field/' + data.id);
             $('#tree .selected').each(function() {
-                $(this).parent().attr('data-id', data.attributes.id);
-                $(this).attr('href', '/resources/field/' + data.attributes.id + '/admin');
+                $(this).parent().attr('data-id', data.id);
+                $(this).attr('href', '/admin/field/' + data.id);
             });
             $('#saveField').removeClass('btn-info');
         });
