@@ -166,6 +166,12 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
         return $res;
     }
 
+    public function where_null($column, $operator = null, $value = null, $connector = 'AND') {
+        $res = parent::where_null($column, $operator, $value, $connector);
+        $this->_update_results();
+        return $res;
+    }
+
     protected function _update_results() {
         $this->_update_idlist(true);
         $this->results = new ResultRecordCollection($this->idlist, true);

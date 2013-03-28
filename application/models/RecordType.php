@@ -21,7 +21,7 @@ class RecordType extends Eloquent
     public static $timestamps = true;
 
     public function record() {
-        return $this->has_many('Record');
+        return $this->has_many('Record', 'recordtype_id');
     }
 
     public function style() {

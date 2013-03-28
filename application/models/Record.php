@@ -34,7 +34,7 @@ class Record extends Eloquent
     }
 
     public function record_type() {
-        return $this->belongs_to('RecordType');
+        return $this->belongs_to('RecordType', 'recordtype_id');
     }
 
     public function collection() {
@@ -105,6 +105,13 @@ class Record extends Eloquent
     }
 
     public function save() {
+        if (is_null($this->recordtype_id)) {
+            $this->recordtype_id = RecordType::find(1)->id;
+        }
+        if (is_null($this->collection_id)) {
+            $this->collection_id = Auth::user()->collection_id;
+        }
+        parent::save();
         $xml = new SimpleXMLElement($this->data);
         $fields = Field::where_primary('1')->get();
         $this->primaries()->delete();
@@ -123,7 +130,6 @@ class Record extends Eloquent
                 }
             }
         }
-        parent::save();
         BiblioNarrator\ElasticSearch::saveRecord($this->data);
     }
 }

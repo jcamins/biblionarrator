@@ -37,7 +37,7 @@ class Create_RecordTypes_Table {
         });
         Schema::table('records', function($table) {
             $table->integer('recordtype_id')->unsigned();
-            $table->foreign('recordtype_id')->references('id')->on('recordtype');
+            $table->foreign('recordtype_id')->references('id')->on('recordtypes');
         });
         DB::query('set foreign_key_checks = 1;');
 	}

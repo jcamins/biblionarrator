@@ -39,6 +39,13 @@ class Search_Controller extends List_Controller {
                 });
             }
         }
+        if (Config::get('biblionarrator.private')) {
+            if (Auth::check()) {
+                $this->records->where('collection_id', '=', Auth::user()->collection_id);
+            } else {
+                $this->records->where_null('collection_id');
+            }
+        }
         parent::__construct();
     }
 
