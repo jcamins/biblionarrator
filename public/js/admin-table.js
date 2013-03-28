@@ -230,7 +230,9 @@ function deleteObject(obj) {
         url: '/resources/' + resourcetype,
         type: "DELETE",
         data: { 'id': $(obj).attr('data-id') }
-    }).success(function () {
+    }).done(function () {
         $('#admintable').dataTable().fnDeleteRow(obj);
+    }).fail(function () {
+        alert("Unable to delete object, sorry.");
     });
 }
