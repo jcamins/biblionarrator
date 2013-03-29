@@ -1,7 +1,7 @@
 <form action="/resources/user" method="POST">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="tagSelectorLabel">Select tag</h3>
+        <h3 id="user-security-label">Set user security</h3>
     </div>
     <div class="modal-body">
         <input type="hidden" name="id" value="{{ $user->id }}"></input>
