@@ -81,3 +81,10 @@ function initializeTOC() {
         $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight') });
     });
 }
+
+function addQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
+    separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    return uri + separator + key + "=" + value;
+}
+

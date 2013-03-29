@@ -5,9 +5,6 @@
 @endsection
 
 @section('sidetoolbar')
-@endsection
-
-@section('toolbar')
     @if (Auth::check())
         <div class="btn-group dropdown">
             <button id="download-results" type="button" data-toggle="modal" data-target="#download-modal" class="btn btn-small">Download</button>
@@ -18,6 +15,17 @@
             </ul>
         </div>
     @endif
+@endsection
+
+@section('toolbar')
+    <div class="span8">
+    @if ($records && $records->results->paginate($perpage)->results)
+        <div id="sortings">
+        @include ('components.sortings')
+        </div>
+    @endif
+        <hr class="breadcrumb-divider"/>
+    </div>
 @endsection
 
 @section('sidebar')
@@ -64,6 +72,15 @@ $(document).ready(function() {
         $(this).parents('tr').find('.recordPreviewArea').slideUp('fast', function() {
             $(this).parents('tr').find('.preview i').removeClass('icon-chevron-up').addClass('icon-eye-open');
         });
+    });
+    $('#sortings').on('change', '#add-sort', null, function() {
+        if ($(this).find(':selected').val()) {
+            window.location.href = addQueryStringParameter(document.URL, 'sort[]', $(this).find(':selected').val());
+        }
+    });
+    $('#sortings').on('click', '.remove-sort', null, function() {
+        window.location.href = window.location.href.replace('sort[]=' + $(this).attr('data-sort'), '');
+        return false;
     });
 
     var onmobile = $(window).width() < 980;

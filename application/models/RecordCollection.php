@@ -22,6 +22,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     protected $idlist;
     public $autosave = false;
     public $snippet = false;
+    public $sorts = array();
     public $results;
     protected $facets = array();
 
@@ -135,7 +136,11 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     public function sort($field) {
         $parts = explode('_', $field);
         if (Field::where_schema_and_field($parts[0], $parts[1])->first()) {
-            $this->results->order_by(DB::raw('ExtractValue(data,\'//' . $parts[0] . '_' . $parts[1] . '\')'));
+            array_push($this->sorts, $field);
+            $this->orderings = array();
+            foreach ($this->sorts as $sort) {
+                $this->results->order_by(DB::raw('ExtractValue(data,\'//' . $sort . '\')'));
+            }
         }
     }
 

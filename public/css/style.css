@@ -10,6 +10,41 @@
     .row-fluid .pull-right[class*="span"] { float: none; }
 }
 
+.breadcrumb-divider {
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-top: 6px solid #eee;
+}
+
+#sortings {
+    font-size: 90%;
+}
+
+.sort-label {
+    font-weight: bold;
+}
+
+#sortings select {
+    width: auto;
+    height: auto;
+    margin-top: 6px;
+}
+
+.pagination {
+    float: left;
+    margin-top: 0px;
+    font-size: 90%;
+}
+
+.result-size {
+    float: right;
+    font-size: 90%;
+}
+
+.result-size select {
+    width: auto;
+}
+
 #sidebarAffix {
     clear: both;
 }

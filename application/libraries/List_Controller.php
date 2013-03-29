@@ -31,15 +31,22 @@ class List_Controller extends Base_Controller {
         } else {
             $this->records->drop_facet('recordtype');
         }
-        if (Input::has('sort')) {
-            $this->records->sort(Input::get('sort'));
+        $ii = 0;
+        while (Input::has("sort.$ii")) {
+            $this->records->sort(Input::get("sort.$ii"));
+            $ii++;
         }
     }
 
     public function get_index() {
         Asset::add('fieldstyles', 'css/fields.css');
         Asset::add('bookmarks-js', 'js/bookmarks.js');
-        return View::make($this->view, $this->viewdata)->with('records', $this->records);
+        if (Input::has('perpage')) {
+            $perpage = Input::get('perpage');
+        } else {
+            $perpage = 10;
+        }
+        return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage);
     }
 
     public function get_export($format = null, $type = null) {

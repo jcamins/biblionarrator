@@ -24,6 +24,7 @@ class Base_Controller extends Controller {
     {
         //Assets
         Asset::add('jquery', 'js/jquery.js');
+        Asset::add('biblionarrator-js', 'js/biblionarrator.js');
         Asset::add('bootstrap-js', 'js/bootstrap.min.js');
         Asset::add('bootstrap-css', 'css/bootstrap.min.css');
         Asset::add('bootstrap-css-responsive', 'css/bootstrap-responsive.min.css', 'bootstrap-css');
