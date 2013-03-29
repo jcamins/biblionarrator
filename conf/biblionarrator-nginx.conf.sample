@@ -1,0 +1,26 @@
+server {
+        server_name                             demo.biblionarrator.com;
+        access_log                              /home/jcamins/biblionarrator/logs/access.log;
+        error_log                               /home/jcamins/biblionarrator/logs/error.log;
+        root                                    /home/jcamins/biblionarrator/public;
+
+    location / {
+                index  index.html index.htm index.php; #try static .html file first
+                ##try_files $uri $uri/ /index.php;  <<Wrong!! this will break bundles like OneAuth for example
+                try_files $uri $uri/ /index.php?$args;
+        }
+ 
+    # catch all
+        error_page      404 /index.php;
+
+    location ~ \.php$ {
+            include                             fastcgi_params;
+            fastcgi_index                       index.php;
+            fastcgi_pass                        unix:/var/run/biblionarrator.socket; # or: 127.0.0.1:9000 depending on your php-fpm config
+            fastcgi_split_path_info             ^(.+\.php)(/.+)$;
+            fastcgi_param PATH_INFO             $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED       $document_root$fastcgi_path_info;
+            fastcgi_param SCRIPT_FILENAME       $document_root$fastcgi_script_name;
+        }
+}
+

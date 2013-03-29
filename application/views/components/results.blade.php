@@ -43,7 +43,7 @@
     @endforeach
     </tbody>
     </table>
-    {{ $paginator->appends(Input::except(array('page', '/' . URI::current())))->links() }}
+    {{ $paginator->appends(Input::except('page'))->links() }}
     <div class="result-size">Show <select id="perpage" name="perpage">
         <option value="2">2</option>
         <option value="5">5</option>

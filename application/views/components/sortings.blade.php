@@ -1,6 +1,6 @@
 <span class="sort-label">Sort</span> &gt;
 @foreach ($records->sorts as $sort)
-<span class="sort-facet">{{ $sort }} <sub><a title="Remove {{ $sort }} sort" class="remove-sort" data-sort="{{ $sort }}" href="#">x</a></span> &gt;
+<span class="sort-facet">{{ $sort }} <sub><a title="Remove {{ $sort }} sort" class="remove-sort" href="{{ str_replace('sort%5B%5D='.$sort, '', URI::full()) }}">x</a></span> &gt;
 @endforeach
 <select id="add-sort">
     <option>-- add sort --</option>

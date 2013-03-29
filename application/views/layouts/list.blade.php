@@ -78,10 +78,6 @@ $(document).ready(function() {
             window.location.href = addQueryStringParameter(document.URL, 'sort[]', $(this).find(':selected').val());
         }
     });
-    $('#sortings').on('click', '.remove-sort', null, function() {
-        window.location.href = window.location.href.replace('sort[]=' + $(this).attr('data-sort'), '');
-        return false;
-    });
 
     var onmobile = $(window).width() < 980;
     if (!onmobile) {
