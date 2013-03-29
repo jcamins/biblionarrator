@@ -1,4 +1,4 @@
-@if ($records && $records->results->paginate($perpage)->results)
+@if ($records && $paginator->results)
     <div class="recordtypes header-shown">
     @if (isset($query) && strlen($query) > 0)
         Your search for <em>{{ $query }}</em> found:
@@ -19,7 +19,7 @@
         @yield('listheading')
     </thead>
     <tbody>
-    @foreach ($records->results->paginate($perpage)->results as $record)
+    @foreach ($paginator->results as $record)
         <tr class="resultRow" data-id="{{ $record->id }}">
             <td>
                 <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
@@ -43,7 +43,7 @@
     @endforeach
     </tbody>
     </table>
-    {{ $records->results->paginate($perpage)->appends(Input::except('page'))->links() }}
+    {{ $paginator->appends(Input::except(array('page', '/' . URI::current())))->links() }}
     <div class="result-size">Show <select id="perpage" name="perpage">
         <option value="2">2</option>
         <option value="5">5</option>

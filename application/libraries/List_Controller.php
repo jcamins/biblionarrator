@@ -46,7 +46,7 @@ class List_Controller extends Base_Controller {
         } else {
             $perpage = 10;
         }
-        return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage);
+        return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage)->with('paginator', $this->records->results->paginate($perpage));
     }
 
     public function get_export($format = null, $type = null) {

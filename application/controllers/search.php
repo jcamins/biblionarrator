@@ -28,7 +28,7 @@ class Search_Controller extends List_Controller {
 
     public function __construct() {
         $this->records = new RecordCollection();
-        if (Input::get('q') != '/' . URI::current()) {
+        if (Input::has('q')) {
             $this->query = Input::get('q');
             if (isset($this->query)) {
                 $query = $this->query;

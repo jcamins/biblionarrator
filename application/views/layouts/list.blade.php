@@ -19,7 +19,7 @@
 
 @section('toolbar')
     <div class="span8">
-    @if ($records && $records->results->paginate($perpage)->results)
+    @if ($records && $paginator->results)
         <div id="sortings">
         @include ('components.sortings')
         </div>
