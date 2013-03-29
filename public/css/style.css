@@ -24,7 +24,7 @@
     font-weight: bold;
 }
 
-#sortings select {
+#sortings select, .result-size select {
     width: auto;
     height: auto;
     margin-top: 6px;
