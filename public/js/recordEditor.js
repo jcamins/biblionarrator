@@ -272,8 +272,10 @@ function consolidateStyles() {
 
 function initializeContentEditable() {
     if ($('#editor-toolbar').is(':visible')) {
+        $('#add-section').show();
         $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
     } else {
+        $('#add-section').hide();
         $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });
     }
 }

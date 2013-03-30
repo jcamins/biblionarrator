@@ -20,6 +20,10 @@ article section[contenteditable="true"]:empty:after {
     color: #ccc;
 }
 
+.add-section {
+    display: none;
+}
+
 .breadcrumb-divider {
     margin-top: 0;
     margin-bottom: 20px;
