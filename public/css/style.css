@@ -10,6 +10,16 @@
     .row-fluid .pull-right[class*="span"] { float: none; }
 }
 
+article header[contenteditable="true"]:empty:after {
+    content: "Citation";
+    color: #ccc;
+}
+
+article section[contenteditable="true"]:empty:after {
+    content: "Expansion";
+    color: #ccc;
+}
+
 .breadcrumb-divider {
     margin-top: 0;
     margin-bottom: 20px;
