@@ -18,13 +18,8 @@
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
                     <a class="brand" href="/">Biblionarrator</a>
-                    <div class="nav-collapse">
+                    <div>
                         <ul class="nav pull-left">
                             @section('navigation')
                             @yield_section
@@ -37,12 +32,12 @@
                                 </ul>
                             </li>
                             <li class="divider-vertical"></li>
-                            <li class="hidden-phone"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
+                            <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
                                 <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown"><a href="/bookmarks"><i class="icon-bookmark"></i><span id="bookmark-count">
+                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">
 @if (strlen(Session::get('bookmarks')) > 0)
 {{ count(explode(',', Session::get('bookmarks'))) }}
 @endif
@@ -50,7 +45,8 @@
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <a href="/user" class="hidden-desktop"><i class="icon-user"></i></a>
+                                <a href="#" class="dropdown-toggle visible-desktop" data-toggle="dropdown">
                                     <i class="icon-user"></i><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
@@ -70,7 +66,7 @@
                                 </ul>
                             </li>
                             @if ( Auth::check() )
-                            <li class="dropdown">
+                            <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/admin">Home</a></li>
@@ -89,18 +85,14 @@
                                 </ul>
                             </li>
                             @endif
-                            <li class="dropdown">
+                            <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/home/about">About</a></li>
                                 </ul>
                             </li>
                         </ul>
-                    </div><!--/.nav-collapse -->
-                    @section('post_navigation')
-                    @if (Auth::check())
-                    @endif
-                    @yield_section
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,6 +115,30 @@
                 </div>
             </div>
         </div> <!-- /container -->
+        <div class="navbar navbar-fixed-bottom hidden-desktop">
+            <div class="navbar-inner">
+            <ul class="nav">
+                <li><a href="/bookmarks">Bookmarks
+                    (<span class="bookmark-count">
+                    @if (strlen(Session::get('bookmarks')) > 0)
+                        {{ count(explode(',', Session::get('bookmarks'))) }}
+                    @endif
+                    </span>)</a></li>
+
+                <li><a href="/user">
+                @if (Auth::guest())
+                    Log in
+                @else
+                    User preferences
+                @endif
+                </a></li>
+                @if (Auth::check())
+                <li><a href="/admin">System administration</a></li>
+                @endif
+                <li><a href="/help">Help</a></li>
+            </ul>
+            </div>
+        </div>
         <footer>
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>

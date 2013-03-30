@@ -3,6 +3,15 @@
         padding-top: 60px;
     }
 }
+.navbar.navbar-fixed-bottom.hidden-desktop .nav {
+    width: 100%;
+}
+
+.navbar.navbar-fixed-bottom.hidden-desktop .nav > li {
+    float: none;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+}
 
 .row-fluid .pull-left[class*="span"]:last-child { margin-left: 0; }
 

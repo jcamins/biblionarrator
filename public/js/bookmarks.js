@@ -16,9 +16,9 @@ function deleteBookmark(id) {
 
 function flashBookmark(data) {
     if (parseInt(data.count) > 0) {
-        $('#bookmark-count').text(data.count);
+        $('.bookmark-count').each(function () { $(this).text(data.count); });
     } else {
-        $('#bookmark-count').empty();
+        $('.bookmark-count').each(function () { $(this).empty(); });
     }
     if (typeof(data.message) !== 'undefined') {
         $('#bookmark-message').text(data.message);
