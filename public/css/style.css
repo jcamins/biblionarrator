@@ -3,6 +3,11 @@
         padding-top: 60px;
     }
 }
+
+.resultRow td:first-child {
+    width: 100%;
+}
+
 .navbar.navbar-fixed-bottom.hidden-desktop .nav {
     width: 100%;
 }
