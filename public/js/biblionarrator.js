@@ -1,20 +1,22 @@
 $(document).ready(function () {
     $('[data-toggle="cookie-view"]').click(function () {
         var target = $($(this).attr('data-target'));
-        target.toggle();
-        target.trigger('cookietoggle');
-        if (target.is(':visible')) {
+        $(this).parent().toggleClass('active');
+        if ($(this).parent().hasClass('active')) {
             jQuery.cookie($(this).attr('data-cookie'), '1');
+            target.show();
         } else {
             jQuery.cookie($(this).attr('data-cookie'), '0');
+            target.hide();
         }
+        target.trigger('cookietoggle');
     }).each(function () {
         var target = $($(this).attr('data-target'));
         if (jQuery.cookie($(this).attr('data-cookie')) == '1') {
-            $(this).addClass('active');
+            $(this).parent().addClass('active');
             target.show();
         } else {
-            $(this).removeClass('active');
+            $(this).parent().removeClass('active');
             target.hide();
         }
         target.trigger('cookietoggle');

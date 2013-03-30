@@ -12,6 +12,10 @@
     padding: 5px 10px;
 }
 
+#controlbar .divider-vertical {
+    height: 30px;
+}
+
 .resultRow td:first-child {
     width: 100%;
 }

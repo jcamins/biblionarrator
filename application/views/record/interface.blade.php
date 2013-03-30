@@ -4,39 +4,27 @@
 @parent
 @endsection
 
-@section('sidetoolbar')
-    <div class="btn-toolbar">
-    <div class="btn-group" data-toggle="buttons-checkbox">
-    <button id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc" type="button" class="btn btn-info btn-small">TOC</button>
+@section('controlbar')
+    <li><a href="#" id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc">TOC</a></li>
     @if ($editor)
-        <button id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor" type="button" class="btn btn-info btn-small">Editor</button>
+        <li><a href="#" id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor">Editor</a></li>
     @endif
-    <button id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links" type="button" class="btn btn-info btn-small active">Links</button>
-    </div>
-    </div>
-@endsection
-
-@section('toolbar')
+    <li class="active"><a href="#" id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links">Links</a></li>
 @if ($editor)
-    <div class="btn-toolbar">
-        <div id="editor-toolbar">
-            <div class="btn-group dropdown">
-                <button id="new" type="button" data-toggle="modal" data-target="#confirmNew" class="btn btn-small">New</button>
-                <button id="dropdown-new" type="button" data-toggle="dropdown" class="btn btn-small dropdown-toggle"><b class="caret"></b></button>
-                <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
-                    <li><a id="new-related">Related record</a></li>
-                    <li><a id="duplicate">Duplicate record</a></li>
-                </ul>
-            </div>
-            <div class="btn-group">
-                <button id="save" type="button" class="btn btn-small">Save</button>
-            </div>
-            <div class="btn-group">
-                <button id="reload" type="button" data-toggle="modal" data-target="#confirmReload" class="btn btn-small">Reload</button>
-            </div>
-        </div>
-    </div>
+    <li class="divider-vertical"></li>
+    </ul>
+    <ul id="editor-toolbar" class="nav">
+        <li><a href="#" id="new" data-toggle="modal" data-target="#confirmNew" class="caret-before">New</a></li>
+        <li class="dropdown">
+            <a href="#" id="dropdown-new" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
+                <li><a id="new-related">Related record</a></li>
+                <li><a id="duplicate">Duplicate record</a></li>
+            </ul>
+        </li>
+        <li><a id="save">Save</a></li>
+        <li><a href="{{ URL::full() }}" id="reload" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
 @endif
 @endsection
 
