@@ -33,7 +33,7 @@
                             </li>
                             <li class="divider-vertical"></li>
                             <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
-                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input>
+                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input><button class="search-button" type="submit"><i class="icon-search"></i></button>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">

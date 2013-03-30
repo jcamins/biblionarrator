@@ -21,6 +21,20 @@
     content: ")";
 }
 
+.search-button {
+    position: relative;
+    left: -28px;
+    background: transparent;
+    border: none;
+    top: -1.75px;
+    height: 20px;
+    opacity: 0.5;
+}
+
+.search-button:hover {
+    opacity: 1;
+}
+
 .row-fluid .pull-left[class*="span"]:last-child { margin-left: 0; }
 
 @media (max-width: 767px) {
