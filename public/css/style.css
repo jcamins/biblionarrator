@@ -13,6 +13,14 @@
     border-bottom: 1px solid #ddd;
 }
 
+.navbar-fixed-bottom .bookmark-count:not(:empty):before {
+    content: "(";
+}
+
+.navbar-fixed-bottom .bookmark-count:not(:empty):after {
+    content: ")";
+}
+
 .row-fluid .pull-left[class*="span"]:last-child { margin-left: 0; }
 
 @media (max-width: 767px) {

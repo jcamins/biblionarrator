@@ -119,11 +119,7 @@
             <div class="navbar-inner">
             <ul class="nav">
                 <li><a href="/bookmarks">Bookmarks
-                    (<span class="bookmark-count">
-                    @if (strlen(Session::get('bookmarks')) > 0)
-                        {{ count(explode(',', Session::get('bookmarks'))) }}
-                    @endif
-                    </span>)</a></li>
+                    <span class="bookmark-count"><?php strlen(Session::get('bookmarks')) > 0 ? count(explode(',', Session::get('bookmarks'))) : '' ?></span></a></li>
 
                 <li><a href="/user">
                 @if (Auth::guest())
