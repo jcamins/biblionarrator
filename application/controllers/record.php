@@ -37,7 +37,6 @@ class Record_Controller extends Resource_Controller {
             $record = new Record();
         }
         $editor = Authority::can('edit', 'Record', $record);
-        Asset::add('common-js', 'js/biblionarrator.js');
         Asset::add('editor-js', 'js/recordEditor.js');
         Asset::add('shortcut-js', 'js/shortcut.js');
         Asset::add('rangy-js', 'js/rangy/rangy-core.js');
