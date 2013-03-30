@@ -6,14 +6,12 @@
 
 @section('controlbar')
     @if (Auth::check())
-        <ul class="nav">
-            <li><a id="download-results" class="caret-before" type="button" data-toggle="modal" data-target="#download-modal">Download</a></li>
-            <li class="dropdown"><a id="dropdown-download-results" type="button" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
-                <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
-            </ul></li>
-        </div>
+        <li><a id="download-results" class="caret-before" type="button" data-toggle="modal" data-target="#download-modal">Download</a></li>
+        <li class="dropdown"><a id="dropdown-download-results" type="button" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
+            <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
+        </ul></li>
     @endif
 @endsection
 

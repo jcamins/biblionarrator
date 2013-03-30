@@ -60,5 +60,11 @@ class Bookmarks_Controller extends List_Controller {
         return Redirect::to('bookmarks');
     }
 
+    public function get_clear() {
+        foreach ($this->records->get() as $record) {
+            $this->records->remove($record->id);
+        }
+        return Redirect::to('bookmarks');
+    }
 
 }

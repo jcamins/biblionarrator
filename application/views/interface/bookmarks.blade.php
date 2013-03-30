@@ -8,6 +8,13 @@
 </style>
 @endsection
 
+@section('controlbar')
+@parent
+    @if ($records && $paginator->results)
+        <li><a href="/bookmarks/clear">Clear bookmarks</a></li>
+    @endif
+@endsection
+
 @section('listtitle')
 Your bookmarks
 @endsection
