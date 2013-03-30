@@ -20,11 +20,11 @@
 class Resources_Field_Controller extends Resource_Controller {
 
     public $interface_columns = array(
-        array('name' => 'schema', 'label' => 'Schema', 'required' => true, 'sWidth' => '20%'),
-        array('name' => 'field', 'label' => 'Field', 'required' => true, 'sWidth' => '30%'),
-        array('name' => 'description', 'label' => 'Description', 'required' => false, 'sWidth' => '40%')
+        array('name' => 'schema', 'label' => 'Schema', 'required' => true),
+        array('name' => 'field', 'label' => 'Field', 'required' => true),
+        array('name' => 'description', 'label' => 'Description', 'required' => false)
     );
-    public $required_columns = array('schema', 'field');
+    public $required_columns = array('schema', 'field', 'label');
     public $optional_columns = array('description', 'parent', 'primary');
     public $foreign_keys = array('styles');
     public $resourceClass = 'Field';

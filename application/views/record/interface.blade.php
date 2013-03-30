@@ -94,7 +94,7 @@
         <input type="text" id="tagEntry"></input>
         <select id="tags" size="8">
             @foreach (Field::all() as $field)
-            <option value="{{ $field->schema }}:{{ $field->field }}">{{ $field->field }} ({{ $field->schema }})</option>
+            <option value="{{ $field->schema }}:{{ $field->field }}">{{ $field->label }}</option>
             @endforeach
         </select>
     </div>
@@ -142,13 +142,13 @@ var recordId;
 
 var labeltofieldlookup = {
     @foreach (Field::all() as $field)
-        '{{ $field->field }} ({{ $field->schema }})': '{{ $field->schema }}_{{ $field->field }}',
+        '{{ $field->label }}': '{{ $field->schema }}_{{ $field->field }}',
     @endforeach
     };
 var fieldlist = {
     @foreach (Field::all() as $field)
         '{{ $field->schema }}_{{ $field->field }}': {
-            'label': '{{ $field->field }} ({{ $field->schema }})',
+            'label': '{{ $field->label }}',
             'link': {{ $field->link ? 'true' : 'false' }}
         },
     @endforeach

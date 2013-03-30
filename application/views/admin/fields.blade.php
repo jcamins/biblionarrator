@@ -49,9 +49,9 @@ var treeCallbacks = {
     'create' : function(e, data) {
         $('#fieldeditor').load('/resources/field/new/editor', function (msg, s) { 
             initializeStyleEditor();
-            $('#heading').text(data.rslt.name);
-            $('#field-schema').val(data.rslt.name.replace(/^[^(]*\(/, '').replace(/\).*$/, ''));
-            $('#field-field').val(data.rslt.name.replace(/ \(.*$/, ''));
+            $('#field-label').text(data.rslt.name);
+            $('#field-schema').val();
+            $('#field-field').val(data.rslt.name);
             $('#tree .selected').removeClass('selected');
             $(data.rslt.obj).children('a').addClass('selected');
             if (data.args[1] === 'inside') {
@@ -112,6 +112,7 @@ $(document).ready(function() {
             data: { 'id': $('#field-id').val(),
                     'field': $('#field-field').val(),
                     'schema': $('#field-schema').val(),
+                    'label': $('#field-label').text(),
                     'description': $('#field-description').val(),
                     'parent': $('#field-parent').val(),
                     'primary': $('#field-primary').is(':checked') ? 1 : 0

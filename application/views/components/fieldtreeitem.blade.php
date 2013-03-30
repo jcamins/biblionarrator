@@ -2,7 +2,7 @@
 @if (Session::has('currentfield') && Session::get('currentfield')->id === $node->id)
 class="selected"
 @endif
->{{ $node->field }} ({{ $node->schema }})</a>
+>{{ $node->label }}</a>
     <ul>
         @if ($node->children()->first())
             {{ render_each('components.fieldtreeitem', $node->children()->get(), 'node') }}

@@ -6,7 +6,7 @@
     <option>-- add sort --</option>
 @foreach (Field::where_sortable(1)->get() as $field)
     @if (!in_array($field->schema . '_' . $field->field, $records->sorts))
-        <option value="{{ $field->schema }}_{{ $field->field }}">{{ $field->field }} ({{ $field->schema }})</option>
+        <option value="{{ $field->schema }}_{{ $field->field }}">{{ $field->label }}</option>
     @endif
 @endforeach
 </select>
