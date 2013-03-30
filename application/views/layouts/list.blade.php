@@ -33,6 +33,10 @@
 
 @section('content')
     <div class="span8">
+        <h3>
+            @section('listtitle')
+            @yield_section
+        </h3>
     @include('components.results')
     </div>
     <div id="previewPane" class="span4">

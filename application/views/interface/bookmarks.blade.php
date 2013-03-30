@@ -8,8 +8,8 @@
 </style>
 @endsection
 
-@section('listheading')
-<tr><th>Your bookmarks</th></tr>
+@section('listtitle')
+Your bookmarks
 @endsection
 
 @section('norecords')
