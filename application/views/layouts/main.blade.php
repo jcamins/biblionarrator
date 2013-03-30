@@ -95,6 +95,12 @@
                     </div>
                 </div>
             </div>
+            <div id="controlbar" class="navbar-inner">
+                <div class="container-fluid">
+                @section('controlbar')
+                @yield_section
+                </div>
+            </div>
         </div>
 
         <div class="container-fluid">

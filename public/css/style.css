@@ -1,7 +1,15 @@
 @media (min-width: 980px) {
     body {
-        padding-top: 60px;
+        padding-top: 90px;
     }
+}
+
+#controlbar {
+    min-height: 30px;
+}
+
+#controlbar .nav > li > a {
+    padding: 5px 10px;
 }
 
 .resultRow td:first-child {
@@ -170,11 +178,11 @@ article [contenteditable="true"] {
     color: #000;
 }
 
-.navbar .nav > li > a.caret-before {
+.navbar .nav > li > a.caret-before, #controlbar .nav > li > a.caret-before {
     padding-right: 2px;
 }
 
-.navbar .nav > li > a.caret-after {
+.navbar .nav > li > a.caret-after, #controlbar .nav > li > a.caret-after {
     padding-left: 2px;
 }
 
