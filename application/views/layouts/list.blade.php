@@ -80,6 +80,9 @@ $(document).ready(function() {
             window.location.href = addQueryStringParameter(document.URL, 'sort[]', $(this).find(':selected').val());
         }
     });
+    $('#perpage').change(function () {
+        window.location.href = updateQueryStringParameter(document.URL, 'perpage', $(this).find(':selected').val());
+    });
 
     var onmobile = $(window).width() < 980;
     if (!onmobile) {
