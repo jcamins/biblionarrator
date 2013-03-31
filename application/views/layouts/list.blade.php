@@ -13,6 +13,16 @@
             <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
         </ul></li>
     @endif
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add page<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li class="hide-on-bookmarks"><a href="{{ URL::with_querystring('search/bookmarkpage') }}">To bookmarks</a></li>
+            </ul>
+        </li>
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add search<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li class="hide-on-bookmarks"><a href="{{ URL::with_querystring('search/bookmarkall') }}">To bookmarks</a></li>
+            </ul>
+        </li>
 @endsection
 
 @section('toolbar')

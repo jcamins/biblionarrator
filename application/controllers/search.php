@@ -52,4 +52,27 @@ class Search_Controller extends List_Controller {
     public function get_index() {
         return parent::get_index()->with('query', $this->query);
     }
+
+    public function get_bookmarkall() {
+        $bookmarks = new Bookmarks();
+        foreach ($this->records->results->get() as $record) {
+            $bookmarks->add($record->id);
+        }
+        $bookmarks->save();
+        return Redirect::with_querystring('search');
+    }
+
+    public function get_bookmarkpage() {
+        $bookmarks = new Bookmarks();
+        if (Input::has('perpage')) {
+            $perpage = Input::get('perpage');
+        } else {
+            $perpage = 10;
+        }
+        foreach ($this->records->results->paginate($perpage)->results as $record) {
+            $bookmarks->add($record->id);
+        }
+        $bookmarks->save();
+        return Redirect::with_querystring('search');
+    }
 }

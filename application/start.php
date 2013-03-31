@@ -63,6 +63,8 @@ Autoloader::map(array(
     'Resource_Controller' => path('app').'libraries/Resource_Controller.php',
     'List_Controller' => path('app').'libraries/List_Controller.php',
     'Emogrifier' => path('app').'libraries/emogrifier.php',
+    'Redirect' => path('app').'libraries/Redirect.php',
+    'URL' => path('app').'libraries/URL.php',
 ));
 
 /*

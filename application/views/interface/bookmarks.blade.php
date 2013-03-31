@@ -5,6 +5,10 @@
 .add-bookmark {
     display: none;
 }
+
+.hide-on-bookmarks {
+    display: none;
+}
 </style>
 @endsection
 

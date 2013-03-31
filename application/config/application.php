@@ -178,8 +178,6 @@ return array(
 		'Memcached'  	=> 'Laravel\\Memcached',
 		'Paginator'  	=> 'Laravel\\Paginator',
 		'Profiler'  	=> 'Laravel\\Profiling\\Profiler',
-		'URL'        	=> 'Laravel\\URL',
-		'Redirect'   	=> 'Laravel\\Redirect',
 		'Redis'      	=> 'Laravel\\Redis',
 		'Request'    	=> 'Laravel\\Request',
 		'Response'   	=> 'Laravel\\Response',
