@@ -59,9 +59,9 @@ Laravel\Autoloader::$aliases = $aliases;
 */
 
 Autoloader::map(array(
-	'Base_Controller' => path('app').'controllers/base.php',
-    'Resource_Controller' => path('app').'libraries/controllers/Resource_Controller.php',
-    'List_Controller' => path('app').'libraries/controllers/List_Controller.php',
+	'Base_Controller' => path('app').'libraries/controllers/base.php',
+    'Resource_Controller' => path('app').'libraries/controllers/resource.php',
+    'List_Controller' => path('app').'libraries/controllers/list.php',
     'Emogrifier' => path('app').'libraries/emogrifier.php',
     'Redirect' => path('app').'libraries/laravel/Redirect.php',
     'URL' => path('app').'libraries/laravel/URL.php',
