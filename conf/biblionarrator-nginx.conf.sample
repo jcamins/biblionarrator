@@ -1,8 +1,8 @@
 server {
-        server_name                             demo.biblionarrator.com;
-        access_log                              /home/jcamins/biblionarrator/logs/access.log;
-        error_log                               /home/jcamins/biblionarrator/logs/error.log;
-        root                                    /home/jcamins/biblionarrator/public;
+        server_name                             biblionarrator;
+        access_log                              /var/log/biblionarrator-access.log;
+        error_log                               /var/log/biblionarrator-error.log;
+        root                                    /home/biblionarrator/public;
 
     location / {
                 index  index.html index.htm index.php; #try static .html file first
