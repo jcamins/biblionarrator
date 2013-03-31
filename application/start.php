@@ -60,8 +60,8 @@ Laravel\Autoloader::$aliases = $aliases;
 
 Autoloader::map(array(
 	'Base_Controller' => path('app').'controllers/base.php',
-    'Resource_Controller' => path('app').'libraries/Resource_Controller.php',
-    'List_Controller' => path('app').'libraries/List_Controller.php',
+    'Resource_Controller' => path('app').'libraries/controllers/Resource_Controller.php',
+    'List_Controller' => path('app').'libraries/controllers/List_Controller.php',
     'Emogrifier' => path('app').'libraries/emogrifier.php',
     'Redirect' => path('app').'libraries/laravel/Redirect.php',
     'URL' => path('app').'libraries/laravel/URL.php',
