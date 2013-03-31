@@ -18,7 +18,7 @@
                 <li class="hide-on-bookmarks"><a href="{{ URL::with_querystring('search/bookmarkpage') }}">To bookmarks</a></li>
             </ul>
         </li>
-        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add search<b class="caret"></b></a>
+        <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add results<b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li class="hide-on-bookmarks"><a href="{{ URL::with_querystring('search/bookmarkall') }}">To bookmarks</a></li>
             </ul>
