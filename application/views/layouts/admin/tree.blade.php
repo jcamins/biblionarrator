@@ -1,11 +1,6 @@
 @layout('layouts/main')
 
-@section('styles')
-<style type="text/css">
-.toolbar-row {
-    display: none;
-}
-</style>
+@section('headbar')
 @endsection
 
 @section('sidebar')
@@ -19,3 +14,7 @@
     @section('editor')
     @yield_section
 @endsection
+
+@section('footbar')
+@endsection
+

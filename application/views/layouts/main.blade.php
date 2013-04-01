@@ -106,22 +106,36 @@
         </div>
 
         <div class="container-fluid">
-            <div class="row-fluid toolbar-row">
-                <div class="span10 pull-right">
-                    @yield('toolbar')
+            @section('headbar')
+                <div class="row-fluid toolbar-row">
+                    <div class="span10 pull-right">
+                        @yield('toolbar')
+                    </div>
+                    <div class="span2 pull-left">
+                        @yield('sidetoolbar')
+                    </div>
                 </div>
-                <div class="span2 pull-left">
-                    @yield('sidetoolbar')
+            @yield_section
+            @section('main')
+                <div class="row-fluid">
+                    <div class="span10 pull-right">
+                        @yield('content')
+                    </div>
+                    <div class="span2 pull-left">
+                        @yield('sidebar')
+                    </div>
                 </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span10 pull-right">
-                    @yield('content')
+            @yield_section
+            @section('footbar')
+                <div class="row-fluid footbar-row">
+                    <div class="span10 pull-right">
+                        @yield('contentfootbar')
+                    </div>
+                    <div class="span2 pull-left">
+                        @yield('sidefootbar')
+                    </div>
                 </div>
-                <div class="span2 pull-left">
-                    @yield('sidebar')
-                </div>
-            </div>
+            @yield_section
         </div> <!-- /container -->
         <div class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
