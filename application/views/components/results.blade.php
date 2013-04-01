@@ -19,9 +19,12 @@
         @yield('listheading')
     </thead>
     <tbody>
-    @foreach ($paginator->results as $record)
+    @foreach ($paginator->results as $key => $record)
         <tr class="resultRow" data-id="{{ $record->id }}">
-            <td>
+            <td class="result-number">
+                <a class="record-number-link" href="/record/{{ $record->id }}">{{ ($paginator->page - 1) * $paginator->per_page + $key + 1 }}</a>
+            </td>
+            <td class="result-content">
                 <div itemscope id="recordContainer_{{ $record->id }}" class="recordtype_Book recordContainer">
                     <a class="record-view-link" href="/record/{{ $record->id }}">{{ $record->snippet()->format('htmlnolink') }}</a>
                     <div class="recordPreviewArea">

@@ -97,24 +97,29 @@ $(document).ready(function() {
     var onmobile = $(window).width() < 980;
     if (!onmobile) {
         $('.resultToolbar').fadeTo('fast', 0);
+        $('.record-number-link').fadeTo('fast', 0);
     }
     $('.preview').show();
     $(window).resize(function() {
         if ($(window).width() > 980) {
             onmobile = false;
             $('.resultToolbar').css('opacity', 0);
+            $('.record-number-link').css('opacity', 0);
         } else {
             onmobile = true;
             $('.resultToolbar').css('opacity', 1);
+            $('.record-number-link').css('opacity', 1);
         }
     });
     $('.resultRow').hover(function() {
         if (!onmobile) {
             $(this).find('.resultToolbar').fadeTo('fast', 1);
+            $(this).find('.record-number-link').fadeTo('fast', 1);
         }
     }, function() {
         if (!onmobile) {
             $(this).find('.resultToolbar').fadeTo('fast', 0);
+            $(this).find('.record-number-link').fadeTo('fast', 0);
         }
     });
     $('.add-bookmark').click(function() {

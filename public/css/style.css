@@ -16,7 +16,7 @@
     height: 30px;
 }
 
-.resultRow td:first-child {
+.resultRow .result-content {
     width: 100%;
 }
 
@@ -180,6 +180,15 @@ article [contenteditable="true"] {
 
 .record-view-link {
     color: #000;
+}
+
+.record-number-link {
+    color: #555;
+    font-size: smaller;
+}
+
+.table td.result-number {
+    padding-top: 6px;
 }
 
 .navbar .nav > li > a.caret-before, #controlbar .nav > li > a.caret-before {
