@@ -106,7 +106,7 @@
         </div>
 
         <div class="container-fluid">
-            <div class="row-fluid">
+            <div class="row-fluid toolbar-row">
                 <div class="span10 pull-right">
                     @yield('toolbar')
                 </div>

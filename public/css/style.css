@@ -4,6 +4,21 @@
     }
 }
 
+.instruction-label {
+    font-weight: bold;
+}
+
+.instructions {
+    border: 1px solid #d4d4d4;
+    margin: 20px 4px;
+    padding: 4px;
+    -webkit-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    font-size: smaller;
+}
+
 .home-links li {
     border: 1px solid #d4d4d4;
     float: left;

@@ -1,10 +1,20 @@
 @layout('layouts/admin.tree')
 
 @section('controlbar')
-<li><a id="add-field" class="jstree-draggable" href="/admin/field/new">Add field</a></li>
+<li><a id="add-field" class="jstree-draggable" href="/admin/field/new"><i class="icon-hand-down"></i> Add field</a></li>
 <li class="divider-vertical"></li>
 <li><a href="#" type="submit" id="saveField" form="fieldform">Save</a></li>
 <li><a href="#" id="delField">Delete</a></li>
+@endsection
+
+@section('sidebar')
+@parent
+<div class="instructions">
+<span class="instruction-label">Hint:</span>
+Drag the "Add field" button into the tree in order to add a field at a
+particular place. Clicking the "Add field" button will add a new button
+at the end of the tree at the top-most level.
+</div>
 @endsection
 
 @section('treedata')

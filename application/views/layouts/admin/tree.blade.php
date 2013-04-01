@@ -1,5 +1,13 @@
 @layout('layouts/main')
 
+@section('styles')
+<style type="text/css">
+.toolbar-row {
+    display: none;
+}
+</style>
+@endsection
+
 @section('sidebar')
     <div id="tree">
         @section('treedata')
