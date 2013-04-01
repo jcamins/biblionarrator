@@ -4,6 +4,23 @@
     }
 }
 
+.home-links li {
+    border: 1px solid #d4d4d4;
+    float: left;
+    margin: 10px 40px 10px 2px;
+    list-style: none;
+    padding: 8px;
+    min-width: 20em;
+    -webkit-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.home-links li a {
+    font-variant: small-caps;
+}
+
 #controlbar {
     min-height: 30px;
 }
