@@ -1,12 +1,10 @@
 @layout('layouts/admin.tree')
 
-@section('sidetoolbar')
-<a id="add-field" class="btn btn-small jstree-draggable" href="/admin/field/new">Add field</a>
-@endsection
-
-@section('toolbar')
-<button class="btn btn-small" type="submit" id="saveField" form="fieldform">Save</button>
-<button class="btn btn-small" id="delField">Delete</button>
+@section('controlbar')
+<li><a id="add-field" class="jstree-draggable" href="/admin/field/new">Add field</a></li>
+<li class="divider-vertical"></li>
+<li><a href="#" type="submit" id="saveField" form="fieldform">Save</a></li>
+<li><a href="#" id="delField">Delete</a></li>
 @endsection
 
 @section('treedata')
@@ -83,7 +81,7 @@ $(document).ready(function() {
     });
     $(document).on('change', '#field-field, #field-schema', null, function() {
         $('#heading').text($('#field-field').val() + ' (' + $('#field-schema').val() + ')');
-        $('#saveField').addClass('btn-info');
+        $('#saveField').addClass('field-changed');
     });
     initializeTree(treeCallbacks);
     $('#add-field').click(function() {
@@ -93,16 +91,14 @@ $(document).ready(function() {
     initializeStyleEditor();
     $('#delField').click(function() {
         $.ajax({
-            url: '/resources/field',
-            type: "POST",
-            dataType: "json",
-            data: { 'id': $('#field-id').val(),
-                    'delete': true,
-                  }
+            url: '/resources/' + resourcetype,
+            type: "DELETE",
+            data: { 'id': $('#field-id').val() }
         }).done(function() {
             $('#fieldeditor').empty()
             initializeTree(treeCallbacks);
-        });;
+        });
+        return false;
     });
     $('#saveField').click(function() {
         $.ajax({
@@ -124,7 +120,7 @@ $(document).ready(function() {
                 $(this).parent().attr('data-id', data.id);
                 $(this).attr('href', '/admin/field/' + data.id);
             });
-            $('#saveField').removeClass('btn-info');
+            $('#saveField').removeClass('field-changed');
         });
         return false;
     });
