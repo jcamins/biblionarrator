@@ -50,7 +50,8 @@ function traverseTOC(node, depth) {
     });
 }
 
-var attrs = [ 'href', 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref' ];
+var attrs = [ 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref' ];
+// 'href' also a valid attribute
 
 function html2raw(element) {
     var object, childs = element.childNodes;
@@ -100,14 +101,18 @@ function raw2html(object) {
                 continue
             }
             if (jQuery.inArray(elem, htmlelements) < 0) {
-                output += '<span class="' + elem + '"';
-                htmlelem = 'span';
+                if (typeof object[elem]['link'] === 'undefined') {
+                    htmlelem = 'span';
+                } else {
+                    htmlelem = 'a';
+                }
+                output += '<' + htmlelem + ' class="' + elem + '"';
             } else {
                 output += '<' + elem;
             }
             for (var attr in object[elem]) {
                 if (jQuery.inArray(attr, attrs) >= 0 && object[elem][attr].length > 0) {
-                    output += ' ' + attr + '="' + object[elem][attr];
+                    output += ' ' + attr + '="' + object[elem][attr] + '"';
                 }
             }
             output += '>';
