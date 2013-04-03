@@ -23,8 +23,8 @@
                 <li><a id="duplicate">Duplicate record</a></li>
             </ul>
         </li>
-        <li><a id="save">Save</a></li>
-        <li><a href="{{ URL::full() }}" id="reload" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
+        <li><a href="#" id="save">Save</a></li>
+        <li><a href="{{ URL::full() }}" id="reload" data-remote="false" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
 @endif
 @endsection
 

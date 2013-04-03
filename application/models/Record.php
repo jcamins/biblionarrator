@@ -17,12 +17,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+function array_search_recursive($needle,$haystack) {
+    foreach($haystack as $key=>$value) {
+        if ($key === $needle) {
+            return array($key => $value);
+        } else if (is_array($value)) {
+            $res = array_search_recursive($needle, $value);
+            if ($res !== false) {
+                return $res;
+            }
+        }
+    }
+    return false;
+}
+
+function array_remove_recursive($needle,&$haystack) {
+    foreach($haystack as $key=>$value) {
+        if ($key === $needle) {
+            unset($haystack[$key]);
+        } else if (is_array($value)) {
+            $haystack[$key] = array_remove_recursive($needle, $value);
+        }
+    }
+    return $haystack;
+}
+
+
+
 class Record extends Eloquent
 {
     public static $timestamps = true;
 
-    protected static $htmlelements = array('a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr');
-    protected static $allowedattrs = array('role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref');
+    protected $htmlelements = array('a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr');
+    protected $allowedattrs = array('role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref');
 
     public function primaries() {
         return $this->has_many('Primary', 'record_id');
@@ -44,60 +71,32 @@ class Record extends Eloquent
         return $this->belongs_to('Collection', 'collection_id');
     }
 
+    public function obj() {
+        return json_decode($this->data, true);
+    }
+
     public function snippet() {
-        $xml = new SimpleXMLElement($this->data);
-        return new RecordSnippet($xml->header->asXML());
+        $obj = array_search_recursive('header', $this->obj());
+        return new RecordSnippet(json_encode($obj));
     }
 
     public function remainder() {
-        $xml = new SimpleXMLElement($this->data);
-        unset($xml->header);
-        return new RecordSnippet($xml->asXML());
+        $obj = $this->obj();
+        return new RecordSnippet(json_encode(array_remove_recursive('header', $obj)));
     }
 
     public function format($format = 'raw') {
-        switch ($format) {
-            case 'raw':
-                break;
-            
-            case 'html':
-            case 'html4':
-                $xmlstylesheet = 'raw2html.xsl';
-                break;
-
-            case 'escaped':
-                $xmlstylesheet = 'raw2html.xsl';
-                $postprocess = function ($data) {
-                    return str_replace('"', "'", htmlentities($data));
-                };
-                break;
-
-            case 'htmlnolink':
-                $xmlstylesheet = 'raw2html.xsl';
-                $postprocess = function ($data) {
-                    return preg_replace('/<(\/)?a(\W)/', '<$1span$2', $data);
-                };
-                break;
-
-            default:
-        }
-
-        if (isset($xmlstylesheet)) {
-            $crosswalkedData = $this->_crosswalkRecordXml($xmlstylesheet);
-            if (isset($postprocess)) {
-                return $postprocess($crosswalkedData);
-            } else {
-                return $crosswalkedData;
-            }
-        } else {
+        if ($format === 'json') {
             return $this->data;
+        } else {
+            return $this->traverseRaw($this->obj(), $format);
         }
     }
 
     protected function _raw2html() {
     }
 
-    static function traverseRaw($object = null, $format = 'html') {
+    protected function traverseRaw($object = null, $format = 'html') {
         $output = '';
         $html = (strpos($format, 'html') !== false);
         if (is_string($object)) {
@@ -105,7 +104,7 @@ class Record extends Eloquent
         } else if (!is_null($object)) {
             foreach ($object as $elem => $obj) {
                 $htmlelem = $elem;
-                if ($html && in_array($elem, $htmlelements)) {
+                if ($html && !in_array($elem, $this->htmlelements)) {
                     if (isset($obj['link']) && strpos($format, 'nolink') === false) {
                         $htmlelem = 'a';
                     } else {
@@ -113,10 +112,10 @@ class Record extends Eloquent
                     }
                     $output .= '<' . $htmlelem . ' class="' . $elem . '"';
                 } else {
-                    $output += '<' + $elem;
+                    $output .= '<' . $elem;
                 }
                 foreach ($obj as $attr => $val) {
-                    if ($html && in_array($attr, $allowedattrs) && isset($val)) {
+                    if ($html && in_array($attr, $this->allowedattrs) && isset($val)) {
                         $output .= ' ' . $attr . '="' . $val . '"';
                     } else if ($attr !== 'children') {
                         $output .= ' ' . $attr . '="' . $val . '"';
@@ -124,7 +123,7 @@ class Record extends Eloquent
                 }
                 $output .= '>';
                 foreach ($obj['children'] as $child) {
-                    $output .= traverseRaw($child, $format);
+                    $output .= $this->traverseRaw($child, $format);
                 }
                 $output .= '</' . $htmlelem . '>';
             }
@@ -153,7 +152,7 @@ class Record extends Eloquent
             $this->collection_id = Auth::user()->collection_id;
         }
         parent::save();
-        $xml = new SimpleXMLElement($this->data);
+        /*$xml = new SimpleXMLElement($this->data);
         $fields = Field::where_primary('1')->get();
         $this->primaries()->delete();
         foreach ($fields as $field) {
@@ -170,7 +169,7 @@ class Record extends Eloquent
                     $this->targets()->attach(str_replace('/record/', '', join('', $node->xpath('@link'))));
                 }
             }
-        }
+        }*/
         BiblioNarrator\ElasticSearch::saveRecord($this->data);
     }
 }

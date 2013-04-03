@@ -160,50 +160,36 @@ function newRecord() {
 }
 
 function loadRecord() {
-    $.ajax({
-        type: "GET",
-        url: "/xsl/raw2html.xsl",
-        dataType: "xml",
-        error: ajaxLoadFailed,
-    }).done(function(xsl) {
-        if (recordId) {
-            $.ajax({
-                type: "GET",
-                url: "/record/" + recordId + '/raw',
-                dataType: "xml",
-                error: ajaxLoadFailed,
-            }).done(function(msg) {
-                var text = transformXML(msg, xsl).replace('&#160;', '&nbsp;');
-                $('#recordContainer').html(text);
-                initializeContentEditable();
-                addAlert('Successfully loaded record', 'success');
-            });
-        }
-    });
+    if (recordId) {
+        $.ajax({
+            type: "GET",
+            url: "/record/" + recordId + '/json',
+            dataType: "json",
+            error: ajaxLoadFailed,
+        }).done(function(msg) {
+            var text = raw2html(msg);
+            $('#recordContainer').html(text);
+            initializeContentEditable();
+            addAlert('Successfully loaded record', 'success');
+        });
+    }
 }
 function ajaxLoadFailed(jqXHR, err, msg) {
     addAlert('Failed to load record (' + err + ': ' + msg + ')', 'error');
 }
 function saveRecord() {
     $.ajax({
-        type: "GET",
-        url: "/xsl/html2raw.xsl",
-        dataType: "xml",
+        type: "POST",
+        url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
+        data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))) },
         error: ajaxSaveFailed,
-    }).done(function(xsl) {
-        $.ajax({
-            type: "POST",
-            url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-            data: { data: transformXML($('#recordContainer').html().replace('&nbsp;', '&#160;'), xsl) },
-            error: ajaxSaveFailed,
-        }).done(function(msg) {
-            recordId = parseInt(msg.id);
-            if (typeof(recordId) !== 'undefined') {
-                window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
-            }
-            addAlert('Successfully saved record', 'success');
-            updateFieldsTOCTree();
-        });
+    }).done(function(msg) {
+        recordId = parseInt(msg.id);
+        if (typeof(recordId) !== 'undefined') {
+            window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
+        }
+        addAlert('Successfully saved record', 'success');
+        updateFieldsTOCTree();
     });
 }
 function ajaxSaveFailed(jqXHR, err, msg) {
