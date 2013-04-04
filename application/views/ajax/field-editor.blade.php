@@ -14,11 +14,13 @@
             <div class="span3">
                 <label for="field-field">Field:</label><input id="field-field" type="text" name="field" value="{{ $field->field }}"></input>
             </div>
+            <div class="span3">
                 <label for="field-link">Link:</label><input id="field-link" type="checkbox" name="link"
                 @if ($field->link)
                 checked="checked"
                 @endif
                 ></input>
+            </div>
         </div>
         <div class="row-fluid">
             <div class="span3">
@@ -30,6 +32,13 @@
                 checked="checked"
                 @endif
                 id="field-primary"></input>
+            </div>
+            <div class="span3">
+                <label for="field-sortable">Sortable:</label><input id="field-sortable" type="checkbox" name="sortable"
+                @if ($field->sortable)
+                checked="checked"
+                @endif
+                ></input>
             </div>
         </div>
     </fieldset>

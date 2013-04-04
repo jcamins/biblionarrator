@@ -59,7 +59,7 @@ var treeCallbacks = {
             initializeStyleEditor();
             $('#field-label').text(data.rslt.name);
             $('#field-schema').val();
-            $('#field-field').val(data.rslt.name);
+            $('#field-field').val(data.rslt.name.toLowerCase());
             $('#tree .selected').removeClass('selected');
             $(data.rslt.obj).children('a').addClass('selected');
             if (data.args[1] === 'inside') {
@@ -121,7 +121,9 @@ $(document).ready(function() {
                     'label': $('#field-label').text(),
                     'description': $('#field-description').val(),
                     'parent': $('#field-parent').val(),
-                    'primary': $('#field-primary').is(':checked') ? 1 : 0
+                    'link': $('#field-link').is(':checked') ? 1 : 0,
+                    'primary': $('#field-primary').is(':checked') ? 1 : 0,
+                    'sortable': $('#field-sortable').is(':checked') ? 1 : 0,
                   }
         }).done(function (data) {
             $('#field-id').val(data.id);

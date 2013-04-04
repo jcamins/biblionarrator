@@ -25,7 +25,7 @@ class Resources_Field_Controller extends Resource_Controller {
         array('name' => 'description', 'label' => 'Description', 'required' => false)
     );
     public $required_columns = array('schema', 'field', 'label');
-    public $optional_columns = array('description', 'parent', 'primary');
+    public $optional_columns = array('description', 'parent', 'primary', 'sortable');
     public $foreign_keys = array('styles');
     public $resourceClass = 'Field';
 
