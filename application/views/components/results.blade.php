@@ -48,12 +48,12 @@
     </table>
     {{ $paginator->appends(Input::except('page'))->links() }}
     <div class="result-size">Show <select id="perpage" name="perpage">
-        <option value="2" {{ $perpage === 2 ? 'selected="selected"' : '' }}>2</option>
-        <option value="5" {{ $perpage === 5 ? 'selected="selected"' : '' }}>5</option>
-        <option value="10" {{ $perpage === 10 ? 'selected="selected"' : '' }}>10</option>
-        <option value="25" {{ $perpage === 25 ? 'selected="selected"' : '' }}>25</option>
-        <option value="50" {{ $perpage === 50 ? 'selected="selected"' : '' }}>50</option>
-        <option value="100" {{ $perpage === 100 ? 'selected="selected"' : '' }}>100</option>
+        <option value="2" {{ $perpage == 2 ? 'selected="selected"' : '' }}>2</option>
+        <option value="5" {{ $perpage == 5 ? 'selected="selected"' : '' }}>5</option>
+        <option value="10" {{ $perpage == 10 ? 'selected="selected"' : '' }}>10</option>
+        <option value="25" {{ $perpage == 25 ? 'selected="selected"' : '' }}>25</option>
+        <option value="50" {{ $perpage == 50 ? 'selected="selected"' : '' }}>50</option>
+        <option value="100" {{ $perpage == 100 ? 'selected="selected"' : '' }}>100</option>
     </select> records</div>
 @else
     @section('norecords')
