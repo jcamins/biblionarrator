@@ -33,8 +33,14 @@ class Search_Controller extends List_Controller {
             if (isset($this->query)) {
                 $query = $this->query;
                 $this->records = $this->records->where(function($dbquery) use ($query) {
-                    foreach (explode(' ', $query) as $keyword) {
-                        $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
+                    $phr = preg_replace('/^"([^"]+)"$/', '$1', $query);
+                    if ($phr !== NULL && $phr !== $query) {
+                        error_log($phr);
+                        $dbquery->where('data', 'LIKE', '%' . $phr . '%');
+                    } else {
+                        foreach (explode(' ', $query) as $keyword) {
+                            $dbquery->where('data', 'LIKE', '%' . $keyword . '%');
+                        }
                     }
                 });
             }
