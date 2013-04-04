@@ -139,7 +139,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
             array_push($this->sorts, $field);
             $this->orderings = array();
             foreach ($this->sorts as $sort) {
-                $this->results->order_by(DB::raw('ExtractValue(data,\'//' . $sort . '\')'));
+                $this->results->order_by(DB::raw("SUBSTRING(data, LOCATE('\"$sort\":', data), LOCATE('}', data, LOCATE('\"$sort\":', data)) - LOCATE('\"$sort\":', data))"));
             }
         }
     }
