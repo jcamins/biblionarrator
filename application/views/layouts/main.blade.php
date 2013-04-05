@@ -37,11 +37,7 @@
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">
-@if (strlen(Session::get('bookmarks')) > 0)
-{{ count(explode(',', Session::get('bookmarks'))) }}
-@endif
-</span></a>
+                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">{{ Bookmarks::make()->size() > 0 ? Bookmarks::make()->size() : ''}}</span></a>
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">

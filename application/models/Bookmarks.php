@@ -26,4 +26,8 @@ class Bookmarks extends RecordCollection
     public function save() {
         Session::put('bookmarks', $this->get_comma_string());
     }
+
+    public static function make() {
+        return new Bookmarks();
+    }
 }
