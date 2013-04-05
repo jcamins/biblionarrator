@@ -20,11 +20,13 @@
             <ul class="dropdown-menu">
                 <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
                 <li><a id="new-related">Related record</a></li>
-                <li><a id="duplicate">Duplicate record</a></li>
+                <li><a id="new-duplicate">Duplicate record</a></li>
             </ul>
         </li>
         <li><a href="#" id="save">Save</a></li>
         <li><a href="{{ URL::full() }}" id="reload" data-remote="false" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
+        <li><a href="#" id="tag">Tag</a></li>
+        <li><a href="#" id="untag">Untag</a></li>
 @endif
 @endsection
 

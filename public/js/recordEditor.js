@@ -50,10 +50,17 @@ function initializeEditor() {
     $('#add-section').click(function() {
         var newsection = document.createElement('section');
         $('#recordContainer article').append(newsection);
-        if ($('#editor-toolbar').is(':visible')) {
-            newsection.addAttribute('contenteditable', 'true');
-        }
-        $(newsection).click();
+        $(newsection).attr('contenteditable', 'true');
+        $(newsection).focus();
+    });
+
+    $('#tag').click(function () {
+        addTagDialog();
+        return false;
+    });
+    $('#untag').click(function () {
+        closeTag();
+        return false;
     });
 }
 
@@ -70,6 +77,17 @@ function initializeRangy() {
 };
 
 function addTagDialog() {
+    if (rangy.getSelection().getRangeAt(0).collapsed) {
+        var el = document.createTextNode(' ');
+        var sel = rangy.getSelection();
+        sel.getRangeAt(0).insertNode(el);
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        rangy.getSelection().refresh();
+    }
+
     currentSelection = rangy.getSelection();
     $('#tagSelector').modal('show');
 }
@@ -128,11 +146,13 @@ function setTag(field) {
     for(var ii = 0; ii < currentSelection.rangeCount; ii++) {
         appliers[labeltofieldlookup[field]].applyToRange(currentSelection.getRangeAt(ii));
     }
-    consolidateStyles();
+    //consolidateStyles();
     if ($(currentSelection.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
         $(currentSelection.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
         addLink();
     }
+
+    //$(currentSelection.getRangeAt(0).commonAncestorContainer.parentNode).focus();
 
     updateFieldsTOCTree();
 }
@@ -144,7 +164,7 @@ function closeTag() {
             if (found) {
                 return;
             }
-            if (typeof fieldlist[element] !== undefined) {
+            if (typeof fieldlist[element] !== undefined && typeof appliers[element] !== undefined) {
                 appliers[element].undoToSelection();
                 found = true;
             }
@@ -155,8 +175,9 @@ function closeTag() {
 }
 
 function newRecord() {
-    window.history.pushState({ 'event' : 'new' }, 'New record', '/record');
+    History.pushState({ 'event' : 'new' }, 'New record', '/record');
     $('#recordContainer').html('<article><header contenteditable="true"></header><section contenteditable="true"></section></article>');
+    updateFieldsTOCTree();
 }
 
 function loadRecord() {
@@ -186,7 +207,7 @@ function saveRecord() {
     }).done(function(msg) {
         recordId = parseInt(msg.id);
         if (typeof(recordId) !== 'undefined') {
-            window.history.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
+            History.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
         }
         addAlert('Successfully saved record', 'success');
         updateFieldsTOCTree();

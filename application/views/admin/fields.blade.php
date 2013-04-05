@@ -67,7 +67,7 @@ var treeCallbacks = {
             } else {
                 $('#field-parent').val('');
             }
-            window.history.pushState({ 'event' : 'new' }, 'New field', '/admin/field/new');
+            History.pushState({ 'event' : 'new' }, 'New field', '/admin/field/new');
         });
     }
 };
@@ -127,7 +127,7 @@ $(document).ready(function() {
                   }
         }).done(function (data) {
             $('#field-id').val(data.id);
-            window.history.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.id, '/admin/field/' + data.id);
+            History.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field ' + data.id, '/admin/field/' + data.id);
             $('#tree .selected').each(function() {
                 $(this).parent().attr('data-id', data.id);
                 $(this).attr('href', '/admin/field/' + data.id);
