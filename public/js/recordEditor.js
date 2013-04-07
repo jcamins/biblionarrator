@@ -2,13 +2,15 @@ function initializeEditor() {
     initializeRangy();
     initializeContentEditable();
     $('#tagEntry').typeahead({
-        source: function(query, process) {
-            return Object.keys(labeltofieldlookup);
-        },
-        updater: function(item) {
-            setTag(item);
-            return item;
-        },
+        'name': 'tagselect',
+        'local': Object.keys(labeltofieldlookup)
+    });
+
+    $('#tagEntry').on('typeahead:autocompleted', function (ev, datum) {
+        setTag(datum.value);
+    });
+    $('#tagEntry').on('typeahead:selected', function (ev, datum) {
+        setTag(datum.value);
     });
 
     $('.popover-link').popover({

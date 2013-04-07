@@ -1,0 +1,141 @@
+Still to do:
+* Timeline visualization [biblionarrator] (3T9A3)
+* Map visualization [biblionarrator] (3T9A4)
+* Switch to Elastic Search from SQL queries [biblionarrator] (3T9A5)
+* Add commenting feature [biblionarrator] (3TCCU)
+* Beautify datatables [biblionarrator] (3TCCV)
+* Suggest only fields at correct level in hierarchy [biblionarrator] (3TCCX)
+* Associate record types and fields with collections [biblionarrator] (3TCDL)
+* Add saved searches [biblionarrator] (3TCO9)
+* Make user saving work without redirecting to JSON [biblionarrator] (3TCOC)
+* Add browse feature [biblionarrator] (3TDA3)
+* Add auto-complete tagging [biblionarrator] (3TEGA)
+* Add advanced search screen [biblionarrator] (3TEGG)
+* Handle new paragraphs in editor [biblionarrator] (3TEKD)
+* Add RDF support [biblionarrator] (3TEKN)
+* Add CSV importer [biblionarrator] (3TEKP)
+* Add MARC importer [biblionarrator] (3TEKQ)
+* Add Z39.50/SRU copy cataloging [biblionarrator] (3TEKU)
+* Add MARC export [biblionarrator] (3TEKV)
+* Add "cherrycrumbs" for facets [biblionarrator] (3TELD)
+* Add customizable faceting [biblionarrator] (3TELE)
+* Add user preferences [biblionarrator] (3TF9W)
+* Add system preferences [biblionarrator] (3TF9X)
+* Add ability for users to set their own passwords [biblionarrator] (3TF9Y)
+* Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
+* Add buttons for tagging, etc. in editor [biblionarrator] (3TFCZ)
+* Add duplicate record functionality [biblionarrator] (3TL3X)
+* Add related record functionality [biblionarrator] (3TL3Y)
+* Hitting enter should close confirmation dialogs [biblionarrator] (3TL4V)
+* New tag editor/creator needs to be more seamless [biblionarrator] (3TL5I)
+* Add XML importer [biblionarrator] (3TL5L)
+* Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)
+* Add continuous scrolling for searches
+* Use typeahead to suggest values/links from other records
+* Force footer to bottom (see NOTES below)
+
+DONE:
+* Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
+* Record type "facet" list along top: "Found 20 books, 5 people," etc. [biblionarrator] (3T9A7)
+* Change nav to be more mobile-friendly [biblionarrator] (3TEG9)
+* Move TOC to end for mobile [biblionarrator] (3TEGF)
+* Add search button on navbar [biblionarrator] (3TEGH)
+* Add composed-field sorting [biblionarrator] (3TEGI)
+* Add sorting dropdown [biblionarrator] (3TEGJ)
+* Allow users to change number of records displayed on page [biblionarrator] (3TEGK)
+* Add "remove all bookmarks" button [biblionarrator] (3TEGL)
+* Add "bookmark entire page" and "bookmark entire search" options [biblionarrator] (3TEGM)
+* Add breadcrumbs for sorting [biblionarrator] (3TELF)
+* Add administration home screen [biblionarrator] (3TF9V)
+* Add human friendly label to fields [biblionarrator] (3TFCK)
+* Make disabling the editor hide the editor [biblionarrator] (3TFD6)
+* Add placeholder text to contenteditable boxes [biblionarrator]
+
+NOTES:
+For forcing the footer to the bottom (from http://www.distractedbysquirrels.com/blog/making-your-footer-stay-put-with-css-when-having-a-fixed-header/)
+HTML:
+<header class="navbar navbar-fixed">
+    This is the Header
+</header>
+<div class="content">
+    <div class="container">
+        <p>Some content.</p>
+    </div>
+</div>
+<footer>
+    This is the footer, which will stay at the bottom!
+</footer>
+
+CSS:
+html, body {
+    height: 100%;
+}
+
+header, footer { display:block; text-align: center; }
+
+header { height:30px; background-color:#f5f5f5 }
+
+.navbar-fixed {
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1030;
+}
+
+.content {
+    position: relative;
+    min-height: 100%;
+    height: auto !important;
+    margin-bottom: -50px; /* the bottom margin is the negative value of the footer's height */
+}
+
+.content:before {
+    display: table;
+    content: "";
+    height: 40px;  /* the value of the header's height */
+    zoom: 1;
+}
+
+.container:after {
+    display: table;
+    content: "";    
+    clear: both;
+    height: 50px;
+}
+
+footer {
+    height: 50px;
+    position: relative;
+    background-color:#dddddd;
+}
+
+
+footer:before {
+    content: ".";
+    visibility: hidden;
+    display: table;
+    height: 0;
+    clear: both;
+}
+
+For editing pseudo-element styles with Javascript:
+var addRule = (function(style){
+    var sheet = document.head.appendChild(style).sheet;
+    return function(selector, css){
+        var propText = Object.keys(css).map(function(p){
+            return p+":"+css[p]
+        }).join(";");
+        sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+    }
+})(document.createElement("style"));
+
+addRule("p:before", {
+    display: "block",
+    width: "100px",
+    height: "100px",
+    background: "red",
+    "border-radius": "50%",
+    content: "''"
+});
+
