@@ -15,7 +15,7 @@
     </head>
 
     <body>
-        <div class="navbar navbar-fixed-top">
+        <nav class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
                     <a class="brand" href="/">Biblionarrator</a>
@@ -99,9 +99,9 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </nav>
 
-        <div class="container-fluid">
+        <div id="content" class="container-fluid">
             @section('headbar')
                 <div class="row-fluid toolbar-row">
                     <div class="span10 pull-right">
@@ -133,7 +133,7 @@
                 </div>
             @yield_section
         </div> <!-- /container -->
-        <div class="navbar navbar-fixed-bottom hidden-desktop">
+        <nav class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
             <ul class="nav">
                 <li><a href="/bookmarks">Bookmarks
@@ -152,7 +152,7 @@
                 <li><a href="/help">Help</a></li>
             </ul>
             </div>
-        </div>
+        </nav>
         <footer>
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
