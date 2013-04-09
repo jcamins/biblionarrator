@@ -143,18 +143,19 @@ function closeAllTags () {
     while (closeTag()) {};
 }
 
-function setTag(field) {
-    $('#tagSelector').modal('hide');
-    for(var ii = 0; ii < currentSelection.rangeCount; ii++) {
-        appliers[labeltofieldlookup[field]].applyToRange(currentSelection.getRangeAt(ii));
+function setTag(field, sel) {
+    for(var ii = 0; ii < sel.rangeCount; ii++) {
+        if (typeof appliers[labeltofieldlookup[field]] !== 'undefined') { 
+            appliers[labeltofieldlookup[field]].applyToRange(sel.getRangeAt(ii));
+        }
     }
-    //consolidateStyles();
-    if ($(currentSelection.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
-        $(currentSelection.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
+    consolidateStyles();
+    if ($(sel.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
+        $(sel.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
         addLink();
     }
 
-    //$(currentSelection.getRangeAt(0).commonAncestorContainer.parentNode).focus();
+    //$(sel.getRangeAt(0).commonAncestorContainer.parentNode).focus();
 
     updateFieldsTOCTree();
 }
@@ -174,6 +175,61 @@ function closeTag() {
     });
     updateFieldsTOCTree();
     return found;
+}
+
+function newTag() {
+    var sel = rangy.getSelection();
+    var sellen;
+    if (!sel.isCollapsed) {
+        sellen = sel.getRangeAt(0).endOffset - sel.getRangeAt(0).startOffset;
+    }
+    var tsb = sel.getRangeAt(0).createContextualFragment('<input id="tag-select-box" type="text"></input>');
+    sel.getRangeAt(0).insertNode(tsb);
+    tsb = document.getElementById('tag-select-box');
+    if (sellen) {
+        var range = rangy.createRange();
+        range.setStart(tsb.nextSibling, 0);
+        range.setEnd(tsb.nextSibling, sellen);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    $(tsb).typeahead({
+        'name': 'tagselect',
+        'local': Object.keys(labeltofieldlookup)
+    });
+
+    $(tsb).on('typeahead:autocompleted', null, sel, newTagSelected);
+    $(tsb).on('typeahead:selected', null, sel, newTagSelected);
+    $(tsb).on('keydown', function (ev) {
+        if (ev.keyCode == 13) {
+            var e2 = {};
+            e2['data'] = sel;
+            var datum = {};
+            datum['value'] = $(tsb).val();
+            newTagSelected(e2, datum);
+        } else if (ev.keyCode == 27) {
+            $(tsb).parent().remove();
+        }
+    });
+    $(tsb).focus();
+}
+
+
+function newTagSelected(ev, datum) {
+    if (ev.data.isCollapsed) {
+        var el = document.createElement('span');
+        el.setAttribute('class', labeltofieldlookup[datum.value]);
+        el.innerHTML = '&nbsp;';
+        $('#tag-select-box').parent().replaceWith(el);
+        var sel = rangy.getSelection();
+        sel.removeAllRanges();
+        var range = rangy.createRange();
+        range.selectNodeContents(el);
+        sel.addRange(range);
+    } else {
+        $('#tag-select-box').parent().remove();
+        setTag(datum.value, ev.data);
+    }
 }
 
 function newRecord() {

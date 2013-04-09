@@ -167,7 +167,7 @@ $(document).ready(function() {
 });
 
 $(window).load(function() {
-    shortcut.add('Ctrl+J', addTagDialog);
+    shortcut.add('Ctrl+J', newTag);
     shortcut.add('Ctrl+K', closeTag);
     shortcut.add('Ctrl+Shift+J', closeAndOpenTag);
     shortcut.add('Ctrl+Shift+K', closeAllTags);
