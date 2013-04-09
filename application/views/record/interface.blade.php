@@ -14,6 +14,7 @@
     <li class="divider-vertical"></li>
     </ul>
     <ul id="editor-toolbar" class="nav">
+        <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">Show tags</a></li>
         <li><a href="#" id="new" data-toggle="modal" data-target="#confirmNew" class="caret-before">New</a></li>
         <li class="dropdown">
             <a href="#" id="dropdown-new" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
