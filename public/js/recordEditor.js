@@ -39,7 +39,7 @@ function initializeEditor() {
     });
 
     $('#tag').click(function () {
-        addTagDialog();
+        newTag();
         return false;
     });
     $('#untag').click(function () {
@@ -110,7 +110,7 @@ function getSelectionHtml() {
 
 function closeAndOpenTag () {
     closeTag();
-    addTagDialog();
+    newTag();
 }
 
 function closeAllTags () {

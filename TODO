@@ -23,11 +23,9 @@ Still to do:
 * Add system preferences [biblionarrator] (3TF9X)
 * Add ability for users to set their own passwords [biblionarrator] (3TF9Y)
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
-* Add buttons for tagging, etc. in editor [biblionarrator] (3TFCZ)
 * Add duplicate record functionality [biblionarrator] (3TL3X)
 * Add related record functionality [biblionarrator] (3TL3Y)
 * Hitting enter should close confirmation dialogs [biblionarrator] (3TL4V)
-* New tag editor/creator needs to be more seamless [biblionarrator] (3TL5I)
 * Add XML importer [biblionarrator] (3TL5L)
 * Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)
 * Add continuous scrolling for searches
@@ -50,6 +48,8 @@ DONE:
 * Add human friendly label to fields [biblionarrator] (3TFCK)
 * Make disabling the editor hide the editor [biblionarrator] (3TFD6)
 * Add placeholder text to contenteditable boxes [biblionarrator]
+* Add buttons for tagging, etc. in editor [biblionarrator] (3TFCZ)
+* New tag editor/creator needs to be more seamless [biblionarrator] (3TL5I)
 
 NOTES:
 For forcing the footer to the bottom (from http://www.distractedbysquirrels.com/blog/making-your-footer-stay-put-with-css-when-having-a-fixed-header/)
