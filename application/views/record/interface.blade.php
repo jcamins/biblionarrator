@@ -75,24 +75,6 @@
 @section('form_modals')
 @parent
 @if ($editor)
-<div id="tagSelector" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="tagSelectorLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="tagSelectorLabel">Select tag</h3>
-    </div>
-    <div class="modal-body">
-        <input type="text" id="tagEntry"></input>
-        <select id="tags" size="8">
-            @foreach (Field::all() as $field)
-            <option value="{{ $field->schema }}:{{ $field->field }}">{{ $field->label }}</option>
-            @endforeach
-        </select>
-    </div>
-    <div class="modal-footer">
-        <button id="tagSelectorCancel" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button id="tagSelectorOK" class="btn btn-primary">Select</button>
-    </div>
-</div>
 <div id="confirmNew" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmNewLabel" aria-hidden="true">
     <div class="modal-header">
         <h3 id="confirmNewLabel">New record confirmation</h3>

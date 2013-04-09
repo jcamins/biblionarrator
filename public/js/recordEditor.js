@@ -29,24 +29,6 @@ function initializeEditor() {
 
     $('#removeTag').click(closeTag);
 
-    $('#tagSelector').on('shown', function () {
-        $('#tagEntry').val('');
-        $('#tagEntry').focus();
-    });
-
-    $('#tagSelector').on('hidden', function () {
- //       tinyMCE.execCommand('mceFocus', false, 'recordContainer');
-    });
-
-    $('#tagEntry').keydown(function(ev) {
-        if (ev.keyCode == 13) {
-            var field = $('#tagEntry').val();
-            if (labeltofieldlookup[field]) {
-                setTag(field);
-            }
-        }
-    });
-
     $('#editor-toolbar').on('cookietoggle', null, null, initializeContentEditable);
 
     $('#add-section').click(function() {
@@ -64,6 +46,14 @@ function initializeEditor() {
         closeTag();
         return false;
     });
+
+    $('#recordContainer').keydown(function (ev) {
+        if (ev.keyCode == 13 || ev.keyCode == 32) {
+            updateFieldsTOCTree();
+        }
+    });
+
+    $('#recordContainer').focusout(updateFieldsTOCTree);
 }
 
 var appliers = {};
@@ -77,22 +67,6 @@ function initializeRangy() {
         });
     }
 };
-
-function addTagDialog() {
-    if (rangy.getSelection().getRangeAt(0).collapsed) {
-        var el = document.createTextNode(' ');
-        var sel = rangy.getSelection();
-        sel.getRangeAt(0).insertNode(el);
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        sel.removeAllRanges();
-        sel.addRange(range);
-        rangy.getSelection().refresh();
-    }
-
-    currentSelection = rangy.getSelection();
-    $('#tagSelector').modal('show');
-}
 
 function replaceSelectionWithHtml(html) {
     var range, html;
