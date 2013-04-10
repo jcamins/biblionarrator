@@ -26,6 +26,7 @@
         </li>
         <li><a href="#" id="save">Save</a></li>
         <li><a href="{{ URL::full() }}" id="reload" data-remote="false" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
+        <li class="divider-vertical"></li>
         <li><a href="#" id="tag">Tag</a></li>
         <li><a href="#" id="untag">Untag</a></li>
 @endif
@@ -68,6 +69,14 @@
             <div><button id="add-section" class="btn btn-link">Add section</button></div>
             @endif
             <div id="alerts"></div>
+            <div class="instructions">
+                <span class="instruction-label">Hint:</span>
+                Use the first ("Citation") box for basic citation information that
+                should show up directly in the search results. Use the other
+                ("Expansion") boxes to enter additional information, grouping into
+                paragraphs as you see fit. To tag text using the keyboard, use the
+                shortcut Ctrl-J. To untag text, use the shortcut Ctrl-K.
+            </div>
         </div>
         @include('components.linkpane')
     </div>

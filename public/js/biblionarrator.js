@@ -2,8 +2,15 @@ $(document).ready(function () {
     $('[data-toggle="cookie-view"]').click(function () {
         var target = $($(this).attr('data-target'));
         var activeclass = $(this).attr('data-class')
-        $(this).parent().toggleClass('active');
-        if ($(this).parent().hasClass('active')) {
+        var isactive;
+        if (this.nodeName === 'INPUT') {
+            isactive = $(this).prop('checked');
+        } else {
+            $(this).parent().toggleClass('active');
+            isactive = $(this).parent().hasClass('active');
+        }
+
+        if (isactive) {
             jQuery.cookie($(this).attr('data-cookie'), '1');
             if (activeclass) {
                 target.addClass(activeclass);
@@ -23,14 +30,22 @@ $(document).ready(function () {
         var target = $($(this).attr('data-target'));
         var activeclass = $(this).attr('data-class')
         if (jQuery.cookie($(this).attr('data-cookie')) == '1') {
-            $(this).parent().addClass('active');
+            if (this.nodeName == 'INPUT') {
+                $(this).prop('checked', true);
+            } else {
+                $(this).parent().addClass('active');
+            }
             if (activeclass) {
                 target.addClass(activeclass);
             } else {
                 target.show();
             }
         } else {
-            $(this).parent().removeClass('active');
+            if (this.nodeName == 'INPUT') {
+                $(this).prop('checked', false);
+            } else {
+                $(this).parent().removeClass('active');
+            }
             if (activeclass) {
                 target.removeClass(activeclass);
             } else {

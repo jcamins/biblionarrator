@@ -4,6 +4,26 @@
     }
 }
 
+.dropdown-menu > li > label {
+    margin-left: 20px;
+}
+
+.show-help .instructions {
+    display: block;
+}
+
+.instructions {
+    display: none;
+}
+
+.hidehelp .instructions {
+    display: none;
+}
+
+.navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
+    padding: 0px !important;
+}
+
 .instruction-label {
     font-weight: bold;
 }
