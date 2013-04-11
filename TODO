@@ -31,6 +31,9 @@ Still to do:
 * Add continuous scrolling for searches
 * Use typeahead to suggest values/links from other records
 * Force footer to bottom (see NOTES below)
+* Add ability to upload images
+* Add optional fielded entry
+* Add occluding field type
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
