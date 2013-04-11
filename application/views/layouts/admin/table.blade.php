@@ -1,7 +1,7 @@
 @layout('layouts/main')
 
-@section('toolbar')
-    <button id="btnAdd" class="btn">Add</button>
+@section('controlbar')
+    <li><a href="#" id="btnAdd">Add</a></li>
 @endsection
 
 @section('content')

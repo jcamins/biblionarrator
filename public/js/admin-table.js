@@ -80,6 +80,7 @@ function addNewRow() {
     $('#admintable').dataTable().fnPageChange( 'last' );
     $('.form-column').first().focus();
     $('.form-column').keydown(fnClickAddRow);
+    return false;
 }
 
 function fnDrawCallback() {
