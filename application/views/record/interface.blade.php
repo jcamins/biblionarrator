@@ -85,7 +85,7 @@
 @section('form_modals')
 @parent
 @if ($editor)
-<div id="confirmNew" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmNewLabel" aria-hidden="true">
+<div id="confirmNew" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmNewLabel" aria-hidden="true">
     <div class="modal-header">
         <h3 id="confirmNewLabel">New record confirmation</h3>
     </div>
@@ -94,10 +94,10 @@
     </div>
     <div class="modal-footer">
         <button id="confirmNewCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-        <button id="confirmNewOK" class="btn btn-primary">Yes</button>
+        <button id="confirmNewOK" class="btn btn-primary btn-ok">Yes</button>
     </div>
 </div>
-<div id="confirmReload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmReloadLabel" aria-hidden="true">
+<div id="confirmReload" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmReloadLabel" aria-hidden="true">
     <div class="modal-header">
         <h3 id="confirmReloadLabel">Record reload confirmation</h3>
     </div>
@@ -106,7 +106,7 @@
     </div>
     <div class="modal-footer">
         <button id="confirmReloadCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-        <button id="confirmReloadOK" class="btn btn-primary">Yes</button>
+        <button id="confirmReloadOK" class="btn btn-primary btn-ok">Yes</button>
     </div>
 </div>
 <div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">

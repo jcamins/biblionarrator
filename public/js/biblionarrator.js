@@ -54,6 +54,12 @@ $(document).ready(function () {
         }
         target.trigger('cookietoggle');
     });
+
+    $('[data-autoclose]').keydown(function (ev) {
+        if (ev.keyCode == 13) {
+            $(this).find('.btn-ok').click();
+        }
+    });
 });
 
 var tocindex;
