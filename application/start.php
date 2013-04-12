@@ -65,6 +65,7 @@ Autoloader::map(array(
     'Emogrifier' => path('app').'libraries/emogrifier.php',
     'Redirect' => path('app').'libraries/laravel/redirect.php',
     'URL' => path('app').'libraries/laravel/url.php',
+    'Breadcrumbs' => path('app').'libraries/breadcrumbs.php',
 ));
 
 /*

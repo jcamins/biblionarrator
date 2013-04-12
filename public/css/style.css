@@ -4,6 +4,13 @@
     }
 }
 
+.breadcrumb {
+    text-align: left;
+    float: left;
+    padding: 2px 8px;
+    background-color: #fff;
+}
+
 .dropdown-menu > li > label {
     margin-left: 20px;
 }

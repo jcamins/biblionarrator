@@ -1,7 +1,7 @@
 @layout('layouts/main')
 
 @section('toolbar')
-<h3>Administer Biblionarrator</h3>
+<h3>Administration</h3>
 @endsection
 
 @section('content')

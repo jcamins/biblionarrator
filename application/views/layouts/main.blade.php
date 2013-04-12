@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Biblionarrator</title>
+        <title>{{ $title }}</title>
         <script src="/js/html5shiv.js"></script>
         <script src="/js/html5shiv-printshiv.js"></script>
         <!--[if lt IE 9]>
@@ -155,6 +155,7 @@
             </div>
         </nav>
         <footer>
+        {{ $breadcrumb }}
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
         @section('form_modals')

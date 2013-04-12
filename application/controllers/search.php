@@ -44,6 +44,9 @@ class Search_Controller extends List_Controller {
                     }
                 });
             }
+            $this->title = 'Search for "' . $this->query . '"';
+        } else {
+            $this->title = 'Search';
         }
         if (Config::get('biblionarrator.private')) {
             if (Auth::check()) {

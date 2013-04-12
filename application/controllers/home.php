@@ -49,11 +49,13 @@ class Home_Controller extends Base_Controller {
 
 	public function action_index()
 	{
+        Breadcrumbs::add('Home', URL::current());
 		return View::make('home.index');
 	}
 
     public function action_about()
     {
+        Breadcrumbs::add('About', URL::current());
         return View::make('home.about', array(
             'sidenav' => array(
                 array(

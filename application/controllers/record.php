@@ -45,6 +45,9 @@ class Record_Controller extends Resource_Controller {
         if (is_null($format)) {
             $format = 'interface';
         }
+        if ($format == 'interface') {
+            Breadcrumbs::add('Record' . (isset($record->id) ? ' ' . $record->id : ''));
+        }
         if (in_array($format, self::$templatelist)) {
             return View::make('record.' . $format)->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
         } else {

@@ -151,6 +151,8 @@ class Resource_Controller extends Base_Controller {
         Asset::add('styleEditor', 'js/styleEditor.js');
         Asset::add('admin-tree-js', 'js/admin-tree.js');
 
+        Breadcrumbs::add('Manage ' . strtolower($this->resourceClass) . 's');
+
         return View::make('admin.' . strtolower($this->resourceClass) . 's')->with('resourcetype', strtolower($this->resourceClass))->with('columns', json_encode($this->interface_columns));
     }
 

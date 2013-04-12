@@ -20,6 +20,7 @@
 class List_Controller extends Base_Controller {
 
     public $restful = true;
+    protected $title = null;
     protected $records;
     protected $viewdata = array();
     protected $view;
@@ -46,6 +47,7 @@ class List_Controller extends Base_Controller {
         } else {
             $perpage = 10;
         }
+        Breadcrumbs::add($this->title);
         return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage)->with('paginator', $this->records->results->paginate($perpage));
     }
 
