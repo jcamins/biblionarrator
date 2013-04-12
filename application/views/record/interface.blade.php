@@ -21,7 +21,7 @@
             <ul class="dropdown-menu">
                 <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
                 <li><a id="new-related">Related record</a></li>
-                <li><a id="new-duplicate">Duplicate record</a></li>
+                <li><a href="{{ URL::full() }}/duplicate" id="new-duplicate">Duplicate record</a></li>
             </ul>
         </li>
         <li><a href="#" id="save">Save</a></li>

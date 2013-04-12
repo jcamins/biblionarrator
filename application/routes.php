@@ -41,6 +41,7 @@ Route::any('admin/(:any)/edit/(:any)', function($controller,$params=null) {
 Route::post('record/(:any)/link/add/(:any)', 'record.link@add');
 Route::get('record/(:any)?/?link/list', 'record.link@list');
 Route::get('record/(:any)?/?link/select', 'record.link@select');
+Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@index');
 Route::get('css/fields.css', function() {

@@ -26,32 +26,44 @@ class Record_Controller extends Resource_Controller {
     public function __construct()
     {
         Base_Controller::__construct();
+        Asset::add('fieldstyles', 'css/fields.css');
         $this->filter('before', 'auth', array('edit', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->except(array('index'));
         $this->filter('before', 'auth', array('view', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->only(array('index'));
     }
 
-    public function get_index($record_id = null, $format = null) {
-        Asset::add('fieldstyles', 'css/fields.css');
-        $record = Record::find($record_id);
-        if (is_null($record)) {
-            $record = new Record();
-        }
-        $editor = Authority::can('edit', 'Record', $record);
+    public function _interface($record) {
         Asset::add('editor-js', 'js/recordEditor.js');
         Asset::add('shortcut-js', 'js/shortcut.js');
         Asset::add('rangy-js', 'js/rangy/rangy-core.js');
         Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
-        if (is_null($format)) {
-            $format = 'interface';
+        $editor = Authority::can('edit', 'Record', $record);
+        return View::make('record.interface')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
+    }
+
+    public function get_index($record_id = null, $format = null) {
+        $record = Record::find($record_id);
+        if (is_null($record)) {
+            $record = new Record();
         }
-        if ($format == 'interface') {
-            Breadcrumbs::add('Record' . (isset($record->id) ? ' ' . $record->id : ''));
-        }
-        if (in_array($format, self::$templatelist)) {
-            return View::make('record.' . $format)->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
+        if (is_null($format) || $format == 'interface') {
+            if (isset($record->id)) {
+                Breadcrumbs::add('Record ' . $record->id);
+            }
+            return $this->_interface($record);
+        } else if (in_array($format, self::$templatelist)) {
+            return View::make('record.' . $format)->with('record', $record)->with('recordtype', 'Book');
         } else {
             return $record->format($format);
         }
+    }
+
+    public function get_duplicate($record_id = null) {
+        $oldrecord = Record::find($record_id);
+        $record = new Record();
+        if (isset($oldrecord)) {
+            $record->data = $oldrecord->data;
+        }
+        return $this->_interface($record);
     }
 }
