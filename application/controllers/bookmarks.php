@@ -29,6 +29,7 @@ class Bookmarks_Controller extends List_Controller {
     public function __construct() {
         $this->records = new Bookmarks();
         $this->records->autosave = true;
+        $this->title = 'Bookmarks';
         parent::__construct();
     }
 
