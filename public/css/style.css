@@ -1,6 +1,36 @@
 @media (min-width: 980px) {
-    body {
-        padding-top: 90px;
+    html, body {
+        height: 100%;
+    }
+
+    #content {
+        position: relative;
+        min-height: 100%;
+        height: auto !important;
+        margin-bottom: -50px; /* the bottom margin is the negative value of the footer's height */
+    }
+
+    #content:before {
+        height: 80px;  /* the value of the header's height */
+        zoom: 1;
+    }
+
+    #content:after {
+        height: 40px;
+    }
+
+    footer {
+        height: 40px;
+        position: relative;
+        margin: 0;
+    }
+
+    footer:before {
+        content: "";
+        visibility: hidden;
+        display: table;
+        height: 0;
+        clear: both;
     }
 }
 
@@ -414,12 +444,11 @@ td.recordPane button.preview {
 footer {
     color: #929292;
     font-size: 0.8em;
-    padding: 1em 10px 0 0;
+    padding: 8px 10px 0 0;
     text-align: right;
     scroll: 10px 5px #FFFFFF;
     border-top: 1px solid #F5F5F5;
     clear: both;
-    margin: 2em auto 0;
 }
 
 #alerts {
