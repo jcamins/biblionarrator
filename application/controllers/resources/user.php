@@ -28,9 +28,5 @@ class Resources_User_Controller extends Resource_Controller {
     public $hashed_columns = array('password');
     public $fk_columns = array('role');
     public $resourceClass = 'User';
-
-    public function get_security($id) {
-        return View::make('ajax.user-security')->with('user', User::find($id));
-    }
 }
 

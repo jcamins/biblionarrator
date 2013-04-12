@@ -42,7 +42,11 @@ class Resource_Controller extends Base_Controller {
     }
 
     public function post_index($id = null) {
-        return $this->_update($id);
+        if (Input::has('adminredirect')) {
+            return Redirect::to('/admin/' . strtolower($this->resourceClass));
+        } else {
+            return $this->_update($id);
+        }
     }
 
     public function delete_index($id = null) {
@@ -148,5 +152,14 @@ class Resource_Controller extends Base_Controller {
         Asset::add('admin-tree-js', 'js/admin-tree.js');
 
         return View::make('admin.' . strtolower($this->resourceClass) . 's')->with('resourcetype', strtolower($this->resourceClass))->with('columns', json_encode($this->interface_columns));
+    }
+
+    public function get_edit($id = null) {
+        $resource = call_user_func($this->resourceClass . '::find', $id);
+        if (is_null($id) || is_null($resource)) {
+            return Redirect::to('resources.' . strtolower($this->resourceClass) . '.admin');
+        } else {
+            return View::make('admin.edit.' . strtolower($this->resourceClass))->with('resource', $resource);
+        }
     }
 }
