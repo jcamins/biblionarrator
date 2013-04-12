@@ -49,7 +49,7 @@ class User_Controller extends Base_Controller
         }
     }
     
-    public function action_logout()
+    public function get_logout()
     {
         Auth::logout();
         return Redirect::to('home');
