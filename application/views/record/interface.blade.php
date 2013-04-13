@@ -35,10 +35,10 @@
             <select id="recordtype-select" title="Record type: ">
                 @foreach (RecordType::all() as $rt)
                     <option
-                    @if ($rt->name == $recordtype)
+                    @if ($rt->id == $record->record_type->id)
                     selected="selected"
                     @endif
-                    >{{ $rt->name }}</option>
+                    value="{{ $rt->id }}">{{ $rt->name }}</option>
                 @endforeach
             </select>
         </li>
@@ -68,7 +68,7 @@
             </div>
             </noscript>
             @endif
-            <div itemscope id="recordContainer" class="recordtype_{{ $recordtype }}">
+            <div itemscope id="recordContainer" class="recordtype_{{ $record->record_type->name }}">
                 @if ($record->format('html'))
                     {{ $record->format('html') }}
                 @else

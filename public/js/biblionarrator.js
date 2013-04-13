@@ -87,8 +87,10 @@ $(document).ready(function () {
             $(container).attr('data-index', newindex);
             $(cur).text(title + $(this).text());
             $(select).val([]);
+            $(select).find('option').removeAttr('selected');
             $(select).find('option:eq(' + newindex + ')').attr('selected', 'selected');
             $(select).change();
+            $(container).removeClass('open');
             return false;
         });
     });

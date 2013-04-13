@@ -198,7 +198,9 @@ function saveRecord() {
     $.ajax({
         type: "POST",
         url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
-        data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))) },
+        data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))),
+                recordtype: $('#recordtype-select').val()
+              },
         error: ajaxSaveFailed,
     }).done(function(msg) {
         recordId = parseInt(msg.id);

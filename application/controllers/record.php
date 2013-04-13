@@ -20,6 +20,7 @@
 class Record_Controller extends Resource_Controller {
 
     public $required_columns = array('data');
+    public $fk_columns = array('recordtype');
     private static $templatelist = array('interface', 'preview', 'result');
     public $resourceClass = 'Record';
 
@@ -38,7 +39,7 @@ class Record_Controller extends Resource_Controller {
         Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
         $editor = Authority::can('edit', 'Record', $record);
-        return View::make('record.interface')->with('record', $record)->with('recordtype', 'Book')->with('editor', $editor);
+        return View::make('record.interface')->with('record', $record)->with('editor', $editor);
     }
 
     public function get_index($record_id = null, $format = null) {
@@ -52,7 +53,7 @@ class Record_Controller extends Resource_Controller {
             }
             return $this->_interface($record);
         } else if (in_array($format, self::$templatelist)) {
-            return View::make('record.' . $format)->with('record', $record)->with('recordtype', 'Book');
+            return View::make('record.' . $format)->with('record', $record);
         } else {
             return $record->format($format);
         }
