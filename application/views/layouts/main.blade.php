@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ $title }}</title>
         <script src="/js/html5shiv.js"></script>
         <script src="/js/html5shiv-printshiv.js"></script>
@@ -19,7 +20,7 @@
             <div class="navbar-inner">
                 <div class="container-fluid">
                     <a class="brand" href="/">Biblionarrator</a>
-                    <div>
+                    <div class="navbar-controls">
                         <ul class="nav pull-left">
                             @section('navigation')
                             @yield_section
@@ -41,7 +42,7 @@
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">
-                                <a href="/user" class="hidden-desktop"><i class="icon-user"></i></a>
+                                <a href="/user/login" class="hidden-desktop"><i class="icon-user"></i></a>
                                 <a href="#" class="dropdown-toggle visible-desktop" data-toggle="dropdown">
                                     <i class="icon-user"></i><b class="caret"></b>
                                 </a>
@@ -156,7 +157,7 @@
         </nav>
         <footer>
         {{ $breadcrumb }}
-        <p>&copy; C &amp; P Bibliography Services 2013</p>    
+        <p class="copyright">&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
         @section('form_modals')
             <div id="confirm" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmLabel" aria-hidden="true">
