@@ -21,7 +21,6 @@ Still to do:
 * Add user preferences [biblionarrator] (3TF9W)
 * Add system preferences [biblionarrator] (3TF9X)
 * Add ability for users to set their own passwords [biblionarrator] (3TF9Y)
-* Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
 * "Add related record" functionality [biblionarrator] (3TL3Y)
 * Add XML importer [biblionarrator] (3TL5L)
 * Add continuous scrolling for searches
@@ -30,6 +29,15 @@ Still to do:
 * Add optional fielded entry
 * Add occluding field type
 * Add record templates for auto-tagging and high speed entry
+* Add record locking
+* Make admin tables mobile-friendly
+* Redo home page
+* Add help pages
+
+Refactoring:
+* Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
+* Switch to Bootstrap 3 (when it is released)
+* Consider using LESS?
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
