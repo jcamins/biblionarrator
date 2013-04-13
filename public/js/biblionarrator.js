@@ -55,10 +55,27 @@ $(document).ready(function () {
         target.trigger('cookietoggle');
     });
 
-    $('[data-autoclose]').keydown(function (ev) {
+
+    $('[data-toggle="confirm"]').click(function () {
+        $('#confirmLabel').text($(this).attr('data-confirm-label'));
+        $('#confirmBody').text($(this).attr('data-confirm-body'));
+        $('#confirmOK').attr('data-callback', $(this).attr('id'));
+        $('#confirm').modal('show');
+        return false;
+    });
+    $('#confirm').keydown(function (ev) {
         if (ev.keyCode == 13) {
             $(this).find('.btn-ok').click();
         }
+    });
+    $('#confirmOK').click(function () {
+        if (typeof $(this).attr('data-callback') !== 'undefined' && $(this).attr('data-callback').length > 0) {
+            $('#' + $(this).attr('data-callback')).trigger('confirmed');
+            $('#confirm').modal('hide');
+        }
+    });
+    $('#confirm').on('hidden', function () {
+        $(this).removeAttr('data-callback');
     });
 });
 

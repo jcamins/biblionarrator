@@ -32,7 +32,7 @@ class Search_Controller extends List_Controller {
             $this->query = Input::get('q');
             if (isset($this->query)) {
                 $query = $this->query;
-                $this->records = $this->records->where(function($dbquery) use ($query) {
+                $this->records->where('deleted', '=', 0)->where(function($dbquery) use ($query) {
                     $phr = preg_replace('/^"([^"]+)"$/', '$1', $query);
                     if ($phr !== NULL && $phr !== $query) {
                         error_log($phr);
@@ -46,6 +46,7 @@ class Search_Controller extends List_Controller {
             }
             $this->title = 'Search for "' . $this->query . '"';
         } else {
+            $this->records->where('deleted', '=', 0);
             $this->title = 'Search';
         }
         if (Config::get('biblionarrator.private')) {

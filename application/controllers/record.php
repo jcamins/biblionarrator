@@ -43,7 +43,7 @@ class Record_Controller extends Resource_Controller {
 
     public function get_index($record_id = null, $format = null) {
         $record = Record::find($record_id);
-        if (is_null($record)) {
+        if (is_null($record) || $record->deleted) {
             $record = new Record();
         }
         if (is_null($format) || $format == 'interface') {
@@ -65,5 +65,10 @@ class Record_Controller extends Resource_Controller {
             $record->data = $oldrecord->data;
         }
         return $this->_interface($record);
+    }
+
+    public function get_delete($record_id = null) {
+        $this->_delete($record_id);
+        return Redirect::to('/record');
     }
 }

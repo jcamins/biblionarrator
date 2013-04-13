@@ -24,7 +24,6 @@ Still to do:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
 * "Add related record" functionality [biblionarrator] (3TL3Y)
 * Add XML importer [biblionarrator] (3TL5L)
-* Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)
 * Add continuous scrolling for searches
 * Use typeahead to suggest values/links from other records
 * Add ability to upload images
@@ -54,3 +53,4 @@ DONE:
 * Make user saving work without redirecting to JSON [biblionarrator] (3TCOC)
 * Force footer to bottom (see http://www.distractedbysquirrels.com/blog/making-your-footer-stay-put-with-css-when-having-a-fixed-header/)
 * "Add duplicate record" functionality [biblionarrator] (3TL3X)
+* Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)

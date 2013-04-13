@@ -86,7 +86,7 @@ class Resource_Controller extends Base_Controller {
         }
         if (isset($id) && $id !== 'new' && $id !== 'undefined' && $id !== '') {
             $resource = call_user_func($this->resourceClass . '::find', $id);
-            if (is_null($resource)) {
+            if (is_null($resource) || (property_exists($resource, 'deleted') && $resource->deleted)) {
                 return 'Invalid ID';
             }
         } else {
@@ -124,7 +124,7 @@ class Resource_Controller extends Base_Controller {
         return Response::json($resource->to_array());
     }
 
-    protected function _delete($id) {
+    protected function _purge($id) {
         $resource = call_user_func($this->resourceClass . '::find', $id);
         if (isset($resource)) {
             foreach ($this->fk_columns as $fk) {
@@ -133,6 +133,14 @@ class Resource_Controller extends Base_Controller {
             }
             $resource->delete();
             return Response::json($id);
+        }
+    }
+
+    protected function _delete($id) {
+        $resource = call_user_func($this->resourceClass . '::find', $id);
+        if (isset($resource)) {
+            $resource->deleted = true;
+            $resource->save();
         }
     }
 

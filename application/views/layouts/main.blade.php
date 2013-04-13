@@ -159,6 +159,17 @@
         <p>&copy; C &amp; P Bibliography Services 2013</p>    
         </footer>
         @section('form_modals')
+            <div id="confirm" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <h3 id="confirmLabel"> confirmation</h3>
+                </div>
+                <div id="confirmBody" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+                    <button id="confirmOK" class="btn btn-primary btn-ok">Yes</button>
+                </div>
+            </div>
         @yield_section
         
         {{ Asset::scripts() }}

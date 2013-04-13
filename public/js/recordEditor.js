@@ -21,9 +21,13 @@ function initializeEditor() {
         return false;
     });
 
-    $('#confirmNewOK').click(confirmNew);
+    $('.new-record').on('confirmed', newRecord);
 
-    $('#confirmReloadOK').click(confirmReload);
+    $('#record-reload').on('confirmed', loadRecord);
+    
+    $('#record-delete').on('confirmed', function () {
+        window.location = $(this).attr('href');
+    });
 
     $('#save').click(saveRecord);
 
@@ -67,46 +71,6 @@ function initializeRangy() {
         });
     }
 };
-
-function replaceSelectionWithHtml(html) {
-    var range, html;
-    if (window.getSelection && window.getSelection().getRangeAt) {
-        range = window.getSelection().getRangeAt(0);
-        range.deleteContents();
-        var div = document.createElement("div");
-        div.innerHTML = html;
-        var frag = document.createDocumentFragment(), child;
-        while ( (child = div.firstChild) ) {
-            frag.appendChild(child);
-        }
-        range.insertNode(frag);
-    } else if (document.selection && document.selection.createRange) {
-        range = document.selection.createRange();
-        html = (node.nodeType == 3) ? node.data : node.outerHTML;
-        range.pasteHTML(html);
-    }
-}
-
-
-function getSelectionHtml() {
-    var html = "";
-    if (typeof window.getSelection != "undefined") {
-        var sel = window.getSelection();
-        if (sel.rangeCount) {
-            var container = document.createElement("div");
-            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-                container.appendChild(sel.getRangeAt(i).cloneContents());
-            }
-            html = container.innerHTML;
-        }
-    } else if (typeof document.selection != "undefined") {
-        if (document.selection.type == "Text") {
-            html = document.selection.createRange().htmlText;
-        }
-    }
-    alert(html);
-}
-
 
 function closeAndOpenTag () {
     closeTag();
@@ -274,14 +238,6 @@ function transformXML(xml, xsl) {
 function addAlert(msg, type) {
     $('#alerts').append('<div class="alert alert-' + type + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
     $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove() });
-}
-function confirmNew() {
-    $('#confirmNew').modal('hide');
-    newRecord();
-}
-function confirmReload() {
-    $('#confirmReload').modal('hide');
-    loadRecord();
 }
 
 function consolidateStyles() {

@@ -15,17 +15,18 @@
     </ul>
     <ul id="editor-toolbar" class="nav">
         <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">Show tags</a></li>
-        <li><a href="#" id="new" data-toggle="modal" data-target="#confirmNew" class="caret-before">New</a></li>
+        <li><a href="#" id="new" data-toggle="confirm" data-confirm-label="{{ __('confirmations.newrecordtitle') }}" data-confirm-body="{{ __('confirmations.newrecordbody') }}" class="new-record caret-before">New</a></li>
         <li class="dropdown">
             <a href="#" id="dropdown-new" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a data-toggle="modal" data-target="#confirmNew">Blank record</a></li>
+                <li><a href="#" id="new-blank" data-toggle="confirm" data-confirm-label="{{ __('confirmations.newrecordtitle') }}" data-confirm-body="{{ __('confirmations.newrecordbody') }}" class="new-record">Blank record</a></li>
                 <li><a id="new-related">Related record</a></li>
-                <li><a href="{{ URL::full() }}/duplicate" id="new-duplicate">Duplicate record</a></li>
+                <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate">Duplicate record</a></li>
             </ul>
         </li>
         <li><a href="#" id="save">Save</a></li>
-        <li><a href="{{ URL::full() }}" id="reload" data-remote="false" data-toggle="modal" data-target="#confirmReload">Reload</a></li>
+        <li><a href="{{ URL::full() }}" id="record-reload" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
+        <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
         <li class="divider-vertical"></li>
         <li><a href="#" id="tag">Tag</a></li>
         <li><a href="#" id="untag">Untag</a></li>
@@ -80,38 +81,6 @@
         </div>
         @include('components.linkpane')
     </div>
-@endsection
-
-@section('form_modals')
-@parent
-@if ($editor)
-<div id="confirmNew" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmNewLabel" aria-hidden="true">
-    <div class="modal-header">
-        <h3 id="confirmNewLabel">New record confirmation</h3>
-    </div>
-    <div class="modal-body">
-        If you create a new record, any unsaved changes will be lost. Are you sure you want to create a new record?
-    </div>
-    <div class="modal-footer">
-        <button id="confirmNewCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-        <button id="confirmNewOK" class="btn btn-primary btn-ok">Yes</button>
-    </div>
-</div>
-<div id="confirmReload" data-autoclose="true" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirmReloadLabel" aria-hidden="true">
-    <div class="modal-header">
-        <h3 id="confirmReloadLabel">Record reload confirmation</h3>
-    </div>
-    <div class="modal-body">
-        If you reload this record from the database, any unsaved changes will be lost. Are you sure you want to reload the record?
-    </div>
-    <div class="modal-footer">
-        <button id="confirmReloadCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-        <button id="confirmReloadOK" class="btn btn-primary btn-ok">Yes</button>
-    </div>
-</div>
-<div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">
-</div>
-@endif
 @endsection
 
 @section('scripts')
