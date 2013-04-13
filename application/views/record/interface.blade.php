@@ -30,6 +30,18 @@
         <li class="divider-vertical"></li>
         <li><a href="#" id="tag">Tag</a></li>
         <li><a href="#" id="untag">Untag</a></li>
+        <li class="divider-vertical"></li>
+        <li data-toggle="dropdown-select">
+            <select id="recordtype-select" title="Record type: ">
+                @foreach (RecordType::all() as $rt)
+                    <option
+                    @if ($rt->name == $recordtype)
+                    selected="selected"
+                    @endif
+                    >{{ $rt->name }}</option>
+                @endforeach
+            </select>
+        </li>
 @endif
 @endsection
 
