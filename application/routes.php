@@ -54,6 +54,7 @@ Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
 Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
+Route::get('doc/(:any)?', 'home@doc');
 
 /*
 |--------------------------------------------------------------------------
