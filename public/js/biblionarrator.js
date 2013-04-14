@@ -80,6 +80,9 @@ $(document).ready(function () {
                 $(list).append('<li data-index="' + index + '"><a href="#">' + $(this).text() + '</a></li>');
             }
         });
+        if ($(cur).text().length === 0) {
+            $(cur).text(title);
+        }
         $(list).on('click', 'a', null, function () {
             var newindex = $(this).parent().attr('data-index');
             $(list).find('.selected').removeClass('selected');
