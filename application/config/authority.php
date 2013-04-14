@@ -28,7 +28,6 @@ return array(
 
         Authority::allow('view', 'Record');/*, function ($that_record) use ($user)
         {
-            error_log($that_record->collection()->first()->id);
             if (isset($that_record->id) && 
                 $that_record->collection()->first()->id === $user->collection()->first()->id) {
                      return true;

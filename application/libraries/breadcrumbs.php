@@ -16,7 +16,6 @@ class Breadcrumbs
                 $html .= '<li class="active">' . $entry[0];
             } else {
                 $html .= '<li><a href="' . $entry[1] . '">' . $entry[0] . '</a>';
-                error_log("$key/$count");
                 if ($key < $count - 1) {
                     $html .= ' <span class="divider">/</span>';
                 }

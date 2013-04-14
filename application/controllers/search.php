@@ -35,7 +35,6 @@ class Search_Controller extends List_Controller {
                 $this->records->where('deleted', '=', 0)->where(function($dbquery) use ($query) {
                     $phr = preg_replace('/^"([^"]+)"$/', '$1', $query);
                     if ($phr !== NULL && $phr !== $query) {
-                        error_log($phr);
                         $dbquery->where('data', 'LIKE', '%' . $phr . '%');
                     } else {
                         foreach (explode(' ', $query) as $keyword) {
