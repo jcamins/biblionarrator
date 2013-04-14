@@ -31,8 +31,8 @@ Still to do:
 * Add record templates for auto-tagging and high speed entry
 * Add record locking
 * Make admin tables mobile-friendly
-* Redo home page
 * Add help pages
+* Make help default to "on" in a no-JS-friendly way
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
@@ -62,3 +62,4 @@ DONE:
 * "Add duplicate record" functionality [biblionarrator] (3TL3X)
 * Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)
 * Switch to LESS
+* Redo home page

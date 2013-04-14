@@ -9,9 +9,16 @@ Almost everything you need to do can be done from the toolbars:
 <li>The &#8220;Search&#8221; button brings you to the search page (or you can
 just do a Quick search directly from the toolbar)</li>
 <li><i class="icon-bookmark"></i> gives you access to your bookmarks</li>
-<li><i class="icon-user"></i> is home base for your user</li>
-<li><i class="icon-wrench"></i> lets you administer the system, if you are
-allowed</li>
+<li><i class="icon-user"></i>
+    @if (Auth::check())
+        is home base for your user
+    @else
+        will let you login
+    @endif
+</li>
+@if (Auth::check() && Auth::user()->has_role('administrator'))
+    <li><i class="icon-wrench"></i> lets you administer the system</li>
+@endif
 </ul>
 You can disable these hints from the <i class="icon-question-sign"></i> menu.
 </div>
