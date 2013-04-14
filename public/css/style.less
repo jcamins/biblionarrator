@@ -53,7 +53,7 @@
         position: relative;
         min-height: 100%;
         height: auto !important;
-        margin-bottom: (-10px - @footer-height);
+        margin-bottom: -@footer-height;
 
         &:before {
             height: @header-height;
@@ -413,6 +413,11 @@ textArea.styleEntry {
 
 /*** Field editor ***/
 
+/*** About ***/
+
+.about-figure {
+    width: 400px;
+}
 
 /* General controls and components */
 
@@ -637,4 +642,17 @@ a.selected {
     white-space: nowrap;
 }
 
+/*** Figures ***/
 
+.figure {
+    margin-top: 2em;
+
+    img {
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: x-small;
+        line-height: 120%;
+    }
+}
