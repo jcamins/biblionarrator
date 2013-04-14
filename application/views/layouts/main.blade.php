@@ -31,7 +31,7 @@
         <script src="/js/less.min.js"></script>
     </head>
 
-    <body>
+    <body class="show-help">
         <nav class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -101,7 +101,7 @@
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><label class="checkbox"><input type="checkbox" id="show-help" data-toggle="cookie-view" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
+                                    <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
                                     <li><a href="/about">About</a></li>
                                 </ul>
                             </li>

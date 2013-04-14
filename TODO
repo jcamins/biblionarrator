@@ -31,7 +31,6 @@ Still to do:
 * Add record locking
 * Make admin tables mobile-friendly
 * Add help pages
-* Make help default to "on" in a no-JS-friendly way
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
@@ -63,3 +62,4 @@ DONE:
 * Switch to LESS
 * Redo home page
 * Beautify datatables [biblionarrator] (3TCCV)
+* Make help default to "on" in a no-JS-friendly way

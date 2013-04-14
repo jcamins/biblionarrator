@@ -30,7 +30,10 @@ $(document).ready(function () {
     }).each(function () {
         var target = $($(this).attr('data-target'));
         var activeclass = $(this).attr('data-class')
-        if (jQuery.cookie($(this).attr('data-cookie')) == '1') {
+        var enabled = $(this).attr('data-default') == 'enabled' ?
+            (jQuery.cookie($(this).attr('data-cookie')) != '0') :
+            (jQuery.cookie($(this).attr('data-cookie')) == '1');
+        if (enabled) {
             if (this.nodeName == 'INPUT') {
                 $(this).prop('checked', true);
             } else {
