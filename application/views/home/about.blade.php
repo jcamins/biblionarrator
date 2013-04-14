@@ -2,6 +2,7 @@
 
 @section('controlbar')
     <li><a href="#license-modal" id="show-licenses" data-toggle="modal">License information</a></li>
+    <li><a href="#architecture-modal" id="show-architecture" data-toggle="modal">System architecture</a></li>
 @endsection
 
 @section('toolbar')
@@ -127,6 +128,10 @@
                 <dd>Laravel is licensed under the
                 <a href="http://opensource.org/licenses/mit-license.php">MIT license</a>.
             </dd>
+            <dt><a href="http://michelf.ca/projects/php-markdown/">PHP Markdown</a></dt>
+                <dd>PHP Markdown is licensed under the
+                <a href="http://michelf.ca/projects/php-markdown/#license">BSD license</a>.
+            </dd>
             <dt><a href="https://code.google.com/p/rangy/">Rangy</a></dt>
                 <dd>Rangy is licensed under the
                 <a href="http://www.opensource.org/licenses/mit-license.php">MIT license</a>.
@@ -144,6 +149,18 @@
                 <a href="https://github.com/twitter/typeahead.js/blob/master/LICENSE">MIT license</a>.
             </dd>
         </dl>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close</button>
+    </div>
+</div>
+<div id="architecture-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="architecture-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="architecture-label">Biblionarrator architecture</h3>
+    </div>
+    <div class="modal-body">
+        @include('docs.architecture')
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal">Close</button>
