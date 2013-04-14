@@ -146,10 +146,8 @@ class Resource_Controller extends Base_Controller {
 
     public function get_admin() {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
-        Asset::add('datatables-css', 'css/jquery.dataTables.css');
-        Asset::add('custom-datatables-css', 'css/datatables.css');
-        //Asset::add('custom-datatables-js', 'js/datatables.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
+        Asset::add('datatables-bootstrap-paging', 'js/dataTables.bootstrap-paging.js');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
         Asset::add('admin-table-js', 'js/admin-table.js');

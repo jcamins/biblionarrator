@@ -3,7 +3,6 @@ Still to do:
 * Map visualization [biblionarrator] (3T9A4)
 * Switch to Elastic Search from SQL queries [biblionarrator] (3T9A5)
 * Add commenting feature [biblionarrator] (3TCCU)
-* Beautify datatables [biblionarrator] (3TCCV)
 * Suggest only fields at correct level in hierarchy [biblionarrator] (3TCCX)
 * Associate record types and fields with collections [biblionarrator] (3TCDL)
 * Add saved searches [biblionarrator] (3TCO9)
@@ -63,3 +62,4 @@ DONE:
 * Add safe record deleting, which marks record as deleted but does not remove from database [biblionarrator] (3TL5M)
 * Switch to LESS
 * Redo home page
+* Beautify datatables [biblionarrator] (3TCCV)

@@ -137,18 +137,18 @@ footer {
 /*** Admin home ***/
 .home-links {
     li {
-        border: 1px solid #d4d4d4;
-        float: left;
-        margin: 10px 40px 10px 2px;
         list-style: none;
-        padding: 8px;
-        min-width: 16em;
-        -webkit-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
-        -moz-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
-        box-shadow: 0 1px 10px rgba(0,0,0,0.1);
-        border-radius: 8px;
-    
+
         a {
+            border: 1px solid #d4d4d4;
+            float: left;
+            margin: 10px 40px 10px 2px;
+            padding: 8px;
+            min-width: 16em;
+            -webkit-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+            -moz-box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
             font-variant: small-caps;
         }
     }
@@ -633,6 +633,81 @@ a.selected {
 
     .instruction-label {
         font-weight: bold;
+    }
+}
+
+/*** Admin table ***/
+
+#admintable-filter {
+    height: auto;
+    width: auto;
+    font-size: small;
+    margin-bottom: 4px;
+    margin-top: 4px;
+    padding: 0px 4px;
+}
+
+.dataTables_wrapper {
+
+    .dataTables_processing {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 250px;
+        height: 30px;
+        margin-left: -125px;
+        margin-top: -15px;
+        padding: 14px 0 2px 0;
+        border: 1px solid #ddd;
+        text-align: center;
+        color: #999;
+        font-size: 14px;
+        background-color: white;
+    }
+
+    .dataTables_info {
+        float: none;
+    }
+
+    table.table {
+        thead {
+            .sorting,
+            .sorting_asc,
+            .sorting_desc,
+            .sorting_asc_disabled,
+            .sorting_desc_disabled {
+                cursor: pointer;
+                *cursor: hand;
+            }
+ 
+            .sorting {
+                background: url('../img/ascdesc.gif') no-repeat center right;
+            }
+
+            .sorting_asc {
+                background: url('../img/asc.gif') no-repeat center right;
+            }
+
+            .sorting_desc {
+                background: url('../img/desc.gif') no-repeat center right;
+            }
+ 
+            .sorting_asc_disabled {
+                background: url('../img/datatables/sort_asc_disabled.png') no-repeat center right;
+            }
+
+            .sorting_desc_disabled {
+                background: url('../img/datatables/sort_desc_disabled.png') no-repeat center right;
+            }
+        }
+    }
+
+    .dataTables_length {
+        float: right;
+
+        select {
+            width: auto;
+        }
     }
 }
 

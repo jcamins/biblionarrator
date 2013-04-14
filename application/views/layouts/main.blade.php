@@ -102,7 +102,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><label class="checkbox"><input type="checkbox" id="show-help" data-toggle="cookie-view" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
-                                    <li><a href="/home/about">About</a></li>
+                                    <li><a href="/about">About</a></li>
                                 </ul>
                             </li>
                         </ul>

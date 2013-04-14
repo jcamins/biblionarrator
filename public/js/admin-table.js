@@ -13,8 +13,8 @@ function initializeAdminTable() {
         "bPaginate": true,
         "bProcessing": true,
         "sAjaxSource": '/resources/' + resourcetype,
-        "sDom": '<"dataTables_controls top"lf>rt<"dataTables_controls"ip>',
-        'sPaginationType': 'full_numbers',
+        "sDom": '<"dataTables_controls top resultcount header-shown"i>rt<"dataTables_controls"pl>',
+        "sPaginationType": "bootstrap",
         "aoColumns": dtColumns,
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
             oSettings.jqXHR = $.ajax( {
@@ -50,6 +50,9 @@ function initializeAdminTable() {
         },
         "fnDrawCallback": fnDrawCallback,
     } );
+    $('#admintable-filter').keyup(function () {
+        oTable.fnFilter($(this).val(), null, false, true);
+    });
     $('.new-form').submit(function (e) {
         saveNew();
         e.preventDefault();
