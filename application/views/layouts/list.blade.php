@@ -45,7 +45,34 @@
             @section('listtitle')
             @yield_section
         </h3>
-    @include('components.results')
+        @include('components.results')
+        <div class="instructions instructions-below">
+            <span class="instruction-label">Hint:</span>
+            All list pages in Biblionarrator are designed to have a consistent
+            interface. On the controlbar you will find the following options:
+            <ul>
+                <li>The &#8220;Download&#8221; button allows you to save the items
+                on the list to your desktop for future reference</li>
+                <li>The &#8220;Add page&#8221; button will add all the items on
+                this page to your bookmarks or a saved list</li>
+                <li>The &#8220;Add results&#8221; button adds all the results to
+                your bookmarks or a saved list</li>
+            </ul>
+            You can also work with records directly from the list page:
+            <ul>
+                <li><i class="icon-eye-open"></i> will show you a preview of the
+                record</li>
+                <li><i class="icon-comment"></i> shows you the comments on a
+                record and gives you the chance to add your own</li>
+                @if (strpos(URL::current(), 'bookmark'))
+                    <li><i class="icon-remove"></i> will remove a record from your bookmarks</li>
+                @else
+                    <li><i class="icon-bookmark"></i> will bookmark a record</li>
+                @endif
+            </ul>
+        </div>
+        @section('listhelp')
+        @yield_section
     </div>
     <div id="previewPane" class="span4">
     </div>
