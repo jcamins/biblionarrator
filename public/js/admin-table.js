@@ -3,11 +3,11 @@ function initializeAdminTable() {
         $('#admintable thead tr').append('<th>' + columns[column].label + '</th>');
     });
     $('#admintable thead tr').append('<th></th>');
-    var dtColumns = [ { "bSortable": false, "sWidth": "5%" } ];
+    var dtColumns = [ { "sWidth": "5%" } ];
     Object.keys(columns).forEach(function(column) {
         dtColumns = dtColumns.concat({ "sWidth": columns[column].sWidth });
     });
-    dtColumns = dtColumns.concat({ "bSortable": false, "sWidth": "5%" });
+    dtColumns = dtColumns.concat({ "bSortable": false, "bSearchable": false, "sWidth": "5%" });
 
     var oTable = $('#admintable').dataTable( {
         "bPaginate": true,
