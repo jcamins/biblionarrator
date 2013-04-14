@@ -78,7 +78,7 @@
                                     @endif
                                 </ul>
                             </li>
-                            @if ( Auth::check() )
+                            @if ( Auth::check() && Auth::user()->has_role('administrator') )
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
