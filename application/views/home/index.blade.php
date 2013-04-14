@@ -1,7 +1,20 @@
 @layout('layouts/main')
 
-@section('navigation')
-@parent
+@section('sidebar')
+<div class="instructions">
+<span class="instruction-label">Hint:</span>
+Almost everything you need to do can be done from the toolbars:
+<ul>
+<li>The &#8220;Record&#8221; button creates a new record</li>
+<li>The &#8220;Search&#8221; button brings you to the search page (or you can
+just do a Quick search directly from the toolbar)</li>
+<li><i class="icon-bookmark"></i> gives you access to your bookmarks</li>
+<li><i class="icon-user"></i> is home base for your user</li>
+<li><i class="icon-wrench"></i> lets you administer the system, if you are
+allowed</li>
+</ul>
+You can disable these hints from the <i class="icon-question-sign"></i> menu.
+</div>
 @endsection
 
 @section('content')
