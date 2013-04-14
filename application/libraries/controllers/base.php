@@ -33,7 +33,7 @@ class Base_Controller extends Controller {
         Asset::add('bootstrap-css-responsive', 'css/bootstrap-responsive.min.css', 'bootstrap-css');
         //Asset::add('fontawesome-css', 'css/font-awesome.min.css');
         Asset::add('cookies', 'js/jquery.cookie.js');
-        Asset::add('style', 'css/style.css');
+        //Asset::add('style', 'css/style.css');
         parent::__construct();
 
         View::share('title', 'Biblionarrator');
