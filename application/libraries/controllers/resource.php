@@ -26,6 +26,7 @@ class Resource_Controller extends Base_Controller {
     public $hashed_columns = array();
     public $fk_columns = array();
     public $resourceClass;
+    public $admin_view;
 
     public function __construct()
     {
@@ -158,8 +159,11 @@ class Resource_Controller extends Base_Controller {
         Asset::add('admin-tree-js', 'js/admin-tree.js');
 
         Breadcrumbs::add('Manage ' . strtolower($this->resourceClass) . 's');
+        if (is_null($this->admin_view)) {
+            $this->admin_view = 'admin.' . strtolower($this->resourceClass) . 's';
+        }
 
-        return View::make('admin.' . strtolower($this->resourceClass) . 's')->with('resourcetype', strtolower($this->resourceClass))->with('columns', json_encode($this->interface_columns));
+        return View::make($this->admin_view)->with('resourcetype', strtolower($this->resourceClass))->with('columns', json_encode($this->interface_columns));
     }
 
     public function get_edit($id = null) {

@@ -25,6 +25,9 @@ return array(
 
         // If a user doesn't have any roles, we don't have to give him permissions so we can stop right here.
         //if(count($user->roles) === 0) return false;
+        if (Auth::check()) {
+            Authority::allow('manage', 'UserSettings');
+        }
 
         Authority::allow('view', 'Record');/*, function ($that_record) use ($user)
         {

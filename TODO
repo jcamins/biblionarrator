@@ -17,8 +17,6 @@ Still to do:
 * Add MARC export [biblionarrator] (3TEKV)
 * Add "cherrycrumbs" for facets [biblionarrator] (3TELD)
 * Add customizable faceting [biblionarrator] (3TELE)
-* Add user preferences [biblionarrator] (3TF9W)
-* Add system preferences [biblionarrator] (3TF9X)
 * Add ability for users to set their own passwords [biblionarrator] (3TF9Y)
 * "Add related record" functionality [biblionarrator] (3TL3Y)
 * Add XML importer [biblionarrator] (3TL5L)
@@ -63,3 +61,5 @@ DONE:
 * Redo home page
 * Beautify datatables [biblionarrator] (3TCCV)
 * Make help default to "on" in a no-JS-friendly way
+* Add user preferences [biblionarrator] (3TF9W)
+* Add system preferences [biblionarrator] (3TF9X)

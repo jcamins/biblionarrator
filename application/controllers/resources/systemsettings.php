@@ -16,19 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Collection extends Eloquent
-{
-    public static $timestamps = true;
 
-    public function records() {
-        return $this->has_many('Record', 'collection_id');
-    }
+class Resources_Systemsettings_Controller extends Resource_Controller {
 
-    public function users() {
-        return $this->has_many('User', 'collection_id');
-    }
+    public $interface_columns = array(
+        'variable' => array('type' => 'string', 'label' => 'Variable', 'required' => true, 'sWidth' => '30%'),
+        'value' => array('type' => 'string', 'label' => 'Value', 'required' => true, 'sWidth' => '60%'),
+    );
 
-    public function settings() {
-        return $this->has_many('CollectionSettings', 'collection_id');
-    }
+    public $required_columns = array('variable', 'value');
+    public $resourceClass = 'SystemSettings';
+    public $admin_view = 'admin.settings';
+
 }
+
+

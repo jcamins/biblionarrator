@@ -16,19 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Collection extends Eloquent
+class SystemSettings extends Eloquent
 {
     public static $timestamps = true;
+    public static $table = 'systemsettings';
 
-    public function records() {
-        return $this->has_many('Record', 'collection_id');
-    }
-
-    public function users() {
-        return $this->has_many('User', 'collection_id');
-    }
-
-    public function settings() {
-        return $this->has_many('CollectionSettings', 'collection_id');
-    }
 }

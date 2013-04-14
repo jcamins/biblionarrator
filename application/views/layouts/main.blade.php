@@ -72,7 +72,7 @@
                                         </form>
                                     @else
                                     <li><span>{{ Auth::user()->email }}</span></li>
-                                    <li><a href="/user/preferences">Preferences</a></li>
+                                    <li><a href="/user/settings">Settings</a></li>
                                     <li class="divider"></li>
                                     <li><a href="/user/logout">Sign out</a></li>
                                     @endif
@@ -94,6 +94,9 @@
                                     @endif
                                     @if ( Authority::can('manage', 'RecordType') )
                                     <li><a href="/admin/recordtype">Record types</a></li>
+                                    @endif
+                                    @if ( Authority::can('manage', 'SystemSettings') )
+                                    <li><a href="/admin/settings">Settings</a></li>
                                     @endif
                                 </ul>
                             </li>
