@@ -46,7 +46,7 @@
     @endforeach
     </tbody>
     </table>
-    {{ $paginator->appends(Input::except('page'))->links() }}
+    {{ $paginator->appends(Input::except('page'))->links(1) }}
     <div class="result-size">Show <span data-toggle="dropdown-select" class="button-dropdown white">
         <select id="perpage" name="perpage">
         <option value="2" {{ $perpage == 2 ? 'selected="selected"' : '' }}>2</option>
