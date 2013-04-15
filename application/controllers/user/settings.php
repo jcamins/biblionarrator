@@ -16,23 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Template extends Eloquent
-{
-    public static $timestamps = true;
 
-    public function owner() {
-        return $this->belongs_to('User', 'owner_id');
-    }
+class User_Settings_Controller extends Settings_Controller {
 
-    public function collection() {
-        return $this->belongs_to('Collection', 'collection_id');
-    }
+    protected $model = 'UserSettings';
 
-    public function record() {
-        $record = new Record;
-        $record->data = $this->data;
-        $record->record_type = $this->record_type;
-        return $record;
+    public function get_index($variable = null) {
+        if (Auth::check()) {
+            if (is_null($variable)) {
+                return View::make('admin.settings')->with('settings', call_user_func($this->model . '::where_user_id', Auth::user()->id)->get());
+            } else {
+                $setting = $model::where_variable($variable)->get();
+                return Response::json($setting->to_array());
+            }
+        } else {
+            return Redirect::to('home');
+        }
     }
 }
 

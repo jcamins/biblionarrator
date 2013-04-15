@@ -20,6 +20,7 @@
 class Resource_Controller extends Base_Controller {
     public $restful = true;
 
+    public $safe_delete = false;
     public $interface_columns = array();
     public $required_columns = array();
     public $optional_columns = array();
@@ -140,8 +141,12 @@ class Resource_Controller extends Base_Controller {
     protected function _delete($id) {
         $resource = call_user_func($this->resourceClass . '::find', $id);
         if (isset($resource)) {
-            $resource->deleted = true;
-            $resource->save();
+            if ($this->safe_delete) {
+                $resource->deleted = true;
+                $resource->save();
+            } else {
+                $resource->delete();
+            }
         }
     }
 

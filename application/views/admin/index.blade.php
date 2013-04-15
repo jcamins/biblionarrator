@@ -18,5 +18,11 @@
     @if ( Authority::can('manage', 'RecordType') )
     <li><a href="/admin/recordtype">Record types</a></li>
     @endif
+    @if ( Authority::can('manage', 'SystemSettings') )
+    <li><a href="/admin/settings">Settings</a></li>
+    @endif
+    @if ( Authority::can('manage', 'Template') )
+    <li><a href="/admin/templates">Templates</a></li>
+    @endif
 </ul>
 @endsection

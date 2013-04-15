@@ -16,23 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Template extends Eloquent
-{
-    public static $timestamps = true;
 
-    public function owner() {
-        return $this->belongs_to('User', 'owner_id');
-    }
+class Admin_Settings_Controller extends Settings_Controller {
 
-    public function collection() {
-        return $this->belongs_to('Collection', 'collection_id');
-    }
+    protected $model = 'SystemSettings';
 
-    public function record() {
-        $record = new Record;
-        $record->data = $this->data;
-        $record->record_type = $this->record_type;
-        return $record;
-    }
 }
-

@@ -23,12 +23,12 @@ class Resources_Template_Controller extends Resource_Controller {
         'name' => array('type' => 'string', 'label' => 'Name', 'required' => true, 'sWidth' => '20%'),
     );
 
-    public $required_columns = array('name', 'data', 'owner', 'collection_id');
+    public $required_columns = array('name', 'data', 'owner_id', 'collection_id');
     public $resourceClass = 'Template';
 
     public function post_index($id = null) {
         $template = Template::where_name(Input::get('name'))->first();
-        Input::merge(array('owner' => Auth::user()->id, 'collection_id' => Auth::user()->collection_id));
+        Input::merge(array('owner_id' => Auth::user()->id, 'collection_id' => Auth::user()->collection_id));
         if (is_null($id) && isset($template)) {
             $id = $template->id;
         }

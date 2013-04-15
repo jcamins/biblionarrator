@@ -26,4 +26,11 @@ class Admin_Controller extends Base_Controller {
         return View::make('admin.index');
     }
 
+    public function get_templates()
+    {
+        Asset::add('fieldstyles', 'css/fields.css');
+        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+        Asset::add('datatables-bootstrap-paging', 'js/dataTables.bootstrap-paging.js');
+        return View::make('admin.templates')->with('templates', Template::all());
+    }
 }

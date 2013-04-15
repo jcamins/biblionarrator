@@ -36,7 +36,7 @@ class User extends Eloquent {
     }
 
     public function templates() {
-        return $this->has_many('Template', 'owner');
+        return $this->has_many('Template', 'owner_id');
     }
 
     public function has_role($key)

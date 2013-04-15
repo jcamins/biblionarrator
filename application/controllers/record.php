@@ -23,6 +23,7 @@ class Record_Controller extends Resource_Controller {
     public $fk_columns = array('recordtype');
     private static $templatelist = array('interface', 'preview', 'result');
     public $resourceClass = 'Record';
+    public $safe_delete = true;
 
     public function __construct()
     {
@@ -48,7 +49,7 @@ class Record_Controller extends Resource_Controller {
         $record = new Record;
         if (isset($template)) {
             $record->data = $template->data;
-            $record->recordtype = $template->recordtype;
+            $record->record_type = $template->record_type;
         }
         return $this->_interface($record);
     }

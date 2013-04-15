@@ -54,4 +54,12 @@ class User_Controller extends Base_Controller
         Auth::logout();
         return Redirect::to('home');
     }
+
+    public function get_templates()
+    {
+        Asset::add('fieldstyles', 'css/fields.css');
+        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+        Asset::add('datatables-bootstrap-paging', 'js/dataTables.bootstrap-paging.js');
+        return View::make('admin.templates')->with('templates', Auth::user()->templates);
+    }
 }

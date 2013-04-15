@@ -14,8 +14,8 @@ class Add_Templates {
             $table->increments('id');
             $table->string('name');
             $table->text('data');
-            $table->integer('owner')->unsigned()->nullable();
-            $table->foreign('owner')->references('id')->on('users');
+            $table->integer('owner_id')->unsigned()->nullable();
+            $table->foreign('owner_id')->references('id')->on('users');
             $table->integer('collection_id')->unsigned()->nullable();
             $table->foreign('collection_id')->references('id')->on('collections');
             $table->timestamps();
