@@ -253,7 +253,7 @@ function initializeTOC() {
             obj = obj.parentNode;
         }
         if (typeof(obj) !== 'undefined' && obj.hasAttribute('data-match')) {
-            $('#recordContainer span[data-match="' + obj.getAttribute('data-match') + '"], #recordContainer span[data-match="' + obj.getAttribute('data-match') + '"]').addClass('highlight');
+            $('#recordContainer span[data-match="' + obj.getAttribute('data-match') + '"], #recordContainer a[data-match="' + obj.getAttribute('data-match') + '"]').addClass('highlight');
             return false;
         }
     });
