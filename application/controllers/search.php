@@ -52,7 +52,7 @@ class Search_Controller extends List_Controller {
             if (Auth::check()) {
                 $this->records->where('collection_id', '=', Auth::user()->collection_id);
             } else {
-                $this->records->where_null('collection_id');
+                $this->records->where('collection_id', '=', '-1');
             }
         }
         parent::__construct();
