@@ -81,20 +81,22 @@ function closeAllTags () {
 }
 
 function setTag(field, sel) {
-    for(var ii = 0; ii < sel.rangeCount; ii++) {
-        if (typeof appliers[labeltofieldlookup[field]] !== 'undefined') { 
-            appliers[labeltofieldlookup[field]].applyToRange(sel.getRangeAt(ii));
+    if ($(sel.getRangeAt(0).commonAncestorContainer).parents('#recordContainer').size > 0) {
+        for(var ii = 0; ii < sel.rangeCount; ii++) {
+            if (typeof appliers[labeltofieldlookup[field]] !== 'undefined') { 
+                appliers[labeltofieldlookup[field]].applyToRange(sel.getRangeAt(ii));
+            }
         }
-    }
-    consolidateStyles();
-    if ($(sel.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
-        $(sel.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
-        addLink();
-    }
+        consolidateStyles();
+        if ($(sel.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
+            $(sel.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
+            addLink();
+        }
 
-    //$(sel.getRangeAt(0).commonAncestorContainer.parentNode).focus();
+        //$(sel.getRangeAt(0).commonAncestorContainer.parentNode).focus();
 
-    updateFieldsTOCTree();
+        updateFieldsTOCTree();
+    }
 }
 
 function closeTag() {
