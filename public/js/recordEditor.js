@@ -131,20 +131,11 @@ function closeTag() {
 
 function newTag() {
     var sel = rangy.getSelection();
-    var sellen;
-    if (!sel.isCollapsed) {
-        sellen = sel.getRangeAt(0).endOffset - sel.getRangeAt(0).startOffset;
-    }
+    var savedsel = rangy.saveSelection();
     var tsb = sel.getRangeAt(0).createContextualFragment('<input id="tag-select-box" type="text"></input>');
     sel.getRangeAt(0).insertNode(tsb);
     tsb = document.getElementById('tag-select-box');
-    if (sellen) {
-        var range = rangy.createRange();
-        range.setStart(tsb.nextSibling, 0);
-        range.setEnd(tsb.nextSibling, sellen);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
+
     $(tsb).typeahead({
         'name': 'tagselect',
         'local': Object.keys(labeltofieldlookup)
@@ -156,7 +147,7 @@ function newTag() {
     $(tsb).on('keydown', function (ev) {
         if (ev.which == 13) {
             var e2 = {};
-            e2['data'] = sel;
+            e2['data'] = savedsel;
             var datum = {};
             datum['value'] = $(tsb).val();
             newTagSelected(e2, datum);
