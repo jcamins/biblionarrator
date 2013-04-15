@@ -122,8 +122,10 @@ class Record extends Eloquent
                     }
                 }
                 $output .= '>';
-                foreach ($obj['children'] as $child) {
-                    $output .= $this->traverseRaw($child, $format);
+                if (isset($obj['children'])) {
+                    foreach ($obj['children'] as $child) {
+                        $output .= $this->traverseRaw($child, $format);
+                    }
                 }
                 $output .= '</' . $htmlelem . '>';
             }
@@ -146,7 +148,7 @@ class Record extends Eloquent
 
     public function save() {
         if (is_null($this->recordtype_id)) {
-            $this->recordtype_id = RecordType::all()->first()->id;
+            $this->recordtype_id = RecordType::first()->id;
         }
         if (is_null($this->collection_id)) {
             $this->collection_id = Auth::user()->collection_id;
