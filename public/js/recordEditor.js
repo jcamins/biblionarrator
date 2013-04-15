@@ -50,10 +50,9 @@ function initializeEditor() {
     $('#recordContainer').keydown(function (ev) {
         if (ev.which == 13 || ev.which == 32) {
             updateFieldsTOCTree();
+        } else if (ev.which == 8) {
+            document.getElementById('recordContainer').normalize();
         }
-    });
-
-    $('#recordContainer').keydown(function (ev) {
         var sel = rangy.getSelection();
         var span = $(sel.getRangeAt(0).commonAncestorContainer).parents('span').first();
         if ($(span).parents('#recordContainer').size() > 0 && $(sel.getRangeAt(0).commonAncestorContainer).parents('input').size() == 0) {
@@ -164,6 +163,8 @@ function newTag() {
             return false;
         } else if (ev.which == 27) {
             $(tsb).parent().remove();
+            rangy.removeMarkers(savedsel);
+            document.getElementById('recordContainer').normalize();
             return false;
         } else if (ev.which == 9) {
             return false;
