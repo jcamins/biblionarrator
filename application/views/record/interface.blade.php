@@ -27,6 +27,9 @@
                 @foreach (Auth::user()->collection->templates()->get() as $template)
                     <li><a href="/record/new/template/{{ $template->id }}">{{ $template->name }}</a></li>
                 @endforeach
+                @foreach (Template::where_null('collection_id')->order_by('name', 'asc')->get() as $template)
+                    <li><a href="/record/new/template/{{ $template->id }}">{{ $template->name }}</a></li>
+                @endforeach
             </ul>
         </li>
         <li><a href="#" id="save" class="caret-before">Save</a></li>

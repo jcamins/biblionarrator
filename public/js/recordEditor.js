@@ -1,17 +1,6 @@
 function initializeEditor() {
     initializeRangy();
     initializeContentEditable();
-    $('#tagEntry').typeahead({
-        'name': 'tagselect',
-        'local': Object.keys(labeltofieldlookup)
-    });
-
-    $('#tagEntry').on('typeahead:autocompleted', function (ev, datum) {
-        setTag(datum.value);
-    });
-    $('#tagEntry').on('typeahead:selected', function (ev, datum) {
-        setTag(datum.value);
-    });
 
     $('.popover-link').popover({
         "html" : true,
@@ -66,9 +55,9 @@ function initializeEditor() {
 
     $('#recordContainer').keydown(function (ev) {
         var sel = rangy.getSelection();
-        var range = rangy.createRange();
         var span = $(sel.getRangeAt(0).commonAncestorContainer).parents('span').first();
-        if ($(span).parents('#recordContainer').size() > 0) {
+        if ($(span).parents('#recordContainer').size() > 0 && $(sel.getRangeAt(0).commonAncestorContainer).parents('input').size() == 0) {
+            var range = rangy.createRange();
             if (ev.which == 9 && ev.shiftKey && $(span).prevAll('span') > 0) {
                 sel.removeAllRanges();
                 sel.selectAllChildren($(span).prevAll('span').first()[0]);
@@ -106,7 +95,7 @@ function closeAllTags () {
 }
 
 function setTag(field, sel) {
-    if ($(sel.getRangeAt(0).commonAncestorContainer).parents('#recordContainer').size > 0) {
+    if ($(sel.getRangeAt(0).commonAncestorContainer).parents('#recordContainer').size() > 0) {
         for(var ii = 0; ii < sel.rangeCount; ii++) {
             if (typeof appliers[labeltofieldlookup[field]] !== 'undefined') { 
                 appliers[labeltofieldlookup[field]].applyToRange(sel.getRangeAt(ii));
@@ -162,17 +151,22 @@ function newTag() {
         'local': Object.keys(labeltofieldlookup)
     });
 
-    $(tsb).on('typeahead:autocompleted', null, sel, newTagSelected);
-    $(tsb).on('typeahead:selected', null, sel, newTagSelected);
+    var savedsel = rangy.saveSelection();
+    $(tsb).on('typeahead:autocompleted', null, savedsel, newTagSelected);
+    $(tsb).on('typeahead:selected', null, savedsel, newTagSelected);
     $(tsb).on('keydown', function (ev) {
-        if (ev.keyCode == 13) {
+        if (ev.which == 13) {
             var e2 = {};
             e2['data'] = sel;
             var datum = {};
             datum['value'] = $(tsb).val();
             newTagSelected(e2, datum);
-        } else if (ev.keyCode == 27) {
+            return false;
+        } else if (ev.which == 27) {
             $(tsb).parent().remove();
+            return false;
+        } else if (ev.which == 9) {
+            return false;
         }
     });
     $(tsb).focus();
@@ -180,7 +174,9 @@ function newTag() {
 
 
 function newTagSelected(ev, datum) {
-    if (ev.data.isCollapsed) {
+    rangy.restoreSelection(ev.data);
+    var sel = rangy.getSelection();
+    if (sel.isCollapsed) {
         var el = document.createElement('span');
         el.setAttribute('class', labeltofieldlookup[datum.value]);
         el.innerHTML = '&nbsp;';
@@ -192,7 +188,7 @@ function newTagSelected(ev, datum) {
         sel.addRange(range);
     } else {
         $('#tag-select-box').parent().remove();
-        setTag(datum.value, ev.data);
+        setTag(datum.value, sel);
     }
 }
 

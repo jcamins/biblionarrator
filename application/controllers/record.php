@@ -37,6 +37,7 @@ class Record_Controller extends Resource_Controller {
         Asset::add('shortcut-js', 'js/shortcut.js');
         Asset::add('rangy-js', 'js/rangy/rangy-core.js');
         Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
+        Asset::add('rangy-saver-js', 'js/rangy/rangy-selectionsaverestore.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
         $editor = Authority::can('edit', 'Record', $record);
         return View::make('record.interface')->with('record', $record)->with('editor', $editor);
@@ -45,8 +46,10 @@ class Record_Controller extends Resource_Controller {
     public function get_fromtemplate($template_id = null) {
         $template = Template::find($template_id);
         $record = new Record;
-        $record->data = $template->data;
-        error_log('hello');
+        if (isset($template)) {
+            $record->data = $template->data;
+            $record->recordtype = $template->recordtype;
+        }
         return $this->_interface($record);
     }
 
