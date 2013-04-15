@@ -39,6 +39,7 @@ Route::any('admin/(:any)/?(:any)?', function($controller,$params=null) {
 Route::any('admin/(:any)/edit/(:any)', function($controller,$params=null) {
     return Controller::call('resources.'.$controller.'@edit', (array) $params);
 });
+Route::get('record/new/template/(:any)', 'record@fromtemplate');
 Route::post('record/(:any)/link/add/(:any)', 'record.link@add');
 Route::get('record/(:any)?/?link/list', 'record.link@list');
 Route::get('record/(:any)?/?link/select', 'record.link@select');

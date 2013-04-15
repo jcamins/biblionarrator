@@ -50,9 +50,34 @@ function initializeEditor() {
         return false;
     });
 
+    $('#template-name').keydown(function (ev) {
+        if (ev.keyCode == 13) {
+            $('#save-template-ok').click();
+        }
+    });
+
+    $('#save-template-ok').click(saveTemplate);
+
     $('#recordContainer').keydown(function (ev) {
-        if (ev.keyCode == 13 || ev.keyCode == 32) {
+        if (ev.which == 13 || ev.which == 32) {
             updateFieldsTOCTree();
+        }
+    });
+
+    $('#recordContainer').keydown(function (ev) {
+        var sel = rangy.getSelection();
+        var range = rangy.createRange();
+        var span = $(sel.getRangeAt(0).commonAncestorContainer).parents('span').first();
+        if ($(span).parents('#recordContainer').size() > 0) {
+            if (ev.which == 9 && ev.shiftKey && $(span).prevAll('span') > 0) {
+                sel.removeAllRanges();
+                sel.selectAllChildren($(span).prevAll('span').first()[0]);
+                return false;
+            } else if (ev.which == 9 && $(span).nextAll('span').size() > 0) {
+                sel.removeAllRanges();
+                sel.selectAllChildren($(span).nextAll('span').first()[0]);
+                return false;
+            }
         }
     });
 
@@ -214,6 +239,24 @@ function saveRecord() {
 }
 function ajaxSaveFailed(jqXHR, err, msg) {
     addAlert('Failed to save record (' + err + ': ' + msg + ')', 'alert');
+}
+function ajaxTemplateSaveFailed(jqXHR, err, msg) {
+    addAlert('Failed to save template (' + err + ': ' + msg + ')', 'alert');
+}
+function saveTemplate() {
+    $.ajax({
+        type: "POST",
+        url: "/resources/template/",
+        data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))),
+                recordtype: $('#recordtype-select').val(),
+                name: $('#template-name').val()
+              },
+        error: ajaxTemplateSaveFailed,
+    }).done(function(msg) {
+        recordId = parseInt(msg.id);
+        addAlert('Successfully saved template', 'success');
+        updateFieldsTOCTree();
+    });
 }
 function transformXML(xml, xsl) {
     var result;

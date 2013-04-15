@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Collection extends Eloquent
-{
-    public static $timestamps = true;
 
-    public function records() {
-        return $this->has_many('Record', 'collection_id');
-    }
+class Resources_Template_Controller extends Resource_Controller {
 
-    public function users() {
-        return $this->has_many('User', 'collection_id');
-    }
+    public $interface_columns = array(
+        'name' => array('type' => 'string', 'label' => 'Name', 'required' => true, 'sWidth' => '20%'),
+    );
 
-    public function templates() {
-        return $this->has_many('Template', 'collection_id');
-    }
+    public $required_columns = array('name', 'data', 'owner', 'collection_id');
+    public $resourceClass = 'Template';
 
-
-    public function settings() {
-        return $this->has_many('CollectionSettings', 'collection_id');
+    public function post_index($id = null) {
+        $template = Template::where_name(Input::get('name'))->first();
+        Input::merge(array('owner' => Auth::user()->id, 'collection_id' => Auth::user()->collection_id));
+        if (is_null($id) && isset($template)) {
+            $id = $template->id;
+        }
+        return $this->_update($id);
     }
 }
+
+

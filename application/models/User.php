@@ -35,6 +35,10 @@ class User extends Eloquent {
         return $this->has_many('UserSettings', 'user_id');
     }
 
+    public function templates() {
+        return $this->has_many('Template', 'owner');
+    }
+
     public function has_role($key)
     {
         foreach($this->roles as $role)

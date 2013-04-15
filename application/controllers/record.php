@@ -42,6 +42,14 @@ class Record_Controller extends Resource_Controller {
         return View::make('record.interface')->with('record', $record)->with('editor', $editor);
     }
 
+    public function get_fromtemplate($template_id = null) {
+        $template = Template::find($template_id);
+        $record = new Record;
+        $record->data = $template->data;
+        error_log('hello');
+        return $this->_interface($record);
+    }
+
     public function get_index($record_id = null, $format = null) {
         $record = Record::find($record_id);
         if (is_null($record) || $record->deleted) {
