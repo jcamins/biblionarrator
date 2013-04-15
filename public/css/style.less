@@ -492,6 +492,28 @@ a.selected {
     background-color: #fff;
 }
 
+/*** Controlbar ***/
+
+#controlbar {
+    min-height: 30px;
+
+    .nav > li > a {
+        padding: 5px 10px;
+
+        &.caret-before {
+            padding-right: 2px;
+        }
+
+        &.caret-after {
+            padding-left: 2px;
+        }
+    }
+
+    .divider-vertical {
+        height: 30px;
+    }
+}
+
 /*** Navbar ***/
 
 @media (max-width: 480px) {
@@ -579,20 +601,6 @@ a.selected {
         &:after {
             content: ")";
         }
-    }
-}
-
-/*** Controlbar ***/
-
-#controlbar {
-    min-height: 30px;
-
-    .nav > li > a {
-        padding: 5px 10px;
-    }
-
-    .divider-vertical {
-        height: 30px;
     }
 }
 

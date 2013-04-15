@@ -10,7 +10,7 @@
         <li><a href="#" id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor">Editor</a></li>
     @endif
     <li class="active"><a href="#" id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links">Links</a></li>
-@if ($editor)
+@if (Authority::can('edit', 'Record'))
     <li class="divider-vertical"></li>
     </ul>
     <ul id="editor-toolbar" class="nav">
@@ -28,7 +28,14 @@
         <li><a href="{{ URL::full() }}" id="record-reload" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
         <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
         <li class="divider-vertical"></li>
-        <li><a href="#" id="tag">Tag</a></li>
+        <li id="tag-select" class="dropdown">
+            <a href="#" id="tag" data-toggle="dropdown" class="dropdown-toggle">Tag <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                @foreach (Field::all() as $field)
+                <li><a href="#">{{ $field->label }}</a></li>
+                @endforeach
+            </ul>
+        </li>
         <li><a href="#" id="untag">Untag</a></li>
         <li class="divider-vertical"></li>
         <li data-toggle="dropdown-select">

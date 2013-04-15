@@ -42,9 +42,8 @@ function initializeEditor() {
         $(newsection).focus();
     });
 
-    $('#tag').click(function () {
-        newTag();
-        return false;
+    $('#tag-select .dropdown-menu a').click(function () {
+        setTag($(this).text(), rangy.getSelection());
     });
     $('#untag').click(function () {
         closeTag();
