@@ -141,7 +141,8 @@ function newTag() {
         'local': Object.keys(labeltofieldlookup)
     });
 
-    var savedsel = rangy.saveSelection();
+    savedsel = rangy.saveSelection();
+
     $(tsb).on('typeahead:autocompleted', null, savedsel, newTagSelected);
     $(tsb).on('typeahead:selected', null, savedsel, newTagSelected);
     $(tsb).on('keydown', function (ev) {
@@ -173,15 +174,15 @@ function newTagSelected(ev, datum) {
         el.setAttribute('class', labeltofieldlookup[datum.value]);
         el.innerHTML = '&nbsp;';
         $('#tag-select-box').parent().replaceWith(el);
-        var sel = rangy.getSelection();
         sel.removeAllRanges();
         var range = rangy.createRange();
         range.selectNodeContents(el);
         sel.addRange(range);
     } else {
-        $('#tag-select-box').parent().remove();
         setTag(datum.value, sel);
+        $('#tag-select-box').parent().remove();
     }
+    $('.rangySelectionBoundary').remove();
 }
 
 function newRecord() {
