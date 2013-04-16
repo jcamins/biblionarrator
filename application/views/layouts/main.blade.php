@@ -183,11 +183,14 @@
                 @if (Auth::guest())
                     Log in
                 @else
-                    User preferences
+                    User settings
                 @endif
                 </a></li>
-                @if (Auth::check())
+                @if ( Auth::check() && Auth::user()->has_role('administrator') )
                 <li><a href="/admin">System administration</a></li>
+                @endif
+                @if (Auth::check())
+                <li><span>{{ Auth::user()->email }}</span></li>
                 @endif
                 <li><a href="/help">Help</a></li>
             </ul>
