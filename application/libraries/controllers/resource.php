@@ -155,7 +155,6 @@ class Resource_Controller extends Base_Controller {
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-bootstrap-paging', 'js/dataTables.bootstrap-paging.js');
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
-        Asset::add('datatables-jeditable', 'js/dataTables.jEditable.js');
         Asset::add('admin-table-js', 'js/admin-table.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
         Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
