@@ -32,6 +32,8 @@ Still to do:
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
 * Switch to Bootstrap 3 (when it is released)
+* Refactor admin/user controllers to make better use of shared code
+* Refactor template administration to share code with admin-table.js
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
@@ -63,3 +65,4 @@ DONE:
 * Add user preferences [biblionarrator] (3TF9W)
 * Add system preferences [biblionarrator] (3TF9X)
 * Add record templates for auto-tagging and high speed entry
+* Refactor admin-table.js

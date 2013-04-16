@@ -9,12 +9,10 @@
 @section('content')
     <div class="row-fluid">
         <div class="span9">
-            <form class="new-form" action="/resources/{{ $resourcetype }}" method="POST">
             <table id="admintable" class="table table-striped">
                 <thead><tr><th>ID</th></tr></thead>
                 <tbody></tbody>
             </table>
-            </form>
         </div>
         <div id="object-editor">
             @section('editor')

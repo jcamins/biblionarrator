@@ -27,7 +27,12 @@ function initializeAdminTable() {
                     for ( var ii = 0, iLen = json.iTotalRecords ; ii < iLen ; ii++ ) {
                         var thisRow = [json.aaData[ii]['id']];
                         Object.keys(columns).forEach(function (column) {
-                            thisRow.push('<span data-column="' + column + '" class="editable-column editable-' + columns[column].type + '">' + json.aaData[ii][column] + '</span>');
+                            var cell = '<span data-column="' + column + '" class="editable-column editable-' + columns[column].type + '"'
+                            if (columns[column].type === 'options') {
+                                cell += ' data-value="' + json.aaData[ii][column + '_id'] + '"';
+                            }
+                            cell += '>' + json.aaData[ii][column] + '</span>';
+                            thisRow.push(cell);
                         });
                         thisRow.push(controlColumn);
                         newData.push(thisRow);
@@ -40,10 +45,7 @@ function initializeAdminTable() {
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
             var noEditFields = [0];
             var objectID = $('td', nRow)[0].innerHTML;
-            if (isNaN(objectID)) {
-                $('td:eq(0)', nRow).click(function() {$(this.parentNode).toggleClass('selected',this.clicked);}); /* add row selectors */
-                $('td:eq(0)', nRow).attr("title", "Click ID to select/deselect row");
-            } else {
+            if (!isNaN(objectID)) {
                 $(nRow).attr("data-id", objectID);
             }
             return nRow;
@@ -53,16 +55,9 @@ function initializeAdminTable() {
     $('#admintable-filter').keyup(function () {
         oTable.fnFilter($(this).val(), null, false, true);
     });
-    $('.new-form').submit(function (e) {
-        saveNew();
-        e.preventDefault();
-        return false;
-    });
     $('#btnAdd').click(addNewRow);
     $('#admintable').on('click', '.delete-object', null, function (e) {
         deleteObject($(this).parents('tr').first());
-        e.preventDefault();
-        return false;
     });
     $('#admintable').on('click', '.cancelAdd', null, function() {
         $('#admintable').dataTable().fnDeleteRow(this.parentNode.parentNode);
@@ -70,116 +65,80 @@ function initializeAdminTable() {
 }
 
 function addNewRow() {
+    if ($('.save-new').size() > 0) {
+        return;
+    }
     var newdata = [ 'NA' ];
     Object.keys(columns).forEach(function (column) {
-        if (columns[column].type === 'string') {
-            newdata.push('<input id="column' + column + '" name="' + column + '" data-column="' + column + '" class="form-column" type="text" style="height: 14px; width: 99%;" />');
-        } else if (columns[column].type === 'options') {
-            newdata.push(generateSelect(column, '', { 'select-class': 'form-column' }));
-        }
+        newdata.push('<span id="column' + column + '" data-column="' + column + '" class="form-column form-' + columns[column].type + '"></span>');
     });
-    newdata.push('<button title="Save" type="submit" class="btn btn-mini"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
+    newdata.push('<button title="Save" class="btn btn-mini save-new"><i class="icon-ok"></i></button><button title="Cancel" class="cancelAdd btn btn-mini"><i class="icon-remove"></i></button>');
     var aRow = $('#admintable').dataTable().fnAddData(newdata, false);
     $('#admintable').dataTable().fnPageChange( 'last' );
-    $('.form-column').first().focus();
-    $('.form-column').keydown(fnClickAddRow);
-    return false;
+    $('.form-column').first().click();
+    $('.form-column').keydown(function (e) {
+        if (e.which == 13) {
+            $('.save-new').click();
+        } else if (e.which == 9 && $(this).parent().next().find('.form-column').size() > 0) {
+            $(this).parent().next().find('.form-column').click();
+            return false;
+        } else if (e.which == 27) {
+            $('#admintable').dataTable().fnReloadAjax();
+        }
+    });
+    $('.save-new').click(saveNew);
+}
+
+function autoSaveCallback(value, settings) {
+    var updates = {};
+    updates[$(this).attr('data-column')] = value;
+    saveRow($(this).parents('tr').first(), updates );
+    return value;
 }
 
 function fnDrawCallback() {
     var oTable = $('#admintable').dataTable();
-    $('.editable-string').editable(
-        function(value, settings) {
-            var updates = {};
-            updates[$(this).attr('data-column')] = value;
-            saveRow($(this).parents('tr').first(), updates );
-            return value;
-        } ,
-        {
-            "onblur" : "submit",
-            "select" : true,
-            "height": "16px"
-        }
-    );
-    $('.editable-string').keydown(function(evt) {
-        if(evt.keyCode==9) {
-            /* Submit the current element */
-            $('input', this)[0].blur();
-        
-            /* Activate the next element */
-            if ( $(this.parentNode).nextAll('td').find('.editable-column').first().length == 1 ) {
-                $(this.parentNode).nextAll('td').find('.editable-column').first().click();
+    $('.editable-string').editable(autoSaveCallback, { "onblur" : "submit", });
+    $('.editable-options').each(function () {
+        $(this).editable(autoSaveCallback,
+            {
+                "onblur" : "submit",
+                "type": "select",
+                "data": eval(columns[$(this).attr('data-column')]['options']),
             }
-            return false;
-        }
-    } );
-    $('.editable-options').click(function () {
-        if ($(this).find('select').length > 0) {
-            return true;
-        }
-        var cur = $(this).text();
-        var html = '<form>';
-        html += generateSelect($(this).attr('data-column'), cur);
-        html += '</form>';
-        $(this).html(html);
-        $(this).find('select').change(function () {
-            var updates = {};
-            var value = $(this).find('option:selected').text();
-            var row = $(this).parents('tr').first();
-            $(this).parents('span').first().text(value);
-            updates[$(this).attr('data-column')] = value;
-            saveRow(row, updates);
-        });
-        $(this).find('select').click();
-    } );
-}
-
-function fnClickAddRow(e) {
-    node = this.parentNode.parentNode;
-    if (e.keyCode == 13) {
-        saveNew();
-        return false;
-    }
-    else if (e.keyCode == 27) {
-        if (confirm("Are you sure you want to cancel adding this quote?")) {
-            $('#admintable').dataTable().fnDeleteRow(node);
-        }
-        else {
-            return;
-        }
-    }
+        );
+    });
+    $('.form-string').editable('', { "onblur" : "ignore", });
+    $('.form-options').each(function () {
+        $(this).editable('',
+            {
+                "onblur" : "ignore",
+                "type": "select",
+                "data": eval(columns[$(this).attr('data-column')]['options']),
+            }
+        );
+    });
 }
 
 function saveRow(row, updates) {
     var newdata = { 'id': $(row).attr('data-id') };
     $(row).find('.editable-column, .form-column').each(function () {
-        switch ($(this).prop('tagName')) {
-            case 'INPUT':
-                newdata[$(this).attr('data-column')] = $(this).val();
-                break;
-            case 'SELECT':
-                newdata[$(this).attr('data-column')] = $(this).find('option:selected').text() || $(this).find('option:first').text();
-                break;
-            default:
-                newdata[$(this).attr('data-column')] = $(this).text();
-                break;
-        }
-    })
+        newdata[$(this).attr('data-column')] = $(this).find('option:selected').val()
+                || $(this).find('option:first').val()
+                || $(this).find('input').val()
+                || $(this).attr('data-value')
+                || $(this).text();
+    });
     for (var attrname in updates) { newdata[attrname] = updates[attrname]; }
     Object.keys(newdata).forEach(function (key) {
-        if (typeof(columns[key]) === 'undefined') {
-            return;
-        }
-        var target = key;
-        var val = newdata[key];
-        if (typeof(columns[key].target) !== 'undefined') {
-            target = columns[key].target;
-            delete newdata[key];
-        }
-        if (columns[key].type === 'string') {
+        if (typeof(columns[key]) !== 'undefined') {
+            var target = key;
+            var val = newdata[key];
+            if (typeof(columns[key].target) !== 'undefined') {
+                target = columns[key].target;
+                delete newdata[key];
+            }
             newdata[target] = val;
-        } else if (columns[key].type === 'options') {
-            newdata[target] = eval(columns[key]['options'])[val];
         }
     });
     $.ajax({
@@ -190,42 +149,25 @@ function saveRow(row, updates) {
         var oTable = $('#admintable').dataTable();
         oTable.fnReloadAjax();
         oTable.fnPageChange( 'last' );
-        $('#btnAdd').click(addNewRow);
     });
-}
-
-function generateSelect(column, cur, opt) {
-    var options = eval(columns[column]['options']);
-    var html = '<select class="' + (opt && opt['select-class'] ? opt['select-class'] : '') + '" data-column="' + column + '">';
-    Object.keys(options).sort().forEach(function (obj) {
-        html += '<option';
-        if (obj === cur) {
-            html += ' selected="selected"';
-        }
-        html += '>' + obj + '</option>';
-    });
-    html += '</select>';
-    return html;
 }
 
 function saveNew() {
     var postdata = new Object();
     var missing = [];
-    var havereqs = true;
     Object.keys(columns).forEach(function(column) {
-        var val;
-        if (columns[column].type === 'string') {
-            val = $('#column' + column).val();
-        }
+        var val = $('#column' + column + ' input, #column' + column + ' select').val();
         if (columns[column].required && val.length === 0) {
             missing.push(columns[column].label);
+        } else {
+            postdata[column] = val;
         }
     });
     
     if (missing.length === 0) {
-        saveRow(node, postdata);
+        saveRow($('.save-new').parents('tr'), postdata);
     } else {
-        alert("You must provide values for " . missing.join(', '));
+        alert("You must provide values for " + missing.join(', '));
     }
 }
 
@@ -235,7 +177,7 @@ function deleteObject(obj) {
         type: "DELETE",
         data: { 'id': $(obj).attr('data-id') }
     }).done(function () {
-        $('#admintable').dataTable().fnDeleteRow(obj);
+        $('#admintable').dataTable().fnReloadAjax();
     }).fail(function () {
         alert("Unable to delete object, sorry.");
     });

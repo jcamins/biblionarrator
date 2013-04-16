@@ -6,7 +6,7 @@
 var controlColumn = '<a href="#" class="btn btn-mini user-edit"><i class="icon-pencil"></i></a><button class="btn btn-mini delete-object"><i class="icon-remove"></i></button>';
 var collectionlist = {
 @foreach (Collection::all() as $collection)
-'{{ $collection->name }}': '{{ $collection->id }}',
+'{{ $collection->id }}': '{{ $collection->name }}',
 @endforeach
 };
 
