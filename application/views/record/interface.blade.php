@@ -15,23 +15,6 @@
     </ul>
     <ul id="editor-toolbar" class="nav">
         <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">Show tags</a></li>
-        <li><a href="#" id="new" data-toggle="confirm" data-confirm-label="{{ __('confirmations.newrecordtitle') }}" data-confirm-body="{{ __('confirmations.newrecordbody') }}" class="new-record caret-before">New</a></li>
-        <li class="dropdown">
-            <a href="#" id="dropdown-new" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a href="#" id="new-blank" data-toggle="confirm" data-confirm-label="{{ __('confirmations.newrecordtitle') }}" data-confirm-body="{{ __('confirmations.newrecordbody') }}" class="new-record">Blank record</a></li>
-                <li><a id="new-related">Related record</a></li>
-                <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate">Duplicate record</a></li>
-                <li class="divider"></li>
-                <li><span>Templates</span></li>
-                @foreach (Auth::user()->collection->templates()->get() as $template)
-                    <li><a href="/record/new/template/{{ $template->id }}">{{ $template->name }}</a></li>
-                @endforeach
-                @foreach (Template::where_null('collection_id')->order_by('name', 'asc')->get() as $template)
-                    <li><a href="/record/new/template/{{ $template->id }}">{{ $template->name }}</a></li>
-                @endforeach
-            </ul>
-        </li>
         <li><a href="#" id="save" class="caret-before">Save</a></li>
         <li class="dropdown">
             <a href="#" id="dropdown-save" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
@@ -41,6 +24,7 @@
         </li>
         <li><a href="{{ URL::full() }}" id="record-reload" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
         <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
+        <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate" class="new-record">Duplicate</a></li>
         <li class="divider-vertical"></li>
         <li id="tag-select" class="dropdown">
             <a href="#" id="tag" data-toggle="dropdown" class="dropdown-toggle">Tag <b class="caret"></b></a>
@@ -117,6 +101,7 @@
 @endsection
 
 @section('form_modals')
+@parent
 <div id="save-template-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="save-template-label" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -159,6 +144,17 @@ var currentSelection;
 $(document).ready(function() {
     @if (Authority::can('edit', 'Record'))
         initializeEditor();
+        
+        $('.new-record').click(function () {
+            $('#confirmLabel').text("{{ __('confirmations.newrecordtitle') }}");
+            $('#confirmBody').text("{{ __('confirmations.newrecordbody') }}");
+            $('#confirmOK').attr('data-callback', $(this).attr('id'));
+            $('#confirm').modal('show');
+            return false;
+        });
+        $('.new-record').on('confirmed', function() {
+            window.location = $(this).attr('href');
+        });
     @endif
 
     $('#table-of-contents').on('show hide click', function() {
@@ -170,10 +166,10 @@ $(document).ready(function() {
         $('#fieldsTOC').jstree('open_node', fieldentry);
         $('#fieldsTOC').jstree('select_node', fieldentry);
         return false;
-     }).on('mouseleave', 'span, a', null, function() {
+    }).on('mouseleave', 'span, a', null, function() {
         $('#fieldsTOC').jstree('deselect_node', $('#fieldsTOC .fieldEntry[data-match="' + $(this).attr('data-match') + '"]'));
         return false;
-     });
+    });
 
     updateFieldsTOCTree();
 });

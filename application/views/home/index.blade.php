@@ -5,7 +5,8 @@
 <span class="instruction-label">Hint:</span>
 Almost everything you need to do can be done from the toolbars:
 <ul>
-<li>The &#8220;Record&#8221; button creates a new record</li>
+<li>The &#8220;New&#8221; button creates a new record, either a blank record
+or from a template</li>
 <li>The &#8220;Search&#8221; button brings you to the search page (or you can
 just do a Quick search directly from the toolbar)</li>
 <li><i class="icon-bookmark"></i> gives you access to your bookmarks</li>

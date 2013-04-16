@@ -1,4 +1,7 @@
 function initializeEditor() {
+    if (document.URL.indexOf('/new') >= 0 && !$('#toggleEditor').parent().hasClass('active')) {
+        $('#toggleEditor').click();
+    }
     initializeRangy();
     initializeContentEditable();
 

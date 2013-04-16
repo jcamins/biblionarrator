@@ -40,7 +40,22 @@
                         <ul class="nav pull-left">
                             @section('navigation')
                             @yield_section
-                            <li class=""><a href="/record">Record</a></li>
+                            @if (Authority::can('edit', 'Record'))
+                            <li class="dropdown">
+                                <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">New <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/record/new" id="new-blank" class="new-record">Blank record</a></li>
+                                    <li class="divider"></li>
+                                    <li><span>Templates</span></li>
+                                    @foreach (Auth::user()->collection->templates()->get() as $template)
+                                        <li><a href="/record/new/template/{{ $template->id }}" id="new-template-{{ $template->id }}" class="new-record">{{ $template->name }}</a></li>
+                                    @endforeach
+                                    @foreach (Template::where_null('collection_id')->order_by('name', 'asc')->get() as $template)
+                                        <li><a href="/record/new/template/{{ $template->id }}" id="new-template-{{ $template->id }}" class="new-record">{{ $template->name }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                            @endif
                             <li class=""><a class="caret-before" href="/search">Search</a></li>
                             <li class="hidden-phone dropdown">
                                 <a href="#" class="dropdown-toggle caret-after" data-toggle="dropdown"><b class="caret"></b></a>
