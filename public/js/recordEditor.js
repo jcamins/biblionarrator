@@ -198,7 +198,7 @@ function loadRecord() {
     if (recordId) {
         $.ajax({
             type: "GET",
-            url: "/record/" + recordId + '/json',
+            url: "/record/" + recordId,
             dataType: "json",
             error: ajaxLoadFailed,
         }).done(function(msg) {
@@ -216,6 +216,7 @@ function saveRecord() {
     $.ajax({
         type: "POST",
         url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
+        dataType: "json",
         data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))),
                 recordtype: $('#recordtype-select').val()
               },
@@ -239,6 +240,7 @@ function saveTemplate() {
     $.ajax({
         type: "POST",
         url: "/resources/template/",
+        dataType: "json",
         data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))),
                 recordtype: $('#recordtype-select').val(),
                 name: $('#template-name').val()

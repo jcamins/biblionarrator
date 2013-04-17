@@ -36,26 +36,42 @@ class Resource_Controller extends Base_Controller {
     }
 
     public function get_index($id = null) {
-        if (isset($id) || $id = Input::get('id')) {
-            return $this->_show($id);
+        if (isset($id)) {
+            $resource = call_user_func($this->resourceClass . '::find', $id);
+            if (Request::accepts('application/json')) {
+                return $this->_show($resource);
+            } else {
+                return $this->_edit($resource);
+            }
         } else {
-            return $this->_index();
+            if (Request::accepts('application/json')) {
+                return $this->_index();
+            } else {
+                return $this->_admin();
+            }
         }
     }
 
     public function post_index($id = null) {
         $json = $this->_update($id);
-        if (Input::has('adminredirect')) {
-            return Redirect::to('/admin/' . strtolower($this->resourceClass));
-        } else {
+        if (Request::accepts('application/json')) {
             return $json;
+        } else {
+            return Redirect::to('/admin/' . strtolower($this->resourceClass));
         }
     }
 
     public function delete_index($id = null) {
-        if (isset($id) || $id = Input::get('id')) {
-            return $this->_delete($id);
+        if (isset($id)) {
+            $resource = call_user_func($this->resourceClass . '::find', $id);
+            if (isset($resource)) {
+                $json = $this->_delete($resource);
+                if (Request::accepts('application/json')) {
+                    return $json;
+                }
+            }
         }
+        return Redirect::to('/admin/' . strtolower($this->resourceClass));
     }
 
     protected function _index() {
@@ -79,14 +95,15 @@ class Resource_Controller extends Base_Controller {
         return Response::json($resources);
     }
 
-    protected function _show($id) {
-        return Response::json(call_user_func($this->resourceClass . '::find', $id)->to_array());
+    protected function _show($resource) {
+        if (isset($resource)) {
+            return Response::json($resource->to_array());
+        } else {
+            return Response::error('404');
+        }
     }
 
     protected function _update($id) {
-        if (is_null($id)) {
-            $id = Input::get('id');
-        }
         if (isset($id) && $id !== 'new' && $id !== 'undefined' && $id !== '') {
             $resource = call_user_func($this->resourceClass . '::find', $id);
             if (is_null($resource) || (property_exists($resource, 'deleted') && $resource->deleted)) {
@@ -127,31 +144,30 @@ class Resource_Controller extends Base_Controller {
         return Response::json($resource->to_array());
     }
 
-    protected function _purge($id) {
-        $resource = call_user_func($this->resourceClass . '::find', $id);
+    protected function _purge($resource) {
         if (isset($resource)) {
             foreach ($this->fk_columns as $fk) {
                 $fk .= 's';
                 $resource->$fk()->delete();
             }
             $resource->delete();
-            return Response::json($id);
+            return Response::json($resource->id);
         }
     }
 
-    protected function _delete($id) {
-        $resource = call_user_func($this->resourceClass . '::find', $id);
+    protected function _delete($resource) {
         if (isset($resource)) {
             if ($this->safe_delete) {
                 $resource->deleted = true;
                 $resource->save();
             } else {
-                $resource->delete();
+                $this->_purge($resource);
             }
+            return Response::json($resource->id);
         }
     }
 
-    public function get_admin() {
+    protected function _admin() {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         Asset::add('datatables-bootstrap-paging', 'js/dataTables.bootstrap-paging.js');
@@ -171,10 +187,9 @@ class Resource_Controller extends Base_Controller {
         return View::make($this->admin_view)->with('resourcetype', strtolower($this->resourceClass))->with('columns', json_encode($this->interface_columns));
     }
 
-    public function get_edit($id = null) {
-        $resource = call_user_func($this->resourceClass . '::find', $id);
-        if (is_null($id) || is_null($resource)) {
-            return Redirect::to('resources.' . strtolower($this->resourceClass) . '.admin');
+    protected function _edit($resource) {
+        if (is_null($resource)) {
+            return Redirect::to('/admin/' . strtolower($this->resourceClass));
         } else {
             return View::make('admin.edit.' . strtolower($this->resourceClass))->with('resource', $resource);
         }

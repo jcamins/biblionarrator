@@ -29,17 +29,16 @@ class Resources_Field_Controller extends Resource_Controller {
     public $foreign_keys = array('styles');
     public $resourceClass = 'Field';
 
-    public function get_admin($id = null) {
-        $field = Field::find($id);
-        if (is_null($field)) {
-            if (isset($id) && $id !== 'new') {
-                return Redirect::to_action('admin@fields', array('new'));
-            } else {
-                $field = new Field();
-            }
+    protected function _edit($resource) {
+        if (is_null($resource)) {
+            $resource = new Field;
         }
-        Session::put('currentfield', $field);
-		return parent::get_admin()->with('field', $field)->with('id', $id);
+        Session::put('currentfield', $resource);
+        return parent::_admin()->with('field', $resource)->with('id', $resource->id);
+    }
+
+    protected function _admin() {
+        return $this->_edit(null);
     }
 
     public function get_styles($id) {

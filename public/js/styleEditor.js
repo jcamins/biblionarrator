@@ -63,14 +63,14 @@ function createTagsManager() {
         if ($(this).parent().find('input[name="hidden-styleRecordTypes"]').length > 0) {
             return;
         }
-        $(this).tagsManager({
+        /*$(this).tagsManager({
             prefilled: $(this).parent().find('.recordType').text(),
             typeahead: true,
             typeaheadSource: Object.keys(recordTypes),
             validator: function (str) {
                 return (jQuery.inArray(str, Object.keys(recordTypes)) >= 0);
             }
-        });
+        });*/
         $(this).parent().find('.recordType').remove();
     });
 }
@@ -80,7 +80,7 @@ function saveStyles() {
     $('#styleTable').dataTable().$('tr').each(function () {
         var id = $(this).attr('id') ? $(this).attr('id').replace('style', '') : null;
         var style = { 'id': id, 'field_id': $('input[name="id"]').val(), 'schema': $('input[name="schema"]').val(), 'field': $('input[name="field"]').val(), 'css': $(this).find('.styleEntry').val(), 'recordtypes': [] };
-        var mytypes = $(this).find('input[name="hidden-styleRecordTypes"]').val().split(',');
+        var mytypes = $(this).find('input[name="styleRecordTypes"]').val().split(',');
         for (var ii in mytypes) {
             if (typeof(recordTypes[mytypes[ii]]) !== 'undefined') {
                 style.recordtypes.push(recordTypes[mytypes[ii]]);
@@ -111,6 +111,7 @@ function delStyle(style) {
     $.ajax({
         type: "DELETE",
         url: "/resources/style/" + style,
+        dataType: "json",
         error: function (jqXHR, err, msg) {
             alert(msg);
         },

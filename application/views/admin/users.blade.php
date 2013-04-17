@@ -13,7 +13,7 @@ var collectionlist = {
 $(document).ready(function () {
     $('#admintable').on('draw', null, null, function () {
         $('.user-edit').click(function (e) {
-            window.location = '/admin/user/edit/' + $(this).parents('tr').first().attr('data-id');
+            window.location = '/admin/user/' + $(this).parents('tr').first().attr('data-id');
             return false;
         });
     });

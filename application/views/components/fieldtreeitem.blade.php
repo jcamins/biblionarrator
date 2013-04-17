@@ -1,4 +1,4 @@
-<li data-id="{{ $node->id }}"><a href="/resources/field/{{ $node->id }}/admin"
+<li data-id="{{ $node->id }}"><a href="/admin/field/{{ $node->id }}"
 @if (Session::has('currentfield') && Session::get('currentfield')->id === $node->id)
 class="selected"
 @endif

@@ -121,7 +121,8 @@ function fnDrawCallback() {
 }
 
 function saveRow(row, updates) {
-    var newdata = { 'id': $(row).attr('data-id') };
+    var id = $(row).attr('data-id');
+    var newdata = { };
     $(row).find('.editable-column, .form-column').each(function () {
         newdata[$(this).attr('data-column')] = $(this).find('option:selected').val()
                 || $(this).find('option:first').val()
@@ -142,7 +143,8 @@ function saveRow(row, updates) {
         }
     });
     $.ajax({
-        url: '/resources/' + resourcetype,
+        url: '/resources/' + resourcetype + (typeof id !== 'undefined' ? '/' + id : ''),
+        dataType: 'json',
         type: "POST",
         data: newdata,
     }).success(function () {
@@ -172,13 +174,16 @@ function saveNew() {
 }
 
 function deleteObject(obj) {
-    $.ajax({
-        url: '/resources/' + resourcetype,
-        type: "DELETE",
-        data: { 'id': $(obj).attr('data-id') }
-    }).done(function () {
-        $('#admintable').dataTable().fnReloadAjax();
-    }).fail(function () {
-        alert("Unable to delete object, sorry.");
-    });
+    if (typeof $(obj).attr('data-id') !== 'undefined') {
+        $.ajax({
+            url: '/resources/' + resourcetype + '/' + $(obj).attr('data-id'),
+            dataType: 'json',
+            type: "DELETE",
+            data: { }
+        }).done(function () {
+            $('#admintable').dataTable().fnReloadAjax();
+        }).fail(function () {
+            alert("Unable to delete object, sorry.");
+        });
+    }
 }

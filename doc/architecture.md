@@ -30,15 +30,17 @@ Administrative objects include:
 Administrative objects are accessed at /resources/{OBJECT}, and have
 the following methods:
 
-* [GET] /resources/{OBJECT} - retrieve a JSON listing (suitable for direct ingestion
-  by DataTable) of all objects of that type.
+* [GET] /resources/{OBJECT} (JSON request) - retrieve a JSON listing (suitable
+  for direct ingestion by DataTable) of all objects of that type.
+* [GET] /resources/{OBJECT} (regular request) - show the administration interface
+  for the object type.
+* [GET] /resources/{OBJECT}/{ID} (JSON request) - retrieve the object in JSON
+  format
+* [GET] /resources/{OBJECT}/{ID} (regular request) - show the administrative edit
+  interface for the specified object.
 * [POST] /resources/{OBJECT}/{ID} - save the specified object, or create a new
   object if {ID} is not set.
 * [DELETE] /resources/{OBJECT}/{ID} - delete the specified object.
-* [GET] /resources/{OBJECT}/admin - show the administration interface for the
-  object type.
-* [GET] /resources/{OBJECT}/edit/{ID} - show the administrative edit interface for
-  the specified object.
 
 RecordList objects
 -----------------

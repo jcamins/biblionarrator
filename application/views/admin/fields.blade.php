@@ -46,10 +46,10 @@ var recordTypes = {
 var treeCallbacks = {
     'move_node' : function(e, data) {
         $.ajax({
-            url: '/resources/field',
+            url: '/resources/field/' + data.rslt.o[0].getAttribute('data-id'),
             type: "POST",
             dataType: "json",
-            data: { 'id': data.rslt.o[0].getAttribute('data-id'),
+            data: { 
                     'parent': data.rslt.np[0].getAttribute('data-id')
                   }
         });

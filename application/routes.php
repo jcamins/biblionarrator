@@ -34,10 +34,7 @@
 
 Route::any('admin/settings/?(:any)?', 'resources.systemsettings@admin');
 Route::any('admin/(:any)/?(:any)?', function($controller,$params=null) {
-    return Controller::call('resources.'.$controller.'@admin', (array) $params);
-});
-Route::any('admin/(:any)/edit/(:any)', function($controller,$params=null) {
-    return Controller::call('resources.'.$controller.'@edit', (array) $params);
+    return Controller::call('resources.'.$controller.'@index', (array) $params);
 });
 Route::get('record/new/template/(:any)', 'record@fromtemplate');
 Route::post('record/(:any)/link/add/(:any)', 'record.link@add');
@@ -55,6 +52,9 @@ Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
 Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
 Route::any('user/settings/?(:any)?', 'resources.usersettings@admin');
+Route::any('resources/(:any)/(:any)?', function($controller,$params=null) {
+    return Controller::call('resources.'.$controller.'@index', (array) $params);
+});
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
 Route::get('doc/(:any)?', 'home@doc');

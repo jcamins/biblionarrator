@@ -59,7 +59,9 @@ class Record_Controller extends Resource_Controller {
         if (is_null($record) || $record->deleted) {
             $record = new Record();
         }
-        if (is_null($format) || $format == 'interface') {
+        if (is_null($format) && Request::accepts('application/json') {
+            return $record->format('json');
+        } else if (is_null($format) || $format == 'interface') {
             if (isset($record->id)) {
                 Breadcrumbs::add('Record ' . $record->id);
             }
@@ -81,7 +83,10 @@ class Record_Controller extends Resource_Controller {
     }
 
     public function get_delete($record_id = null) {
-        $this->_delete($record_id);
-        return Redirect::to('/record/new');
+        $resource = Record::find($record_id);
+        if (isset($resource)) {
+            $this->_delete($resource);
+            return Redirect::to('/record/new');
+        }
     }
 }
