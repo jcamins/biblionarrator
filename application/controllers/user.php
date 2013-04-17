@@ -44,7 +44,7 @@ class User_Controller extends Base_Controller
         if( Auth::attempt($credentials)) {
             return Redirect::to($redirect);
         } else {
-            Session::flash('status_error', 'Your email or password is invalid - please try again.');
+            Session::flash('login_error', 'Your email or password is invalid - please try again.');
             return Redirect::to($redirect);
         }
     }
