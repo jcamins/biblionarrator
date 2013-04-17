@@ -34,6 +34,9 @@ Refactoring:
 * Switch to Bootstrap 3 (when it is released)
 * Refactor admin/user controllers to make better use of shared code
 * Refactor template administration to share code with admin-table.js
+* Normalize API to not use id URL parameter
+* Use PUT instead of POST for resources
+* Use Accept: header or ajax detection for deciding whether to send json or interface
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
