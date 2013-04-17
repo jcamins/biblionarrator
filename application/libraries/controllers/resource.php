@@ -44,10 +44,11 @@ class Resource_Controller extends Base_Controller {
     }
 
     public function post_index($id = null) {
+        $json = $this->_update($id);
         if (Input::has('adminredirect')) {
             return Redirect::to('/admin/' . strtolower($this->resourceClass));
         } else {
-            return $this->_update($id);
+            return $json;
         }
     }
 
