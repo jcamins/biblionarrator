@@ -125,6 +125,22 @@ $(document).ready(function () {
     });
 });
 
+(function( $ ) {
+    $.fn.extend({
+        typeaheaddone: function( data, fn ) {
+            this.on( 'keydown', function (ev) {
+                if (ev.which == 13) {
+                    $(this).trigger( 'typeahead:selected', { 'value': $(this).val() } );
+                    return false;
+                }
+            });
+            return arguments.length > 0 ?
+                this.on( 'typeahead:autocompleted typeahead:selected', null, data, fn ) :
+                $(this).trigger( 'typeahead:selected' );
+        },
+    });
+})( jQuery );
+
 var tocindex;
 var toctree;
 

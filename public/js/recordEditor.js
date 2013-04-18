@@ -146,17 +146,9 @@ function newTag() {
 
     savedsel = rangy.saveSelection();
 
-    $(tsb).on('typeahead:autocompleted', null, savedsel, newTagSelected);
-    $(tsb).on('typeahead:selected', null, savedsel, newTagSelected);
+    $(tsb).typeaheaddone(savedsel, newTagSelected);
     $(tsb).on('keydown', function (ev) {
-        if (ev.which == 13) {
-            var e2 = {};
-            e2['data'] = savedsel;
-            var datum = {};
-            datum['value'] = $(tsb).val();
-            newTagSelected(e2, datum);
-            return false;
-        } else if (ev.which == 27) {
+        if (ev.which == 27) {
             $(tsb).parent().remove();
             rangy.removeMarkers(savedsel);
             document.getElementById('recordContainer').normalize();
