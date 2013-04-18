@@ -59,7 +59,7 @@ class Record_Controller extends Resource_Controller {
         if (is_null($record) || $record->deleted) {
             $record = new Record();
         }
-        if (is_null($format) && Request::accepts('application/json') {
+        if (is_null($format) && Request::accepts('application/json')) {
             return $record->format('json');
         } else if (is_null($format) || $format == 'interface') {
             if (isset($record->id)) {

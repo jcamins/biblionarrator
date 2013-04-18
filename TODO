@@ -28,6 +28,7 @@ Still to do:
 * Add record locking
 * Make admin tables mobile-friendly
 * Add help pages
+* Replace broken bootstrap-tagmanager with working typeahead-based tags
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
