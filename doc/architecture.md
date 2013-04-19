@@ -52,6 +52,7 @@ RecordList objects include:
 
 RecordList objects are accessed at /{OBJECT}/, and have the following methods:
 
-* [GET] /{OBJECT}/ - show list interface.
-* [GET] /{OBJECT}/export/{FORMAT}/{TYPE} - retrieves the list (optionally as
-  snippets, if {TYPE} is set to "snippet") exported in a different format
+* [GET] /{OBJECT}/{FORMAT}/{TYPE} - retrieves the list
+* [GET] /{OBJECT}/{FORMAT}/{TYPE} - retrieves the list (optionally as
+  snippets, if {TYPE} is set to "snippet") in the specified format. If {FORMAT}
+  is blank, retrieve the interface
