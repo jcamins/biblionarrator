@@ -1,7 +1,7 @@
 @layout('layouts/main')
 
-@section('navigation')
-@parent
+@section('new-options')
+    <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate" class="new-record">Duplicate record</a></li>
 @endsection
 
 @section('controlbar')
@@ -22,8 +22,15 @@
             </ul>
         </li>
         <li><a href="{{ URL::full() }}" id="record-reload" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
-        <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
-        <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate" class="new-record">Duplicate</a></li>
+        <li class="dropdown">
+            <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">Options <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a target="_blank" href="{{ URL::current() }}/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Download citation (HTML)</a></li>
+                <li><a target="_blank" href="{{ URL::current() }}/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Download full record (HTML)</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
+            </ul>
+        </li>
         <li class="divider-vertical"></li>
         <li id="tag-select" class="dropdown">
             <a href="#" id="tag" data-toggle="dropdown" class="dropdown-toggle">Tag <b class="caret"></b></a>

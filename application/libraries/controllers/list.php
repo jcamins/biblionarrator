@@ -37,22 +37,21 @@ class List_Controller extends Base_Controller {
             $this->records->sort(Input::get("sort.$ii"));
             $ii++;
         }
+        Session::forget('query');
     }
 
-    public function get_index() {
-        Asset::add('fieldstyles', 'css/fields.css');
-        Asset::add('bookmarks-js', 'js/bookmarks.js');
-        if (Input::has('perpage')) {
-            $perpage = Input::get('perpage');
+    public function get_index($format = null, $type = null) {
+        if (is_null($format) || $format === 'interface') {
+            Asset::add('fieldstyles', 'css/fields.css');
+            Asset::add('bookmarks-js', 'js/bookmarks.js');
+            if (Input::has('perpage')) {
+                $perpage = Input::get('perpage');
+            } else {
+                $perpage = 10;
+            }
+            Breadcrumbs::add($this->title);
+            return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage)->with('paginator', $this->records->results->paginate($perpage));
         } else {
-            $perpage = 10;
-        }
-        Breadcrumbs::add($this->title);
-        return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage)->with('paginator', $this->records->results->paginate($perpage));
-    }
-
-    public function get_export($format = null, $type = null) {
-        if (isset($format)) {
             if (is_null($type)) {
                 $rc = $this->records->results;
             } else if ($type === 'snippet') {

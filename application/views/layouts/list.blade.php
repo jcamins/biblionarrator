@@ -1,16 +1,11 @@
 @layout('layouts/main')
 
-@section('navigation')
-@parent
-@endsection
-
 @section('controlbar')
     @if (Auth::check())
-        <!--<li><a href="#" id="download-results" class="caret-before" data-toggle="modal" data-target="#download-modal">Download</a></li>-->
         <li class="dropdown"><a href="#" id="dropdown-download-results" data-toggle="dropdown" class="dropdown-toggle">Download<b class="caret"></b></a>
         <ul class="dropdown-menu">
-            <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
-            <li><a target="_blank" href="{{ URL::current() }}/export/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
+            <li><a target="_blank" href="{{ URL::current() }}/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
+            <li><a target="_blank" href="{{ URL::current() }}/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
         </ul></li>
     @endif
         <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add page<b class="caret"></b></a>

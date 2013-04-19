@@ -1,7 +1,7 @@
 @if ($records && $paginator->results)
     <div class="recordtypes header-shown">
-    @if (isset($query) && strlen($query) > 0)
-        Your search for <em>{{ $query }}</em> found:
+    @if (Session::has('query') && strlen(Session::get('query')) > 0)
+        Your search for <em>{{ Session::get('query') }}</em> found:
     @else
         Found:
     @endif

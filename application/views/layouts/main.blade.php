@@ -38,13 +38,12 @@
                     <a class="brand" href="/">Biblionarrator</a>
                     <div class="navbar-controls">
                         <ul class="nav pull-left">
-                            @section('navigation')
-                            @yield_section
                             @if (Authority::can('edit', 'Record'))
                             <li class="dropdown">
                                 <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">New <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/record/new" id="new-blank" class="new-record">Blank record</a></li>
+                                    @yield('new-options')
                                     <li class="divider"></li>
                                     <li><span>Templates</span></li>
                                     @foreach (Auth::user()->collection->templates()->get() as $template)
@@ -65,7 +64,7 @@
                             </li>
                             <li class="divider-vertical"></li>
                             <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
-                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="@if (isset($query)){{ $query }}@endif"></input><button class="search-button" type="submit"><i class="icon-search"></i></button>
+                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="{{ Session::get('query') }}"></input><button class="search-button" type="submit"><i class="icon-search"></i></button>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">

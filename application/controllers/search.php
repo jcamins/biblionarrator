@@ -56,10 +56,11 @@ class Search_Controller extends List_Controller {
             }
         }
         parent::__construct();
+        Session::put('query', $this->query);
     }
 
-    public function get_index() {
-        return parent::get_index()->with('query', $this->query);
+    public function get_index($format = null, $type = null) {
+        return parent::get_index($format, $type);
     }
 
     public function get_bookmarkall() {

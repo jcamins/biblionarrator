@@ -29,7 +29,6 @@ Still to do:
 * Make admin tables mobile-friendly
 * Add help pages
 * Replace broken bootstrap-tagmanager with working typeahead-based tags
-* Add export link to record page
 * Tag selector box looks bizarre on IE9
 * Cursor positioning wrt to tag labels is off in IE9
 * Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
@@ -44,6 +43,7 @@ Refactoring:
 * Refactor admin/user controllers to make better use of shared code
 * Refactor template administration to share code with admin-table.js
 * Use PUT instead of POST for resources
+* Normalize bookmark/search API to be more RESTful
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)
@@ -79,3 +79,4 @@ DONE:
 * Use Accept: header or ajax detection for deciding whether to send json or interface
 * Normalize API to not use id URL parameter
 * Provide some visual cue that record is modified (maybe highlight the save button?)
+* Add export link to record page

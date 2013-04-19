@@ -42,7 +42,7 @@ Route::get('record/(:any)?/?link/list', 'record.link@list');
 Route::get('record/(:any)?/?link/select', 'record.link@select');
 Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/delete', 'record@delete');
-Route::get('record/(:any)?/?(:any)?', 'record@index');
+Route::get('record/(:any)?/?(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@index');
 Route::get('css/fields.css', function() {
     return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
@@ -55,6 +55,7 @@ Route::any('user/settings/?(:any)?', 'resources.usersettings@admin');
 Route::any('resources/(:any)/(:any)?', function($controller,$params=null) {
     return Controller::call('resources.'.$controller.'@index', (array) $params);
 });
+Route::get('search/(:any)?/?(:any)?', 'search@index');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
 Route::get('doc/(:any)?', 'home@doc');

@@ -54,10 +54,13 @@ class Record_Controller extends Resource_Controller {
         return $this->_interface($record);
     }
 
-    public function get_index($record_id = null, $format = null) {
+    public function get_index($record_id = null, $format = null, $type = null) {
         $record = Record::find($record_id);
         if (is_null($record) || $record->deleted) {
             $record = new Record();
+        }
+        if ($type === 'snippet') {
+            $record = $record->snippet();
         }
         if (is_null($format) && Request::accepts('application/json')) {
             return $record->format('json');
