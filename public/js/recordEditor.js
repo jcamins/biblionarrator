@@ -56,6 +56,10 @@ function initializeEditor() {
         } else if (ev.which == 8) {
             document.getElementById('recordContainer').normalize();
         }
+        if (ev.which < 16 || ev.which == 32 || (ev.which > 45 && ev.which < 91) || ev.which > 93) {
+            // Anything that is not a movement key or modifier is considered a change
+            $('body').addClass('unsaved-changes');
+        }
         var sel = rangy.getSelection();
         var span = $(sel.getRangeAt(0).commonAncestorContainer).parents('span').first();
         if ($(span).parents('#recordContainer').size() > 0 && $(sel.getRangeAt(0).commonAncestorContainer).parents('input').size() == 0) {
@@ -218,6 +222,7 @@ function saveRecord() {
         if (typeof(recordId) !== 'undefined') {
             History.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
         }
+        $('body').removeClass('unsaved-changes');
         addAlert('Successfully saved record', 'success');
         updateFieldsTOCTree();
     });

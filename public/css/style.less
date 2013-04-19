@@ -512,6 +512,23 @@ a.selected {
     .divider-vertical {
         height: 30px;
     }
+
+    li.save-button {
+
+        .unsaved-changes & {
+            background: #04c;
+
+            & > a {
+                color: #fff;
+                text-shadow: none;
+
+                .caret {
+                    border-top-color: #fff;
+                    border-bottom-color: #fff;
+                }
+            }
+        }
+    }
 }
 
 /*** Navbar ***/
