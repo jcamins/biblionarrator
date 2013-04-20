@@ -16,7 +16,7 @@ function initializeStyleEditor() {
         }
         var aRow = $('#styleTable').dataTable().fnAddData(
             [
-                '<input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input>',
+                '<div class="style-record-type-cell"><input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes input-small"></input></div>',
                 '<textarea class="styleEntry"></textarea>',
                 '<div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>',
                 '<button id="delNewLine" class="btn btn-mini"><i class="icon-remove"></i></button>'
@@ -59,8 +59,8 @@ function loadStyle (id) {
 };
 
 function createTagsManager() {
-    $('.styleRecordTypes').each(function() {
-        if ($(this).parent().find('input[name="hidden-styleRecordTypes"]').length > 0) {
+    $('.style-record-type-cell').each(function() {
+        /*if ($(this).parent().find('input[name="hidden-styleRecordTypes"]').length > 0) {
             return;
         }
         /*$(this).tagsManager({
@@ -71,7 +71,14 @@ function createTagsManager() {
                 return (jQuery.inArray(str, Object.keys(recordTypes)) >= 0);
             }
         });*/
-        $(this).parent().find('.recordType').remove();
+        $(this).tagger({
+            'labelclass': 'label label-info',
+            'typeahead': {
+                'name': 'recordTypes',
+                'local': Object.keys(recordTypes),
+            }
+        });
+        //$(this).parent().find('.recordType').remove();
     });
 }
 
@@ -80,10 +87,13 @@ function saveStyles() {
     $('#styleTable').dataTable().$('tr').each(function () {
         var id = $(this).attr('id') ? $(this).attr('id').replace('style', '') : null;
         var style = { 'id': id, 'field_id': $('input[name="id"]').val(), 'schema': $('input[name="schema"]').val(), 'field': $('input[name="field"]').val(), 'css': $(this).find('.styleEntry').val(), 'recordtypes': [] };
-        var mytypes = $(this).find('input[name="styleRecordTypes"]').val().split(',');
+        var mytypes = $(this).find('input[name="styleRecordTypes"]').val().match(/@[^@#]*#/g);
         for (var ii in mytypes) {
-            if (typeof(recordTypes[mytypes[ii]]) !== 'undefined') {
-                style.recordtypes.push(recordTypes[mytypes[ii]]);
+            if (mytypes[ii].length > 2) {
+                var curtype = mytypes[ii].replace('@', '').replace('#', '');
+                if (typeof(recordTypes[curtype]) !== 'undefined') {
+                    style.recordtypes.push(recordTypes[curtype]);
+                }
             }
         }
         styles.push(style);

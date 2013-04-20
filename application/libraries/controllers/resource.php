@@ -174,8 +174,6 @@ class Resource_Controller extends Base_Controller {
         Asset::add('jeditable', 'js/jquery.jeditable.min.js');
         Asset::add('admin-table-js', 'js/admin-table.js');
         Asset::add('jstree', 'js/jstree/jquery.jstree.js');
-        Asset::add('tagmanager-js', 'js/bootstrap-tagmanager.js');
-        Asset::add('tagmanager-css', 'css/bootstrap-tagmanager.css');
         Asset::add('styleEditor', 'js/styleEditor.js');
         Asset::add('admin-tree-js', 'js/admin-tree.js');
 

@@ -28,12 +28,10 @@ You can disable these hints from the <i class="icon-question-sign"></i> menu.
 @section('content')
     <div class="row-fluid">
         <div class="span6">
-            <div class="hero-unit">
-                <h2>Welcome to Biblionarrator</h2>
-                <p>Biblionarrator turns traditional assumptions about cataloging
-                on their heads and makes catalogs (and cataloging) fun again.</p>
-                <p><a href="/about" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-            </div>
+            <h2>Welcome to Biblionarrator</h2>
+            <p>Biblionarrator turns traditional assumptions about cataloging
+            on their heads and makes catalogs (and cataloging) fun again.</p>
+            <p><a href="/about" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
         </div>
         <div class="span6">
             <h4>Common tasks</h4>

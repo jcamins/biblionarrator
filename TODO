@@ -28,7 +28,6 @@ Still to do:
 * Add record locking
 * Make admin tables mobile-friendly
 * Add help pages
-* Replace broken bootstrap-tagmanager with working typeahead-based tags
 * Tag selector box looks bizarre on IE9
 * Cursor positioning wrt to tag labels is off in IE9
 * Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
@@ -80,3 +79,4 @@ DONE:
 * Normalize API to not use id URL parameter
 * Provide some visual cue that record is modified (maybe highlight the save button?)
 * Add export link to record page
+* Replace broken bootstrap-tagmanager with working typeahead-based tags

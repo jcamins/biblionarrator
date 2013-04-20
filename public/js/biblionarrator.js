@@ -138,6 +138,44 @@ $(document).ready(function () {
                 this.on( 'typeahead:autocompleted typeahead:selected', null, data, fn ) :
                 $(this).trigger( 'typeahead:selected' );
         },
+
+        tagger: function( options ) {
+            if (typeof $(this).attr('data-tagger') !== 'undefined') {
+                return;
+            }
+            var container = this;
+            var input = $(this).find('input');
+            if (typeof options.labelclass === 'undefined') {
+                options.labelclass = 'tag-label';
+            }
+            var ta = $(input).clone();
+            $(container).attr('data-tagger', 'on');
+            $(ta).removeAttr('name');
+            $(ta).removeAttr('id');
+            $(ta).addClass('tagger-typeahead');
+            $(ta).val('');
+            $(container).append(ta);
+            $(input).attr('type', 'hidden');
+            var mytypes = $(input).val().match(/@[^@#]*#/g);
+            for (var ii in mytypes) {
+                if (mytypes[ii].length > 2) {
+                    var curtype = mytypes[ii].replace('@', '').replace('#', '');
+                    $(container).append('<span data-value="' + curtype + '" class="' + options.labelclass + '">' + curtype + ' <a href="#" class="remove-tag">&times;</a></span>');
+                }
+            }
+            $(ta).typeahead(options.typeahead);
+            $(ta).typeaheaddone(function (ev, datum) {
+                if ($(input).val().indexOf('@' + datum.value + '#') === -1) {
+                    $(container).append('<span data-value="' + datum.value + '" class="' + options.labelclass + '">' + datum.value + ' <a href="#" class="remove-tag">&times;</a></span>');
+                    $(input).val($(input).val() + '@' + datum.value + '#');
+                }
+                $(ta).typeahead('setQuery', '');
+            });
+            $(container).on('click', '.remove-tag', null, function () {
+                $(input).val($(input).val().replace('@' + $(this).parent().attr('data-value') + '#'));
+                $(this).parent().remove();
+            });
+        },
     });
 })( jQuery );
 
