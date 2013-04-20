@@ -327,7 +327,6 @@ function addLink(field) {
     });
     $('#link-select').load('/record/' + recordId + '/link/select', function () {
         $('#link-select').modal('show');
-        $('#link-q').focus();
         $('#link-results').on('click', '.record-view-link', null, function () {
             var link = $(this).parents('tr').first().attr('data-id');
             $('#curlink').attr('href', '/record/' + link);
@@ -341,5 +340,8 @@ function addLink(field) {
             $('#link-results').load('/record/' + recordId + '/link/list/' + field.id + '?q=' + $('#link-q').val());
             return false;
         });
+    });
+    $('#link-select').on('shown', function () {
+        $('#link-q').focus();
     });
 }
