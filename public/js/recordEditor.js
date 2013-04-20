@@ -220,6 +220,9 @@ function saveRecord() {
     }).done(function(msg) {
         recordId = parseInt(msg.id);
         if (typeof(recordId) !== 'undefined') {
+            $('.self-url').each(function () {
+                $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + recordId));
+            });
             History.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
         }
         $('body').removeClass('unsaved-changes');

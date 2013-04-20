@@ -1,7 +1,7 @@
 @layout('layouts/main')
 
 @section('new-options')
-    <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate" class="new-record">Duplicate record</a></li>
+    <li><a href="{{ URL::current() }}/duplicate" id="new-duplicate" class="self-url new-record">Duplicate record</a></li>
 @endsection
 
 @section('controlbar')
@@ -21,14 +21,14 @@
                 <li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">As template</a></li>
             </ul>
         </li>
-        <li><a href="{{ URL::full() }}" id="record-reload" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
+        <li><a href="{{ URL::full() }}" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
         <li class="dropdown">
             <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">Options <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a target="_blank" href="{{ URL::current() }}/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Download citation (HTML)</a></li>
-                <li><a target="_blank" href="{{ URL::current() }}/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Download full record (HTML)</a></li>
+                <li><a target="_blank" href="{{ URL::merge(URL::current() . '/snippet', Input::all(), array('format' => 'htmlnolink')) }}" class="self-url" id="download-citations-html">Download citation (HTML)</a></li>
+                <li><a target="_blank" href="{{ URL::merge(URL::current(), Input::all(), array('format' => 'htmlnolink')) }}" class="self-url" id="download-full-html">Download full record (HTML)</a></li>
                 <li class="divider"></li>
-                <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}">Delete</a></li>
+                <li><a href="{{ URL::current() }}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{ __('confirmations.deleterecordtitle') }}" data-confirm-body="{{ __('confirmations.deleterecordbody') }}" class="self-url">Delete</a></li>
             </ul>
         </li>
         <li class="divider-vertical"></li>

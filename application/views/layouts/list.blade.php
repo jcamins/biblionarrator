@@ -4,8 +4,8 @@
     @if (Auth::check())
         <li class="dropdown"><a href="#" id="dropdown-download-results" data-toggle="dropdown" class="dropdown-toggle">Download<b class="caret"></b></a>
         <ul class="dropdown-menu">
-            <li><a target="_blank" href="{{ URL::current() }}/htmlnolink/snippet?{{ http_build_query(Input::all()) }}"id="download-citations-html">Citations (HTML)</a></li>
-            <li><a target="_blank" href="{{ URL::current() }}/htmlnolink?{{ http_build_query(Input::all()) }}" id="download-full-html">Full list (HTML)</a></li>
+            <li><a target="_blank" href="{{ URL::merge(URL::current() . '/snippets', Input::all(), array('format' => 'htmlnolink')) }}" id="download-citations-html">Citations (HTML)</a></li>
+            <li><a target="_blank" href="{{ URL::merge(URL::current(), Input::all(), array('format' => 'htmlnolink')) }}" id="download-full-html">Full list (HTML)</a></li>
         </ul></li>
     @endif
         <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Add page<b class="caret"></b></a>
@@ -85,7 +85,7 @@ $(document).ready(function() {
             var thisButton = this;
             $.ajax({
                 type: "GET",
-                url: "/record/" + $(thisButton).parents('tr').attr('data-id') + '/html',
+                url: "/record/" + $(thisButton).parents('tr').attr('data-id') + '?format=html',
                 dataType: "html",
             }).done(function(preview) {
                 var recordPreview = $(thisButton).parents('tr').find('.recordPreviewArea');

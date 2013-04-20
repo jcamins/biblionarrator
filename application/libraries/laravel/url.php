@@ -12,5 +12,13 @@ class URL extends Laravel\URL
         //
         return parent::to( $url );
     }
+
+    public static function merge($url, $oldparams, $newparams) {
+        foreach ($newparams as $key => $val) {
+            $oldparams[$key] = $val;
+        }
+
+        return $url . '?' . http_build_query($oldparams);
+    }
 }
 

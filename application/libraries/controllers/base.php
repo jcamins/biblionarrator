@@ -58,4 +58,16 @@ class Base_Controller extends Controller {
         $route = Request::route();
         Log::log('request', "Controller: {$route->controller} / Action: {$route->controller_action} called at ". date('Y-m-d H:i:s'));
     }
+
+    protected function _choose_format() {
+        $format = Input::get('format');
+        if (is_null($format)) {
+            if (Request::accepts('application/json')) {
+                $format = 'json';
+            } else {
+                $format = 'interface';
+            }
+        }
+        return $format;
+    }
 }

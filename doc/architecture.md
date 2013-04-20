@@ -7,7 +7,7 @@ Record objects
 -------------
 
 The record viewer/editor interface is accessed at [GET] /record/{ID}, and various
-formats can be accessed at [GET] /record/{ID}/{FORMAT}
+formats can be accessed by setting the format={FORMAT} parameter
 
 Other than the default view being the interface, and having a path of /record/,
 Record objects behave the same as Administrative objects.
@@ -52,7 +52,7 @@ RecordList objects include:
 
 RecordList objects are accessed at /{OBJECT}/, and have the following methods:
 
-* [GET] /{OBJECT}/{FORMAT}/{TYPE} - retrieves the list
-* [GET] /{OBJECT}/{FORMAT}/{TYPE} - retrieves the list (optionally as
-  snippets, if {TYPE} is set to "snippet") in the specified format. If {FORMAT}
-  is blank, retrieve the interface
+* [GET] /{OBJECT}?format={FORMAT} - retrieves the list in the specified format.
+  If {FORMAT} is blank or set to "interface", retrieve the interface.
+* [GET] /{OBJECT}/snippets?format={FORMAT} - retrieves the list of record
+  snippets in the specified format.

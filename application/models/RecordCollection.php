@@ -82,6 +82,7 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
 
     public function snippets($disable = false) {
         $this->snippet = !$disable;
+        $this->_update_results();
         return $this;
     }
 
@@ -180,6 +181,9 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
     protected function _update_results() {
         $this->_update_idlist(true);
         $this->results = new ResultRecordCollection($this->idlist, true);
+        if ($this->snippet) {
+            $this->results = $this->results->snippets();
+        }
         foreach ($this->facets as $facet) {
             $facet->select();
         }

@@ -40,8 +40,17 @@ class List_Controller extends Base_Controller {
         Session::forget('query');
     }
 
-    public function get_index($format = null, $type = null) {
-        if (is_null($format) || $format === 'interface') {
+    public function get_snippets() {
+        return $this->_show($this->records->snippets());
+    }
+
+    public function get_index($type = null) {
+        return $this->_show($this->records);
+    }
+
+    protected function _show($rc) {
+        $format = $this->_choose_format();
+        if ($format === 'interface') {
             Asset::add('fieldstyles', 'css/fields.css');
             Asset::add('bookmarks-js', 'js/bookmarks.js');
             if (Input::has('perpage')) {
@@ -50,14 +59,9 @@ class List_Controller extends Base_Controller {
                 $perpage = 10;
             }
             Breadcrumbs::add($this->title);
-            return View::make($this->view, $this->viewdata)->with('records', $this->records)->with('perpage', $perpage)->with('paginator', $this->records->results->paginate($perpage));
+            return View::make($this->view, $this->viewdata)->with('records', $rc)->with('perpage', $perpage)->with('paginator', $rc->results->paginate($perpage));
         } else {
-            if (is_null($type)) {
-                $rc = $this->records->results;
-            } else if ($type === 'snippet') {
-                $rc = $this->records->results->snippets();
-            }
-            return $rc->format($format);
+            return $rc->results->format($format);
         }
     }
 }
