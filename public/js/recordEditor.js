@@ -108,12 +108,10 @@ function setTag(field, sel) {
             }
         }
         consolidateStyles();
-        if ($(sel.getRangeAt(0).startContainer.parentNode).prop('tagName') === 'A') {
+        if (fieldlist[labeltofieldlookup[field]].link) {
             $(sel.getRangeAt(0).startContainer.parentNode).attr('id', 'curlink');
-            addLink();
+            addLink(fieldlist[labeltofieldlookup[field]]);
         }
-
-        //$(sel.getRangeAt(0).commonAncestorContainer.parentNode).focus();
 
         updateFieldsTOCTree();
     }
@@ -126,7 +124,7 @@ function closeTag() {
             if (found) {
                 return;
             }
-            if (typeof fieldlist[element] !== undefined && typeof appliers[element] !== undefined) {
+            if (typeof fieldlist[element] !== 'undefined' && typeof appliers[element] !== 'undefined') {
                 appliers[element].undoToSelection();
                 found = true;
             }
@@ -169,7 +167,11 @@ function newTagSelected(ev, datum) {
     rangy.restoreSelection(ev.data);
     var sel = rangy.getSelection();
     if (sel.isCollapsed) {
-        var el = document.createElement('span');
+        var elemtype = 'span';
+        if (fieldlist[labeltofieldlookup[datum.value]].link) {
+            var elemtype = 'a';
+        }
+        var el = document.createElement(elemtype);
         el.setAttribute('class', labeltofieldlookup[datum.value]);
         el.innerHTML = '&nbsp;';
         $('#tag-select-box').parent().replaceWith(el);
@@ -177,6 +179,10 @@ function newTagSelected(ev, datum) {
         var range = rangy.createRange();
         range.selectNodeContents(el);
         sel.addRange(range);
+        if (fieldlist[labeltofieldlookup[datum.value]].link) {
+            $(el).attr('id', 'curlink');
+            addLink(fieldlist[labeltofieldlookup[datum.value]]);
+        }
     } else {
         setTag(datum.value, sel);
         $('#tag-select-box').parent().remove();
@@ -315,21 +321,25 @@ function initializeContentEditable() {
     }
 }
 
-function addLink() {
+function addLink(field) {
     $('#link-select').on('hidden', function () {
         $('#curlink').removeAttr('id');
     });
     $('#link-select').load('/record/' + recordId + '/link/select', function () {
+        $('#link-select').modal('show');
+        $('#link-q').focus();
         $('#link-results').on('click', '.record-view-link', null, function () {
             var link = $(this).parents('tr').first().attr('data-id');
             $('#curlink').attr('href', '/record/' + link);
+            if ($('#curlink').text().length <= 1) {
+                $('#curlink').text($(this).text());
+            }
             $('#link-select').modal('hide');
             return false;
         });
         $('#link-form').submit(function (e) {
-            $('#link-results').load('/record/' + recordId + '/link/list?q=' + $('#link-q').val());
+            $('#link-results').load('/record/' + recordId + '/link/list/' + field.id + '?q=' + $('#link-q').val());
             return false;
         });
     });
-    $('#link-select').modal('show');
 }

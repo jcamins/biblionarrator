@@ -124,6 +124,8 @@
         <button id="save-template-ok" class="btn btn-primary" data-dismiss="modal">Save</button>
     </div>
 </div>
+<div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">
+</div>
 @endsection
 
 @section('scripts')
@@ -143,7 +145,8 @@ var fieldlist = {
     @foreach (Field::all() as $field)
         '{{ $field->schema }}_{{ $field->field }}': {
             'label': '{{ $field->label }}',
-            'link': {{ $field->link ? 'true' : 'false' }}
+            'link': {{ $field->link ? 'true' : 'false' }},
+            'id': {{ $field->id }},
         },
     @endforeach
     };

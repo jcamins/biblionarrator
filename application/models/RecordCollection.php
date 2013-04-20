@@ -178,6 +178,12 @@ class RecordCollection extends Laravel\Database\Eloquent\Query
         return $res;
     }
 
+    public function where_in($column, $values, $connector = 'AND', $not = false) {
+        $res = parent::where_in($column, $values, $connector, $not);
+        $this->_update_results();
+        return $res;
+    }
+
     protected function _update_results() {
         $this->_update_idlist(true);
         $this->results = new ResultRecordCollection($this->idlist, true);

@@ -25,7 +25,8 @@ class Record_Link_Controller extends Base_Controller {
         return View::make('ajax.link-select')->with('id', $record);
     }
 
-    public function get_list($record = null) {
+    public function get_list($record = null, $field_id = null) {
+        $field = Field::find($field_id);
         $query = Input::get('q');
         $results = new RecordCollection();
         if (isset($query)) {
@@ -35,7 +36,14 @@ class Record_Link_Controller extends Base_Controller {
                 }
             });
         }
-        return View::make('components.results')->with('records', $results)->with('query', $query);
+        if (isset($field)) {
+            $recordtypes = array();
+            foreach ($field->links()->get() as $recordtype) {
+                array_push($recordtypes, $recordtype->id);
+            }
+            $results->where_in('recordtype_id', $recordtypes);
+        }
+        return View::make('components.results')->with('records', $results)->with('query', $query)->with('perpage', 10)->with('paginator', $results->paginate(10));
     }
 
     public function post_add($record_id, $link_id) {

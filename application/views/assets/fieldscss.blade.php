@@ -7,8 +7,11 @@
 @else
 .{{ $style->field->schema }}_{{ $style->field->field }} {
 @endif
+    @if ($style->field->link)
+    color: inherit;
+    @endif
     {{ $style->css }}
- }
+}
 
 @endforeach
 
