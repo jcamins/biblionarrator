@@ -12,18 +12,18 @@
 
 @endforeach
 
-.showtags span::before, .showtags a::before, .showtags span::after, .showtags a::after {
+.showtags span:before, .showtags a:before, .showtags span:after, .showtags a:after {
     font-size: smaller;
     color: #585;
     font-weight: bold;
 }
 
 @foreach (Field::all() as $field)
-.showtags .{{ $field->schema }}_{{ $field->field }}::before {
+.showtags .{{ $field->schema }}_{{ $field->field }}:before {
     content: "<{{ $field->label }}>";
 }
 
-.showtags .{{ $field->schema }}_{{ $field->field }}::after {
+.showtags .{{ $field->schema }}_{{ $field->field }}:after {
     content: "</{{ $field->label }}>";
 }
 @endforeach
