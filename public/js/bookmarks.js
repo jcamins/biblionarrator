@@ -1,15 +1,15 @@
 function addBookmark(id) {
     $.ajax({
-        type: "POST",
-        url: "/bookmarks/add/" + id,
+        type: "PUT",
+        url: "/bookmarks/" + id,
         dataType: "json",
     }).done(flashBookmark);
 }
 
 function deleteBookmark(id) {
     $.ajax({
-        type: "POST",
-        url: "/bookmarks/delete/" + id,
+        type: "DELETE",
+        url: "/bookmarks/" + id,
         dataType: "json",
     }).done(flashBookmark);
 }

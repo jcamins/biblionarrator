@@ -33,7 +33,7 @@ class Bookmarks_Controller extends List_Controller {
         parent::__construct();
     }
 
-    public function post_add($record = null) {
+    public function put_index($record = null) {
         return json_encode(
             array(
                 'message' => __('bookmarks.' . $this->records->add($record) . 'flash')->get(),
@@ -42,18 +42,20 @@ class Bookmarks_Controller extends List_Controller {
         );
     }
 
-    public function get_add($record = null) {
-        $this->records->add($record);
-        return Redirect::to('bookmarks');
-    }
-
-    public function post_delete($record = null) {
+    public function delete_index($record = null) {
         return json_encode(
             array(
                 'message' => __('bookmarks.' . $this->records->remove($record) . 'flash')->get(),
                 'count' => $this->records->size()
             )
         );
+    }
+
+    /* The following three routines are for non-Javascript fallback and
+       should not be considered as part of the Biblionarrator API */
+    public function get_add($record = null) {
+        $this->records->add($record);
+        return Redirect::to('bookmarks');
     }
 
     public function get_delete($record = null) {

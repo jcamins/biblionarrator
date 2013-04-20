@@ -55,6 +55,7 @@ Route::any('user/settings/?(:any)?', 'resources.usersettings@admin');
 Route::any('resources/(:any)/(:any)?', function($controller,$params=null) {
     return Controller::call('resources.'.$controller.'@index', (array) $params);
 });
+Route::any('bookmarks/(:num)', 'bookmarks@index');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
 Route::get('doc/(:any)?', 'home@doc');
