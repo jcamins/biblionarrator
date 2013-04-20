@@ -34,21 +34,17 @@ class Bookmarks_Controller extends List_Controller {
     }
 
     public function put_index($record = null) {
-        return json_encode(
-            array(
-                'message' => __('bookmarks.' . $this->records->add($record) . 'flash')->get(),
-                'count' => $this->records->size()
-            )
-        );
+        return $this->_flash($this->records->add($record));
     }
 
     public function delete_index($record = null) {
-        return json_encode(
-            array(
-                'message' => __('bookmarks.' . $this->records->remove($record) . 'flash')->get(),
-                'count' => $this->records->size()
-            )
-        );
+        if (isset($record)) {
+            $message = $this->records->remove($record);
+        } else {
+            $this->_empty();
+            $message = 'cleared';
+        }
+        return $this->_flash($message);
     }
 
     /* The following three routines are for non-Javascript fallback and
@@ -64,10 +60,23 @@ class Bookmarks_Controller extends List_Controller {
     }
 
     public function get_clear() {
+        $this->_empty();
+        return Redirect::to('bookmarks');
+    }
+
+    protected function _empty() {
         foreach ($this->records->get() as $record) {
             $this->records->remove($record->id);
         }
-        return Redirect::to('bookmarks');
+    }
+
+    protected function _flash($message) {
+        return json_encode(
+            array(
+                'message' => __('bookmarks.' . $message . 'flash')->get(),
+                'count' => $this->records->size()
+            )
+        );
     }
 
 }
