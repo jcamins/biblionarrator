@@ -57,8 +57,8 @@
             <ul>
                 <li><i class="icon-eye-open"></i> will show you a preview of the
                 record</li>
-                <li><i class="icon-comment"></i> shows you the comments on a
-                record and gives you the chance to add your own</li>
+                <!--<li><i class="icon-comment"></i> shows you the comments on a
+                record and gives you the chance to add your own</li>-->
                 @if (strpos(URL::current(), 'bookmark'))
                     <li><i class="icon-remove"></i> will remove a record from your bookmarks</li>
                 @else
