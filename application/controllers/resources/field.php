@@ -45,7 +45,7 @@ class Resources_Field_Controller extends Resource_Controller {
         Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         $field = Field::find($id);
-        return View::make('ajax.styles')->with('styles', $field->styles)->with('field', $field)->with('recordtype', RecordType::find($recordtype));
+        return View::make('ajax.styles')->with('styles', $field->styles)->with('field', $field);
     }
 
     public function post_styles($id)

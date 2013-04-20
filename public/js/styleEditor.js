@@ -50,7 +50,7 @@ function initializeStyleEditor() {
 function loadStyle (id) {
     $('#styles_ajax').load('/resources/field/' + id + '/styles', function (msg, s) { 
         if (s === 'success' || s === 'notmodified') {
-            initializeStyles();
+            initializeStyleEditor();
         } else {
             alert("There was a problem preparing the style list, sorry.");
         }
