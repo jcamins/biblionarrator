@@ -206,8 +206,7 @@ function traverseTOC(node, depth) {
     });
 }
 
-var attrs = [ 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref' ];
-// 'href' also a valid attribute
+var attrs = [ 'href', 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref' ];
 
 function html2raw(element) {
     var object, childs = element.childNodes;
@@ -230,8 +229,13 @@ function html2raw(element) {
         if ((name === 'span' || name === 'a') && typeof fieldlist[element.getAttribute('class')] !== 'undefined') {
             name = element.getAttribute('class');
         }
+        if (typeof fieldlist[name] !== 'undefined' && fieldlist[name].link) {
+            object['link'] = '';
+        }
         for (var i=0, atts=element.attributes, l=atts.length; i<l; i++) {
-            if (jQuery.inArray(atts.item(i).nodeName, attrs) >= 0 && atts.item(i).nodeValue.length > 0) {
+            if (atts.item(i).nodeName === 'href' && typeof fieldlist[name] !== 'undefined' && fieldlist[name].link && atts.item(i).nodeValue.indexOf('/record/') > -1) {
+                object['link'] = atts.item(i).nodeValue.substr(atts.item(i).nodeValue.lastIndexOf('/') + 1);
+            } else if (jQuery.inArray(atts.item(i).nodeName, attrs) >= 0 && atts.item(i).nodeValue.length > 0) {
                 object[atts.item(i).nodeName] = atts.item(i).nodeValue;
             }
         }
