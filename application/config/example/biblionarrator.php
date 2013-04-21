@@ -2,5 +2,5 @@
 
 return array(
     'private' => false,
-    'debug' => true,
+    'debug' => false,
 );

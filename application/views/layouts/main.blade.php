@@ -7,13 +7,11 @@
         <script type="text/javascript">
             for(var e,l='article aside footer header nav section time'.split(' ');e=l.pop();document.createElement(e));
         </script>
-        <!--[if lt IE 9]>
-            <link rel="stylesheet" type="text/css" href="/css/style-ie.css" />
-        <![endif]-->
 
         {{ Asset::styles() }}
         @section('styles')
         @yield_section
+        @if (Config::get('biblionarrator.debug'))
         <link rel="stylesheet/less" type="text/css" href="/css/style.less" />
         <script type="text/javascript">
             less = {
@@ -30,6 +28,14 @@
             };
         </script>
         <script src="/js/less.min.js"></script>
+        @elseif (Config::get('biblionarrator.minified'))
+        <link rel="stylesheet" type="text/css" href="/css/style.min.css" />
+        @else
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        @endif
+        <!--[if lt IE 9]>
+            <link rel="stylesheet" type="text/css" href="/css/style-ie.css" />
+        <![endif]-->
     </head>
 
     <body class="show-help">
