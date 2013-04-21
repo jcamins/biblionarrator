@@ -11,8 +11,12 @@ Biblionarrator requires a server with the following:
 * MySQL
 * PHP 5.3+
 * Mcrypt, MySQL, Tidy, and XSL PHP5 extensions
-* If you are setting up a development installation, you will also need
-  git
+
+If you are setting up a development environment, you will also need:
+
+* git
+* make
+* lesscss and node.js
 
 Installation procedure
 ----------------------
@@ -61,11 +65,15 @@ or
 			'prefix'   => '',
 		),
 
-6) Copy paths.php.dist to paths.php:
+
+6) Review the configuration files in application/config/collection, and
+   make any other changes you would like.
+
+7) Copy paths.php.dist to paths.php:
 
     cp paths.php.dist paths.php
 
-7) Edit paths.php to reflect the domain you want to access Biblionarrator on
+8) Edit paths.php to reflect the domain you want to access Biblionarrator on
    (in this example, we will be using "http://collection.mylibrary.com"):
 
     $environments = array(
@@ -79,21 +87,21 @@ following configuration:
 	    'collection' => array('http://*'),
     );
 
-8) Run the laravel migration to initialize your database:
+9) Run the laravel migration to initialize your database:
 
     php artisan migrate:install --env=collection
     php artisan migrate --env=collection
 
-9) Set permissions (this example assumes that your web server user
-   is www-data:www-data):
+10) Set permissions (this example assumes that your web server user
+    is www-data:www-data):
 
     sudo chown -R www-data:www-data *
     sudo chown -w *
     sudo chown +w storage
 
-10) Install the web server configuration files:
+11) Install the web server configuration files:
 
-For nginx + fpm (you'll need fpm installed for this):
+For nginx + fpm (you will need fpm installed for this):
 
     sudo cp conf/biblionarrator-nginx.conf.sample /etc/nginx/sites-available/biblionarrator.conf
     sudo cp conf/biblionarrator-fpm-pool.conf.sample /etc/php5/fpm/pool.d/biblionarrator.conf
@@ -109,8 +117,32 @@ For Apache2:
     [edit /etc/apache2/sites-available/biblionarrator.conf and adjust server name to match your domain]
     sudo apache2ctl restart
 
-11) Navigate to your biblionarrator URL, and login using username: admin@domain.com and password "admin".
+12) Navigate to your biblionarrator URL, and login using username: admin@domain.com and password "admin".
 
-12) Change your login and password in the Users administration page.
+13) Change your login and password in the Users administration page.
 
-13) Enjoy Biblionarrator
+14) Enjoy Biblionarrator
+
+
+Upgrading Biblionarrator
+=========================
+
+When upgrading Biblionarrator, you will need to perform the following steps:
+
+
+1) Download/update Biblionarrator. You can download a zip file from
+   GitHub at https://github.com/jcamins/biblionarrator/archive/master.zip
+   or, if you are using a git installation, simply update your git clone:
+
+    git pull
+
+2) Run any outstanding migrations:
+
+    php artisan migrate --env=collection
+
+3) If you have any CSS customizations, you will need to update the CSS files:
+
+    make
+
+4) Check the upgrade notes for any settings that were added to the environment
+   configuration files, and update your files as appropriate.
