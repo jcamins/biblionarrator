@@ -27,7 +27,7 @@
                                          // entry less file
             };
         </script>
-        <script src="/js/less.min.js"></script>
+        <script src="/lib/js/less.min.js"></script>
         @elseif (Config::get('biblionarrator.minified'))
         <link rel="stylesheet" type="text/css" href="/css/style.min.css" />
         @else

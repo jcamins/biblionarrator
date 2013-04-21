@@ -35,11 +35,11 @@ class Record_Controller extends Resource_Controller {
 
     public function _interface($record) {
         Asset::add('editor-js', 'js/recordEditor.js');
-        Asset::add('shortcut-js', 'js/shortcut.js');
-        Asset::add('rangy-js', 'js/rangy/rangy-core.js');
-        Asset::add('rangy-class-js', 'js/rangy/rangy-cssclassapplier.js');
-        Asset::add('rangy-saver-js', 'js/rangy/rangy-selectionsaverestore.js');
-        Asset::add('jstree', 'js/jstree/jquery.jstree.js');
+        Asset::add('shortcut-js', 'lib/js/shortcut.js');
+        Asset::add('rangy-js', 'lib/js/rangy/rangy-core.js');
+        Asset::add('rangy-class-js', 'lib/js/rangy/rangy-cssclassapplier.js');
+        Asset::add('rangy-saver-js', 'lib/js/rangy/rangy-selectionsaverestore.js');
+        Asset::add('jstree', 'lib/js/jstree/jquery.jstree.js');
         $editor = Authority::can('edit', 'Record', $record);
         return View::make('record.interface')->with('record', $record)->with('editor', $editor);
     }

@@ -42,7 +42,7 @@ class Resources_Field_Controller extends Resource_Controller {
     }
 
     public function get_styles($id) {
-        Asset::add('datatables-js', 'js/jquery.dataTables.min.js');
+        Asset::add('datatables-js', 'lib/js/jquery.dataTables.min.js');
         Asset::add('datatables-fnreloadajax', 'js/dataTables.fnReloadAjax.js');
         $field = Field::find($id);
         return View::make('ajax.styles')->with('styles', $field->styles)->with('field', $field);
