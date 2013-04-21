@@ -18,6 +18,13 @@ business logic should be placed in the model layer rather than the controller or
 view.
 
 
+Technologies
+============
+
+Biblionarrator is currently written in PHP using the Laravel framework. This is
+subject to change.
+
+
 API
 ===
 

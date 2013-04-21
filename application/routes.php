@@ -32,7 +32,7 @@
 |
 */
 
-Route::any('admin/settings/?(:any)?', 'resources.systemsettings@admin');
+Route::any('admin/settings/?(:any)?', 'resources.systemsettings@index');
 Route::any('admin/(:any)/?(:any)?', function($controller,$params=null) {
     return Controller::call('resources.'.$controller.'@index', (array) $params);
 });
@@ -44,14 +44,14 @@ Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/delete', 'record@delete');
 Route::get('record/(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@index');
-Route::get('css/fields.css', function() {
-    return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
+Route::get('css/(:any).css', function($file, $params=null) {
+    return Controller::call('css@' . $file, (array) $params);
 });
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
 Route::get('resources/field/(:any)?/?tree', 'resources.field@tree');
-Route::any('user/settings/?(:any)?', 'resources.usersettings@admin');
+Route::any('user/settings/?(:any)?', 'resources.usersettings@index');
 Route::any('resources/(:any)/(:any)?', function($controller,$params=null) {
     return Controller::call('resources.'.$controller.'@index', (array) $params);
 });

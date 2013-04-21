@@ -8,6 +8,7 @@ Version 0.02 - unreleased
 + Major styling overhaul using LESS
 + Add preliminary documentation and help
 + Lots of IE and mobile fixes
++ Record templates
 
 
 Version 0.01 - released 2013/04/04
