@@ -23,17 +23,15 @@ class Base_Controller extends Controller {
     public function __construct()
     {
         //Assets
-        Asset::add('jquery', 'js/jquery.js');
-        Asset::add('jquery-history', 'js/jquery.history.js');
+        Asset::add('jquery', 'lib/js/jquery.js');
+        Asset::add('jquery-history', 'lib/js/jquery.history.js');
         Asset::add('biblionarrator-js', 'js/biblionarrator.js');
-        Asset::add('bootstrap-js', 'js/bootstrap.min.js');
-        Asset::add('typeahed-js', 'js/typeahead.js');
-        Asset::add('bootstrap-css', 'css/bootstrap.min.css');
+        Asset::add('bootstrap-js', 'lib/js/bootstrap.min.js');
+        Asset::add('typeahed-js', 'lib/js/typeahead.js');
+        Asset::add('bootstrap-css', 'lib/css/bootstrap.min.css');
         Asset::add('typeahead-css', 'css/typeahead.js-bootstrap.css');
-        Asset::add('bootstrap-css-responsive', 'css/bootstrap-responsive.min.css', 'bootstrap-css');
-        //Asset::add('fontawesome-css', 'css/font-awesome.min.css');
-        Asset::add('cookies', 'js/jquery.cookie.js');
-        //Asset::add('style', 'css/style.css');
+        Asset::add('bootstrap-css-responsive', 'lib/css/bootstrap-responsive.min.css', 'bootstrap-css');
+        Asset::add('cookies', 'lib/js/jquery.cookie.js');
         parent::__construct();
 
         View::share('title', 'Biblionarrator');
