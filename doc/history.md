@@ -1,6 +1,3 @@
-Biblionarrator release history
-==============================
-
 Version 0.02 - unreleased
 -------------------------
 

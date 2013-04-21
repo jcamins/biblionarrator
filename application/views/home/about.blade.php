@@ -3,6 +3,7 @@
 @section('controlbar')
     <li><a href="/doc/licensing" data-target="#license-modal" id="show-licenses" data-toggle="modal">License information</a></li>
     <li><a href="/doc/architecture" data-target="#architecture-modal" id="show-architecture" data-toggle="modal">System architecture</a></li>
+    <li><a href="/doc/history" data-target="#history-modal" id="show-history" data-toggle="modal">Version history</a></li>
 @endsection
 
 @section('toolbar')
@@ -81,6 +82,17 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="architecture-label">Biblionarrator architecture</h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close</button>
+    </div>
+</div>
+<div id="history-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="history-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="history-label">Biblionarrator version history</h3>
     </div>
     <div class="modal-body">
     </div>
