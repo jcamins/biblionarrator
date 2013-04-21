@@ -1,7 +1,27 @@
 General overview
 ================
 
-There are three classes of object in Biblionarrator:
+
+Design Principles
+=================
+
+Biblionarrator has been designed from the beginning to be as simple as
+possible, and do only one thing, but do it well. To that end, Biblionarrator
+was designed around the concept that there are only two first-order entities:
+records, and records and record collections. Besides these, there are a handful
+of second-order entities necessary for the business of handling records and
+record collections.
+
+Code in Biblionarrator follows -- or at least should follow -- a
+model-view-controller pattern. To the extent that it can be generalized,
+business logic should be placed in the model layer rather than the controller or
+view.
+
+
+API
+===
+
+There are three classes of object that can be accessed in Biblionarrator:
 
 Record objects
 -------------
