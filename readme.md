@@ -1,62 +1,30 @@
-# Biblionarrator - a new type of cataloging system
+Biblionarrator - a new type of cataloging system
+================================================
 
-## Installation
+About
+-----
 
-1. Unzip/clone the biblionarrator source code somewhere sensible
-2. Choose a name for your environment. In this example, we are calling
-the environment "joe"
-3. Copy the example environment configuration:
+Biblionarrator turns traditional assumptions about cataloging on their
+heads and makes catalogs (and cataloging) fun again. This catalog has
+been designed for bibliophile and bibliographer alike and offers
+unprecedented flexibility and power in that most important of all tasks,
+bibliographic description.
 
-    cp -R application/config/example application/config/joe
 
-4. Generate an application key for your environment:
+Installation
+------------
 
-    sed -i "s/'key' => ''/'key' => '`pwgen -1 32`'/" application/config/joe/application.php
+Biblionarrator has only minimal requirements, and can be installed
+on nearly any system with PHP and MySQL. See doc/install.md for
+detailed instructions.
 
-5. Create a MySQL database and database user for Biblionarrator
-6. Record the MySQL credentials you just created in
-application/config/joe/database.php
-7. Run the laravel migration to initialize your database:
 
-    php artisan migrate:install
-    php artisan migrate
+License
+-------
 
-8. Decide on a domain name/URL (optional if you are going to be accessing
-biblionarrator only via IP). In this example, we are going to use
-"biblionarrator.joe" as our domain name
-9. Copy paths.php.dist to paths.php and edit the environments stanza
-to point the environment you chose to the URL that you will be using
-to access biblionarrator (optional if you only plan on running one
-instance of biblionarrator)
-10. Install the web server configuration files:
+Biblionarrator is free software; you can redistribute it and/or modify
+it under the terms of the Affero GNU General Public License as published
+by the Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
 
-For nginx:
-
-    sudo cp conf/biblionarrator-nginx.conf.sample /etc/nginx/sites-available/biblionarrator.conf
-    sudo vim /etc/nginx/sites-available/biblionarrator.conf # Adjust server name to match your domain
-    sudo ln -s /etc/nginx/sites-available/biblionarrator.conf /etc/nginx/sites-enabled/
-    sudo service nginx restart
-
-For Apache2:
-
-    sudo cp conf/biblionarrator-apache2.conf.sample /etc/apache2/sites-available/biblionarrator.conf
-    sudo ln -s /etc/apache2/sites-available/biblionarrator.conf /etc/apache2/sites-enabled/
-    sudo vim /etc/apache2/sites-available/biblionarrator.conf # Adjust server name to match your domain
-    sudo apache2ctl restart
-
-11. Navigate to your biblionarrator URL, and login using username: admin@domain.com and password "admin"
-12. Change password and login, and enjoy Biblionarrator.
-
-## License
-
-Biblionarrator is open source software licensed under the GNU Affero General version 3.0 or any later version.
-
-Biblionarrator incorporates code from the following projects:
-* emogrifier - http://www.pelagodesign.com/sidecar/emogrifier/ - distributed under the MIT license
-* Laravel - http://laravel.com/ - distributed under the MIT license
-* Bootstrap - http://twitter.github.com/bootstrap/ - distributed under the Apache License v2.0
-* html5shiv - https://code.google.com/p/html5shiv/ - distributed under the MIT license
-* jQuery - http://jquery.com/ - distributed under the MIT license
-* jsTree - http://www.jstree.com/ - distributed under the MIT license
-* DataTables - http://datatables.net/ - distributed under the BSD license
-* Rangy - https://code.google.com/p/rangy/ - distributed under the MIT license
+Detailed license information can be found in doc/licensing.html
