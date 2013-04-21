@@ -144,5 +144,5 @@ When upgrading Biblionarrator, you will need to perform the following steps:
 
     make
 
-4) Check the upgrade notes for any settings that were added to the environment
-   configuration files, and update your files as appropriate.
+4) Check the upgrade notes (doc/upgrades) for any settings that were added to
+   the environment configuration files, and update your files as appropriate.

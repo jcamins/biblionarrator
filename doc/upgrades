@@ -1,0 +1,5 @@
+New configuration options in Biblionarrator v0.02:
+* biblionarrator.debug - enable debug mode, currently only relevant to
+  selection of stylesheet
+* biblionarrator.minified - use minified assets, currently only relevant
+  to style.css vs. style.min.css

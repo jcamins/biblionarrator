@@ -1,4 +1,4 @@
-Version 0.02 - unreleased
+Version 0.02 - released 2013/04/21
 -------------------------
 
 *Features*:
