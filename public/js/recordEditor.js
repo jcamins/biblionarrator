@@ -220,7 +220,7 @@ function saveRecord() {
         url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
         dataType: "json",
         data: { data: JSON.stringify(html2raw($('#recordContainer article').get(0))),
-                recordtype: $('#recordtype-select').val()
+                recordtype_id: $('#recordtype-select').val()
               },
         error: ajaxSaveFailed,
     }).done(function(msg) {

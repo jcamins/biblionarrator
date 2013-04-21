@@ -20,7 +20,7 @@
 class Record_Controller extends Resource_Controller {
 
     public $required_columns = array('data');
-    public $fk_columns = array('recordtype');
+    public $optional_columns = array('recordtype_id');
     private static $templatelist = array('interface', 'preview', 'result');
     public $resourceClass = 'Record';
     public $safe_delete = true;
