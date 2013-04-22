@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-<form action="/resources/user" method="POST">
+<form action="/resources/user/{{ $resource->id }}" method="POST">
     <h3>Editing user</h3>
     <div>Name: {{ $resource->name }}</div>
     <div>E-mail address: {{ $resource->email }}</div>
