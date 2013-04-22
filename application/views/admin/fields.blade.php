@@ -112,10 +112,10 @@ $(document).ready(function() {
     });
     $('#saveField').click(function() {
         $.ajax({
-            url: '/resources/field',
+            url: '/resources/field/' + $('#field-id').val(),
             type: "POST",
             dataType: "json",
-            data: { 'id': $('#field-id').val(),
+            data: { 
                     'field': $('#field-field').val(),
                     'schema': $('#field-schema').val(),
                     'label': $('#field-label').text(),

@@ -1,4 +1,4 @@
-<form data-id="{{ $field->id }}" id="fieldform" action="/resources/field" method="POST">
+<form data-id="{{ $field->id }}" id="fieldform" action="/resources/field/{{ $field->id }}" method="POST">
 <h2 contenteditable="true" id="field-label">{{ $field->label }}</h2>
 
 <div class="row-fluid">
