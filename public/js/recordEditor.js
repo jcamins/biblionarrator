@@ -84,6 +84,30 @@ function initializeEditor() {
     $('#upload-image-modal-form').ajaxForm(function () {
         $('#upload-image-modal').modal('hide');
     });
+
+    $('.image-gallery').each(function () {
+        var gallery = this;
+        $(this).find('.image-gallery-thumbnails').on('click', 'a', null, function () {
+            var id = $(this).attr('data-id');
+            $(gallery).find('.image-gallery-large').prepend('<a id="delete-image' + id + '" class="delete-image" href="#">&times;</a>');
+            $(gallery).find('.delete-image').click(function () {
+                $('#confirmLabel').text('Delete image confirmation');
+                $('#confirmBody').text('Are you sure you want to delete this image?');
+                $('#confirmOK').attr('data-callback', 'delete-image' + id);
+                $('#confirm').modal('show');
+            });
+            $(gallery).find('.delete-image').on('confirmed', function () {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/record/" + recordId + "/image/" + id,
+                    dataType: "json",
+                }).done(function(msg) {
+                    $('li[data-id="' + id + '"]').remove();
+                    $('.image-gallery-large').remove();
+                });
+            });
+        });
+    });
 }
 
 var appliers = {};
