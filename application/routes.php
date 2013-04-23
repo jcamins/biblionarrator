@@ -42,6 +42,8 @@ Route::get('record/(:any)?/?link/list/(:any)?', 'record.link@list');
 Route::get('record/(:any)?/?link/select', 'record.link@select');
 Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/delete', 'record@delete');
+Route::post('record/(:num)/image', 'record@image');
+Route::delete('record/(:num)/image/(:any)', 'record@image');
 Route::get('record/(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@index');
 Route::get('css/(:any).css', function($file, $params=null) {

@@ -1,4 +1,4 @@
-<div id="linksPane" class="span4">
+<div id="linksPane" class="tab-pane">
     <div id="linkaccordion" class="accordion">
     @if ($record->sources)
         <div class="recordLink accordion-group">

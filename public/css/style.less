@@ -381,6 +381,46 @@ footer {
     }
 }
 
+.tab-pane {
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+.image-gallery {
+    .image-gallery-large {
+        float: left;
+        margin-left: 20px;
+        margin-bottom: 8px;
+        position: relative;
+
+        .delete-image {
+            position: absolute;
+            width: 98%;
+            text-align: right;
+            color: #c33;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        figcaption {
+            padding-top: 4px;
+            text-align: center;
+            font-style: italic;
+        }
+    }
+
+    .image-gallery-thumbnails {
+        padding-top: 8px;
+    }
+}
+
 /*** Link select ***/
 .button-box {
     border-radius: 15px;

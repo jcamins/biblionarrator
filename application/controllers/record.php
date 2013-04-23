@@ -91,4 +91,37 @@ class Record_Controller extends Resource_Controller {
             return Redirect::to('/record/new');
         }
     }
+
+    public function post_image($record_id) {
+        $record = Record::find($record_id);
+        if (isset($record)) {
+            $image = Input::file('image');
+            $extension = File::extension($image['name']);
+            $directory = path('public').'uploads/'.sha1($record_id);
+            $filename = sha1($record_id.time()).".{$extension}";
+            $upload_success = Input::upload('image', $directory, $filename);
+            if( $upload_success ) {
+                $image = new Image(array(
+                    'location' => URL::to('uploads/'.sha1($record_id).'/'.$filename),
+                    'description' => Input::get('description'),
+                ));
+                $record->images()->insert($image);
+                Session::flash('status_success', 'Successfully uploaded your new image');
+            } else {
+                Session::flash('status_error', 'An error occurred while uploading your new image - please try again.');
+            }
+        }
+    }
+
+    public function delete_image($record_id, $image_id) {
+        $image = Image::find($image_id);
+        error_log($record_id);
+        error_log($image_id);
+        if (isset($image) && $image->record->id === $record_id) {
+            $image->delete();
+            return Response::json($image_id);
+        } else {
+            return Response::make('', 403, array('Content-Type' => 'application/json'));
+        }
+    }
 }

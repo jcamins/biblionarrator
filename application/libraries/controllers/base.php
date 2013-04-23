@@ -25,9 +25,11 @@ class Base_Controller extends Controller {
         //Assets
         Asset::add('jquery', 'lib/js/jquery.js');
         Asset::add('jquery-history', 'lib/js/jquery.history.js');
+        Asset::add('jquery-form', 'lib/js/jquery.form.js');
         Asset::add('biblionarrator-js', 'js/biblionarrator.js');
         Asset::add('bootstrap-js', 'lib/bootstrap/js/bootstrap.min.js');
         Asset::add('typeahed-js', 'lib/js/typeahead.js');
+        Asset::add('modernizr-js', 'lib/js/modernizr-latest.js');
         Asset::add('bootstrap-css', 'lib/bootstrap/css/bootstrap.min.css');
         Asset::add('typeahead-css', 'css/typeahead.js-bootstrap.css');
         Asset::add('bootstrap-css-responsive', 'lib/bootstrap/css/bootstrap-responsive.min.css', 'bootstrap-css');

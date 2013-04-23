@@ -55,6 +55,10 @@ class Record extends Eloquent
         return $this->has_many('Primary', 'record_id');
     }
 
+    public function images() {
+        return $this->has_many('Image', 'record_id');
+    }
+
     public function sources() {
         return $this->has_many_and_belongs_to('Record', 'record_links', 'target_id', 'source_id');
     }

@@ -1,3 +1,11 @@
+Version 0.03 - unreleased
+-------------------------
+
+*Features*:
+
++ Uploading images for records
+
+
 Version 0.02 - released 2013/04/21
 -------------------------
 

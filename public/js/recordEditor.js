@@ -77,6 +77,13 @@ function initializeEditor() {
     });
 
     $('#recordContainer').focusout(updateFieldsTOCTree);
+
+    $('#upload-image-ok').click(function () {
+        $('#upload-image-modal-form').submit();
+    });
+    $('#upload-image-modal-form').ajaxForm(function () {
+        $('#upload-image-modal').modal('hide');
+    });
 }
 
 var appliers = {};

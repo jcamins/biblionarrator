@@ -9,7 +9,7 @@
     @if (Authority::can('edit', 'Record'))
         <li><a href="#" id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor">Editor</a></li>
     @endif
-    <li class="active"><a href="#" id="toggleLinks" data-target="#linksPane" data-toggle="cookie-view" data-cookie="show_links">Links</a></li>
+    <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">Show tags</a></li>
 @if (Authority::can('edit', 'Record'))
     <li class="divider-vertical"></li>
     </ul>
@@ -25,6 +25,8 @@
         <li class="dropdown">
             <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">Options <b class="caret"></b></a>
             <ul class="dropdown-menu">
+                <li><a href="#" id="upload-image" data-toggle="modal" data-target="#upload-image-modal">Upload image</a></li>
+                <li class="divider"></li>
                 <li><a target="_blank" href="{{ URL::merge(URL::current() . '/snippet', Input::all(), array('format' => 'htmlnolink')) }}" class="self-url" id="download-citations-html">Download citation (HTML)</a></li>
                 <li><a target="_blank" href="{{ URL::merge(URL::current(), Input::all(), array('format' => 'htmlnolink')) }}" class="self-url" id="download-full-html">Download full record (HTML)</a></li>
                 <li class="divider"></li>
@@ -54,7 +56,6 @@
             </select>
         </li>
 @endif
-        <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">Show tags</a></li>
 @endsection
 
 @section('sidebar')
@@ -103,7 +104,20 @@
                 shortcut Ctrl-J. To untag text, use the shortcut Ctrl-K.
             </div>
         </div>
-        @include('components.linkpane')
+        <div class="span6">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#imagesPane" data-toggle="tab">Images</a></li>
+                <li><a href="#linksPane" data-toggle="tab">Links</a></li>
+            </ul>
+            <div id="imagesPane" class="active image-gallery tab-pane">
+                <ul class="image-gallery-thumbnails thumbnails">
+                    @foreach ($record->images as $image)
+                        <li data-id="{{ $image->id }}"><a class="thumbnail" href="{{ $image->location }}" data-id="{{ $image->id }}"><img src="{{ $image->location }}" title="{{ $image->description }}"/></a></li>
+                    @endforeach
+                </ul>
+            </div>
+            @include('components.linkpane')
+        </div>
     </div>
 @endsection
 
@@ -126,9 +140,28 @@
 </div>
 <div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">
 </div>
+<div class="modal hide" id="upload-image-modal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3>Upload image</h3>
+    </div>
+    <div class="modal-body">
+        <form method="POST" action="{{ URL::current() . '/image' }}" id="upload-image-modal-form" enctype="multipart/form-data">
+            <label for="image">Image</label>
+            <input type="file" placeholder="Choose an image to upload" name="image" id="image-image" />
+            <label for="description">Description</label>
+            <textarea placeholder="Describe your image in a few sentences" name="description" id="image-description" class="span5"></textarea>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="upload-image-ok" class="btn btn-primary" data-dismiss="modal">Upload</button>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
+<script src="https://raw.github.com/elevateweb/elevatezoom/master/jquery.elevatezoom.js"></script>
 <script type="text/javascript">
 @if (isset($record->id))
 var recordId = {{ $record->id }};
