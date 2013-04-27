@@ -129,8 +129,10 @@
         <h3 id="save-template-label">Save as template</h3>
     </div>
     <div class="modal-body">
+        @if (Auth::check())
         @foreach (Auth::user()->templates()->get() as $template)
         @endforeach
+        @endif
         <label>Template name <input type="text" id="template-name"></input></label>
     </div>
     <div class="modal-footer">

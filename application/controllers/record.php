@@ -30,7 +30,9 @@ class Record_Controller extends Resource_Controller {
         Base_Controller::__construct();
         Asset::add('fieldstyles', 'css/fields.css');
         $this->filter('before', 'auth', array('edit', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->except(array('index'));
-        $this->filter('before', 'auth', array('view', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->only(array('index'));
+        if (Config::get('biblionarrator.private')) {
+            $this->filter('before', 'auth', array('view', $this->resourceClass, call_user_func($this->resourceClass . '::find', Input::get('id'))))->only(array('index'));
+        }
     }
 
     public function _interface($record) {

@@ -35,6 +35,7 @@ Still to do:
 * Fix shift-tabbing between spans
 * Add tabbing from non-fielded text into next field
 * Re-enable primaries
+* Tab shouldn't mark a record dirty
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
