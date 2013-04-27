@@ -3,7 +3,7 @@ function initializeAdminTable() {
         $('#admintable thead tr').append('<th>' + columns[column].label + '</th>');
     });
     $('#admintable thead tr').append('<th></th>');
-    var dtColumns = [ { "sWidth": "5%" } ];
+    var dtColumns = [ { "sType": "numeric", "sWidth": "5%" } ];
     Object.keys(columns).forEach(function(column) {
         dtColumns = dtColumns.concat({ "sWidth": columns[column].sWidth });
     });
