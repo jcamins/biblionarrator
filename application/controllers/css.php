@@ -22,6 +22,14 @@ class Css_Controller extends Base_Controller {
     public $restful = true;
 
     public function get_fields () {
-        return Response::make(View::make('assets.fieldscss')->render(), 200, array('Content-Type' => 'text/css'));
+        $styles = array();
+        $fields = array();
+        foreach (Style::with('Field')->get() as $style) {
+            array_push($styles, array( 'field' => $style->field->to_array(), 'css' => $style->css));
+        }
+        foreach (Field::all() as $field) {
+            array_push($fields, $field->to_array());
+        }
+        return Response::make(View::make('fields-css', array( 'styles' => $styles, 'fields' => $fields ))->render(), 200, array('Content-Type' => 'text/css'));
     }
 }

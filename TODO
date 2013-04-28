@@ -40,6 +40,7 @@ Still to do:
 * Add ODF export
 * Add HTML5 off-line mode
 * Use IndexedDB for caching
+* Take record types into consideration when generating fields.css
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
@@ -48,6 +49,7 @@ Refactoring:
 * Refactor template administration to share code with admin-table.js
 * Use PUT instead of POST for resources
 * Normalize bookmark/search API to be more RESTful
+* Remove the mustache template hack from bundles/mustacheview/Mustache/view.php
 
 DONE:
 * Add keyboard shortcuts for saving, etc. [biblionarrator] (3TL62)

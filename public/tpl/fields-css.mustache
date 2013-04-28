@@ -1,0 +1,38 @@
+.showtags span:before, .showtags a:before, .showtags span:after, .showtags a:after {
+    font-size: smaller;
+    color: #585;
+    font-weight: bold;
+}
+
+/* 
+@if ($style->recordtypes)
+@foreach ($style->recordtypes as $recordtype)
+.recordtype_{{ $recordtype->name }}
+@endforeach
+ .{{ $style->field->schema }}_{{ $style->field->field }} {
+@else
+.{{ $style->field->schema }}_{{ $style->field->field }} {
+@endif
+*/
+
+{{#styles}}
+
+    {{#field}}
+        .{{schema}}_{{field}} {
+            {{#link}}
+                color: inherit;
+           {{/link}}
+    {{/field}}
+    {{css}}
+        }
+{{/styles}}
+
+{{#fields}}
+    .showtags .{{schema}}_{{field}}:before {
+        content: "<{{label}}>";
+    }
+
+    .showtags .{{schema}}_{{field}}:after {
+        content: "</{{label}}>";
+    }
+{{/fields}}

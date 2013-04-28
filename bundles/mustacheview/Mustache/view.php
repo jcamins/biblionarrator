@@ -29,5 +29,9 @@ class View extends Laravel\View {
         {
             return $path;
         }
+        elseif (file_exists($path = 'public/tpl/'.$view.'.mustache'))
+        {
+            return $path;
+        }
     }
 }
