@@ -16,41 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-class Field extends Eloquent
-{
-    public static $timestamps = true;
 
-    public static function roots()
-    {
-        return Field::where_null('parent');
+class Svc_Controller extends Base_Controller {
+    public $restful = true;
+
+    public function get_fields() {
+        return Response::json(Field::structured_list());
     }
 
-    public static function structured_list()
-    {
-        $fields = array();
-        foreach (Field::all() as $field) {
-            array_push($fields, $field->to_array());
-        }
-        return $fields;
+    public function get_styles() {
+        return Response::json(Style::structured_list());
     }
 
-    public function styles()
-    {
-        return $this->has_many('Style', 'field_id');
-    }
-
-    public function parent()
-    {
-        return $this->belongs_to('Field', 'parent');
-    }
-
-    public function children()
-    {
-        return $this->has_many('Field', 'parent');
-    }
-
-    public function links()
-    {
-        return $this->has_many_and_belongs_to('RecordType', 'field_links');
+    public function get_bndb_initializer_js() {
+        return Response::make(View::make('svc.bndb_initializer_js', array( 'styles' => json_encode(Style::structured_list()), 'fields' => json_encode(Field::structured_list()) ))->render(), 200, array('Content-Type' => 'text/javascript'));
     }
 }
+

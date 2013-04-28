@@ -136,6 +136,28 @@ $(document).ready(function () {
     });
 });
 
+(function( bndb, $, undefined ) {
+    bndb.initialize = function (callback) {
+        $.indexedDB("biblionarrator", {
+            "version": 1,
+            "schema": {
+                "1": function(versionTransaction){
+                    var fields = versionTransaction.createObjectStore("fields", {
+                        "keyPath": "id"
+                    });
+                    var styles = versionTransaction.createObjectStore("styles", {
+                        "keyPath": "id"
+                    });
+                },
+            }
+        }).done(function(){
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+}( window.bndb = window.bndb || {}, jQuery ));
+
 (function( $ ) {
     $.fn.extend({
         typeaheaddone: function( data, fn ) {

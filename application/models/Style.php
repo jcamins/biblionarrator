@@ -20,6 +20,15 @@ class Style extends Eloquent
 {
     public static $timestamps = true;
 
+    public static function structured_list()
+    {
+        $styles = array();
+        foreach (Style::with('Field')->get() as $style) {
+            array_push($styles, array_merge( $style->to_array(), array('field' => $style->field->to_array())));
+        }
+        return $styles;
+    }
+
     public function field() {
         return $this->belongs_to('Field', 'field_id');
     }

@@ -34,6 +34,8 @@ class Base_Controller extends Controller {
         Asset::add('typeahead-css', 'css/typeahead.js-bootstrap.css');
         Asset::add('bootstrap-css-responsive', 'lib/bootstrap/css/bootstrap-responsive.min.css', 'bootstrap-css');
         Asset::add('cookies', 'lib/js/jquery.cookie.js');
+        Asset::add('indexeddb', 'lib/js/jquery.indexeddb.js');
+        Asset::add('bndb-initializer', 'svc/bndb_initializer.js');
         parent::__construct();
 
         View::share('title', 'Biblionarrator');

@@ -21,3 +21,7 @@
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^(.*)$ index.php/$1 [L]
 </IfModule>
+
+<IfModule mod_mime.c>
+    AddType text/cache-manifest .mf
+</IfModule>

@@ -49,6 +49,7 @@ Route::post('record/(:any)?', 'record@index');
 Route::get('css/(:any).css', function($file, $params=null) {
     return Controller::call('css@' . $file, (array) $params);
 });
+Route::get('svc/bndb_initializer.js', 'svc@bndb_initializer_js');
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
