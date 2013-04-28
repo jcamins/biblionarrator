@@ -36,6 +36,10 @@ Still to do:
 * Add tabbing from non-fielded text into next field
 * Re-enable primaries
 * Tab shouldn't mark a record dirty
+* Add RTF export
+* Add ODF export
+* Add HTML5 off-line mode
+* Use IndexedDB for caching
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)

@@ -163,7 +163,6 @@
 @endsection
 
 @section('scripts')
-<script src="https://raw.github.com/elevateweb/elevatezoom/master/jquery.elevatezoom.js"></script>
 <script type="text/javascript">
 @if (isset($record->id))
 var recordId = {{ $record->id }};
