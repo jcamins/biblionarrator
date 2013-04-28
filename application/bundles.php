@@ -37,5 +37,13 @@ return array(
 
 	'docs' => array('handles' => 'docs'),
     'authority' => array('auto' => true ),
+    'mustacheview' => array(
+        'autoloads' => array(
+            'map' => array(
+                'Mustache\\View' => '(:bundle)/view.php',
+                'Mustache\\Mustache' => '(:bundle)/mustache.php'
+            )
+        )
+    ),
 
 );

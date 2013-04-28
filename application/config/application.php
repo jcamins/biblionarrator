@@ -190,7 +190,7 @@ return array(
 		'Task'       	=> 'Laravel\\CLI\\Tasks\\Task',
 		'URI'        	=> 'Laravel\\URI',
 		'Validator'  	=> 'Laravel\\Validator',
-		'View'       	=> 'Laravel\\View',
+		'View'       	=> 'Mustache\\View',
 	),
 
 );
