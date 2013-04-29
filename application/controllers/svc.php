@@ -28,8 +28,12 @@ class Svc_Controller extends Base_Controller {
         return Response::json(Style::structured_list());
     }
 
+    public function get_records() {
+        return Response::json(Record::structured_list());
+    }
+
     public function get_bndb_initializer_js() {
-        return Response::make(View::make('svc.bndb_initializer_js', array( 'styles' => json_encode(Style::structured_list()), 'fields' => json_encode(Field::structured_list()) ))->render(), 200, array('Content-Type' => 'text/javascript'));
+        return Response::make(View::make('svc.bndb_initializer_js', array( 'styles' => json_encode(Style::structured_list()), 'fields' => json_encode(Field::structured_list()), 'records' => json_encode(Record::structured_list()) ))->render(), 200, array('Content-Type' => 'text/javascript'));
     }
 }
 

@@ -2,26 +2,7 @@
     bndb.resources = bndb.resources || {};
     bndb.resources.fields  = {{{fields}}};
     bndb.resources.styles = {{{styles}}};
-    bndb.populate = function() {
-        bndb.initialize(function () {
-            $.indexedDB("biblionarrator").transaction(["fields", "styles"]).then(function(){
-                console.log("Transaction completed, all data inserted");
-            }, function(err, e){
-                console.log("Transaction NOT completed", err, e);
-            }, function(transaction){
-                var fields = transaction.objectStore("fields");
-                fields.clear();
-                $.each(bndb.resources.fields, function () {
-                    fields.add(this);
-                });
-                var styles = transaction.objectStore("styles");
-                styles.clear();
-                $.each(bndb.resources.styles, function () {
-                    styles.add(this);
-                });
-            });
-        });
-    };
+    bndb.resources.records = {{{records}}};
 }( window.bndb = window.bndb || {}, jQuery ));
 
 $(document).ready(function () {

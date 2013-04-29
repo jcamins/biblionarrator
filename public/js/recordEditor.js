@@ -15,7 +15,9 @@ function initializeEditor() {
 
     $('.new-record').on('confirmed', newRecord);
 
-    $('#record-reload').on('confirmed', loadRecord);
+    $('#record-reload').on('confirmed', function () {
+        loadRecord(recordId);
+    });
     
     $('#record-delete').on('confirmed', function () {
         window.location = $(this).attr('href');
@@ -227,21 +229,30 @@ function newRecord() {
     updateFieldsTOCTree();
 }
 
-function loadRecord() {
-    if (recordId) {
+function loadRecord(id) {
+    if (id) {
         $.ajax({
             type: "GET",
-            url: "/record/" + recordId,
+            url: "/record/" + id,
             dataType: "json",
-            error: ajaxLoadFailed,
         }).done(function(msg) {
-            var text = raw2html(msg);
-            $('#recordContainer').html(text);
-            initializeContentEditable();
+            finishedLoading(msg);
             addAlert('Successfully loaded record', 'success');
+        }).fail(function(msg) {
+            bndb.loadRecord(id, function (res) {
+                finishedLoading(JSON.parse(res.data));
+                addAlert('Loaded record from local database', 'success');
+            });
         });
     }
 }
+
+function finishedLoading(data) {
+    var text = raw2html(data);
+    $('#recordContainer').html(text);
+    initializeContentEditable();
+}
+
 function ajaxLoadFailed(jqXHR, err, msg) {
     addAlert('Failed to load record (' + err + ': ' + msg + ')', 'error');
 }
