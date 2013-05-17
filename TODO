@@ -41,6 +41,13 @@ Still to do:
 * Add HTML5 off-line mode
 * Use IndexedDB for caching
 * Take record types into consideration when generating fields.css
+* Duplicating record should clear id but keep all other information
+* Fix cookie-toggles in IE
+* Increase font size significantly
+* Don't show "Search" controls on main page on private installations
+* Replace Table of Contents with an Outline mode which provides a broken-up boxy interface?
+* Add "Record" option under Save dropdown
+
 
 Refactoring:
 * Refactor search code to offer a consistent interface for different search engines [biblionarrator] (3TFAZ)
