@@ -21,10 +21,11 @@
                 <li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">As template</a></li>
             </ul>
         </li>
-        <li><a href="{{ URL::full() }}" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
         <li class="dropdown">
             <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">Options <b class="caret"></b></a>
             <ul class="dropdown-menu">
+                <li><a href="{{ URL::full() }}" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{ __('confirmations.reloadrecordtitle') }}" data-confirm-body="{{ __('confirmations.reloadrecordbody') }}">Reload</a></li>
+                <li class="divider"></li>
                 <li><a href="#" id="upload-image" data-toggle="modal" data-target="#upload-image-modal">Upload image</a></li>
                 <li class="divider"></li>
                 <li><a target="_blank" href="{{ URL::merge(URL::current() . '/snippet', Input::all(), array('format' => 'htmlnolink')) }}" class="self-url" id="download-citations-html">Download citation (HTML)</a></li>
