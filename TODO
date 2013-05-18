@@ -1,4 +1,4 @@
-Still to do:
+Features:
 * Timeline visualization [biblionarrator] (3T9A3)
 * Map visualization [biblionarrator] (3T9A4)
 * Switch to Elastic Search from SQL queries [biblionarrator] (3T9A5)
@@ -28,25 +28,27 @@ Still to do:
 * Add record locking
 * Make admin tables mobile-friendly
 * Add help pages
-* Cursor positioning wrt to tag labels is off in IE9
-* Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
-* Add workaround for IE not supporting rewriting URLs
-* Add some sort of title to indicate a new record is being edited
-* Fix shift-tabbing between spans
-* Add tabbing from non-fielded text into next field
 * Re-enable primaries
-* Tab shouldn't mark a record dirty
 * Add RTF export
 * Add ODF export
 * Add HTML5 off-line mode
 * Use IndexedDB for caching
+* Replace Table of Contents with an Outline mode which provides a broken-up boxy interface?
+* Make Biblionarrator more translatable
+
+Bugs:
 * Take record types into consideration when generating fields.css
 * Duplicating record should clear id but keep all other information
 * Fix cookie-toggles in IE
 * Increase font size significantly
 * Don't show "Search" controls on main page on private installations
-* Replace Table of Contents with an Outline mode which provides a broken-up boxy interface?
-* Add "Record" option under Save dropdown
+* Tab shouldn't mark a record dirty
+* Add tabbing from non-fielded text into next field
+* Cursor positioning wrt to tag labels is off in IE9
+* Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
+* Add workaround for IE not supporting rewriting URLs
+* Add some sort of title to indicate a new record is being edited
+* Fix shift-tabbing between spans
 
 
 Refactoring:
@@ -94,6 +96,7 @@ DONE:
 * Provide some visual cue that record is modified (maybe highlight the save button?)
 * Add export link to record page
 * Replace broken bootstrap-tagmanager with working typeahead-based tags
+* Add "Record" option under Save dropdown
 
 WONTFIX:
 * Tag selector box looks bizarre on IE9

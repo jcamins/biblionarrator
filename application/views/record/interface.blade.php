@@ -14,10 +14,11 @@
     <li class="divider-vertical"></li>
     </ul>
     <ul id="editor-toolbar" class="nav">
-        <li class="save-button"><a href="#" id="save" class="caret-before">Save</a></li>
+        <li class="save-button"><a href="#" class="save-record caret-before">Save</a></li>
         <li class="save-button dropdown">
             <a href="#" id="dropdown-save" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
             <ul class="dropdown-menu">
+                <li><a href="#" class="save-record">Record</a></li>
                 <li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">As template</a></li>
             </ul>
         </li>

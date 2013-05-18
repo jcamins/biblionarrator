@@ -23,7 +23,7 @@ function initializeEditor() {
         window.location = $(this).attr('href');
     });
 
-    $('#save').click(saveRecord);
+    $('.save-record').click(saveRecord);
 
     $('#removeTag').click(closeTag);
 
