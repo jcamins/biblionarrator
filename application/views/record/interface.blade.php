@@ -174,13 +174,13 @@ var recordId;
 
 var labeltofieldlookup = {
     @foreach (Field::all() as $field)
-        '{{ $field->label }}': '{{ $field->schema }}_{{ $field->field }}',
+        "{{ $field->label }}": "{{ $field->schema }}_{{ $field->field }}",
     @endforeach
     };
 var fieldlist = {
     @foreach (Field::all() as $field)
-        '{{ $field->schema }}_{{ $field->field }}': {
-            'label': '{{ $field->label }}',
+        "{{ $field->schema }}_{{ $field->field }}": {
+            'label': "{{ $field->label }}",
             'link': {{ $field->link ? 'true' : 'false' }},
             'id': {{ $field->id }},
         },
