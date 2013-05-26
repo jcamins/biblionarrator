@@ -21,6 +21,26 @@ If you are setting up a development environment, you will also need:
 Installation procedure
 ----------------------
 
+0) Install prerequisites.
+
+   Under Debian/Ubuntu, the following command will install everything other than
+   lesscss and the web server:
+
+    sudo apt-get install git make php5 php5-cli php5-mcrypt php5-mysql php5-tidy php5-xsl
+
+   To install nginx and fpm under Debian/Ubuntu, run the following command:
+
+    sudo apt-get install nginx php5-fpm
+
+   To install Apache2 under Debian/Ubuntu, run the following command:
+
+    sudo apt-get install apache2
+
+   lesscss is packaged for Ubuntu but not Debian. If you are using Ubuntu,
+   it can be installed with the following command:
+
+    sudo apt-get install node-less
+
 1) Download Biblionarrator. You can download a zip file from GitHub at
    https://github.com/jcamins/biblionarrator/archive/master.zip or
    clone the git repo:
@@ -96,26 +116,28 @@ following configuration:
     is www-data:www-data):
 
     sudo chown -R www-data:www-data *
-    sudo chown -w *
-    sudo chown +w storage
+    sudo chmod -w *
+    sudo chmod +w storage
 
 11) Install the web server configuration files:
 
-For nginx + fpm (you will need fpm installed for this):
+For nginx + fpm:
 
     sudo cp conf/biblionarrator-nginx.conf.sample /etc/nginx/sites-available/biblionarrator.conf
     sudo cp conf/biblionarrator-fpm-pool.conf.sample /etc/php5/fpm/pool.d/biblionarrator.conf
     sudo ln -s /etc/nginx/sites-available/biblionarrator.conf /etc/nginx/sites-enabled/
-    [edit /etc/nginx/sites-available/biblionarrator.conf and adjust server name to match your domain]
-    sudo service php5-fpm restart
+    [edit /etc/nginx/sites-available/biblionarrator.conf and adjust server_name to match your
+     domain and root to match your biblionarrator install location]
+    sudo service php5-fpm restart [note: your distribution may have a php-fpm service instead of php5-fpm]
     sudo service nginx restart
 
 For Apache2:
 
     sudo cp conf/biblionarrator-apache2.conf.sample /etc/apache2/sites-available/biblionarrator.conf
     sudo ln -s /etc/apache2/sites-available/biblionarrator.conf /etc/apache2/sites-enabled/
-    [edit /etc/apache2/sites-available/biblionarrator.conf and adjust server name to match your domain]
-    sudo apache2ctl restart
+    [edit /etc/apache2/sites-available/biblionarrator.conf and adjust ServerName to match your
+     domain and DocumentRoot to match your Biblionarrator installation location]
+    sudo apache2ctl restart [note: your distribution may have apachectl rather than apache2ctl]
 
 12) Navigate to your biblionarrator URL, and login using username: admin@domain.com and password "admin".
 

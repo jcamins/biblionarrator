@@ -38,6 +38,7 @@ Features:
 * Default expanded search should offer split screen with regular search showing matching records and records linked to matching records (OR add a right arrow to show linked records on right bar, and weight records with more links higher; this should be done with the standard list view, of course)
 * Turn format facets into tab-looking things a la archives.nyphil.org?
 * Redesign links tab on record view to use list view, and facet on relationship type
+* Show images in results
 
 Bugs:
 * Take record types into consideration when generating fields.css
