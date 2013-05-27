@@ -278,6 +278,37 @@ footer p {
 #link-select .result-size {
   display: none;
 }
+.tab-pane {
+  display: none;
+}
+.tab-pane.active {
+  display: block;
+}
+.image-gallery .image-gallery-large {
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.image-gallery .image-gallery-large .delete-image {
+  position: absolute;
+  width: 98%;
+  text-align: right;
+  color: #c33;
+  font-size: large;
+  font-weight: bold;
+}
+.image-gallery .image-gallery-large img {
+  max-width: 100%;
+}
+.image-gallery .image-gallery-large figcaption {
+  padding-top: 4px;
+  text-align: center;
+  font-style: italic;
+}
+.image-gallery .image-gallery-thumbnails {
+  padding-top: 8px;
+}
 /*** Link select ***/
 .button-box {
   border-radius: 15px;
@@ -458,6 +489,12 @@ a.selected {
 .nav > li #navbarLogin button {
   float: right;
   margin: 4px 8px;
+}
+.navbar .brand {
+  color: #a40000;
+  text-shadow: 0 1px 0 #d23f3f;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 .navbar-fixed-top .navbar-inner,
 .navbar-fixed-bottom .navbar-inner {
