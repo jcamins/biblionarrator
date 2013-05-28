@@ -170,9 +170,12 @@ class Record extends Eloquent
     protected function findLinks($object = null) {
         if (!is_null($object) && is_array($object)) {
             foreach ($object as $elem => $obj) {
-                $field = Field::by_label($elem);
-                if (isset($field) && $field->link) {
-                    $this->targets()->attach($obj['link']);
+                if (isset($obj['link'])) {
+                    $field = Field::by_label($elem);
+                    $source = Record::find($obj['link']);
+                    if (isset($field) && $field->link && isset($source)) {
+                        $this->targets()->attach($obj['link']);
+                    }
                 }
                 if (isset($obj['children'])) {
                     foreach ($obj['children'] as $child) {
