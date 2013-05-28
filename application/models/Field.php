@@ -20,6 +20,14 @@ class Field extends Eloquent
 {
     public static $timestamps = true;
 
+    public static function by_label($label)
+    {
+        $parts = explode('_', $label);
+        if (count($parts) === 2) {
+            return Field::where_schema($parts[0])->where_field($parts[1])->first();
+        }
+    }
+
     public static function roots()
     {
         return Field::where_null('parent');

@@ -167,6 +167,22 @@ class Record extends Eloquent
         return $xp->transformToXML($xml);
     }
 
+    protected function findLinks($object = null) {
+        if (!is_null($object) && is_array($object)) {
+            foreach ($object as $elem => $obj) {
+                $field = Field::by_label($elem);
+                if (isset($field) && $field->link) {
+                    $this->targets()->attach($obj['link']);
+                }
+                if (isset($obj['children'])) {
+                    foreach ($obj['children'] as $child) {
+                        $this->findLinks($child);
+                    }
+                }
+            }
+        }
+    }
+
     public function save() {
         if (is_null($this->recordtype_id)) {
             $this->recordtype_id = RecordType::first()->id;
@@ -184,15 +200,9 @@ class Record extends Eloquent
                 $this->primaries()->insert($primary);
             }
         }
-        $fields = Field::where_link('1')->get();
+        $fields = Field::where_link('1')->get();*/
         $this->targets()->delete();
-        foreach ($fields as $field) {
-            foreach ($xml->xpath('//' . $field->schema . '_' . $field->field) as $node) {
-                if ($node->xpath('@link')) {
-                    $this->targets()->attach(str_replace('/record/', '', join('', $node->xpath('@link'))));
-                }
-            }
-        }*/
+        $this->findLinks($this->obj());
         BiblioNarrator\ElasticSearch::saveRecord($this->data);
     }
 }
