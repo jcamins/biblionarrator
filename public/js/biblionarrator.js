@@ -334,8 +334,11 @@ function raw2html(object) {
                 continue
             }
             if (jQuery.inArray(elem, htmlelements) < 0) {
-                if (typeof object[elem]['link'] === 'undefined') {
+                if (typeof object[elem]['link'] === 'undefined' && typeof object[elem]['href'] === 'undefined') {
                     htmlelem = 'span';
+                    if (object[elem]['link'] !== '') {
+                        object[elem]['href'] = '/record/' + object[elem]['link'];
+                    }
                 } else {
                     htmlelem = 'a';
                 }

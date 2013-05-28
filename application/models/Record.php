@@ -106,7 +106,7 @@ class Record extends Eloquent
     }
 
     public function format($format = 'raw') {
-        if ($format === 'json') {
+        if ($format === 'json' || $format === 'raw') {
             return $this->data;
         } else {
             return $this->traverseRaw($this->obj(), $format);
@@ -132,7 +132,7 @@ class Record extends Eloquent
                     }
                     $output .= '<' . $htmlelem . ' class="' . $elem . '"';
                     if (isset($obj['link']) && strlen($obj['link']) > 0 && strpos($format, 'nolink') === false) {
-                        $output .= ' href="' . $obj['link'] . '"';
+                        $output .= ' href="/record/' . $obj['link'] . '"';
                     }
                 } else {
                     $output .= '<' . $elem;
