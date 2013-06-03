@@ -42,7 +42,6 @@ Features:
 
 Bugs:
 * Take record types into consideration when generating fields.css
-* Duplicating record should clear id but keep all other information
 * Fix cookie-toggles in IE
 * Increase font size significantly
 * Add tabbing from non-fielded text into next field
@@ -107,6 +106,7 @@ DONE:
 * Highlight save button when record type is changed
 * Clear upload image dialog after uploading image
 * Don't show "Search" controls on main page on private installations
+* Duplicating record should clear id but keep all other information
 
 WONTFIX:
 * Tag selector box looks bizarre on IE9

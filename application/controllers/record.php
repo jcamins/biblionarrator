@@ -78,11 +78,8 @@ class Record_Controller extends Resource_Controller {
     }
 
     public function get_duplicate($record_id = null) {
-        $oldrecord = Record::find($record_id);
-        $record = new Record();
-        if (isset($oldrecord)) {
-            $record->data = $oldrecord->data;
-        }
+        $record = Record::find($record_id);
+        unset($record->id);
         return $this->_interface($record);
     }
 
