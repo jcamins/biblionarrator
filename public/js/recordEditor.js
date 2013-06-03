@@ -10,7 +10,7 @@ function initializeEditor() {
         "placement" : "left",
         "container" : "body"
     }).click(function () {
-        return false;
+        ev.preventDefault();
     });
 
     $('.new-record').on('confirmed', newRecord);
@@ -41,7 +41,7 @@ function initializeEditor() {
     });
     $('#untag').click(function () {
         closeTag();
-        return false;
+        ev.preventDefault();
     });
 
     $('#recordtype-select').change(function () {
@@ -73,11 +73,11 @@ function initializeEditor() {
             if (ev.which == 9 && ev.shiftKey && $(span).prevAll('span') > 0) {
                 sel.removeAllRanges();
                 sel.selectAllChildren($(span).prevAll('span').first()[0]);
-                return false;
+                ev.preventDefault();
             } else if (ev.which == 9 && $(span).nextAll('span').size() > 0) {
                 sel.removeAllRanges();
                 sel.selectAllChildren($(span).nextAll('span').first()[0]);
-                return false;
+                ev.preventDefault();
             }
         }
     });
@@ -191,9 +191,9 @@ function newTag() {
             $(tsb).parent().remove();
             rangy.removeMarkers(savedsel);
             document.getElementById('recordContainer').normalize();
-            return false;
+            ev.preventDefault();
         } else if (ev.which == 9) {
-            return false;
+            ev.preventDefault();
         }
     });
     $(tsb).focus();
@@ -380,11 +380,11 @@ function addLink(field) {
                 $('#curlink').text($(this).text());
             }
             $('#link-select').modal('hide');
-            return false;
+            ev.preventDefault();
         });
         $('#link-form').submit(function (e) {
             $('#link-results').load('/record/' + recordId + '/link/list/' + field.id + '?q=' + $('#link-q').val());
-            return false;
+            ev.preventDefault();
         });
     });
     $('#link-select').on('shown', function () {
