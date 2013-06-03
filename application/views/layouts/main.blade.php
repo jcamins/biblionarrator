@@ -62,6 +62,7 @@
                                 </ul>
                             </li>
                             @endif
+                            @unless (Config::get('biblionarrator.private') && Auth::guest())
                             <li class=""><a class="caret-before" href="/search">Search</a></li>
                             <li class="hidden-phone dropdown">
                                 <a href="#" class="dropdown-toggle caret-after" data-toggle="dropdown"><b class="caret"></b></a>
@@ -69,6 +70,7 @@
                                     <li><span>Saved searches</span></li>
                                 </ul>
                             </li>
+                            @endunless
                             <li class="divider-vertical"></li>
                             <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
                                 <input type="text" class="search-query" name="q" placeholder="Quick search" value="{{ Session::get('query') }}"></input><button class="search-button" type="submit"><i class="icon-search"></i></button>

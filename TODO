@@ -45,7 +45,6 @@ Bugs:
 * Duplicating record should clear id but keep all other information
 * Fix cookie-toggles in IE
 * Increase font size significantly
-* Don't show "Search" controls on main page on private installations
 * Add tabbing from non-fielded text into next field
 * Cursor positioning wrt to tag labels is off in IE9
 * Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
@@ -107,6 +106,7 @@ DONE:
 * Only ask for confirmation when a record has changed
 * Highlight save button when record type is changed
 * Clear upload image dialog after uploading image
+* Don't show "Search" controls on main page on private installations
 
 WONTFIX:
 * Tag selector box looks bizarre on IE9

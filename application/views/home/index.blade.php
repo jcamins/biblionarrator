@@ -39,7 +39,9 @@ You can disable these hints from the <i class="icon-question-sign"></i> menu.
                 @if (Auth::guest())
                 <li><a href="/user/login">Log in</a></li>
                 @endif
+                @unless (Config::get('biblionarrator.private') && Auth::guest())
                 <li><a href="/search">Search catalog</a></li>
+                @endunless
                 @if (Authority::can('edit', 'Record'))
                 <li><a href="/record/new">Create new record</a></li>
                 @endif
