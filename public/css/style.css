@@ -309,6 +309,10 @@ footer p {
 .image-gallery .image-gallery-thumbnails {
   padding-top: 8px;
 }
+.image-gallery .image-gallery-thumbnails img {
+  max-height: 120px;
+  max-width: 120px;
+}
 /*** Link select ***/
 .button-box {
   border-radius: 15px;
