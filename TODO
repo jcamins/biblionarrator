@@ -52,7 +52,6 @@ Bugs:
 * Add workaround for IE not supporting rewriting URLs
 * Add some sort of title to indicate a new record is being edited
 * Fix shift-tabbing between spans
-* Clear upload image dialog after uploading image
 * Prune blank sections at end of record, and add ability to remove and reorder sections
 
 
@@ -107,6 +106,7 @@ DONE:
 * Tab shouldn't mark a record dirty
 * Only ask for confirmation when a record has changed
 * Highlight save button when record type is changed
+* Clear upload image dialog after uploading image
 
 WONTFIX:
 * Tag selector box looks bizarre on IE9

@@ -91,6 +91,10 @@ function initializeEditor() {
         $('#upload-image-modal').modal('hide');
     });
 
+    $('#upload-image-modal').on('hidden', function () {
+        $('#image-image').replaceWith('<input type="file" placeholder="Choose an image to upload" name="image" id="image-image" />');
+    });
+
     $('.image-gallery').each(function () {
         var gallery = this;
         $(this).find('.image-gallery-thumbnails').on('click', 'a', null, function () {

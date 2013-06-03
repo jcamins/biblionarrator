@@ -134,6 +134,12 @@ $(document).ready(function () {
             return false;
         });
     });
+
+    $('body').keydown(function (ev) {
+        if (ev.which == 27 && $('.modal:visible').length > 0) {
+            $('.modal:visible').modal('hide');
+        }
+    });
 });
 
 (function( bndb, $, undefined ) {
