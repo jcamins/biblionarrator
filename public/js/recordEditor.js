@@ -44,6 +44,10 @@ function initializeEditor() {
         return false;
     });
 
+    $('#recordtype-select').change(function () {
+        $('body').addClass('unsaved-changes');
+    });
+
     $('#template-name').keydown(function (ev) {
         if (ev.keyCode == 13) {
             $('#save-template-ok').click();
@@ -58,7 +62,7 @@ function initializeEditor() {
         } else if (ev.which == 8) {
             document.getElementById('recordContainer').normalize();
         }
-        if (ev.which < 16 || ev.which == 32 || (ev.which > 45 && ev.which < 91) || ev.which > 93) {
+        if ((ev.which < 16 && ev.which != 9) || ev.which == 32 || (ev.which > 45 && ev.which < 91) || ev.which > 93) {
             // Anything that is not a movement key or modifier is considered a change
             $('body').addClass('unsaved-changes');
         }

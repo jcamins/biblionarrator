@@ -46,7 +46,6 @@ Bugs:
 * Fix cookie-toggles in IE
 * Increase font size significantly
 * Don't show "Search" controls on main page on private installations
-* Tab shouldn't mark a record dirty
 * Add tabbing from non-fielded text into next field
 * Cursor positioning wrt to tag labels is off in IE9
 * Tabbing between fields doesn't work properly in IE9 (spans at beginning and end of header/section aren't included)
@@ -54,10 +53,7 @@ Bugs:
 * Add some sort of title to indicate a new record is being edited
 * Fix shift-tabbing between spans
 * Clear upload image dialog after uploading image
-* Only ask for confirmation when a record has changed
-* Highlight save button when record type is changed
 * Prune blank sections at end of record, and add ability to remove and reorder sections
-* Add border around images
 
 
 Refactoring:
@@ -107,6 +103,10 @@ DONE:
 * Replace broken bootstrap-tagmanager with working typeahead-based tags
 * Add "Record" option under Save dropdown
 * Fix thumbnail display to make thumbnails smaller
+* Add border around images
+* Tab shouldn't mark a record dirty
+* Only ask for confirmation when a record has changed
+* Highlight save button when record type is changed
 
 WONTFIX:
 * Tag selector box looks bizarre on IE9

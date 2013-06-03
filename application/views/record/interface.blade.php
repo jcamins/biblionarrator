@@ -192,10 +192,14 @@ $(document).ready(function() {
         initializeEditor();
         
         $('.new-record').click(function () {
-            $('#confirmLabel').text("{{ __('confirmations.newrecordtitle') }}");
-            $('#confirmBody').text("{{ __('confirmations.newrecordbody') }}");
-            $('#confirmOK').attr('data-callback', $(this).attr('id'));
-            $('#confirm').modal('show');
+            if ($('body').hasClass('unsaved-changes')) {
+                $('#confirmLabel').text("{{ __('confirmations.newrecordtitle') }}");
+                $('#confirmBody').text("{{ __('confirmations.newrecordbody') }}");
+                $('#confirmOK').attr('data-callback', $(this).attr('id'));
+                $('#confirm').modal('show');
+            } else {
+                $(this).trigger('confirmed');
+            }
             return false;
         });
         $('.new-record').on('confirmed', function() {
