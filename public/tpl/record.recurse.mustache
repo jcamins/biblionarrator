@@ -1,0 +1,16 @@
+{{#element}}
+    <{{element}} {{#link}}href="{{link}}"{{/link}} class="{{field}}">
+{{/element}}
+{{^element}}
+    <a {{#link}}href="{{link}}"{{/link}} class="{{field}}">
+{{/element}}
+{{content}}
+{{#children}}
+    {{> record.recurse}}
+{{/children}}
+{{#element}}
+    </{{element}}>
+{{/element}}
+{{^element}}
+    </a>
+{{/element}}

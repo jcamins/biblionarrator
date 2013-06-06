@@ -1,0 +1,10 @@
+<article data-id="{{id}}">
+{{#data}}
+    {{#citation}}
+        {{> record.recurse }}
+    {{/citation}}
+    {{#expansion}}
+        {{> record.recurse }}
+    {{/expansion}}
+{{/data}}
+</article>
