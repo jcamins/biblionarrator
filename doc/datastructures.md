@@ -12,7 +12,8 @@ List results
             'link': 'http://biblionarrator.com/search?recordtype=BOOK',
             'name': 'Book',
             'count': 18
-            }
+            },
+            ... { }
         ],
         'records': [
             {
@@ -84,10 +85,46 @@ original XML/HTML5 data:
        }
     }
 
-In pseudocode, this can be converted to the display format with the
-following algorithm:
+This can be converted to the display format with the following recursive
+algorithm:
 
-    [TODO]
+    function raw2html(object) {
+        var output = '';
+        if (typeof object === 'string') {
+            output = object;
+        } else {
+            for (var elem in object) {
+                var htmlelem = elem;
+                if (typeof object[elem] == 'undefined') {
+                    continue
+                }
+                if (jQuery.inArray(elem, htmlelements) < 0) {
+                    if (typeof object[elem]['link'] === 'undefined' && typeof object[elem]['href'] === 'undefined') {
+                        htmlelem = 'span';
+                        if (object[elem]['link'] !== '') {
+                            object[elem]['href'] = '/record/' + object[elem]['link'];
+                        }
+                    } else {
+                        htmlelem = 'a';
+                    }
+                    output += '<' + htmlelem + ' class="' + elem + '"';
+                } else {
+                    output += '<' + elem;
+                }
+                for (var attr in object[elem]) {
+                    if (jQuery.inArray(attr, attrs) >= 0 && object[elem][attr].length > 0) {
+                        output += ' ' + attr + '="' + object[elem][attr] + '"';
+                    }
+                }
+                output += '>';
+                for (var child in object[elem]['children']) {
+                    output += raw2html(object[elem]['children'][child]);
+                }
+                output += '</' + htmlelem + '>';
+            }
+        }
+        return output;
+    }
 
 *Version 0.1*
 
