@@ -22,13 +22,16 @@
     "dependencies" : {
         "consolidate": "0.x",
         "express"    : "3.x",
-        "mustache"   : "0.x"
+        "mustache"   : "0.x",
+        "mysql"      : "2.x",
+        "sequelize"  : "2.x"
     },
     "devDependencies": {
         "mocha"     : "1.11.x",
         "chai"      : "1.7.x",
         "superagent": "0.15.x",
-        "jshint"    : "2.1.x"
+        "jshint"    : "2.1.x",
+        "PrettyCSS" : "0.3.x"
     },
     "bundledDependencies": [
     ],  

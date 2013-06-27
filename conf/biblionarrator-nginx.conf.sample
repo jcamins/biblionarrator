@@ -1,3 +1,4 @@
+# NOTE: This configuration pulls data from both node.js, which should be running on port 3000, and from PHP run by fastcgi.
 server {
     server_name                             biblionarrator;
     access_log                              /var/log/biblionarrator-access.log;
@@ -6,11 +7,11 @@ server {
 
     location / {
         index  index.html index.htm index.php; #try static .html file first
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ @node;
     }
  
     # catch all
-    error_page      404 /index.php;
+    error_page      404 /index.php?$args;
 
     location ~ \.php$ {
         include                             fastcgi_params;
@@ -20,6 +21,17 @@ server {
         fastcgi_param PATH_INFO             $fastcgi_path_info;
         fastcgi_param PATH_TRANSLATED       $document_root$fastcgi_path_info;
         fastcgi_param SCRIPT_FILENAME       $document_root$fastcgi_script_name;
+    }
+
+    location @node {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+
+        proxy_pass http://localhost:3000;
+        proxy_redirect off;
+
     }
 }
 

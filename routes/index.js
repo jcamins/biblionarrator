@@ -1,0 +1,2 @@
+
+exports.assets = require('./assets');
