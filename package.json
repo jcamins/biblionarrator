@@ -1,0 +1,39 @@
+{
+    "name": "biblionarrator",
+    "version": "0.0.4",
+    "author": "Jared Camins-Esakov <jcamins@cpbibliography.com>",
+    "description": "a new kind of catalog",
+    "contributors": [ 
+        {
+            "name" : "Jared Camins-Esakov",
+            "email": "jcamins@cpbibliography.com"
+        } 
+    ],
+    "bin": {
+    },
+    "scripts": {
+    },
+    "repository": {
+        "type": "git",
+        "url" : "https://github.com/biblionarrator/biblionarrator.git"
+    },
+    "keywords": [
+    ],
+    "dependencies" : {
+        "consolidate": "0.x",
+        "express"    : "3.x",
+        "mustache"   : "0.x"
+    },
+    "devDependencies": {
+        "mocha"     : "1.11.x",
+        "chai"      : "1.7.x",
+        "superagent": "0.0.x"
+    },
+    "bundledDependencies": [
+    ],  
+    "license": "AGPLv3",
+    "engines": {
+        "node": ">=0.8"
+    }
+}
+
