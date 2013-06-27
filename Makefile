@@ -10,3 +10,5 @@ public/css/style.css: public/css/style.less
 test:
 	perl $(PLTESTS)
 	mocha --timeout 5000 --reporter tap $(JSTESTS)
+
+.PHONY: build test
