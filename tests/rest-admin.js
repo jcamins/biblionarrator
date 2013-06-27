@@ -14,7 +14,7 @@ describe('Authentication', function() {
     });
 });
 
-describe('Users', function() {
+describe('User', function() {
     testAdminTable('user', {
         aaData: {
             label: 'test user',
@@ -77,6 +77,74 @@ describe('Users', function() {
             testDeletingResource('user', {
                 data: {
                     id: newUser.id
+                }
+            }, done);
+        });
+    });
+});
+
+describe('Collection', function() {
+    testAdminTable('collection', {
+        aaData: {
+            label: 'Sample collection',
+            callback: function (elem) {
+                if (elem.name == 'Sample collection') {
+                    return true;
+                }
+            }
+        }
+    });
+
+    var newCollection;
+    describe('adding', function () {
+        it('should succeed', function(done) {
+            testAddingResource('collection', {
+                data: {
+                    name: 'Test Collection',
+                    security: 'Public'
+                },
+                callback: function (res) {
+                    newCollection = res;
+                }
+            }, done);
+        });
+    });
+    describe('reading', function () {
+        it('should succeed', function(done) {
+            testReadingResource('collection', {
+                data: {
+                    id: newCollection.id,
+                },
+                callback: function (res) {
+                    //expect(res).to.equal(newCollection);
+                    // The above call will not work because Laravel returns
+                    // different objects when creating a new model than when
+                    // retrieving an existing model
+                    expect(res.name).to.equal(newCollection.name);
+                    expect(res.security).to.equal(newCollection.security);
+                    expect(parseInt(res.id)).to.equal(newCollection.id);
+                }
+            }, done);
+        });
+    });
+    describe('updating', function () {
+        it('should succeed', function(done) {
+            testUpdatingResource('collection', {
+                data: {
+                    id: newCollection.id,
+                    name: 'Second test collection'
+                },
+                callback: function (res) {
+                    expect(res.name).to.equal('Second test collection');
+                }
+            }, done);
+        });
+    });
+    describe('deleting', function () {
+        it('should succeed', function(done) {
+            testDeletingResource('collection', {
+                data: {
+                    id: newCollection.id
                 }
             }, done);
         });
