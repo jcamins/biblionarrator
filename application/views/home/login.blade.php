@@ -10,7 +10,7 @@
         <form id="login" action="/user/login" method="post" accept-charset="UTF-8">
             <fieldset>
                 <legend>Log in to Biblionarrator</legend>
-                @if (Session::has('status_error'))
+                @if (Session::has('login_error'))
                     <div class="alert alert-error">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         {{ Session::get('login_error') }}
