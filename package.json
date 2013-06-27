@@ -27,7 +27,9 @@
     "devDependencies": {
         "mocha"     : "1.11.x",
         "chai"      : "1.7.x",
-        "superagent": "0.0.x"
+        "superagent": "0.15.x",
+        "glob"      : "3.x.x",
+        "jshint"    : "2.1.x"
     },
     "bundledDependencies": [
     ],  
