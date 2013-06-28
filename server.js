@@ -1,6 +1,8 @@
 var express = require('express'),
     params = require('express-params'),
     cons = require('consolidate'),
+    httpProxy = require('http-proxy'),
+    proxy = new httpProxy.RoutingProxy(),
     routes = require('./routes');
 
 var app = express();
@@ -28,6 +30,13 @@ app.param('filename', /^[-_\w]+$/);
 app.get('/css/fields.css', routes.assets.fieldscss);
 
 app.get('/doc/:filename', routes.doc.get);
+
+app.get('*', function (req, res) {
+    return proxy.proxyRequest(req, res, {
+        host: 'localhost',
+        port: 3500
+    });
+});
 
 app.listen(3000);
 

@@ -23,6 +23,7 @@
         "consolidate": "0.x",
         "express"    : "3.x",
         "express-params": "0.0.x",
+        "http-proxy" : "0.10.x",
         "marked"     : "0.2.x",
         "mustache"   : "0.x",
         "mysql"      : "2.x"
