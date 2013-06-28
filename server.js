@@ -36,7 +36,27 @@ app.get('*', function (req, res) {
         host: 'localhost',
         port: 3500
     });
-});
+};
 
 exports.app = app;
+
+/* No doubt this is the wrong way to emulate supertest. However,
+since it allows us to run tests without starting the server manually,
+for the moment, at least, this is how we're doing it. */
+
+var httpserver;
+
+exports.listen = function (port) {
+    port = port || 3000;
+    httpserver = app.listen(port);
+}
+
+exports.testhost = function () {
+    return 'http://127.0.0.1:' + harness().address().port;;
+}
+
+var harness = function () {
+    httpserver = httpserver || app.listen(0);
+    return httpserver;
+};
 

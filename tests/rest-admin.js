@@ -1,10 +1,10 @@
 var expect = require('chai').expect,
     request = require('superagent').agent(),
-    host = 'http://localhost:4000';
+    testhost = 'http://localhost:3500';
 
 describe('Authentication', function() {
     it('Can authenticate successfully', function(done) {
-        request.post(host + '/user/login').type('form').send({
+        request.post(testhost + '/user/login').type('form').send({
             username: 'tester@test.com',
             password: 'testme'
         }).end(function(res) {
@@ -154,7 +154,7 @@ describe('Collection', function() {
 function testAdminTable(resource_type, conf) {
     describe('table JSON iTotalRecords', function() {
         it('should be greater than zero', function(done) {
-            request.get(host + '/resources/' + resource_type).set('Accept', 'application/json').end(function(res) {
+            request.get(testhost + '/resources/' + resource_type).set('Accept', 'application/json').end(function(res) {
                 expect(res.body.iTotalRecords).to.be.above(0);
                 done();
             });
@@ -162,7 +162,7 @@ function testAdminTable(resource_type, conf) {
     });
     describe('table JSON aaData', function() {
         it('should contain ' + conf.aaData.label, function(done) {
-            request.get(host + '/resources/' + resource_type).set('Accept', 'application/json').end(function(res) {
+            request.get(testhost + '/resources/' + resource_type).set('Accept', 'application/json').end(function(res) {
                 var found = false;
                 res.body.aaData.forEach(function(el, idx, arr) {
                     found = found || conf.aaData.callback(el);
@@ -177,7 +177,7 @@ function testAdminTable(resource_type, conf) {
 }
 
 function testAddingResource(resource_type, conf, done) {
-    request.post(host + '/resources/' + resource_type).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
+    request.post(testhost + '/resources/' + resource_type).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
         expect(res.body.id).to.exist;
         if (conf.callback) {
             conf.callback(res.body);
@@ -187,7 +187,7 @@ function testAddingResource(resource_type, conf, done) {
 }
 
 function testUpdatingResource(resource_type, conf, done) {
-    request.post(host + '/resources/' + resource_type + '/' + conf.data.id).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
+    request.post(testhost + '/resources/' + resource_type + '/' + conf.data.id).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
         expect(res.body.id).to.exist;
         if (conf.callback) {
             conf.callback(res.body);
@@ -197,7 +197,7 @@ function testUpdatingResource(resource_type, conf, done) {
 }
 
 function testReadingResource(resource_type, conf, done) {
-    request.get(host + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
+    request.get(testhost + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
         expect(res.body.id).to.exist;
         if (conf.callback) {
             conf.callback(res.body);
@@ -207,7 +207,7 @@ function testReadingResource(resource_type, conf, done) {
 }
 
 function testDeletingResource(resource_type, conf, done) {
-    request.del(host + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
+    request.del(testhost + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
         expect(parseInt(res.body)).to.equal(conf.data.id);
         done();
     });
