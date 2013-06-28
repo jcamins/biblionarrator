@@ -68,7 +68,7 @@ function initializeEditor() {
         }
         var sel = rangy.getSelection();
         var span = $(sel.getRangeAt(0).commonAncestorContainer).parents('span').first();
-        if ($(span).parents('#recordContainer').size() > 0 && $(sel.getRangeAt(0).commonAncestorContainer).parents('input').size() == 0) {
+        if ($(span).parents('#recordContainer').size() > 0 && $(sel.getRangeAt(0).commonAncestorContainer).parents('input').size() === 0) {
             var range = rangy.createRange();
             if (ev.which == 9 && ev.shiftKey && $(span).prevAll('span') > 0) {
                 sel.removeAllRanges();
@@ -130,7 +130,7 @@ function initializeRangy() {
                 'normalize': true
         });
     }
-};
+}
 
 function closeAndOpenTag () {
     closeTag();
@@ -138,7 +138,7 @@ function closeAndOpenTag () {
 }
 
 function closeAllTags () {
-    while (closeTag()) {};
+    while (closeTag()) {}
 }
 
 function setTag(field, sel) {
@@ -210,7 +210,7 @@ function newTagSelected(ev, datum) {
     if (sel.isCollapsed) {
         var elemtype = 'span';
         if (fieldlist[labeltofieldlookup[datum.value]].link) {
-            var elemtype = 'a';
+            elemtype = 'a';
         }
         var el = document.createElement(elemtype);
         el.setAttribute('class', labeltofieldlookup[datum.value]);
@@ -274,7 +274,7 @@ function saveRecord() {
               },
         error: ajaxSaveFailed,
     }).done(function(msg) {
-        recordId = parseInt(msg.id);
+        recordId = parseInt(msg.id, 10);
         if (typeof(recordId) !== 'undefined') {
             $('.self-url').each(function () {
                 $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + recordId));
@@ -303,7 +303,7 @@ function saveTemplate() {
               },
         error: ajaxTemplateSaveFailed,
     }).done(function(msg) {
-        recordId = parseInt(msg.id);
+        recordId = parseInt(msg.id, 10);
         addAlert('Successfully saved template', 'success');
         updateFieldsTOCTree();
     });
@@ -314,12 +314,12 @@ function transformXML(xml, xsl) {
     if (!xml) {
         return "";
     } else if (typeof(xml) == 'string') {
-        xml = parser.parseFromString(xml, "text/xml")
+        xml = parser.parseFromString(xml, "text/xml");
     }
     if (!xsl) {
         return "";
     } else if (typeof(xsl) == 'string') {
-        xsl = parser.parseFromString(xsl, "text/xml")
+        xsl = parser.parseFromString(xsl, "text/xml");
     }
     if (window.ActiveXObject) {
         result = new ActiveXObject("MSXML2.DOMDocument");
@@ -333,7 +333,7 @@ function transformXML(xml, xsl) {
 }
 function addAlert(msg, type) {
     $('#alerts').append('<div class="alert alert-' + type + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
-    $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove() });
+    $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove(); });
 }
 
 function consolidateStyles() {

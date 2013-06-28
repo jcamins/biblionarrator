@@ -56,7 +56,7 @@ function loadStyle (id) {
         }
     });
 
-};
+}
 
 function createTagsManager() {
     $('.style-record-type-cell').each(function() {

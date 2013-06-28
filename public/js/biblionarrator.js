@@ -2,7 +2,7 @@ $(document).ready(function () {
     // Cookie toggle code
     $('[data-toggle="cookie-view"]').click(function () {
         var target = $($(this).attr('data-target'));
-        var activeclass = $(this).attr('data-class')
+        var activeclass = $(this).attr('data-class');
         var isactive;
         if (this.nodeName === 'INPUT') {
             isactive = $(this).prop('checked');
@@ -29,7 +29,7 @@ $(document).ready(function () {
         target.trigger('cookietoggle');
     }).each(function () {
         var target = $($(this).attr('data-target'));
-        var activeclass = $(this).attr('data-class')
+        var activeclass = $(this).attr('data-class');
         var enabled = $(this).attr('data-default') == 'enabled' ?
             (jQuery.cookie($(this).attr('data-cookie')) != '0') :
             (jQuery.cookie($(this).attr('data-cookie')) == '1');
@@ -154,7 +154,7 @@ $(document).ready(function () {
                     var styles = versionTransaction.createObjectStore("styles", {
                         "keyPath": "id"
                     });
-                    var styles = versionTransaction.createObjectStore("records", {
+                    var records = versionTransaction.createObjectStore("records", {
                         "keyPath": "id"
                     });
                 },
@@ -290,16 +290,17 @@ var attrs = [ 'href', 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'it
 function html2raw(element) {
     var object, childs = element.childNodes;
     object = {};
+    var i;
 
     if (childs.length > 0) {
         var children = [];
-        for (var i = 0; i < childs.length; i++) {
+        for (i = 0; i < childs.length; i++) {
             if (childs[i].nodeType != 2) {
                 children.push(html2raw(childs[i]));
             }
         }
         if (children.length > 0) {
-            object['children'] = children;
+            object.children = children;
         }
     }
 
@@ -309,11 +310,11 @@ function html2raw(element) {
             name = element.getAttribute('class');
         }
         if (typeof fieldlist[name] !== 'undefined' && fieldlist[name].link) {
-            object['link'] = '';
+            object.link = '';
         }
-        for (var i=0, atts=element.attributes, l=atts.length; i<l; i++) {
+        for (i=0, atts=element.attributes, l=atts.length; i<l; i++) {
             if (atts.item(i).nodeName === 'href' && typeof fieldlist[name] !== 'undefined' && fieldlist[name].link && atts.item(i).nodeValue.indexOf('/record/') > -1) {
-                object['link'] = atts.item(i).nodeValue.substr(atts.item(i).nodeValue.lastIndexOf('/') + 1);
+                object.link = atts.item(i).nodeValue.substr(atts.item(i).nodeValue.lastIndexOf('/') + 1);
             } else if (jQuery.inArray(atts.item(i).nodeName, attrs) >= 0 && atts.item(i).nodeValue.length > 0) {
                 object[atts.item(i).nodeName] = atts.item(i).nodeValue;
             }
@@ -337,13 +338,13 @@ function raw2html(object) {
         for (var elem in object) {
             var htmlelem = elem;
             if (typeof object[elem] == 'undefined') {
-                continue
+                continue;
             }
             if (jQuery.inArray(elem, htmlelements) < 0) {
-                if (typeof object[elem]['link'] === 'undefined' && typeof object[elem]['href'] === 'undefined') {
+                if (typeof object[elem].link === 'undefined' && typeof object[elem].href === 'undefined') {
                     htmlelem = 'span';
-                    if (object[elem]['link'] !== '') {
-                        object[elem]['href'] = '/record/' + object[elem]['link'];
+                    if (object[elem].link !== '') {
+                        object[elem].href = '/record/' + object[elem].link;
                     }
                 } else {
                     htmlelem = 'a';
@@ -358,8 +359,8 @@ function raw2html(object) {
                 }
             }
             output += '>';
-            for (var child in object[elem]['children']) {
-                output += raw2html(object[elem]['children'][child]);
+            for (var child in object[elem].children) {
+                output += raw2html(object[elem].children[child]);
             }
             output += '</' + htmlelem + '>';
         }
@@ -387,7 +388,7 @@ function initializeTOC() {
         "themes" : { "icons": false },
     });
     $('#fieldsTOC').bind('select_node.jstree', function (e, data) {
-        $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight') });
+        $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });
         var obj = data.rslt.obj[0];
         while (typeof(obj) !== 'undefined' && !obj.hasAttribute('data-match')) {
             obj = obj.parentNode;
@@ -398,7 +399,7 @@ function initializeTOC() {
         }
     });
     $('#fieldsTOC').bind('deselect_node.jstree', function (e, data) {
-        $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight') });
+        $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });
     });
 }
 

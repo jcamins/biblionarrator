@@ -15,7 +15,7 @@ function deleteBookmark(id) {
 }
 
 function flashBookmark(data) {
-    if (parseInt(data.count) > 0) {
+    if (parseInt(data.count, 10) > 0) {
         $('.bookmark-count').each(function () { $(this).text(data.count); });
     } else {
         $('.bookmark-count').each(function () { $(this).empty(); });

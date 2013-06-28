@@ -1,6 +1,6 @@
 $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
 {
-    if ( typeof sNewSource != 'undefined' && sNewSource != null )
+    if ( typeof sNewSource !== 'undefined' && sNewSource !== null )
     {
         oSettings.sAjaxSource = sNewSource;
     }
@@ -36,12 +36,12 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
         that.oApi._fnProcessingDisplay( oSettings, false );
 
         /* Callback user function - for event handlers etc */
-        if ( typeof fnCallback == 'function' && fnCallback != null )
+        if ( typeof fnCallback === 'function' && fnCallback !== null )
         {
             fnCallback( oSettings );
         }
     }, oSettings );
-}
+};
 
 /* Example call to load a new file */
 //oTable.fnReloadAjax( 'media/examples_support/json_source2.txt' );

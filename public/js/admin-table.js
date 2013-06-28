@@ -25,9 +25,9 @@ function initializeAdminTable() {
                 "success": function (json) {
                     var newData = [];
                     for ( var ii = 0, iLen = json.iTotalRecords ; ii < iLen ; ii++ ) {
-                        var thisRow = [json.aaData[ii]['id']];
+                        var thisRow = [json.aaData[ii].id];
                         Object.keys(columns).forEach(function (column) {
-                            var cell = '<span data-column="' + column + '" class="editable-column editable-' + columns[column].type + '"'
+                            var cell = '<span data-column="' + column + '" class="editable-column editable-' + columns[column].type + '"';
                             if (columns[column].type === 'options') {
                                 cell += ' data-value="' + json.aaData[ii][column + '_id'] + '"';
                             }
@@ -104,7 +104,7 @@ function fnDrawCallback() {
             {
                 "onblur" : "submit",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')]['options']),
+                "data": eval(columns[$(this).attr('data-column')].options),
             }
         );
     });
@@ -114,7 +114,7 @@ function fnDrawCallback() {
             {
                 "onblur" : "ignore",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')]['options']),
+                "data": eval(columns[$(this).attr('data-column')].options),
             }
         );
     });
@@ -124,11 +124,11 @@ function saveRow(row, updates) {
     var id = $(row).attr('data-id');
     var newdata = { };
     $(row).find('.editable-column, .form-column').each(function () {
-        newdata[$(this).attr('data-column')] = $(this).find('option:selected').val()
-                || $(this).find('option:first').val()
-                || $(this).find('input').val()
-                || $(this).attr('data-value')
-                || $(this).text();
+        newdata[$(this).attr('data-column')] = $(this).find('option:selected').val() ||
+                $(this).find('option:first').val() ||
+                $(this).find('input').val() ||
+                $(this).attr('data-value') ||
+                $(this).text();
     });
     for (var attrname in updates) { newdata[attrname] = updates[attrname]; }
     Object.keys(newdata).forEach(function (key) {
@@ -155,7 +155,7 @@ function saveRow(row, updates) {
 }
 
 function saveNew() {
-    var postdata = new Object();
+    var postdata = {};
     var missing = [];
     Object.keys(columns).forEach(function(column) {
         var val = $('#column' + column + ' input, #column' + column + ' select').val();
