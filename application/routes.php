@@ -39,7 +39,6 @@ Route::any('admin/(:any)/?(:any)?', function($controller,$params=null) {
 Route::get('record/new/template/(:any)', 'record@fromtemplate');
 Route::post('record/(:any)/link/add/(:any)', 'record.link@add');
 Route::get('record/(:any)?/?link/list/(:any)?', 'record.link@list');
-Route::get('record/(:any)?/?link/select', 'record.link@select');
 Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/delete', 'record@delete');
 Route::post('record/(:num)/image', 'record@image');

@@ -33,6 +33,8 @@ app.get('/svc/bndb_initializer.js', routes.assets.bndbinitializerjs);
 
 app.get('/doc/:filename', routes.doc.get);
 
+app.get('/record/:id/link/select', routes.record.linkselect);
+
 app.get('*', function(req, res) {
     return proxy.proxyRequest(req, res, {
         host: 'localhost',

@@ -21,10 +21,6 @@ class Record_Link_Controller extends Base_Controller {
 
     public $restful = true;
 
-    public function get_select($record) {
-        return View::make('ajax.link-select')->with('id', $record);
-    }
-
     public function get_list($record = null, $field_id = null) {
         $field = Field::find($field_id);
         $query = Input::get('q');
