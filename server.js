@@ -38,5 +38,5 @@ app.get('*', function (req, res) {
     });
 });
 
-app.listen(3000);
+exports.app = app;
 
