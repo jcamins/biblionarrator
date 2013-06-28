@@ -1,5 +1,0 @@
-<?php
-
-use \Michelf\Markdown;
-
-?>

@@ -17,8 +17,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-use \Michelf\Markdown;
-
 class Home_Controller extends Base_Controller {
 
 	/*
@@ -72,24 +70,5 @@ class Home_Controller extends Base_Controller {
                 )
             )
         ));
-    }
-
-    public function action_doc($file = null)
-    {
-        $file = str_replace('..', '', $file);
-        $file = str_replace('/', '', $file);
-        $file = str_replace('\\', '', $file);
-        $file = 'doc/' . strtolower($file);
-        if (file_exists("$file.md")) {
-            $text = file_get_contents("$file.md");
-            $body = Markdown::defaultTransform($text);
-        } else if (file_exists($file)) {
-            $body = file_get_contents("$file");
-        } else if (file_exists("$file.html")) {
-            $body = file_get_contents("$file.html");
-        } else {
-            $body = '';
-        }
-        return $body;
     }
 }

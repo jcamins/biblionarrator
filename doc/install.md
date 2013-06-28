@@ -11,6 +11,13 @@ Biblionarrator requires a server with the following:
 * MySQL
 * PHP 5.3+
 * Mcrypt, MySQL, Tidy, and XSL PHP5 extensions
+* Node.js 0.8+
+* npm (node package manager)
+
+*NOTE*: After step 1 you will need to run (in the biblionarrator root):
+
+    npm install
+
 
 If you are setting up a development environment, you will also need:
 
@@ -39,7 +46,7 @@ Installation procedure
    lesscss is packaged for Ubuntu but not Debian. If you are using Ubuntu,
    it can be installed with the following command:
 
-    sudo apt-get install node-less
+    sudo apt-get install node-less npm
 
 1) Download Biblionarrator. You can download a zip file from GitHub at
    https://github.com/jcamins/biblionarrator/archive/master.zip or
@@ -48,7 +55,7 @@ Installation procedure
     git clone git://git.cpbibliography.com/biblionarrator.git
 or
 
-    git clone git://github.com/jcamins/biblionarrator.git
+    git clone git://github.com/biblionarrator/biblionarrator.git
 
     cd biblionarrator
 

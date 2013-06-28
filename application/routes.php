@@ -58,7 +58,6 @@ Route::any('resources/(:any)/(:any)?', function($controller,$params=null) {
 Route::any('bookmarks/(:num)', 'bookmarks@index');
 Route::controller(Controller::detect());
 Route::get('about', 'home@about');
-Route::get('doc/(:any)?', 'home@doc');
 
 /*
 |--------------------------------------------------------------------------
