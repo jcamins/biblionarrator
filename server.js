@@ -29,6 +29,8 @@ app.param('filename', /^[-_\w]+$/);
 
 app.get('/css/fields.css', routes.assets.fieldscss);
 
+app.get('/svc/bndb_initializer.js', routes.assets.bndbinitializerjs);
+
 app.get('/doc/:filename', routes.doc.get);
 
 app.get('*', function (req, res) {
@@ -36,7 +38,7 @@ app.get('*', function (req, res) {
         host: 'localhost',
         port: 3500
     });
-};
+});
 
 exports.app = app;
 
