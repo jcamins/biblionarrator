@@ -10,6 +10,10 @@ use File::Basename;
 my $root = File::Spec->rel2abs( dirname(__FILE__) . '/..' );
 $root =~ s#tests/\.\.##;
 
+ok(!system("jshint --config ${root}jshint.conf ${root}server.js 1>&2"), 'server.js app');
+
+jshint( 'Server-side bin', $root . 'bin' );
+jshint( 'Server-side JS', $root . 'lib' );
 jshint( 'Client-side JS', $root . 'public/js' );
 jshint( 'Test scripts', $root . 'tests' );
 
