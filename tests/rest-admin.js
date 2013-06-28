@@ -54,7 +54,7 @@ describe('User', function() {
                     // retrieving an existing model
                     expect(res.name).to.equal(newUser.name);
                     expect(res.email).to.equal(newUser.email);
-                    expect(parseInt(res.id)).to.equal(newUser.id);
+                    expect(parseInt(res.id, 10)).to.equal(newUser.id);
                 }
             }, done);
         });
@@ -122,7 +122,7 @@ describe('Collection', function() {
                     // retrieving an existing model
                     expect(res.name).to.equal(newCollection.name);
                     expect(res.security).to.equal(newCollection.security);
-                    expect(parseInt(res.id)).to.equal(newCollection.id);
+                    expect(parseInt(res.id, 10)).to.equal(newCollection.id);
                 }
             }, done);
         });
@@ -178,7 +178,7 @@ function testAdminTable(resource_type, conf) {
 
 function testAddingResource(resource_type, conf, done) {
     request.post(testhost + '/resources/' + resource_type).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
-        expect(res.body.id).to.exist;
+        expect(parseInt(res.body.id, 10)).to.be.above(0);
         if (conf.callback) {
             conf.callback(res.body);
         }
@@ -188,7 +188,7 @@ function testAddingResource(resource_type, conf, done) {
 
 function testUpdatingResource(resource_type, conf, done) {
     request.post(testhost + '/resources/' + resource_type + '/' + conf.data.id).type('form').send(conf.data).set('Accept', 'application/json').end(function(res) {
-        expect(res.body.id).to.exist;
+        expect(parseInt(res.body.id, 10)).to.be.above(0);
         if (conf.callback) {
             conf.callback(res.body);
         }
@@ -198,7 +198,7 @@ function testUpdatingResource(resource_type, conf, done) {
 
 function testReadingResource(resource_type, conf, done) {
     request.get(testhost + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
-        expect(res.body.id).to.exist;
+        expect(parseInt(res.body.id, 10)).to.be.above(0);
         if (conf.callback) {
             conf.callback(res.body);
         }
@@ -208,7 +208,7 @@ function testReadingResource(resource_type, conf, done) {
 
 function testDeletingResource(resource_type, conf, done) {
     request.del(testhost + '/resources/' + resource_type + '/' + conf.data.id).set('Accept', 'application/json').end(function(res) {
-        expect(parseInt(res.body)).to.equal(conf.data.id);
+        expect(parseInt(res.body, 10)).to.equal(conf.data.id);
         done();
     });
 }
