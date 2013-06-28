@@ -51,11 +51,11 @@ var httpserver;
 exports.listen = function(port) {
     port = port || 3000;
     httpserver = app.listen(port);
-}
+};
 
 exports.testhost = function() {
-    return 'http://127.0.0.1:' + harness().address().port;;
-}
+    return 'http://127.0.0.1:' + harness().address().port;
+};
 
 var harness = function() {
     httpserver = httpserver || app.listen(0);
