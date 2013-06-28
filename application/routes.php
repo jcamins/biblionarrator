@@ -46,7 +46,6 @@ Route::post('record/(:num)/image', 'record@image');
 Route::delete('record/(:num)/image/(:any)', 'record@image');
 Route::get('record/(:any)?/?(:any)?', 'record@index');
 Route::post('record/(:any)?', 'record@index');
-Route::get('svc/bndb_initializer.js', 'svc@bndb_initializer_js');
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
