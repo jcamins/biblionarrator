@@ -53,7 +53,11 @@ exports.bndbinitializerjs = function(req, res) {
             data.fields = results;
             connection.query('SELECT * FROM records', function(err, results, fields) {
                 data.records = results;
-                res.render('../views/bndb_initializer-js.mustache', { fields: JSON.stringify(data.fields), styles: JSON.stringify(data.styles), records: JSON.stringify(data.records) }, function(err, js) {
+                res.render('../views/bndb_initializer-js.mustache', {
+                    fields: JSON.stringify(data.fields),
+                    styles: JSON.stringify(data.styles),
+                    records: JSON.stringify(data.records)
+                }, function(err, js) {
                     res.setHeader('Content-Type', 'text/javascript');
                     res.send(js);
                 });

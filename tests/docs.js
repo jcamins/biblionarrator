@@ -5,19 +5,19 @@ var expect = require('chai').expect,
     testhost = require('../server').testhost();
 
 
-describe('install markdown document', function () {
-    describe('content-type', function () {
-        it('is text/html', function (done) {
+describe('install markdown document', function() {
+    describe('content-type', function() {
+        it('is text/html', function(done) {
             request.get(testhost + '/doc/install').end(function(res) {
                 expect(res.type).to.equal('text/html');
                 done();
             });
         });
     });
-    describe('data', function () {
-        it('matches source', function (done) {
+    describe('data', function() {
+        it('matches source', function(done) {
             request.get(testhost + '/doc/install').end(function(res) {
-                fs.readFile('doc/install.md', 'utf8', function (err, data) {
+                fs.readFile('doc/install.md', 'utf8', function(err, data) {
                     expect(res.text).to.equal(marked(data));
                     done();
                 });
@@ -26,19 +26,19 @@ describe('install markdown document', function () {
     });
 });
 
-describe('upgrades text document', function () {
-    describe('content-type', function () {
-        it('is text/plain', function (done) {
+describe('upgrades text document', function() {
+    describe('content-type', function() {
+        it('is text/plain', function(done) {
             request.get(testhost + '/doc/upgrades').end(function(res) {
                 expect(res.type).to.equal('text/plain');
                 done();
             });
         });
     });
-    describe('data', function () {
-        it('matches source', function (done) {
+    describe('data', function() {
+        it('matches source', function(done) {
             request.get(testhost + '/doc/upgrades').end(function(res) {
-                fs.readFile('doc/upgrades', 'utf8', function (err, data) {
+                fs.readFile('doc/upgrades', 'utf8', function(err, data) {
                     expect(res.text).to.equal(data);
                     done();
                 });
@@ -47,19 +47,19 @@ describe('upgrades text document', function () {
     });
 });
 
-describe('licensing html document', function () {
-    describe('content-type', function () {
-        it('is text/html', function (done) {
+describe('licensing html document', function() {
+    describe('content-type', function() {
+        it('is text/html', function(done) {
             request.get(testhost + '/doc/licensing').end(function(res) {
                 expect(res.type).to.equal('text/html');
                 done();
             });
         });
     });
-    describe('data', function () {
-        it('matches source', function (done) {
+    describe('data', function() {
+        it('matches source', function(done) {
             request.get(testhost + '/doc/licensing').end(function(res) {
-                fs.readFile('doc/licensing.html', 'utf8', function (err, data) {
+                fs.readFile('doc/licensing.html', 'utf8', function(err, data) {
                     expect(res.text).to.equal(data);
                     done();
                 });
@@ -67,4 +67,3 @@ describe('licensing html document', function () {
         });
     });
 });
-

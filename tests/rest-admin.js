@@ -18,7 +18,7 @@ describe('User', function() {
     testAdminTable('user', {
         aaData: {
             label: 'test user',
-            callback: function (elem) {
+            callback: function(elem) {
                 if (elem.name == 'Tester' && elem.email == 'tester@test.com') {
                     return true;
                 }
@@ -27,7 +27,7 @@ describe('User', function() {
     });
 
     var newUser;
-    describe('adding', function () {
+    describe('adding', function() {
         it('should succeed', function(done) {
             testAddingResource('user', {
                 data: {
@@ -35,19 +35,19 @@ describe('User', function() {
                     email: 'unittest@biblionarrator.com',
                     collection_id: 1
                 },
-                callback: function (res) {
+                callback: function(res) {
                     newUser = res;
                 }
             }, done);
         });
     });
-    describe('reading', function () {
+    describe('reading', function() {
         it('should succeed', function(done) {
             testReadingResource('user', {
                 data: {
                     id: newUser.id,
                 },
-                callback: function (res) {
+                callback: function(res) {
                     //expect(res).to.equal(newUser);
                     // The above call will not work because Laravel returns
                     // different objects when creating a new model than when
@@ -59,20 +59,20 @@ describe('User', function() {
             }, done);
         });
     });
-    describe('updating', function () {
+    describe('updating', function() {
         it('should succeed', function(done) {
             testUpdatingResource('user', {
                 data: {
                     id: newUser.id,
                     name: 'Ms. Unit test lady'
                 },
-                callback: function (res) {
+                callback: function(res) {
                     expect(res.name).to.equal('Ms. Unit test lady');
                 }
             }, done);
         });
     });
-    describe('deleting', function () {
+    describe('deleting', function() {
         it('should succeed', function(done) {
             testDeletingResource('user', {
                 data: {
@@ -87,7 +87,7 @@ describe('Collection', function() {
     testAdminTable('collection', {
         aaData: {
             label: 'Sample collection',
-            callback: function (elem) {
+            callback: function(elem) {
                 if (elem.name == 'Sample collection') {
                     return true;
                 }
@@ -96,26 +96,26 @@ describe('Collection', function() {
     });
 
     var newCollection;
-    describe('adding', function () {
+    describe('adding', function() {
         it('should succeed', function(done) {
             testAddingResource('collection', {
                 data: {
                     name: 'Test Collection',
                     security: 'Public'
                 },
-                callback: function (res) {
+                callback: function(res) {
                     newCollection = res;
                 }
             }, done);
         });
     });
-    describe('reading', function () {
+    describe('reading', function() {
         it('should succeed', function(done) {
             testReadingResource('collection', {
                 data: {
                     id: newCollection.id,
                 },
-                callback: function (res) {
+                callback: function(res) {
                     //expect(res).to.equal(newCollection);
                     // The above call will not work because Laravel returns
                     // different objects when creating a new model than when
@@ -127,20 +127,20 @@ describe('Collection', function() {
             }, done);
         });
     });
-    describe('updating', function () {
+    describe('updating', function() {
         it('should succeed', function(done) {
             testUpdatingResource('collection', {
                 data: {
                     id: newCollection.id,
                     name: 'Second test collection'
                 },
-                callback: function (res) {
+                callback: function(res) {
                     expect(res.name).to.equal('Second test collection');
                 }
             }, done);
         });
     });
-    describe('deleting', function () {
+    describe('deleting', function() {
         it('should succeed', function(done) {
             testDeletingResource('collection', {
                 data: {
