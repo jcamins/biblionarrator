@@ -34,7 +34,7 @@ exports.upload = function (req, res) {
     });
 };
 
-exports.deleteimage = function (req, res) {
+exports.del = function (req, res) {
     var connection = require('../lib/datastore.js').connection;
     connection.query('DELETE FROM images WHERE record_id = ? AND id = ?', [req.params.record_id, req.params.id], function (err, results) {
         // We should probably also delete the image files, but we didn't in PHP either

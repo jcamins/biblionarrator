@@ -26,6 +26,7 @@ if ('development' == app.get('env')) {
 
 app.param('record_id', /^\d+$/);
 app.param('target_id', /^\d+$/);
+app.param('media_id', /^\d+$/);
 app.param('filename', /^[-_\w]+$/);
 
 app.get('/css/fields.css', routes.assets.fieldscss);
@@ -38,7 +39,9 @@ app.get('/record/:record_id/link/select', routes.record.linkselect);
 
 app.get('/record/:record_id/link/add/:target_id', routes.record.linkadd);
 
-app.post('/record/:record_id/image', routes.image.upload);
+app.post('/record/:record_id/media', routes.media.upload);
+
+app.del('/record/:record_id/media/:media_id', routes.media.del);
 
 app.get('*', function(req, res) {
     return proxy.proxyRequest(req, res, {
