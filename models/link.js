@@ -1,4 +1,5 @@
 var Q = require('q'),
+    models,
     connection = require('../lib/datastore').connection;
 
 module.exports = Link;
@@ -13,14 +14,12 @@ function Link(source_id, target_id) {
     this.target_id = target_id;
 
     this.source = function () {
-        var Record = require('./record');
-        source = source || new Record(me.source_id);
+        source = source || new models.Record(me.source_id);
         return source;
     };
 
     this.target = function () {
-        var Record = require('./record');
-        target = target || new Record(me.target_id);
+        target = target || new models.Record(me.target_id);
         return target;
     };
 
@@ -50,3 +49,7 @@ function Link(source_id, target_id) {
         deferred.promise.then(callback);
     };
 }
+
+Link.init = function(ref) {
+    models = ref;
+};

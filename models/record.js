@@ -1,4 +1,5 @@
 var Q = require('q'),
+    models,
     connection = require('../lib/datastore').connection;
 
 module.exports = Record;
@@ -37,7 +38,7 @@ function Record (id) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new Link(results[idx].source_id, results[idx].target_id));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id));
                     }
                     deferred.resolve(links);
                 }
@@ -59,7 +60,7 @@ function Record (id) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new Link(results[idx].source_id, results[idx].target_id));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id));
                     }
                     deferred.resolve(links);
                 }
@@ -76,4 +77,8 @@ function Record (id) {
     } else {
         func_new();
     }
+}
+
+Record.init = function (ref) {
+    models = ref;
 };
