@@ -24,7 +24,8 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
-app.param('id', /^\d+$/);
+app.param('record_id', /^\d+$/);
+app.param('target_id', /^\d+$/);
 app.param('filename', /^[-_\w]+$/);
 
 app.get('/css/fields.css', routes.assets.fieldscss);
@@ -33,7 +34,9 @@ app.get('/svc/bndb_initializer.js', routes.assets.bndbinitializerjs);
 
 app.get('/doc/:filename', routes.doc.get);
 
-app.get('/record/:id/link/select', routes.record.linkselect);
+app.get('/record/:record_id/link/select', routes.record.linkselect);
+
+app.get('/record/:record_id/link/add/:target_id', routes.record.linkadd);
 
 app.get('*', function(req, res) {
     return proxy.proxyRequest(req, res, {

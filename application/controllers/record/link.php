@@ -41,10 +41,4 @@ class Record_Link_Controller extends Base_Controller {
         }
         return View::make('components.results')->with('records', $results)->with('query', $query)->with('perpage', 10)->with('paginator', $results->paginate(10));
     }
-
-    public function post_add($record_id, $link_id) {
-        $record = Record::find($record_id);
-        $record->targets()->attach($link_id);
-        return Response::json($record->to_array());
-    }
 }
