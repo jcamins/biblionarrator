@@ -6,64 +6,58 @@ var expect = require('chai').expect,
 
 
 describe('install markdown document', function() {
-    describe('content-type', function() {
-        it('is text/html', function(done) {
-            request.get(testhost + '/doc/install').end(function(res) {
-                expect(res.type).to.equal('text/html');
-                done();
-            });
+    var res;
+    before(function (done) {
+        request.get(testhost + '/doc/install').end(function(r) {
+            res = r;
+            done();
         });
     });
-    describe('data', function() {
-        it('matches source', function(done) {
-            request.get(testhost + '/doc/install').end(function(res) {
-                fs.readFile('doc/install.md', 'utf8', function(err, data) {
-                    expect(res.text).to.equal(marked(data));
-                    done();
-                });
-            });
+    it('has content-type text/html', function() {
+        expect(res.type).to.equal('text/html');
+    });
+    it('matches source data', function(done) {
+        fs.readFile('doc/install.md', 'utf8', function(err, data) {
+            expect(res.text).to.equal(marked(data));
+            done();
         });
     });
 });
 
 describe('upgrades text document', function() {
-    describe('content-type', function() {
-        it('is text/plain', function(done) {
-            request.get(testhost + '/doc/upgrades').end(function(res) {
-                expect(res.type).to.equal('text/plain');
-                done();
-            });
+    var res;
+    before(function (done) {
+        request.get(testhost + '/doc/upgrades').end(function(r) {
+            res = r;
+            done();
         });
     });
-    describe('data', function() {
-        it('matches source', function(done) {
-            request.get(testhost + '/doc/upgrades').end(function(res) {
-                fs.readFile('doc/upgrades', 'utf8', function(err, data) {
-                    expect(res.text).to.equal(data);
-                    done();
-                });
-            });
+    it('has conte-type text/plain', function() {
+        expect(res.type).to.equal('text/plain');
+    });
+    it('matches source data', function(done) {
+        fs.readFile('doc/upgrades', 'utf8', function(err, data) {
+            expect(res.text).to.equal(data);
+            done();
         });
     });
 });
 
 describe('licensing html document', function() {
-    describe('content-type', function() {
-        it('is text/html', function(done) {
-            request.get(testhost + '/doc/licensing').end(function(res) {
-                expect(res.type).to.equal('text/html');
-                done();
-            });
+    var res;
+    before(function (done) {
+        request.get(testhost + '/doc/licensing').end(function(r) {
+            res = r;
+            done();
         });
     });
-    describe('data', function() {
-        it('matches source', function(done) {
-            request.get(testhost + '/doc/licensing').end(function(res) {
-                fs.readFile('doc/licensing.html', 'utf8', function(err, data) {
-                    expect(res.text).to.equal(data);
-                    done();
-                });
-            });
+    it('has content-type text/html', function() {
+        expect(res.type).to.equal('text/html');
+    });
+    it('matches source data', function(done) {
+        fs.readFile('doc/licensing.html', 'utf8', function(err, data) {
+            expect(res.text).to.equal(data);
+            done();
         });
     });
 });
