@@ -26,7 +26,8 @@
         "http-proxy" : "0.10.x",
         "marked"     : "0.2.x",
         "mustache"   : "0.x",
-        "mysql"      : "2.x"
+        "mysql"      : "2.x",
+        "q"          : "0.9.x"
     },
     "devDependencies": {
         "mocha"     : "1.11.x",
