@@ -150,9 +150,9 @@
         <h3>Upload image</h3>
     </div>
     <div class="modal-body">
-        <form method="POST" action="{{ URL::current() . '/image' }}" id="upload-image-modal-form" enctype="multipart/form-data">
+        <form method="POST" action="{{ URL::current() . '/media' }}" id="upload-image-modal-form" enctype="multipart/form-data">
             <label for="image">Image</label>
-            <input type="file" placeholder="Choose an image to upload" name="image" id="image-image" />
+            <input type="file" placeholder="Choose an image to upload" name="media" id="image-image" />
             <label for="description">Description</label>
             <textarea placeholder="Describe your image in a few sentences" name="description" id="image-description" class="span5"></textarea>
         </form>

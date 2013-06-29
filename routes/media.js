@@ -6,10 +6,10 @@ exports.upload = function (req, res) {
     var connection = require('../lib/datastore.js').connection;
     var shasum = crypto.createHash('sha1');
     shasum.update(req.params.record_id.toString(), 'utf8');
-    var tmppath = req.files.image.path;
+    var tmppath = req.files.media.path;
     var targetpath = '/uploads/' + shasum.digest('hex');
     fs.mkdir('public' + targetpath, function (err) {
-        targetpath = targetpath + '/' + req.files.image.hash + req.files.image.path.substring(req.files.image.path.lastIndexOf('.'));
+        targetpath = targetpath + '/' + req.files.media.hash + req.files.media.path.substring(req.files.media.path.lastIndexOf('.'));
         qfs.exists(targetpath)
             .then(function (ex) {
                 if (!ex) {
@@ -31,12 +31,14 @@ exports.upload = function (req, res) {
                 }
                 qfs.remove(tmppath);
             });
+        /* TODO: The client should inform the user of the status of the upload */
     });
 };
 
 exports.del = function (req, res) {
     var connection = require('../lib/datastore.js').connection;
-    connection.query('DELETE FROM images WHERE record_id = ? AND id = ?', [req.params.record_id, req.params.id], function (err, results) {
+    connection.query('DELETE FROM images WHERE record_id = ? AND id = ?', [req.params.record_id, req.params.media_id], function (err, results) {
         // We should probably also delete the image files, but we didn't in PHP either
+        res.json({ id: req.params.media_id });
     });
 };

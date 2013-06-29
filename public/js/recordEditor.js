@@ -92,7 +92,7 @@ function initializeEditor() {
     });
 
     $('#upload-image-modal').on('hidden', function () {
-        $('#image-image').replaceWith('<input type="file" placeholder="Choose an image to upload" name="image" id="image-image" />');
+        $('#image-image').replaceWith('<input type="file" placeholder="Choose an image to upload" name="media" id="image-image" />');
     });
 
     $('.image-gallery').each(function () {
@@ -109,7 +109,7 @@ function initializeEditor() {
             $(gallery).find('.delete-image').on('confirmed', function () {
                 $.ajax({
                     type: "DELETE",
-                    url: "/record/" + recordId + "/image/" + id,
+                    url: "/record/" + recordId + "/media/" + id,
                     dataType: "json",
                 }).done(function(msg) {
                     $('li[data-id="' + id + '"]').remove();
