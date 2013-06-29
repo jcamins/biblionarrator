@@ -14,6 +14,8 @@ ok(!system("jshint --config ${root}jshint.conf ${root}server.js 1>&2"), 'server.
 
 jshint( 'Server-side bin', $root . 'bin' );
 jshint( 'Server-side JS', $root . 'lib' );
+jshint( 'Routes', $root . 'routes' );
+jshint( 'Models', $root . 'models' );
 jshint( 'Client-side JS', $root . 'public/js' );
 jshint( 'Test scripts', $root . 'tests' );
 
