@@ -4,7 +4,7 @@ var expect = require('chai').expect,
     connection = require('../lib/datastore').connection;
 
 describe('Record retrieved from database', function () {
-    var wantid
+    var wantid;
     var rec;
     before(function (done) {
         connection.query('SELECT id FROM records LIMIT 1', function (err, results, fields) {
@@ -20,6 +20,6 @@ describe('Record retrieved from database', function () {
         expect(rec.id).to.equal(wantid);
     });
     it('has data', function () {
-        expect(rec.data).to.exist;
+        expect(rec.data).to.not.equal(null);
     });
 });

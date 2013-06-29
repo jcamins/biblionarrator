@@ -32,7 +32,7 @@ describe('upgrades text document', function() {
             done();
         });
     });
-    it('has conte-type text/plain', function() {
+    it('has content-type text/plain', function() {
         expect(res.type).to.equal('text/plain');
     });
     it('matches source data', function(done) {
