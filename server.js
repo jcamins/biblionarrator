@@ -14,7 +14,7 @@ app.engine('mustache', cons.mustache);
 app.set('view engine', 'mustache');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 'tmp' }));
 app.use(express.methodOverride());
 app.use(app.router);
 params.extend(app);
@@ -37,6 +37,8 @@ app.get('/doc/:filename', routes.doc.get);
 app.get('/record/:record_id/link/select', routes.record.linkselect);
 
 app.get('/record/:record_id/link/add/:target_id', routes.record.linkadd);
+
+app.post('/record/:record_id/image', routes.image.upload);
 
 app.get('*', function(req, res) {
     return proxy.proxyRequest(req, res, {
