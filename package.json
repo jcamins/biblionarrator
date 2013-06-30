@@ -20,6 +20,7 @@
     "keywords": [
     ],
     "dependencies" : {
+        "bcrypt"     : "0.7.x",
         "consolidate": "0.x",
         "express"    : "3.x",
         "express-params": "0.0.x",
@@ -27,6 +28,8 @@
         "marked"     : "0.2.x",
         "mustache"   : "0.x",
         "mysql"      : "2.x",
+        "passport"   : "0.1.x",
+        "passport-local": "0.1.x",
         "q"          : "0.9.x",
         "q-io"       : "1.9.x"
     },
