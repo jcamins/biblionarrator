@@ -37,3 +37,4 @@ publish
 .idea
 
 paths.php
+node_modules
