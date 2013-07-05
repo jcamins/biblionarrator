@@ -62,6 +62,54 @@ filtered by the criteria in `filter`.
     var linksin = rec.out({ field: 'author' });
 
 
+LINKLIST
+========
+
+linklist.each(callback)
+-----------------------
+
+*Arguments:* (function) callback
+
+*Return value:* (none)
+
+This can be called after a LinkList object has been instantiated in order to
+run the specified callback on each link in the list. The callback should take
+two arguments, `err` and `link`. If any errors were thrown during the
+retrieval/creation, the callback will be called once with `err` populated with
+that error. Otherwise, the callback will be called once per link.
+
+    var links = rec->in();
+    links.each(function (err, link) {
+        if (err) {
+            throw(err);
+        } else {
+            console.log(link.field);
+        }
+    });
+
+
+linklist.with(callback)
+--------------
+
+*Arguments:* (function) callback
+
+*Return value:* (none)
+
+This can be called after a LinkList object has been instantiated in order to
+run the callback on the array of Link objects contained in the LinkList.
+The callback should take two arguments, `err`, which will receive any error
+thrown during instantiation, and `list`, which will receive the populated array.
+
+    var links = rec->in();
+    links.all(function (err, list) {
+        if (err) {
+            throw(err);
+        } else {
+            console.log(list.length);
+        }
+    });
+
+
 RECORD FORMAT HANDLER PLUGINS
 =============================
 
