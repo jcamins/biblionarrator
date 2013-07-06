@@ -64,7 +64,7 @@
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">{{bookmarkcount}}</span></a>
+                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">{{bookmarks.length}}</span></a>
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
 <!--                            <li class="dropdown">
@@ -141,7 +141,7 @@
             <div class="navbar-inner">
             <ul class="nav">
                 <li><a href="/bookmarks">Bookmarks
-                    <span class="bookmark-count">{{bookmarkcount}}</span></a></li>
+                    <span class="bookmark-count">{{bookmarks.length}}</span></a></li>
 
                 <li><a href="/user">
                 <!--@if (Auth::guest())

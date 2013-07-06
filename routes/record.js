@@ -1,7 +1,8 @@
 var sharedview = require('../lib/sharedview'),
-    Record = require('../models/record'),
-    Field = require('../models/field'),
-    RecordType = require('../models/recordtype'),
+    models = require('../models');
+    Record = models.Record,
+    Field = models.Field,
+    RecordType = models.RecordType,
     Q = require('q');
 
 exports.linkselect = function (req, res) {
@@ -27,11 +28,12 @@ exports.linklist = function (req, res) {
 
 exports.view = function (req, res) {
     var connection = require('../lib/datastore.js').connection;
-    var data = sharedview();
-    Q.all([ new Record(req.params.record_id), Field.all(), RecordType.all() ]).then(function (defdata) {
-        data.record = defdata[0];
-        data.fields = defdata[1];
-        data.recordtypes = defdata[2];
+    var data;
+    Q.all([ sharedview(), new Record(req.params.record_id), Field.all(), RecordType.all() ]).then(function (defdata) {
+        data = defdata[0];
+        data.record = defdata[1];
+        data.fields = defdata[2];
+        data.recordtypes = defdata[3];
         data.record.rendered = Record.render(data.record.data);
         res.render('record/interface', data, function(err, html) {
             if (err) {
