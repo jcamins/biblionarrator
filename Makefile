@@ -1,11 +1,13 @@
 PLTESTS = tests/*.pl
 JSTESTS = tests/*.js
 
-build: public/css/style.min.css public/css/style.css
+build: public/css/style.min.css public/css/style.css public/js/formathandlers.js
 public/css/style.min.css: public/css/style.less
 	lessc --yui-compress public/css/style.less > public/css/style.min.css
 public/css/style.css: public/css/style.less
 	lessc public/css/style.less > public/css/style.css
+public/js/formathandlers.js: clientjs/formathandlers.js
+	node node_modules/browserify/bin/cmd.js clientjs/formathandlers.js > public/js/formathandlers.js
 
 test:
 	perl $(PLTESTS)
