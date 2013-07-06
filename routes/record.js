@@ -1,5 +1,8 @@
+var sharedview = require('../lib/sharedview'),
+    Record = require('../models/record');
+
 exports.linkselect = function (req, res) {
-    res.render('../views/link-select.mustache', { id: req.params.record_id }, function(err, html) {
+    res.render('link-select', { id: req.params.record_id, layout: false }, function(err, html) {
         res.send(html);
     });
 };
@@ -17,4 +20,26 @@ exports.linkadd = function (req, res) {
 };
 
 exports.linklist = function (req, res) {
+};
+
+exports.view = function (req, res) {
+    var connection = require('../lib/datastore.js').connection;
+    var data = sharedview();
+    connection.query('SELECT * FROM fields', function(err, results, fields) {
+        data.fields = results;
+        connection.query('SELECT id, name FROM recordtypes', function(err, results, fields) {
+            data.recordtypes = results;
+            connection.query('SELECT records.id, recordtypes.name AS recordtype, records.data FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ req.params.record_id ], function(err, results, fields) {
+                data.record = results[0];
+                data.record.rendered = Record.render(data.record.data);
+                res.render('record/interface', data, function(err, html) {
+                    if (err) {
+                        res.send(404, err);
+                    } else {
+                        res.send(html);
+                    }
+                });
+            });
+        });
+    });
 };

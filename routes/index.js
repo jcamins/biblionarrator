@@ -21,6 +21,7 @@ exports.init = function (app) {
     /* Record */
     app.get('/record/:record_id/link/select', record.linkselect);
     app.get('/record/:record_id/link/add/:target_id', record.linkadd);
+    app.get('/record/:record_id', record.view);
 
     /* Media */
     app.post('/record/:record_id/media', media.upload);

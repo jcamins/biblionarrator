@@ -1,6 +1,6 @@
 var express = require('express'),
     params = require('express-params'),
-    cons = require('consolidate'),
+    handlebars = require('express-hbs'),
     httpProxy = require('http-proxy'),
     proxy = new httpProxy.RoutingProxy(),
     routes = require('./routes');
@@ -10,12 +10,16 @@ var app = express();
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
-app.engine('mustache', cons.mustache);
-app.set('view engine', 'mustache');
+app.engine('handlebars', handlebars.express3({
+        partialsDir: __dirname + '/views/partials',
+        defaultLayout: __dirname + '/views/layouts/main.handlebars'
+    }));
+app.set('view engine', 'handlebars');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 'tmp' }));
 app.use(express.methodOverride());
+app.use(express.static('public'));
 app.use(app.router);
 params.extend(app);
 
@@ -27,12 +31,12 @@ if ('development' == app.get('env')) {
 routes.init(app);
 
 /* Catch-all route for forwarding to Apache */
-app.get('*', function(req, res) {
+/*app.get('*', function(req, res) {
     return proxy.proxyRequest(req, res, {
         host: 'localhost',
         port: 3500
     });
-});
+});*/
 
 exports.app = app;
 
