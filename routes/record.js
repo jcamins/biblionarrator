@@ -1,5 +1,8 @@
 var sharedview = require('../lib/sharedview'),
-    Record = require('../models/record');
+    Record = require('../models/record'),
+    Field = require('../models/field'),
+    RecordType = require('../models/recordtype'),
+    Q = require('q');
 
 exports.linkselect = function (req, res) {
     res.render('link-select', { id: req.params.record_id, layout: false }, function(err, html) {
@@ -25,21 +28,17 @@ exports.linklist = function (req, res) {
 exports.view = function (req, res) {
     var connection = require('../lib/datastore.js').connection;
     var data = sharedview();
-    connection.query('SELECT * FROM fields', function(err, results, fields) {
-        data.fields = results;
-        connection.query('SELECT id, name FROM recordtypes', function(err, results, fields) {
-            data.recordtypes = results;
-            connection.query('SELECT records.id, recordtypes.name AS recordtype, records.data FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ req.params.record_id ], function(err, results, fields) {
-                data.record = results[0];
-                data.record.rendered = Record.render(data.record.data);
-                res.render('record/interface', data, function(err, html) {
-                    if (err) {
-                        res.send(404, err);
-                    } else {
-                        res.send(html);
-                    }
-                });
-            });
+    Q.all([ new Record(req.params.record_id), Field.all(), RecordType.all() ]).then(function (defdata) {
+        data.record = defdata[0];
+        data.fields = defdata[1];
+        data.recordtypes = defdata[2];
+        data.record.rendered = Record.render(data.record.data);
+        res.render('record/interface', data, function(err, html) {
+            if (err) {
+                res.send(404, err);
+            } else {
+                res.send(html);
+            }
         });
     });
 };

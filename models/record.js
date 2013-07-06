@@ -9,7 +9,7 @@ function Record (id) {
     var me = this;
 
     var func_get = function (id) {
-        connection.query('SELECT * FROM records WHERE id = ?', [ id ], function (err, results, fields) {
+        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ id ], function (err, results, fields) {
             for (var idx in fields) {
                 me[fields[idx].name] = results[0][fields[idx].name];
             }
@@ -77,6 +77,7 @@ function Record (id) {
     } else {
         func_new();
     }
+    return createPromise.promise;
 }
 
 Record.init = function (ref) {
