@@ -28,11 +28,7 @@ exports.linklist = function (req, res) {
 
 exports.view = function (req, res) {
     var record = new Record(req.params.record_id);
-    if (req.accepts('application/json')) {
-        record.then(function (rec) {
-            res.json(rec);
-        });
-    } else {
+    if (req.accepts('html')) {
         Q.all([ sharedview(), record, Field.all(), RecordType.all() ]).then(function (defdata) {
             var data = defdata[0];
             data.record = defdata[1];
@@ -48,6 +44,10 @@ exports.view = function (req, res) {
             });
         }, function (errs) {
             console.log(errs);
+        });
+    } else if (req.accepts('json')) {
+        record.then(function (rec) {
+            res.json(rec);
         });
     }
 };
