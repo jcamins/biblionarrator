@@ -21,7 +21,7 @@ app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 't
 app.use(express.methodOverride());
 app.use(express.static('public'));
 app.use(app.router);
-params.extend(app);
+//params.extend(app);
 
 // development only
 if ('development' == app.get('env')) {

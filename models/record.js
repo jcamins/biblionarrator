@@ -4,25 +4,9 @@ var Q = require('q'),
 
 module.exports = Record;
 
-function Record (id) {
+function Record (data) {
     var createPromise = Q.defer();
     var me = this;
-
-    var func_get = function (id) {
-        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ id ], function (err, results, fields) {
-            for (var idx in fields) {
-                me[fields[idx].name] = results[0][fields[idx].name];
-            }
-            if (err) {
-                createPromise.reject(err);
-            } else {
-                createPromise.resolve(me);
-            }
-        });
-    };
-
-    var func_new = function () {
-    };
 
     this.with = function (callback) {
         createPromise.promise.then(callback);
@@ -72,10 +56,50 @@ function Record (id) {
         return this;
     };
 
-    if (id) {
-        func_get(id);
+    this.save = function () {
+        var savePromise = Q.defer();
+        createPromise.promise.then(function (me) {
+            var query;
+            if (me.id) {
+                query = 'UPDATE records SET data = ?, recordtype_id = ? WHERE id = ?';
+            } else {
+                query = 'INSERT INTO records (data, recordtype_id) VALUES (?, ?)';
+                me.id = '';
+            }
+            connection.query(query, [ me.data, me.recordtype_id, me.id ], function (err, results) {
+                if (err) {
+                    savePromise.reject(err);
+                } else {
+                    if (!me.id) {
+                        me.id = results.insertId;
+                    }
+                    savePromise.resolve(me);
+                }
+            });
+        });
+        return savePromise.promise;
+    };
+
+    if (typeof data === 'object') {
+        for (var idx in data) {
+            me[idx] = data[idx];
+        }
+        createPromise.resolve(me);
+    } else if (data !== 'new' && (typeof data === 'string' || typeof data === 'integer')) {
+        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ data ], function (err, results, fields) {
+            if (err) {
+                createPromise.reject(err);
+            } else {
+                if (results.length > 0) {
+                    for (var idx in fields) {
+                        me[fields[idx].name] = results[0][fields[idx].name];
+                    }
+                }
+                createPromise.resolve(me);
+            }
+        });
     } else {
-        func_new();
+        createPromise.resolve(me);
     }
     return createPromise.promise;
 }
@@ -85,6 +109,9 @@ Record.init = function (ref) {
 };
 
 Record.render = function (data) {
+    if (typeof data === 'undefined' || data === null || data === '') {
+        return '<article><header></header><section></section></article>';
+    }
     return raw2html(JSON.parse(data));
 }
 
@@ -92,9 +119,12 @@ var attrs = [ 'href', 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'it
 var htmlelements = [ 'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr' ];
 
 function raw2html(object) {
+    console.log(object);
     var output = '';
     if (typeof object === 'string') {
         output = object;
+    } else if (typeof object === 'undefined' || object === null) {
+        return '';
     } else {
         for (var elem in object) {
             var htmlelem = elem;

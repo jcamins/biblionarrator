@@ -27,10 +27,9 @@ exports.linklist = function (req, res) {
 };
 
 exports.view = function (req, res) {
-    var connection = require('../lib/datastore.js').connection;
-    var data;
-    Q.all([ sharedview(), new Record(req.params.record_id), Field.all(), RecordType.all() ]).then(function (defdata) {
-        data = defdata[0];
+    var record = new Record(req.params.record_id);
+    Q.all([ sharedview(), record, Field.all(), RecordType.all() ]).then(function (defdata) {
+        var data = defdata[0];
         data.record = defdata[1];
         data.fields = defdata[2];
         data.recordtypes = defdata[3];
@@ -42,5 +41,21 @@ exports.view = function (req, res) {
                 res.send(html);
             }
         });
+    }, function (errs) {
+        console.log(errs);
+    });
+};
+
+exports.save = function (req, res) {
+    req.body.recordtype_id = req.body.recordtype_id || 1;
+    var record = new Record({ id: req.params.record_id,
+                              data: req.body.data,
+                              recordtype_id: req.body.recordtype_id });
+    record.then(function (rec) {
+        return rec.save();
+    }).then(function (rec) {
+        res.send(JSON.stringify(rec));
+    }, function (err) {
+        res.send(404, err);
     });
 };

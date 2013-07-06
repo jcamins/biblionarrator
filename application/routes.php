@@ -40,7 +40,6 @@ Route::get('record/new/template/(:any)', 'record@fromtemplate');
 Route::get('record/(:any)?/duplicate', 'record@duplicate');
 Route::get('record/(:any)?/delete', 'record@delete');
 Route::post('record/(:num)/image', 'record@image');
-Route::post('record/(:any)?', 'record@index');
 Route::get('resources/field/(:any)/styles', 'resources.field@styles');
 Route::post('resources/field/(:any)/styles', 'resources.field@styles');
 Route::get('resources/field/(:any)?/?editor', 'resources.field@editor');
