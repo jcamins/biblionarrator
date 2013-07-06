@@ -28,22 +28,39 @@ exports.linklist = function (req, res) {
 
 exports.view = function (req, res) {
     var record = new Record(req.params.record_id);
-    Q.all([ sharedview(), record, Field.all(), RecordType.all() ]).then(function (defdata) {
-        var data = defdata[0];
-        data.record = defdata[1];
-        data.fields = defdata[2];
-        data.recordtypes = defdata[3];
-        data.record.rendered = Record.render(data.record.data);
-        res.render('record/interface', data, function(err, html) {
-            if (err) {
-                res.send(404, err);
-            } else {
-                res.send(html);
-            }
+    if (req.accepts('application/json')) {
+        record.then(function (rec) {
+            res.json(rec);
         });
-    }, function (errs) {
-        console.log(errs);
-    });
+    } else {
+        Q.all([ sharedview(), record, Field.all(), RecordType.all() ]).then(function (defdata) {
+            var data = defdata[0];
+            data.record = defdata[1];
+            data.fields = defdata[2];
+            data.recordtypes = defdata[3];
+            data.record.rendered = data.record.render();
+            res.render('record/interface', data, function(err, html) {
+                if (err) {
+                    res.send(404, err);
+                } else {
+                    res.send(html);
+                }
+            });
+        }, function (errs) {
+            console.log(errs);
+        });
+    }
+};
+
+exports.snippet = function (req, res) {
+    var record = new Record(req.params.record_id);
+    //if (req.accepts('application/json')) {
+        record.then(function (rec) {
+            return rec.snippet();
+        }).then(function (snippet) {
+            res.json(snippet);
+        });
+    //}
 };
 
 exports.save = function (req, res) {

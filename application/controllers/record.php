@@ -45,27 +45,6 @@ class Record_Controller extends Resource_Controller {
         return $this->_interface($record);
     }
 
-    public function get_index($record_id = null, $type = null) {
-        $record = Record::find($record_id);
-        if (is_null($record) || $record->deleted) {
-            $record = new Record();
-        }
-        if ($type === 'snippet') {
-            $record = $record->snippet();
-        }
-        $format = $this->_choose_format();
-        if ($format == 'interface') {
-            if (isset($record->id)) {
-                Breadcrumbs::add('Record ' . $record->id);
-            }
-            return $this->_interface($record);
-        } else if (in_array($format, self::$templatelist)) {
-            return View::make('record.' . $format)->with('record', $record);
-        } else {
-            return $record->format($format);
-        }
-    }
-
     public function get_duplicate($record_id = null) {
         $record = Record::find($record_id);
         unset($record->id);

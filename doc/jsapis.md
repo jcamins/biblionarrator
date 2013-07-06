@@ -115,30 +115,30 @@ RECORD FORMAT HANDLER PLUGINS
 
 All formathandler methods take the raw record data rather than a record object.
 
-formathandler.render(record)
-----------------------------
+formathandler.render(recorddata)
+--------------------------------
 
-*Arguments:* (Record.data) record
+*Arguments:* (Record.data) recorddata
 
 *Return value:* (string) html
 
 Renders raw records as HTML for display.
 
 
-formathandler.snippet(record)
------------------------------
+formathandler.snippet(recorddata)
+---------------------------------
 
-*Arguments:* (Record.data) record
+*Arguments:* (Record.data) recorddata
 
-*Return value:* (Record.data) snippet
+*Return value:* (Record.data) snippetdata
 
 Given a raw record, generates a snippet suitable for display in search results.
 
 
-formathandler.indexes(record)
------------------------------
+formathandler.indexes(recorddata)
+---------------------------------
 
-*Arguments:* (Record.data) record
+*Arguments:* (Record.data) recorddata
 
 *Return value:* (array) indexes
 
@@ -146,12 +146,21 @@ Given the raw record, generates an array describing the indexable fields in the
 record.
 
 
-formathandler.links(record)
----------------------------
+formathandler.links(recorddata)
+-------------------------------
 
-*Arguments:* (Record.data) record
+*Arguments:* (Record.data) recorddata
 
 *Return value:* (array) links
 
 Given the raw record, generates an array describing all the outward links from the
 record.
+
+formathandler.decompile(htmldom)
+--------------------------------
+
+*Arguments:* (DOM Element) htmldom
+
+*Return value:* (Record.data) recorddata
+
+Given the rendered HTML decompiles it into the Record.data format.

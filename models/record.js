@@ -81,6 +81,26 @@ function Record (data) {
         return savePromise.promise;
     };
 
+    this.snippet = function () {
+        var deferred = Q.defer();
+        createPromise.promise.then(function (me) {
+            var record = new Record({
+                                    id: me.id,
+                                    data: JSON.stringify(bnjson.snippet(JSON.parse(me.data))),
+                                    recordtype_id: me.recordtype_id
+                                    });
+            deferred.resolve(record);
+        });
+        return deferred.promise;
+    };
+
+    this.render = function () {
+        if (typeof this.data === 'undefined' || this.data === null || this.data === '') {
+            return '<article><header></header><section></section></article>';
+        }
+        return bnjson.render(JSON.parse(this.data));
+    };
+
     if (typeof data === 'object') {
         for (var idx in data) {
             me[idx] = data[idx];
@@ -108,11 +128,4 @@ function Record (data) {
 Record.init = function (ref) {
     models = ref;
 };
-
-Record.render = function (data) {
-    if (typeof data === 'undefined' || data === null || data === '') {
-        return '<article><header></header><section></section></article>';
-    }
-    return bnjson.render(JSON.parse(data));
-}
 
