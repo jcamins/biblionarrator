@@ -1,7 +1,8 @@
 var assets = require('./assets'),
     doc = require('./doc'),
     record = require('./record'),
-    media = require('./media');
+    media = require('./media'),
+    search = require('./search');
 
 exports.init = function (app) {
 
@@ -29,4 +30,7 @@ exports.init = function (app) {
     /* Media */
     app.post('/record/:record_id/media', media.upload);
     app.del('/record/:record_id/media/:media_id', media.del);
+
+    /* Search */
+    app.get('/search', search.view);
 };

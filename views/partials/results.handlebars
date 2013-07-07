@@ -1,0 +1,62 @@
+<div class="row-fluid">
+    <div class="span10 offset2">
+        <div class="recordtypes header-shown">
+            {{#if query}}
+                Your search for <em>{{query}}</em> found:
+            {{else}}
+                Found:
+            {{/if}}
+        </div>
+        <div class="header-shown resultcount">Showing {{count}} of {{total}} records.</div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a href="#all" data-toggle="tab">All ({{count}})</a></li>
+            {{#each mainfacet}}
+            <li><a href="#{{@key}}" data-toggle="tab">{{@key}} ({{this}})</a></li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="span10">
+    <table id="recordList" class="table">
+        <thead>
+            <tr class="header-hidden"><th>Number></th><th>Record</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {{#each records}}
+            <tr class="resultRow" data-id="{{id}}">
+                <td class="result-number">
+                    <a class="record-number-link" href="/record/{{id}}">{{number}}</a>
+                </td>
+                <td class="result-content">
+                    <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">
+                        {{{rendered}}}
+                        <div class="recordPreviewArea">
+                            <div class="recordRemainder"></div>
+                        </div>
+                    </div>
+                    <div class="resultToolbar">
+                    </div>
+                </td>
+                <td class="recordPane">
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+    {{{paginator}}}
+    <div class="result-size">Show <span data-toggle="dropdown-select" class="button-dropdown white">
+        <select id="perpage" name="perpage">
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        </span> records
+    </div>
+    </div>
+</div>
