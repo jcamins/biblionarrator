@@ -26,6 +26,30 @@ exports.linkadd = function (req, res) {
 exports.linklist = function (req, res) {
 };
 
+exports.links = function (req, res) {
+    var list = new RecordList();
+    var record = new Record(req.params.record_id);
+
+    record.then(function (rec) {
+        return Q.all([ rec.in(), rec.out() ]);
+    }).then(function (defdata) {
+        defdata[0] = defdata[0] || [ ];
+        defdata[1] = defdata[1] || [ ];
+        return list.fromlinks(defdata[0].concat(defdata[1]));
+    }).then(function (data) {
+        data.layout = false;
+        res.render('partials/results', data, function(err, html) {
+            if (err) {
+                res.send(404, err);
+            } else {
+                res.send(html);
+            }
+        });
+    }).catch(function (err) {
+        res.send(404, err);
+    });
+};
+
 exports.view = function (req, res) {
     var record = new Record(req.params.record_id);
     if (req.accepts('html')) {

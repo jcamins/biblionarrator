@@ -35,6 +35,32 @@ function RecordList () {
         });
         return deferred.promise;
     };
+
+    this.fromlinks = function (links) {
+        var deferred = Q.defer();
+        me.mainfacet = { };
+        me.records = [ ];
+        me.total = links.length;
+        me.count = links.length;
+        var promises = [];
+        for (var idx in links) {
+            if (links[idx].type === 'In') {
+                promises.push(links[idx].source());
+            } else {
+                promises.push(links[idx].target());
+            }
+        }
+        Q.all(promises).then(function (records) {
+            for (var idx in records) {
+                records[idx].rendered = records[idx].render();
+                records[idx].number = parseInt(idx, 10) + 1;
+                me.records.push(records[idx]);
+                me.mainfacet[links[idx].type] = (parseInt(me.mainfacet[links[idx].type], 10) || 0) + 1;
+            }
+            deferred.resolve(me);
+        });
+        return deferred.promise;
+    };
 };
 
 RecordList.init = function (ref) {

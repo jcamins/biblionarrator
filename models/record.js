@@ -23,16 +23,13 @@ function Record (data) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'In'));
                     }
                     deferred.resolve(links);
                 }
             });
         });
-        this.with = function (callback) {
-            deferred.promise.then(callback);
-        };
-        return this;
+        return deferred.promise;
     };
 
     this.out = function (filter) {
@@ -45,16 +42,13 @@ function Record (data) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'Out'));
                     }
                     deferred.resolve(links);
                 }
             });
         });
-        this.with = function (callback) {
-            deferred.promise.then(callback);
-        };
-        return this;
+        return deferred.promise;
     };
 
     this.save = function () {
@@ -106,7 +100,7 @@ function Record (data) {
             me[idx] = data[idx];
         }
         createPromise.resolve(me);
-    } else if (data !== 'new' && (typeof data === 'string' || typeof data === 'integer')) {
+    } else if (data !== 'new' && (typeof data === 'string' || typeof data === 'number')) {
         connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ data ], function (err, results, fields) {
             if (err) {
                 createPromise.reject(err);

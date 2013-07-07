@@ -10,6 +10,21 @@
 @brand-shadow: #d23f3f;
 
 /* Mixins */
+.makeFluidRow(){
+    width: 100%;
+    .clearfix();
+}
+
+.makeFluidCol(@span:1,@offset:0){
+    float: left;
+    #grid > .fluid .span(@span);
+    #grid > .fluid .offset(@offset);
+    &:first-child {
+        margin-left: 0;
+        .offsetFirstChild(@offset);
+    }
+}
+
 .gradient(@start: #fff; @finish: #e6e6e6) {
     background-image: -moz-linear-gradient(top,@start,#e6e6e6);
     background-image: -webkit-gradient(linear,0 0,0 100%,from(@start),to(@finish));
@@ -786,6 +801,17 @@ a.selected {
     clear: both;
 }
 
+/*** Panes ***/
+
+.leftPane {
+    .makeFluidCol(7);
+    .pull-left;
+}
+
+.rightPane {
+    .makeFluidCol(5);
+    .pull-right;
+}
 
 /*** Instructions ***/
 

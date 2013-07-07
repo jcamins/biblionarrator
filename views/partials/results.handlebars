@@ -1,12 +1,5 @@
 <div class="row-fluid">
     <div class="span10 offset2">
-        <div class="recordtypes header-shown">
-            {{#if query}}
-                Your search for <em>{{query}}</em> found:
-            {{else}}
-                Found:
-            {{/if}}
-        </div>
         <div class="header-shown resultcount">Showing {{count}} of {{total}} records.</div>
     </div>
 </div>
@@ -22,7 +15,7 @@
     <div class="span10">
     <table id="recordList" class="table">
         <thead>
-            <tr class="header-hidden"><th>Number></th><th>Record</th><th>Actions</th></tr>
+            <tr class="header-hidden"><th>Number</th><th>Record</th><th>Actions</th></tr>
         </thead>
         <tbody>
         {{#each records}}

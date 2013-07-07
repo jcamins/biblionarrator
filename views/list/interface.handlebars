@@ -1,19 +1,20 @@
 <div id="content" class="container-fluid">
     <div class="row-fluid">
         <div class="span10 pull-right">
-            <div class="span8">
+            <div class="span7">
             <!--@if ($records && $paginator->results)-->
                 <div id="sortings">
                     <!--@include ('components.sortings')-->
                 </div>
             <!--@endif-->
             <hr class="breadcrumb-divider"/>
+            </div>
         </div>
    </div>
     <div class="row-fluid">
         <div class="span10 pull-right">
-            <div class="row-fluid">
-                <div class="span8">
+            <div class="row-fluid search-scroller">
+                <div class="leftPane">
                     <h3>{{listtitle}}</h3>
                     {{> results}}
                     <div class="instructions instructions-below">
@@ -41,8 +42,6 @@
                             <!--@endif-->
                         </ul>
                     </div>
-                </div>
-                <div id="previewPane" class="span4">
                 </div>
             </div>
         </div>
@@ -75,7 +74,7 @@
 {{#contentFor 'javascript'}}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.preview').click(function() {
+    $('body').on('click', '.preview', null, function() {
         var button = this;
         if ($(button).hasClass('open')) {
             $(button).parents('td').find('section').each(function () {
@@ -103,6 +102,14 @@ $(document).ready(function() {
     $('.add-bookmark').click(function() {
         addBookmark($(this).parents('tr').attr('data-id'));
         return false;
+    });
+    $('.explore-links').click(function() {
+        $('.rightPane').remove();
+        $.ajax({
+            url: '/record/' + $(this).parents('tr').attr('data-id') + '/links'
+        }).done(function (data) {
+            $('.search-scroller').append('<div class="rightPane" style="margin-top: ' + $(window).scrollTop() + 'px">' + data + '</div>');
+        });
     });
 });
 
