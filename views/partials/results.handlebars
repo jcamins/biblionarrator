@@ -28,7 +28,7 @@
         {{#each records}}
             <tr class="resultRow" data-id="{{id}}">
                 <td class="result-number">
-                    <a class="record-number-link" href="/record/{{id}}">{{number}}</a>
+                    <a class="record-number-link" href="/record/{{id}}">{{number}}<br>view record</a>
                 </td>
                 <td class="result-content">
                     <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">
@@ -37,10 +37,16 @@
                             <div class="recordRemainder"></div>
                         </div>
                     </div>
+                    <button title="Show whole record" class="preview tray btn btn-link">
+                        <i class="chevrons-left"></i>
+                        <div><i class="tray-bar"></i></div>
+                        <i class="chevrons-right"></i>
+                    </button>
                     <div class="resultToolbar">
                     </div>
                 </td>
                 <td class="recordPane">
+                    <button title="Explore this record's knowledge trail" class="explore-links btn btn-link"><i class="explore-icon"></i></button>
                 </td>
             </tr>
         {{/each}}

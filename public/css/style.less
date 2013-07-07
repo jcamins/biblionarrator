@@ -35,6 +35,22 @@
     margin-top: 6px;
 }
 
+.chevrons-icon {
+    background-image:url('/img/chevronsdown.svg');
+    height:14px;
+    width:14px;
+    background-size:100%;
+    display: block;
+}
+
+.flip {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+
 /* General */
 
 @media (min-width: 980px) {
@@ -158,6 +174,49 @@ footer {
 
 /*** List ***/
 
+button.tray {
+    width: 100%;
+    position: relative;
+    padding: 0;
+
+    i.chevrons-left {
+        float: left;
+        .chevrons-icon;
+    }
+
+    & > div {
+        width: 100%;
+        position: absolute;
+
+        i.tray-bar {
+            background-image:url('/img/triplebars.svg');
+            height: 14px;
+            margin: 0 10px;
+            background-size: contain;
+            display: block;
+        }
+    }
+
+    i.chevrons-right {
+        float: right;
+        .chevrons-icon;
+    }
+}
+
+button.explore-links {
+    padding: 0;
+
+    .explore-icon {
+        background-image: url('/img/trail.svg');
+        width: 24px;
+        height: 33px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        display: block;
+        float: right;
+    }
+}
+
 #sortings {
     font-size: 90%;
 
@@ -246,6 +305,7 @@ footer {
 
         .result-number {
             padding-top: 6px;
+            text-align: right;
         }
     }
 
