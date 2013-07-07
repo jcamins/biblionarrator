@@ -98,16 +98,22 @@ $(document).ready(function() {
     $('#perpage').change(function () {
         window.location.href = updateQueryStringParameter(document.URL, 'perpage', $(this).find(':selected').val());
     });
-    $('.preview').show();
     $('.add-bookmark').click(function() {
         addBookmark($(this).parents('tr').attr('data-id'));
         return false;
     });
-    $('.explore-links').click(function() {
-        $('.rightPane').remove();
+    $('body').on('click', '.explore-links', null, function() {
+        var me = this;
         $.ajax({
             url: '/record/' + $(this).parents('tr').attr('data-id') + '/links'
         }).done(function (data) {
+            if ($(me).parents('.leftPane').length > 0) {
+                $('.rightPane').remove();
+            } else {
+                window.scrollTo(0, 0);
+                $('.leftPane').remove();
+                $('.rightPane').removeClass('rightPane').addClass('leftPane').css('margin-top', '0');
+            }
             $('.search-scroller').append('<div class="rightPane" style="margin-top: ' + $(window).scrollTop() + 'px">' + data + '</div>');
         });
     });
