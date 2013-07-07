@@ -174,49 +174,6 @@ footer {
 
 /*** List ***/
 
-button.tray {
-    width: 100%;
-    position: relative;
-    padding: 0;
-
-    i.chevrons-left {
-        float: left;
-        .chevrons-icon;
-    }
-
-    & > div {
-        width: 100%;
-        position: absolute;
-
-        i.tray-bar {
-            background-image:url('/img/triplebars.svg');
-            height: 14px;
-            margin: 0 10px;
-            background-size: contain;
-            display: block;
-        }
-    }
-
-    i.chevrons-right {
-        float: right;
-        .chevrons-icon;
-    }
-}
-
-button.explore-links {
-    padding: 0;
-
-    .explore-icon {
-        background-image: url('/img/trail.svg');
-        width: 24px;
-        height: 33px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        display: block;
-        float: right;
-    }
-}
-
 #sortings {
     font-size: 90%;
 
@@ -285,16 +242,12 @@ button.explore-links {
         .result-content {
             width: 100%;
 
-            .record-view-link {
-                color: #000;
+            header {
+                margin-bottom: 1em;
             }
 
-            .recordPreviewArea {
+            section {
                 display: none;
-            }
-
-            .hide-preview[disabled] {
-                opacity: 0;
             }
         }
 
@@ -307,8 +260,43 @@ button.explore-links {
             padding-top: 6px;
             text-align: right;
         }
-    }
 
+        button.tray {
+            width: 100%;
+            position: relative;
+            padding: 0;
+            margin-bottom: 2em;
+
+            &.open {
+                margin-top: 1em;
+                .flip;
+            }
+
+            i.chevrons-left {
+                float: left;
+                .chevrons-icon;
+            }
+
+            & > div {
+                width: 100%;
+                position: absolute;
+
+                i.tray-bar {
+                    background-image:url('/img/triplebars.svg');
+                    height: 14px;
+                    margin: 0 10px;
+                    background-size: contain;
+                    display: block;
+                }
+            }
+
+            i.chevrons-right {
+                float: right;
+                .chevrons-icon;
+            }
+        }
+
+    }
 
     .recordPane {
         button {
@@ -316,6 +304,20 @@ button.explore-links {
 
             &.preview {
                 display: none;
+            }
+
+            &.explore-links {
+                padding: 0;
+
+                .explore-icon {
+                    background-image: url('/img/trail.svg');
+                    width: 24px;
+                    height: 33px;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    display: block;
+                    float: right;
+                }
             }
         }
     }
