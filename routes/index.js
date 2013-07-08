@@ -34,4 +34,20 @@ exports.init = function (app) {
 
     /* Search */
     app.get('/search', search.view);
+
+    /* Home */
+    app.get('/', home);
+    app.get('/about', about);
 };
+
+function home(req, res) {
+    res.render('home', { }, function(err, html) {
+        res.send(html);
+    });
+}
+
+function about(req, res) {
+    res.render('about', { }, function(err, html) {
+        res.send(html);
+    });
+}
