@@ -7,11 +7,11 @@ app.use(passport.session());
 
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+    done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-    connection.query('SELECT * FROM users WHERE id = ?', [ id ], function (err, results, fields) {
+    connection.query('SELECT * FROM users WHERE id = ?', [id], function(err, results, fields) {
         return done(err, results[0]);
     });
 });
@@ -25,8 +25,12 @@ passport.deserializeUser(function(id, done) {
 passport.use(
     new LocalStrategy(
         function(username, password, done) {
-            connection.query('SELECT * FROM users WHERE email = ?', [ username ], function (err, results, fields) {
-                if (err) { return done(null, false, { message: 'Unknown user ' + username }); }
+            connection.query('SELECT * FROM users WHERE email = ?', [username], function(err, results, fields) {
+                if (err) {
+                    return done(null, false, {
+                        message: 'Unknown user ' + username
+                    });
+                }
                 return done(null, results[0]);
             });
         }
@@ -34,9 +38,11 @@ passport.use(
 );
 
 /* User */
-app.post('/user/login', passport.authenticate('local', { failureRedirect: '/user/login', failureFlash: true }), function (req, res) {
+app.post('/user/login', passport.authenticate('local', {
+    failureRedirect: '/user/login',
+    failureFlash: true
+}), function(req, res) {
     req.body.redirect = req.body.redirect || '/';
     console.log('authenticated!');
     res.redirect(req.body.redirect);
 });
-

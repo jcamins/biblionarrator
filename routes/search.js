@@ -3,11 +3,11 @@ var sharedview = require('../lib/sharedview'),
     RecordList = models.RecordList,
     Q = require('q');
 
-exports.view = function (req, res) {
+exports.view = function(req, res) {
     var query = req.query.q || '';
     var list = new RecordList();
 
-    Q.all([ sharedview(), list.search(query) ]).then(function (defdata) {
+    Q.all([sharedview(), list.search(query)]).then(function(defdata) {
         var data = defdata[0];
         data.query = query;
         for (var idx in defdata[1]) {

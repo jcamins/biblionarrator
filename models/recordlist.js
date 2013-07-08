@@ -4,25 +4,25 @@ var Q = require('q'),
 
 module.exports = RecordList;
 
-function RecordList () {
+function RecordList() {
     var me = this;
 
-    this.search = function (query) {
+    this.search = function(query) {
         var deferred = Q.defer();
 
-        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (records.recordtype_id = recordtypes.id) WHERE deleted = 0 AND data LIKE ?', [ '%' + query + '%' ], function (err, results, fields) {
+        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (records.recordtype_id = recordtypes.id) WHERE deleted = 0 AND data LIKE ?', ['%' + query + '%'], function(err, results, fields) {
             if (err) {
                 deferred.reject(err);
             } else {
-                me.mainfacet = { };
-                me.records = [ ];
+                me.mainfacet = {};
+                me.records = [];
                 me.total = results.length;
                 me.count = results.length;
                 var promises = [];
                 for (var idx in results) {
                     promises.push(new Record(results[idx]));
                 }
-                Q.all(promises).then(function (records) {
+                Q.all(promises).then(function(records) {
                     for (var idx in records) {
                         records[idx].rendered = records[idx].render();
                         records[idx].number = parseInt(idx, 10) + 1;
@@ -36,10 +36,10 @@ function RecordList () {
         return deferred.promise;
     };
 
-    this.fromlinks = function (links) {
+    this.fromlinks = function(links) {
         var deferred = Q.defer();
-        me.mainfacet = { };
-        me.records = [ ];
+        me.mainfacet = {};
+        me.records = [];
         me.total = links.length;
         me.count = links.length;
         var promises = [];
@@ -50,7 +50,7 @@ function RecordList () {
                 promises.push(links[idx].target());
             }
         }
-        Q.all(promises).then(function (records) {
+        Q.all(promises).then(function(records) {
             for (var idx in records) {
                 records[idx].rendered = records[idx].render();
                 records[idx].number = parseInt(idx, 10) + 1;
@@ -63,6 +63,6 @@ function RecordList () {
     };
 }
 
-RecordList.init = function (ref) {
+RecordList.init = function(ref) {
     models = ref;
 };

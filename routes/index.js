@@ -4,10 +4,10 @@ var assets = require('./assets'),
     media = require('./media'),
     search = require('./search');
 
-exports.init = function (app) {
+exports.init = function(app) {
 
     /* Params */
-/*    app.param('record_id', /^\d+$/);
+    /*    app.param('record_id', /^\d+$/);
     app.param('target_id', /^\d+$/);
     app.param('media_id', /^\d+$/);
     app.param('filename', /^[-_\w]+$/);*/
@@ -42,19 +42,19 @@ exports.init = function (app) {
 };
 
 function home(req, res) {
-    res.render('home', { }, function(err, html) {
+    res.render('home', {}, function(err, html) {
         res.send(html);
     });
 }
 
 function about(req, res) {
-    res.render('about', { }, function(err, html) {
+    res.render('about', {}, function(err, html) {
         res.send(html);
     });
 }
 
 function admin(req, res) {
-    res.render('admin', { }, function(err, html) {
+    res.render('admin', {}, function(err, html) {
         res.send(html);
     });
 }

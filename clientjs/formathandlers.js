@@ -1,3 +1,2 @@
-
-window = window || { };
+window = window || {};
 window.bnjson = require('../lib/formats/bnjson');

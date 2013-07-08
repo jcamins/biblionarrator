@@ -5,19 +5,19 @@ var Q = require('q'),
 
 module.exports = Record;
 
-function Record (data) {
+function Record(data) {
     var createPromise = Q.defer();
     var me = this;
 
-    this.with = function (callback) {
+    this.with = function(callback) {
         createPromise.promise.then(callback);
     };
 
-    this.in = function (filter) {
+    this. in = function(filter) {
         var Link = require('./link');
         var deferred = Q.defer();
-        createPromise.promise.then(function (me) {
-            connection.query('SELECT * FROM record_links WHERE target_id = ?', [ me.id ], function (err, results, fields) {
+        createPromise.promise.then(function(me) {
+            connection.query('SELECT * FROM record_links WHERE target_id = ?', [me.id], function(err, results, fields) {
                 if (err) {
                     deferred.reject(err);
                 } else {
@@ -32,11 +32,11 @@ function Record (data) {
         return deferred.promise;
     };
 
-    this.out = function (filter) {
+    this.out = function(filter) {
         var Link = require('./link');
         var deferred = Q.defer();
-        createPromise.promise.then(function (me) {
-            connection.query('SELECT * FROM record_links WHERE source_id = ?', [ me.id ], function (err, results, fields) {
+        createPromise.promise.then(function(me) {
+            connection.query('SELECT * FROM record_links WHERE source_id = ?', [me.id], function(err, results, fields) {
                 if (err) {
                     deferred.reject(err);
                 } else {
@@ -51,9 +51,9 @@ function Record (data) {
         return deferred.promise;
     };
 
-    this.save = function () {
+    this.save = function() {
         var savePromise = Q.defer();
-        createPromise.promise.then(function (me) {
+        createPromise.promise.then(function(me) {
             var query;
             if (me.id) {
                 query = 'UPDATE records SET data = ?, recordtype_id = ? WHERE id = ?';
@@ -61,7 +61,7 @@ function Record (data) {
                 query = 'INSERT INTO records (data, recordtype_id) VALUES (?, ?)';
                 me.id = '';
             }
-            connection.query(query, [ me.data, me.recordtype_id, me.id ], function (err, results) {
+            connection.query(query, [me.data, me.recordtype_id, me.id], function(err, results) {
                 if (err) {
                     savePromise.reject(err);
                 } else {
@@ -75,20 +75,20 @@ function Record (data) {
         return savePromise.promise;
     };
 
-    this.snippet = function () {
+    this.snippet = function() {
         var deferred = Q.defer();
-        createPromise.promise.then(function (me) {
+        createPromise.promise.then(function(me) {
             var record = new Record({
-                                    id: me.id,
-                                    data: JSON.stringify(bnjson.snippet(JSON.parse(me.data))),
-                                    recordtype_id: me.recordtype_id
-                                    });
+                id: me.id,
+                data: JSON.stringify(bnjson.snippet(JSON.parse(me.data))),
+                recordtype_id: me.recordtype_id
+            });
             deferred.resolve(record);
         });
         return deferred.promise;
     };
 
-    this.render = function () {
+    this.render = function() {
         if (typeof this.data === 'undefined' || this.data === null || this.data === '') {
             return '<article><header></header><section></section></article>';
         }
@@ -101,7 +101,7 @@ function Record (data) {
         }
         createPromise.resolve(me);
     } else if (data !== 'new' && (typeof data === 'string' || typeof data === 'number')) {
-        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [ data ], function (err, results, fields) {
+        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [data], function(err, results, fields) {
             if (err) {
                 createPromise.reject(err);
             } else {
@@ -119,7 +119,6 @@ function Record (data) {
     return createPromise.promise;
 }
 
-Record.init = function (ref) {
+Record.init = function(ref) {
     models = ref;
 };
-

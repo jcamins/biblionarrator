@@ -15,20 +15,20 @@ function Link(source_id, target_id, type) {
     this.target_id = target_id;
     this.type = type;
 
-    this.source = function () {
+    this.source = function() {
         source = source || new models.Record(me.source_id);
         return source;
     };
 
-    this.target = function () {
+    this.target = function() {
         target = target || new models.Record(me.target_id);
         return target;
     };
 
-    this.save = function () {
+    this.save = function() {
         deferred.promise.then(function() {
             if (me.id) {
-                connection.query('UPDATE record_links SET source_id = ?, target_id = ?, updated_at = NOW()', [ me.source_id, me.target_id ], function (err, results) {
+                connection.query('UPDATE record_links SET source_id = ?, target_id = ?, updated_at = NOW()', [me.source_id, me.target_id], function(err, results) {
                     if (err) {
                         deferred.reject(err);
                     } else {
@@ -36,7 +36,7 @@ function Link(source_id, target_id, type) {
                     }
                 });
             } else {
-                connection.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [ me.source_id, me.target_id ], function (err, results) {
+                connection.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [me.source_id, me.target_id], function(err, results) {
                     if (err) {
                         deferred.reject(err);
                     } else {
@@ -47,7 +47,7 @@ function Link(source_id, target_id, type) {
         });
     };
 
-    this.with = function (callback) {
+    this.with = function(callback) {
         deferred.promise.then(callback);
     };
 }
