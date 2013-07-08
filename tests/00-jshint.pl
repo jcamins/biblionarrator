@@ -18,6 +18,7 @@ jshint( 'Server-side JS', $root . 'lib' );
 jshint( 'Routes', $root . 'routes' );
 jshint( 'Models', $root . 'models' );
 jshint( 'Client-side JS', $root . 'public/js' );
+jshint( 'Browserified JS', $root . 'clientjs' );
 jshint( 'Test scripts', $root . 'tests' );
 
 done_testing();
