@@ -38,13 +38,17 @@ exports.links = function (req, res) {
         return list.fromlinks(defdata[0].concat(defdata[1]));
     }).then(function (data) {
         data.layout = false;
-        res.render('partials/results', data, function(err, html) {
-            if (err) {
-                res.send(404, err);
-            } else {
-                res.send(html);
-            }
-        });
+        if (req.accepts('html')) {
+            res.render('partials/results', data, function(err, html) {
+                if (err) {
+                    res.send(404, err);
+                } else {
+                    res.send(html);
+                }
+            });
+        } else {
+            res.json(data);
+        }
     }).catch(function (err) {
         res.send(404, err);
     });
@@ -52,6 +56,7 @@ exports.links = function (req, res) {
 
 exports.view = function (req, res) {
     var record = new Record(req.params.record_id);
+    console.log(req);
     if (req.accepts('html')) {
         Q.all([ sharedview(), record, Field.all(), RecordType.all() ]).then(function (defdata) {
             var data = defdata[0];

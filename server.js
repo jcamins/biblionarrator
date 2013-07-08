@@ -20,6 +20,7 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 'tmp' }));
 app.use(express.methodOverride());
 app.use(express.static('public'));
+app.use('/views', express.static(__dirname + '/views'));
 app.use(app.router);
 //params.extend(app);
 

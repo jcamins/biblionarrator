@@ -308,29 +308,6 @@ function saveTemplate() {
         updateFieldsTOCTree();
     });
 }
-function transformXML(xml, xsl) {
-    var result;
-    var parser = new DOMParser();
-    if (!xml) {
-        return "";
-    } else if (typeof(xml) == 'string') {
-        xml = parser.parseFromString(xml, "text/xml");
-    }
-    if (!xsl) {
-        return "";
-    } else if (typeof(xsl) == 'string') {
-        xsl = parser.parseFromString(xsl, "text/xml");
-    }
-    if (window.ActiveXObject) {
-        result = new ActiveXObject("MSXML2.DOMDocument");
-        xml.transformNodeToObject(xsl, result);
-    } else {    // Other browsers
-        result = new XSLTProcessor();
-        result.importStylesheet(xsl);
-        result = result.transformToFragment(xml, document);
-    }
-    return (new XMLSerializer()).serializeToString(result);
-}
 function addAlert(msg, type) {
     $('#alerts').append('<div class="alert alert-' + type + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + msg + '</div>');
     $('#alerts .alert:not(:last-child)').fadeOut(400, function() { $(this).remove(); });
