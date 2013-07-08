@@ -11,15 +11,19 @@ function Renderer() {
     };
     var templates = { };
 
+    this.preload = function (template) {
+        me.render({ }, template);
+    };
+
     this.render = function (data, template, mountpoint) {
         if (templates[template]) {
-            mountpoint.innerHTML += templates[template](data);
+            display(data, template, mountpoint);
         } else {
             $.ajax({
                 url: urls[template]
             }).done(function (hbs) {
                 templates[template] = window.Handlebars.compile(hbs);
-                mountpoint.innerHTML += templates[template](data);
+                display(data, template, mountpoint);
             });
         }
     };
@@ -36,6 +40,12 @@ function Renderer() {
         });
     };
 };
+
+function display (data, template, mountpoint) {
+    if (typeof mountpoint === 'object') {
+        mountpoint.innerHTML += templates[template](data);
+    }
+}
 
 },{"handlebars":2}],3:[function(require,module,exports){
 // nothing to see here... no file methods for the browser
