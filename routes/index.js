@@ -38,6 +38,7 @@ exports.init = function (app) {
     /* Home */
     app.get('/', home);
     app.get('/about', about);
+    app.get('/admin', admin);
 };
 
 function home(req, res) {
@@ -48,6 +49,12 @@ function home(req, res) {
 
 function about(req, res) {
     res.render('about', { }, function(err, html) {
+        res.send(html);
+    });
+}
+
+function admin(req, res) {
+    res.render('admin', { }, function(err, html) {
         res.send(html);
     });
 }

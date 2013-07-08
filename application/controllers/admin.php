@@ -21,11 +21,6 @@ class Admin_Controller extends Base_Controller {
 
     public $restful = true;
 
-    public function get_index() {
-        Breadcrumbs::add('Administration');
-        return View::make('admin.index');
-    }
-
     public function get_templates()
     {
         Asset::add('fieldstyles', 'css/fields.css');
