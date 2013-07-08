@@ -7,10 +7,11 @@ use File::Spec;
 use File::Find;
 use File::Basename;
 
+my $jshint = 'jshint';
 my $root = File::Spec->rel2abs( dirname(__FILE__) . '/..' );
 $root =~ s#tests/\.\.##;
 
-ok(!system("jshint --config ${root}jshint.conf ${root}server.js 1>&2"), 'server.js app');
+ok(!system("${jshint} --config ${root}jshint.conf ${root}server.js 1>&2"), 'server.js app');
 
 jshint( 'Server-side bin', $root . 'bin' );
 jshint( 'Server-side JS', $root . 'lib' );
@@ -30,7 +31,7 @@ sub jshint {
                 no_chdir => 1,
                 wanted   => sub {
                     return unless m/[.]js$/;
-                    ok(!system("jshint --config ${root}jshint.conf $_ 1>&2"), $_);
+                    ok(!system("${jshint} --config ${root}jshint.conf $_ 1>&2"), $_);
                 },
             },
             $dir
