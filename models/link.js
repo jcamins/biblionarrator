@@ -9,7 +9,7 @@ function Link(source_id, target_id, type) {
     var me = this;
     var source;
     var target;
-    var type = type || '';
+    type = type || '';
 
     this.source_id = source_id;
     this.target_id = target_id;

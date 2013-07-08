@@ -1,5 +1,5 @@
 var sharedview = require('../lib/sharedview'),
-    models = require('../models');
+    models = require('../models'),
     RecordList = models.RecordList,
     Q = require('q');
 

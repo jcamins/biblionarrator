@@ -38,7 +38,7 @@ function Renderer() {
             console.log(errorThrown);
         });
     };
-};
+}
 
 function display (data, template, mountpoint) {
     if (typeof mountpoint === 'object') {

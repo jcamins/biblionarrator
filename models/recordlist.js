@@ -61,7 +61,7 @@ function RecordList () {
         });
         return deferred.promise;
     };
-};
+}
 
 RecordList.init = function (ref) {
     models = ref;

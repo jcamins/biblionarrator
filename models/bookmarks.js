@@ -10,7 +10,7 @@ function Bookmarks() {
     deferred.resolve(this);
 
     return deferred.promise;
-};
+}
 
 Bookmarks.init = function (ref) {
     models = ref;
