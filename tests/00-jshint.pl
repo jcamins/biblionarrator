@@ -38,6 +38,7 @@ sub jshint {
             },
             $dir
         );
+        done_testing();
       }
 
 }
