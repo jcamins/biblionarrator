@@ -103,17 +103,19 @@ $(document).ready(function() {
         return false;
     });
     $('body').on('click', '.explore-links', null, function() {
-        var me = this;
+        var row = $(this).parents('tr');
         $.ajax({
-            url: '/record/' + $(this).parents('tr').attr('data-id') + '/links'
+            url: '/record/' + $(row).attr('data-id') + '/links'
         }).done(function (data) {
-            if ($(me).parents('.leftPane').length > 0) {
+            if ($(row).parents('.leftPane').length > 0) {
+                $('tr.browsing').removeClass('browsing');
                 $('.rightPane').remove();
             } else {
                 window.scrollTo(0, 0);
                 $('.leftPane').remove();
                 $('.rightPane').removeClass('rightPane').addClass('leftPane').css('margin-top', '0');
             }
+            $(row).addClass('browsing');
             $('.search-scroller').append('<div class="rightPane" style="margin-top: ' + $(window).scrollTop() + 'px">' + data + '</div>');
         });
     });
