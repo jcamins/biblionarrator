@@ -31,6 +31,7 @@ sub jshint {
                 no_chdir => 1,
                 wanted   => sub {
                     return unless m/[.]js$/;
+                    return if m/generated/;
                     ok(!system("${jshint} --config ${root}jshint.conf $_ 1>&2"), $_);
                 },
             },
