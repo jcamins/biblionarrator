@@ -1,6 +1,7 @@
 var sharedview = require('../lib/sharedview'),
     models = require('../models'),
     Record = models.Record,
+    RecordList = models.RecordList,
     Field = models.Field,
     RecordType = models.RecordType,
     Q = require('q');
@@ -44,7 +45,7 @@ exports.links = function(req, res) {
         return list.fromlinks(defdata[0].concat(defdata[1]));
     }).then(function(data) {
         data.layout = false;
-        var accept = req.accepts([ 'json', 'html' ]);
+        var accept = req.accepts([ 'html', 'json' ]);
         if (accept === 'html') {
             res.render('partials/results', data, function(err, html) {
                 if (err) {
