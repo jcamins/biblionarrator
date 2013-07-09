@@ -34,11 +34,12 @@
         "q-io"       : "1.9.x"
     },
     "devDependencies": {
-        "mocha"     : "1.11.x",
         "chai"      : "1.7.x",
-        "superagent": "0.15.x",
         "jshint"    : "2.1.x",
+        "less"      : "1.4.x",
+        "mocha"     : "1.11.x",
         "PrettyCSS" : "0.3.x"
+        "superagent": "0.15.x",
     },
     "bundledDependencies": [
     ],  

@@ -1,7 +1,7 @@
 PLTESTS = tests/*.pl
 JSTESTS = tests/*.js
 NODE = node
-LESS = lessc
+LESS = node_modules/less/bin/lessc
 MOCHA = mocha
 
 build: public/css/style.min.css public/css/style.css public/js/generated/formathandlers.js public/js/generated/templates.js
