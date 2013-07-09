@@ -44,7 +44,8 @@ exports.links = function(req, res) {
         return list.fromlinks(defdata[0].concat(defdata[1]));
     }).then(function(data) {
         data.layout = false;
-        if (req.accepts('html')) {
+        var accept = req.accepts([ 'json', 'html' ]);
+        if (accept === 'html') {
             res.render('partials/results', data, function(err, html) {
                 if (err) {
                     res.send(404, err);
@@ -63,10 +64,11 @@ exports.links = function(req, res) {
 
 exports.view = function(req, res) {
     var record = new Record(req.params.record_id);
-    console.log(req);
-    if (req.accepts('html')) {
+    var accept = req.accepts([ 'json', 'html' ]);
+    if (accept === 'html') {
         Q.all([sharedview(), record, Field.all(), RecordType.all()]).then(function(defdata) {
             var data = defdata[0];
+            data.view = 'record';
             data.record = defdata[1];
             data.fields = defdata[2];
             data.recordtypes = defdata[3];
@@ -81,7 +83,7 @@ exports.view = function(req, res) {
         }, function(errs) {
             console.log(errs);
         });
-    } else if (req.accepts('json')) {
+    } else {
         record.then(function(rec) {
             res.json(rec);
         });

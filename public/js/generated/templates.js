@@ -6,51 +6,53 @@ window.renderer = new Renderer();
 function Renderer() {
     var me = this;
 
+    window.Handlebars.registerHelper('contentFor', function (name, fn, fnElse) {
+        return '<div id="contentFor-' + name + '" class="contentFor">' + fn(this) + '</div>';
+    });
+
     var urls = {
         results: '/views/partials/results.handlebars'
     };
-    var templates = { };
+    var templates = {};
 
-    this.preload = function (template) {
-        me.render({ }, template);
+    var display = function(data, template, mountpoint) {
+        if (typeof mountpoint === 'object') {
+            mountpoint.innerHTML += templates[template](data);
+            $(mountpoint).trigger('rendered');
+        }
     };
 
-    this.render = function (data, template, mountpoint) {
+    this.preload = function(template) {
+        me.render({}, template);
+    };
+
+    this.render = function(data, template, mountpoint) {
         if (templates[template]) {
             display(data, template, mountpoint);
         } else {
             $.ajax({
                 url: urls[template]
-            }).done(function (hbs) {
+            }).done(function(hbs) {
                 templates[template] = window.Handlebars.compile(hbs);
                 display(data, template, mountpoint);
             });
         }
     };
 
-    this.renderRemote = function (url, template, mountpoint) {
+    this.renderRemote = function(url, template, mountpoint) {
         $.ajax({
             url: url,
-            accepts: 'application/json',
+            accept: { json: 'application/json' },
             dataType: 'json'
-        }).done(function (data) {
+        }).done(function(data) {
             me.render(data, template, mountpoint);
-        }).error(function (jqXHR, textStatus, errorThrown) {
+        }).error(function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
         });
     };
-};
-
-function display (data, template, mountpoint) {
-    if (typeof mountpoint === 'object') {
-        mountpoint.innerHTML += templates[template](data);
-    }
 }
 
-},{"handlebars":2}],3:[function(require,module,exports){
-// nothing to see here... no file methods for the browser
-
-},{}],2:[function(require,module,exports){
+},{"handlebars":2}],2:[function(require,module,exports){
 var handlebars = require("./handlebars/base"),
 
 // Each of these augment the Handlebars object. No need to setup here.
@@ -95,7 +97,7 @@ if (require.extensions) {
 // var singleton = handlebars.Handlebars,
 //  local = handlebars.create();
 
-},{"fs":3,"./handlebars/base":4,"./handlebars/utils":5,"./handlebars/runtime":6,"./handlebars/compiler":7}],4:[function(require,module,exports){
+},{"./handlebars/base":4,"./handlebars/compiler":7,"./handlebars/runtime":6,"./handlebars/utils":5,"fs":3}],4:[function(require,module,exports){
 /*jshint eqnull: true */
 
 module.exports.create = function() {
@@ -348,7 +350,25 @@ Handlebars.Utils = {
 return Handlebars;
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+// Each of these module will augment the Handlebars object as it loads. No need to perform addition operations
+module.exports.attach = function(Handlebars) {
+
+var visitor = require("./visitor"),
+    printer = require("./printer"),
+    ast = require("./ast"),
+    compiler = require("./compiler");
+
+visitor.attach(Handlebars);
+printer.attach(Handlebars);
+ast.attach(Handlebars);
+compiler.attach(Handlebars);
+
+return Handlebars;
+
+};
+
+},{"./ast":10,"./compiler":11,"./printer":9,"./visitor":8}],6:[function(require,module,exports){
 exports.attach = function(Handlebars) {
 
 // BEGIN(BROWSER)
@@ -456,25 +476,10 @@ return Handlebars;
 
 };
 
-},{}],7:[function(require,module,exports){
-// Each of these module will augment the Handlebars object as it loads. No need to perform addition operations
-module.exports.attach = function(Handlebars) {
+},{}],3:[function(require,module,exports){
+// nothing to see here... no file methods for the browser
 
-var visitor = require("./visitor"),
-    printer = require("./printer"),
-    ast = require("./ast"),
-    compiler = require("./compiler");
-
-visitor.attach(Handlebars);
-printer.attach(Handlebars);
-ast.attach(Handlebars);
-compiler.attach(Handlebars);
-
-return Handlebars;
-
-};
-
-},{"./visitor":8,"./printer":9,"./ast":10,"./compiler":11}],8:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 exports.attach = function(Handlebars) {
 
 // BEGIN(BROWSER)

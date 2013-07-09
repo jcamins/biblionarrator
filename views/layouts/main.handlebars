@@ -31,7 +31,7 @@
         <![endif]-->
     </head>
 
-    <body class="show-help">
+    <body class="show-help {{view}}-view">
         <nav class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -62,57 +62,40 @@
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown visible-desktop"><a href="/bookmarks"><i class="icon-bookmark"></i><span class="bookmark-count">{{bookmarks.length}}</span></a>
+                            <li class="dropdown visible-desktop"><a class="show-bookmarks" href="#"><i class="icon-bookmark"></i><span class="bookmark-count">{{bookmarks.length}}</span></a>
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
-<!--                            <li class="dropdown">
+                            <li class="dropdown">
                                 <a href="/user/login" class="hidden-desktop"><i class="icon-user"></i></a>
                                 <a href="#" class="dropdown-toggle visible-desktop" data-toggle="dropdown">
                                     <i class="icon-user"></i><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    @if ( Auth::guest() )
                                         <form id="navbarLogin" action="/user/login" method="post" accept-charset="UTF-8">
                                             <input id="navbarLoginUser" type="text" name="username" placeholder="Username"></input>
                                             <input id="navbarLoginPassword" type="password" name="password" placeholder="Password"></input>
                                             <input type="hidden" name="redirect" value="{{url}}"></input>
                                             <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">Sign in</button>
                                         </form>
-                                    @else
                                     <li><span>{{user.email}}</span></li>
                                     <li><a href="/user/settings">Settings</a></li>
                                     <li><a href="/user/templates">My templates</a></li>
                                     <li class="divider"></li>
                                     <li><a href="/user/logout">Sign out</a></li>
-                                    @endif
                                 </ul>
                             </li>
-                            @if ( Auth::check() && Auth::user()->has_role('administrator') )
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/admin">Home</a></li>
-                                    @if ( Authority::can('manage', 'Field') )
                                     <li><a href="/admin/field">Fields</a></li>
-                                    @endif
-                                    @if ( Authority::can('manage', 'User') )
                                     <li><a href="/admin/user">Users</a></li>
-                                    @endif
-                                    @if ( Authority::can('manage', 'Collection') )
                                     <li><a href="/admin/collection">Collections</a></li>
-                                    @endif
-                                    @if ( Authority::can('manage', 'RecordType') )
                                     <li><a href="/admin/recordtype">Record types</a></li>
-                                    @endif
-                                    @if ( Authority::can('manage', 'SystemSettings') )
                                     <li><a href="/admin/settings">Settings</a></li>
-                                    @endif
-                                    @if ( Authority::can('manage', 'Template') )
                                     <li><a href="/admin/templates">Templates</a></li>
-                                    @endif
                                 </ul>
                             </li>
-                            @endif-->
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -126,9 +109,9 @@
             </div>
             <div id="controlbar" class="navbar-inner">
                 <div class="container-fluid">
-                    <ul class="nav">
-                        {{{block 'controlbar'}}}
-                    </ul>
+                        {{> 'controlbars/record'}}
+                        {{> 'controlbars/results'}}
+                        {{> 'controlbars/about'}}
                 </div>
             </div>
         </nav>
@@ -138,7 +121,7 @@
         <nav class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
             <ul class="nav">
-                <li><a href="/bookmarks">Bookmarks
+                <li><a class="show-bookmarks" href="#">Bookmarks
                     <span class="bookmark-count">{{bookmarks.length}}</span></a></li>
 
                 <li><a href="/user">
@@ -175,6 +158,7 @@
         <script src="/lib/js/jquery.history.js"></script>
         <script src="/lib/js/jquery.form.js"></script>
         <script src="/js/biblionarrator.js"></script>
+        <script src="/js/bookmarks.js"></script>
         <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
         <script src="/lib/js/typeahead.js"></script>
         <script src="/lib/js/modernizr-latest.js"></script>

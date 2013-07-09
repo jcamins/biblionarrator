@@ -5,10 +5,21 @@ window.renderer = new Renderer();
 function Renderer() {
     var me = this;
 
+    window.Handlebars.registerHelper('contentFor', function (name, fn, fnElse) {
+        return '<div id="contentFor-' + name + '" class="contentFor">' + fn(this) + '</div>';
+    });
+
     var urls = {
         results: '/views/partials/results.handlebars'
     };
     var templates = {};
+
+    var display = function(data, template, mountpoint) {
+        if (typeof mountpoint === 'object') {
+            mountpoint.innerHTML += templates[template](data);
+            $(mountpoint).trigger('rendered');
+        }
+    };
 
     this.preload = function(template) {
         me.render({}, template);
@@ -30,7 +41,7 @@ function Renderer() {
     this.renderRemote = function(url, template, mountpoint) {
         $.ajax({
             url: url,
-            accepts: 'application/json',
+            accept: { json: 'application/json' },
             dataType: 'json'
         }).done(function(data) {
             me.render(data, template, mountpoint);
@@ -38,10 +49,4 @@ function Renderer() {
             console.log(errorThrown);
         });
     };
-}
-
-function display(data, template, mountpoint) {
-    if (typeof mountpoint === 'object') {
-        mountpoint.innerHTML += templates[template](data);
-    }
 }

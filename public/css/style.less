@@ -658,15 +658,32 @@ a.selected {
 #controlbar {
     min-height: 30px;
 
-    .nav > li > a {
-        padding: 5px 10px;
+    .nav {
+        display: none;
 
-        &.caret-before {
-            padding-right: 2px;
+        .about-view &#controlbar-about {
+            display: block;
         }
 
-        &.caret-after {
-            padding-left: 2px;
+        .record-view &#controlbar-record {
+            display: block;
+        }
+
+
+        .results-view &#controlbar-results {
+            display: block;
+        }
+    
+        & > li > a {
+            padding: 5px 10px;
+
+            &.caret-before {
+                padding-right: 2px;
+            }
+
+            &.caret-after {
+                padding-left: 2px;
+            }
         }
     }
 

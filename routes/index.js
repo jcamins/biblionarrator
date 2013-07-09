@@ -48,7 +48,7 @@ function home(req, res) {
 }
 
 function about(req, res) {
-    res.render('about', {}, function(err, html) {
+    res.render('about', { view: 'about' }, function(err, html) {
         res.send(html);
     });
 }

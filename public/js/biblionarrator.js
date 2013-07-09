@@ -157,6 +157,9 @@ $(document).ready(function () {
                     var records = versionTransaction.createObjectStore("records", {
                         "keyPath": "id"
                     });
+                    var bookmarks = versionTransaction.createObjectStore("bookmarks", {
+                        "keyPath": "id"
+                    });
                 },
             }
         }).done(function(){
@@ -179,7 +182,7 @@ $(document).ready(function () {
                     fields.add(this);
                 });
                 var styles = transaction.objectStore("styles");
-                styles.clear();
+                records.clear();
                 $.each(bndb.resources.styles, function () {
                     styles.add(this);
                 });
@@ -199,6 +202,15 @@ $(document).ready(function () {
                 records.get(id).done(function (result, ev) {
                     callback(result);
                 });
+            });
+        });
+    };
+
+    bndb.bookmarks = function (callback) {
+        bndb.initialize(function () {
+            $.indexedDB("biblionarrator").transaction(["bookmarks"]).progress(function (transaction) {
+                var bookmarks = transaction.objectStore("bookmarks");
+                callback(bookmarks);
             });
         });
     };

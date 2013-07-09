@@ -20,7 +20,7 @@ function RecordList() {
                 me.count = results.length;
                 var promises = [];
                 for (var idx in results) {
-                    promises.push(new Record(results[idx]));
+                    promises.push(new models.Record(results[idx]));
                 }
                 Q.all(promises).then(function(records) {
                     for (var idx in records) {
