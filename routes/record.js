@@ -45,6 +45,7 @@ exports.links = function(req, res) {
         return list.fromlinks(defdata[0].concat(defdata[1]));
     }).then(function(data) {
         data.layout = false;
+        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
         var accept = req.accepts([ 'html', 'json' ]);
         if (accept === 'html') {
             res.render('partials/results', data, function(err, html) {

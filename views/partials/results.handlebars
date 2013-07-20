@@ -1,3 +1,25 @@
+{{#if sortings}}
+<div class="row-fluid">
+    <div class="span10 offset2">
+        <span class="sort-label">Sort</span> &gt;
+        {{#with sortings}}
+            {{#each used}}
+                <span class="sort-facet">{{label}} <sub><a title="Remove {{label}} sort" class="remove-sort">x</a></sub></span> &gt;
+            {{/each}}
+            {{#if available}}
+                <span data-toggle="dropdown-select" class="button-dropdown white">
+                    <select id="add-sort">
+                        <option data-placeholder="true">-- add sort --</option>
+                        {{#each available}}
+                            <option value="{{schema}}_{{field}}">{{label}}</option>
+                        {{/each}}
+                    </select>
+                </span>
+            {{/if}}
+        {{/with}}
+    </div>
+</div>
+{{/if}}
 <div class="row-fluid">
     <div class="span10 offset2">
         <div class="header-shown resultcount">Showing {{count}} of {{total}} records.</div>

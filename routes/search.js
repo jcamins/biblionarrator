@@ -14,6 +14,7 @@ exports.view = function(req, res) {
         for (var idx in defdata[1]) {
             data[idx] = defdata[1][idx];
         }
+        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
         res.render('list/interface', data, function(err, html) {
             if (err) {
                 res.send(404, err);
