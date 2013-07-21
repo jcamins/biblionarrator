@@ -38,7 +38,7 @@ exports.links = function(req, res) {
     var record = new Record(req.params.record_id);
 
     record.then(function(rec) {
-        return Q.all([rec. in (), rec.out()]);
+        return Q.all([rec.in(), rec.out()]);
     }).then(function(defdata) {
         defdata[0] = defdata[0] || [];
         defdata[1] = defdata[1] || [];
