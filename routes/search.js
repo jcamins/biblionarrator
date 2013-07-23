@@ -10,6 +10,11 @@ exports.view = function(req, res) {
     Q.all([sharedview(), list.search(query)]).then(function(defdata) {
         var data = defdata[0];
         data.view = 'results';
+        if (query) {
+            data.summary = 'Search: ' + query;
+        } else {
+            data.summary = 'All records';
+        }
         data.query = query;
         for (var idx in defdata[1]) {
             data[idx] = defdata[1][idx];

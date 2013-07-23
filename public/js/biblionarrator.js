@@ -142,7 +142,7 @@ $(document).ready(function () {
     });
 });
 
-(function( bndb, $, undefined ) {
+/*(function( bndb, $, undefined ) {
     bndb.initialize = function (callback) {
         $.indexedDB("biblionarrator", {
             "version": 1,
@@ -214,7 +214,7 @@ $(document).ready(function () {
             });
         });
     };
-}( window.bndb = window.bndb || {}, jQuery ));
+}( window.bndb = window.bndb || {}, jQuery ));*/
 
 (function( $ ) {
     $.fn.extend({

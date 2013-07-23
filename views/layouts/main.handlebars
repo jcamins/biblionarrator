@@ -32,7 +32,7 @@
     </head>
 
     <body class="show-help {{view}}-view">
-        <nav class="navbar navbar-fixed-top">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
                     <a class="brand" href="/">Biblionarrator</a>
@@ -58,17 +58,17 @@
                             </li>
                             <li class="divider-vertical"></li>
                             <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
-                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="{{query}}"></input><button class="search-button" type="submit"><i class="icon-search"></i></button>
+                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="{{query}}"></input><button class="search-button" type="submit"><i class="icon-search icon-white"></i></button>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
-                            <li class="dropdown visible-desktop"><a class="show-bookmarks" href="#"><i class="icon-bookmark"></i><span class="bookmark-count">{{bookmarks.length}}</span></a>
+                            <li class="dropdown visible-desktop"><a class="show-bookmarks" href="#"><i class="icon-bookmark icon-white"></i><span class="bookmark-count">{{bookmarks.length}}</span></a>
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">
-                                <a href="/user/login" class="hidden-desktop"><i class="icon-user"></i></a>
+                                <a href="/user/login" class="hidden-desktop"><i class="icon-user icon-white"></i></a>
                                 <a href="#" class="dropdown-toggle visible-desktop" data-toggle="dropdown">
-                                    <i class="icon-user"></i><b class="caret"></b>
+                                    <i class="icon-user icon-white"></i><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                         <form id="navbarLogin" action="/user/login" method="post" accept-charset="UTF-8">
@@ -85,7 +85,7 @@
                                 </ul>
                             </li>
                             <li class="dropdown visible-desktop">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i><b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/admin">Home</a></li>
                                     <li><a href="/admin/field">Fields</a></li>
@@ -97,7 +97,7 @@
                                 </ul>
                             </li>
                             <li class="dropdown visible-desktop">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign"></i><b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
                                     <li><a href="/about">About</a></li>
@@ -111,25 +111,25 @@
 
         {{{body}}}
 
-        <nav class="navbar navbar-fixed-bottom hidden-desktop">
+        <!--<nav class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
             <ul class="nav">
                 <li><a class="show-bookmarks" href="#">Bookmarks
                     <span class="bookmark-count">{{bookmarks.length}}</span></a></li>
 
                 <li><a href="/user">
-                <!--@if (Auth::guest())
+                <! --@if (Auth::guest())
                     Log in
                 @else
                     User settings
-                @endif-->
+                @endif-- >
                 </a></li>
                 <li><a href="/admin">System administration</a></li>
                 <li><span>{{user.email}}</span></li>
                 <li><a href="/help">Help</a></li>
             </ul>
             </div>
-        </nav>
+        </nav>-->
         <footer>
             {{{breadcrumbs}}}
             <p class="copyright">&copy; C &amp; P Bibliography Services 2013</p>    
@@ -156,10 +156,10 @@
         <script src="/lib/js/typeahead.js"></script>
         <script src="/lib/js/modernizr-latest.js"></script>
         <script src="/lib/js/jquery.cookie.js"></script>
-        <script src="/lib/js/jquery.indexeddb.js"></script>
+        <!--<script src="/lib/js/jquery.indexeddb.js"></script>-->
         <script src="/js/generated/formathandlers.js"></script>
         <script src="/js/generated/templates.js"></script>
-        <script src="/svc/bndb_initializer.js"></script>
+        <!--<script src="/svc/bndb_initializer.js"></script>-->
         {{{block 'javascript'}}}
     </body>
 </html>
