@@ -5,7 +5,7 @@
 @import "bootstrap/responsive.less";
 
 @header-height: 80px;
-@footer-height: 40px;
+@footer-height: 42px;
 @brand-color: #a40000;
 @brand-shadow: #d23f3f;
 
@@ -98,7 +98,7 @@
         position: relative;
         min-height: 100%;
         height: auto !important;
-        margin-bottom: -@footer-height;
+        padding-bottom: (@footer-height * 2);
 
         &:before {
             height: @header-height;
