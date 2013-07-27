@@ -38,8 +38,8 @@
         "jshint"    : "2.1.x",
         "less"      : "1.4.x",
         "mocha"     : "1.11.x",
-        "PrettyCSS" : "0.3.x"
-        "superagent": "0.15.x",
+        "PrettyCSS" : "0.3.x",
+        "superagent": "0.15.x"
     },
     "bundledDependencies": [
     ],  
