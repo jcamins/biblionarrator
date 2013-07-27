@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    connection = require('../lib/datastore').connection;
+    datastore = require('../lib/datastore');
 
 module.exports = Link;
 
@@ -28,7 +28,7 @@ function Link(source_id, target_id, type) {
     this.save = function() {
         deferred.promise.then(function() {
             if (me.id) {
-                connection.query('UPDATE record_links SET source_id = ?, target_id = ?, updated_at = NOW()', [me.source_id, me.target_id], function(err, results) {
+                datastore.query('UPDATE record_links SET source_id = ?, target_id = ?, updated_at = NOW()', [me.source_id, me.target_id], function(err, results) {
                     if (err) {
                         deferred.reject(err);
                     } else {
@@ -36,7 +36,7 @@ function Link(source_id, target_id, type) {
                     }
                 });
             } else {
-                connection.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [me.source_id, me.target_id], function(err, results) {
+                datastore.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [me.source_id, me.target_id], function(err, results) {
                     if (err) {
                         deferred.reject(err);
                     } else {

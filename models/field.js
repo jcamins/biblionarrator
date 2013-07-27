@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    connection = require('../lib/datastore').connection;
+    datastore = require('../lib/datastore');
 
 module.exports = Field;
 
@@ -14,7 +14,7 @@ function Field (data) {
         }
         createPromise.resolve(me);
     } else if (typeof data === 'string') {
-        connection.query('SELECT fields.* FROM fields WHERE fields.id = ?', [ data ], function (err, results, fields) {
+        datastore.query('SELECT fields.* FROM fields WHERE fields.id = ?', [ data ], function (err, results, fields) {
             for (var idx in fields) {
                 me[fields[idx].name] = results[0][fields[idx].name];
             }
@@ -32,7 +32,7 @@ function Field (data) {
 
 Field.all = function () {
     var prom = Q.defer();
-    connection.query('SELECT fields.* FROM fields', [ ], function (err, results, fields) {
+    datastore.query('SELECT fields.* FROM fields', [ ], function (err, results, fields) {
         if (err) {
             prom.reject(err);
         } else {

@@ -1,5 +1,5 @@
 var passport = require('passport'),
-    connection = require('../lib/datastore').connection,
+    datastore = require('../lib/datastore'),
     LocalStrategy = require('passport-local').Strategy;
 
 app.use(passport.initialize());
@@ -11,7 +11,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    connection.query('SELECT * FROM users WHERE id = ?', [id], function(err, results, fields) {
+    datastore.query('SELECT * FROM users WHERE id = ?', [id], function(err, results, fields) {
         return done(err, results[0]);
     });
 });
@@ -25,7 +25,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(
     new LocalStrategy(
         function(username, password, done) {
-            connection.query('SELECT * FROM users WHERE email = ?', [username], function(err, results, fields) {
+            datastore.query('SELECT * FROM users WHERE email = ?', [username], function(err, results, fields) {
                 if (err) {
                     return done(null, false, {
                         message: 'Unknown user ' + username

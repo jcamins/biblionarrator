@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    connection = require('../lib/datastore').connection;
+    datastore = require('../lib/datastore');
 
 module.exports = RecordType;
 
@@ -14,7 +14,7 @@ function RecordType (data) {
         }
         createPromise.resolve(me);
     } else if (typeof data === 'string') {
-        connection.query('SELECT recordtypes.* FROM recordtypes WHERE recordtypes.id = ?', [ data ], function (err, results, fields) {
+        datastore.query('SELECT recordtypes.* FROM recordtypes WHERE recordtypes.id = ?', [ data ], function (err, results, fields) {
             for (var idx in fields) {
                 me[fields[idx].name] = results[0][fields[idx].name];
             }
@@ -32,7 +32,7 @@ function RecordType (data) {
 
 RecordType.all = function () {
     var prom = Q.defer();
-    connection.query('SELECT recordtypes.* FROM recordtypes', [ ], function (err, results, fields) {
+    datastore.query('SELECT recordtypes.* FROM recordtypes', [ ], function (err, results, fields) {
         if (err) {
             prom.reject(err);
         } else {

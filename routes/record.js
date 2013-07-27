@@ -4,7 +4,8 @@ var sharedview = require('../lib/sharedview'),
     RecordList = models.RecordList,
     Field = models.Field,
     RecordType = models.RecordType,
-    Q = require('q');
+    Q = require('q'),
+    datastore = require('../lib/datastore.js');
 
 exports.linkselect = function(req, res) {
     res.render('link-select', {
@@ -16,9 +17,7 @@ exports.linkselect = function(req, res) {
 };
 
 exports.linkadd = function(req, res) {
-    var connection = require('../lib/datastore.js').connection;
-
-    connection.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [req.params.record_id, req.params.target_id], function(err, results) {
+    datastore.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [req.params.record_id, req.params.target_id], function(err, results) {
         if (err) {
             res.json({
                 error: err

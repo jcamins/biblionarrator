@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    connection = require('../lib/datastore').connection,
+    datastore = require('../lib/datastore'),
     bnjson = require('../lib/formats/bnjson');
 
 module.exports = Record;
@@ -17,7 +17,7 @@ function Record(data) {
         var Link = require('./link');
         var deferred = Q.defer();
         createPromise.promise.then(function(me) {
-            connection.query('SELECT * FROM record_links WHERE target_id = ?', [me.id], function(err, results, fields) {
+            datastore.query('SELECT * FROM record_links WHERE target_id = ?', [me.id], function(err, results, fields) {
                 if (err) {
                     deferred.reject(err);
                 } else {
@@ -36,7 +36,7 @@ function Record(data) {
         var Link = require('./link');
         var deferred = Q.defer();
         createPromise.promise.then(function(me) {
-            connection.query('SELECT * FROM record_links WHERE source_id = ?', [me.id], function(err, results, fields) {
+            datastore.query('SELECT * FROM record_links WHERE source_id = ?', [me.id], function(err, results, fields) {
                 if (err) {
                     deferred.reject(err);
                 } else {
@@ -61,7 +61,7 @@ function Record(data) {
                 query = 'INSERT INTO records (data, recordtype_id) VALUES (?, ?)';
                 me.id = '';
             }
-            connection.query(query, [me.data, me.recordtype_id, me.id], function(err, results) {
+            datastore.query(query, [me.data, me.recordtype_id, me.id], function(err, results) {
                 if (err) {
                     savePromise.reject(err);
                 } else {
@@ -101,7 +101,7 @@ function Record(data) {
         }
         createPromise.resolve(me);
     } else if (data !== 'new' && (typeof data === 'string' || typeof data === 'number')) {
-        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [data], function(err, results, fields) {
+        datastore.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (recordtypes.id=records.recordtype_id) WHERE records.id = ?', [data], function(err, results, fields) {
             if (err) {
                 createPromise.reject(err);
             } else {

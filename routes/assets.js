@@ -1,10 +1,10 @@
 exports.fieldscss = function(req, res) {
-    var connection = require('../lib/datastore.js').connection;
+    var datastore = require('../lib/datastore.js');
     var data = {
         styles: [],
         fields: []
     };
-    connection.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
+    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
         for (var index in results) {
             data.styles.push({
                 field: {
@@ -15,7 +15,7 @@ exports.fieldscss = function(req, res) {
                 css: results[index].css
             });
         }
-        connection.query('SELECT * FROM fields', function(err, results, fields) {
+        datastore.query('SELECT * FROM fields', function(err, results, fields) {
             for (var index in results) {
                 data.fields.push({
                     schema: results[index].schema,
@@ -33,13 +33,13 @@ exports.fieldscss = function(req, res) {
 };
 
 exports.bndbinitializerjs = function(req, res) {
-    var connection = require('../lib/datastore.js').connection;
+    var datastore = require('../lib/datastore.js');
     var data = {
         styles: [],
         fields: [],
         records: []
     };
-    connection.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
+    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
         for (var index in results) {
             data.styles.push({
                 field: {
@@ -50,9 +50,9 @@ exports.bndbinitializerjs = function(req, res) {
                 css: results[index].css
             });
         }
-        connection.query('SELECT * FROM fields', function(err, results, fields) {
+        datastore.query('SELECT * FROM fields', function(err, results, fields) {
             data.fields = results;
-            connection.query('SELECT * FROM records', function(err, results, fields) {
+            datastore.query('SELECT * FROM records', function(err, results, fields) {
                 data.records = results;
                 res.render('bndb_initializer-js.handlebars', {
                     fields: JSON.stringify(data.fields),

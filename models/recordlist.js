@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    connection = require('../lib/datastore').connection;
+    datastore = require('../lib/datastore');
 
 module.exports = RecordList;
 
@@ -10,7 +10,7 @@ function RecordList() {
     this.search = function(query) {
         var deferred = Q.defer();
 
-        connection.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (records.recordtype_id = recordtypes.id) WHERE deleted = 0 AND data LIKE ?', ['%' + query + '%'], function(err, results, fields) {
+        datastore.query('SELECT records.*, recordtypes.name AS recordtype FROM records LEFT JOIN recordtypes ON (records.recordtype_id = recordtypes.id) WHERE deleted = 0 AND data LIKE ?', ['%' + query + '%'], function(err, results, fields) {
             if (err) {
                 deferred.reject(err);
             } else {
