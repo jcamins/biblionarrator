@@ -256,7 +256,7 @@ function loadRecord(id) {
 }
 
 function finishedLoading(data) {
-    var text = window.bnjson.render(data);
+    var text = window.formatter.render(data);
     $('#recordContainer').html(text);
     initializeContentEditable();
 }
@@ -269,7 +269,7 @@ function saveRecord() {
         type: "POST",
         url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
         dataType: "json",
-        data: { data: JSON.stringify(window.bnjson.decompile($('#recordContainer article').get(0))),
+        data: { data: JSON.stringify(window.formatter.decompile($('#recordContainer article').get(0))),
                 recordtype_id: $('#recordtype-select').val()
               },
         error: ajaxSaveFailed,
@@ -297,7 +297,7 @@ function saveTemplate() {
         type: "POST",
         url: "/resources/template/",
         dataType: "json",
-        data: { data: JSON.stringify(window.bnjson.decompile($('#recordContainer article').get(0))),
+        data: { data: JSON.stringify(window.formatter.decompile($('#recordContainer article').get(0))),
                 recordtype: $('#recordtype-select').val(),
                 name: $('#template-name').val()
               },

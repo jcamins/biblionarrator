@@ -1,7 +1,7 @@
 var Q = require('q'),
     models,
     datastore = require('../lib/datastore'),
-    bnjson = require('../lib/formats/bnjson');
+    formatter = require('../lib/formats/ericthesaurus');
 
 module.exports = Record;
 
@@ -80,7 +80,7 @@ function Record(data) {
         createPromise.promise.then(function(me) {
             var record = new Record({
                 id: me.id,
-                data: JSON.stringify(bnjson.snippet(JSON.parse(me.data))),
+                data: JSON.stringify(formatter.snippet(JSON.parse(me.data))),
                 recordtype_id: me.recordtype_id
             });
             deferred.resolve(record);
@@ -92,7 +92,7 @@ function Record(data) {
         if (typeof this.data === 'undefined' || this.data === null || this.data === '') {
             return '<article><header></header><section></section></article>';
         }
-        return bnjson.render(JSON.parse(this.data));
+        return formatter.render(JSON.parse(this.data));
     };
 
     if (typeof data === 'object') {

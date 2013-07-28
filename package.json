@@ -1,51 +1,47 @@
 {
-    "name": "biblionarrator",
-    "version": "0.0.4",
-    "author": "Jared Camins-Esakov <jcamins@cpbibliography.com>",
-    "description": "a new kind of catalog",
-    "contributors": [ 
-        {
-            "name" : "Jared Camins-Esakov",
-            "email": "jcamins@cpbibliography.com"
-        } 
-    ],
-    "bin": {
-    },
-    "scripts": {
-    },
-    "repository": {
-        "type": "git",
-        "url" : "https://github.com/biblionarrator/biblionarrator.git"
-    },
-    "keywords": [
-    ],
-    "dependencies" : {
-        "consolidate": "0.x",
-        "express"    : "3.x",
-        "express-params": "0.0.x",
-        "express-hbs": "0.2.x",
-        "handlebars" : "1.x.x",
-        "http-proxy" : "0.10.x",
-        "marked"     : "0.2.x",
-        "mysql"      : "2.x",
-        "passport"   : "0.1.x",
-        "passport-local": "0.1.x",
-        "q"          : "0.9.x",
-        "q-io"       : "1.9.x"
-    },
-    "devDependencies": {
-        "chai"      : "1.7.x",
-        "jshint"    : "2.1.x",
-        "less"      : "1.4.x",
-        "mocha"     : "1.11.x",
-        "PrettyCSS" : "0.3.x",
-        "superagent": "0.15.x"
-    },
-    "bundledDependencies": [
-    ],  
-    "license": "AGPLv3",
-    "engines": {
-        "node": ">=0.8"
+  "name": "biblionarrator",
+  "version": "0.0.4",
+  "author": "Jared Camins-Esakov <jcamins@cpbibliography.com>",
+  "description": "a new kind of catalog",
+  "contributors": [
+    {
+      "name": "Jared Camins-Esakov",
+      "email": "jcamins@cpbibliography.com"
     }
+  ],
+  "bin": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/biblionarrator/biblionarrator.git"
+  },
+  "keywords": [],
+  "dependencies": {
+    "consolidate": "0.x",
+    "express": "3.x",
+    "express-params": "0.0.x",
+    "express-hbs": "0.2.x",
+    "handlebars": "1.x.x",
+    "http-proxy": "0.10.x",
+    "marked": "0.2.x",
+    "mysql": "2.x",
+    "passport": "0.1.x",
+    "passport-local": "0.1.x",
+    "q": "0.9.x",
+    "q-io": "1.9.x",
+    "browserify": "~2.25.1"
+  },
+  "devDependencies": {
+    "chai": "1.7.x",
+    "jshint": "2.1.x",
+    "less": "1.4.x",
+    "mocha": "1.11.x",
+    "PrettyCSS": "0.3.x",
+    "superagent": "0.15.x"
+  },
+  "bundledDependencies": [],
+  "license": "AGPLv3",
+  "engines": {
+    "node": ">=0.8"
+  }
 }
-
