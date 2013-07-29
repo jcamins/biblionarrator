@@ -32,7 +32,7 @@
 </div>
 <div class="row-fluid">
     <div class="span2">
-        <ul class="nav nav-pills nav-stacked">
+        <ul class="nav nav-pills nav-stacked facet-list">
             <li class="active"><a href="#all" data-toggle="tab">All ({{count}})</a></li>
             {{#each mainfacet}}
             <li><a href="#{{@key}}" data-toggle="tab">{{@key}} ({{this}})</a></li>
@@ -46,7 +46,7 @@
         </thead>
         <tbody>
         {{#each records}}
-            <tr class="resultRow" data-id="{{id}}">
+            <tr class="resultRow" data-id="{{id}}" data-facet="#{{facet}}">
                 <td class="result-number">
                     <a class="record-number-link" href="/record/{{id}}">{{number}}<br>view record</a>
                 </td>
