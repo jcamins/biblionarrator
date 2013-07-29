@@ -23,7 +23,7 @@ function Record(data) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'In'));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, results[idx].in_label));
                     }
                     deferred.resolve(links);
                 }
@@ -42,7 +42,7 @@ function Record(data) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'Out'));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, results[idx].out_label));
                     }
                     deferred.resolve(links);
                 }
