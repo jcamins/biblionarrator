@@ -40,8 +40,6 @@ function RecordList() {
         var deferred = Q.defer();
         me.mainfacet = {};
         me.records = [];
-        me.total = links.length;
-        me.count = links.length;
         var promises = [];
         for (var idx in links) {
             if (links[idx].type === 'In') {
@@ -51,12 +49,18 @@ function RecordList() {
             }
         }
         Q.all(promises).then(function(records) {
+            var seen = {};
             for (var idx in records) {
-                records[idx].rendered = records[idx].render();
-                records[idx].number = parseInt(idx, 10) + 1;
-                me.records.push(records[idx]);
-                me.mainfacet[links[idx].type] = (parseInt(me.mainfacet[links[idx].type], 10) || 0) + 1;
+                if (typeof seen[records[idx].id] === 'undefined') {
+                    seen[records[idx].id] = 1;
+                    records[idx].rendered = records[idx].render();
+                    records[idx].number = parseInt(idx, 10) + 1;
+                    me.records.push(records[idx]);
+                    me.mainfacet[links[idx].type] = (parseInt(me.mainfacet[links[idx].type], 10) || 0) + 1;
+                }
             }
+            me.total = me.records.length;
+            me.count = me.records.length;
             deferred.resolve(me);
         });
         return deferred.promise;
