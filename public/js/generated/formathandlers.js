@@ -1,10 +1,8 @@
 ;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 window = window || {};
-window.bnjson = require('../lib/formats/bnjson');
-window.ericthesaurus = require('../lib/formats/bnjson');
-window.formatter = window.bnjson;
+window.formatters = window.formatters || require('../lib/formats');
 
-},{"../lib/formats/bnjson":2}],2:[function(require,module,exports){
+},{"../lib/formats":4}],2:[function(require,module,exports){
 var attrs = ['href', 'role', 'itemscope', 'itemtype', 'itemid', 'itemprop', 'itemref'];
 var htmlelements = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
 
@@ -116,5 +114,73 @@ module.exports.decompile = function(htmldom) {
     return dom2raw(htmldom);
 };
 
-},{}]},{},[1])
+},{}],3:[function(require,module,exports){
+module.exports.render = function(recorddata) {
+    var rendered = '<article><header><span class="eric_term">' + recorddata.name + '</span>';
+    if (recorddata.scope) {
+        rendered = rendered + '<span class="eric_scope">' + recorddata.scope + '</span>';
+    }
+    rendered = rendered + '</header>';
+    if (recorddata.narrower) {
+        rendered = rendered + '<section><em>Narrower terms:</em><ul>';
+        for (var ii in recorddata.narrower) {
+            rendered = rendered + '<li><span class="eric_narrower">' + recorddata.narrower[ii] + '</span></li>';
+        }
+        rendered = rendered + '</ul></section>';
+    }
+    if (recorddata.broader) {
+        rendered = rendered + '<section><em>Broader terms:</em><ul>';
+        for (var ii in recorddata.broader) {
+            rendered = rendered + '<li><span class="eric_broader">' + recorddata.broader[ii] + '</span></li>';
+        }
+        rendered = rendered + '</ul></section>';
+    }
+    if (recorddata.related) {
+        rendered = rendered + '<section><em>Related terms:</em><ul>';
+        for (var ii in recorddata.related) {
+            rendered = rendered + '<li><span class="eric_related">' + recorddata.related[ii] + '</span></li>';
+        }
+        rendered = rendered + '</ul></section>';
+    }
+    if (recorddata.preferred) {
+        rendered = rendered + '<section><em>Instead of this term, use:</em><ul>';
+        for (var ii in recorddata.preferred) {
+            rendered = rendered + '<li><span class="eric_preferred">' + recorddata.preferred[ii] + '</span></li>';
+        }
+        rendered = rendered + '</ul></section>';
+    }
+    if (recorddata.synonyms) {
+        rendered = rendered + '<section><em>Synonyms:</em><ul>';
+        for (var ii in recorddata.synonyms) {
+            rendered = rendered + '<li><span class="eric_synonyms">' + recorddata.synonyms[ii] + '</span></li>';
+        }
+        rendered = rendered + '</ul></section>';
+    }
+    rendered = rendered + '</article>';
+    return rendered;
+};
+
+module.exports.snippet = function(recorddata) {
+    var rendered = '<article><header><span class="eric_term">' + recorddata.name + '</span>';
+    if (recorddata.scope) {
+        rendered = rendered + '<span class="eric_scope">' + recorddata.scope + '</span>';
+    }
+    rendered = rendered + '</header></article>';
+    return rendered;
+};
+
+module.exports.indexes = function(recorddata) {};
+
+module.exports.links = function(recorddata) {};
+
+module.exports.decompile = function(htmldom) {
+};
+
+},{}],4:[function(require,module,exports){
+module.exports = {
+    bnjson: require('./bnjson'),
+    ericthesaurus: require('./ericthesaurus')
+}
+
+},{"./bnjson":2,"./ericthesaurus":3}]},{},[1])
 ;

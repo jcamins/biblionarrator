@@ -113,9 +113,10 @@
     <script type='text/javascript' src='/lib/js/jstree/jquery.jstree.js'></script>
     <script type="text/javascript">
     {{#if record.id}}
-    var recordId = {{record.id}};
-    {{else}}
-    var recordId;
+        document.record = {
+            id: {{record.id}},
+            format: '{{record.format}}',
+        };
     {{/if}}
 
     var labeltofieldlookup = {

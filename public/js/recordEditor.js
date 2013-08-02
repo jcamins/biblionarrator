@@ -16,7 +16,7 @@ function initializeEditor() {
     $('.new-record').on('confirmed', newRecord);
 
     $('#record-reload').on('confirmed', function () {
-        loadRecord(recordId);
+        loadRecord(document.record.id);
     });
     
     $('#record-delete').on('confirmed', function () {
@@ -109,7 +109,7 @@ function initializeEditor() {
             $(gallery).find('.delete-image').on('confirmed', function () {
                 $.ajax({
                     type: "DELETE",
-                    url: "/record/" + recordId + "/media/" + id,
+                    url: "/record/" + document.record.id + "/media/" + id,
                     dataType: "json",
                 }).done(function(msg) {
                     $('li[data-id="' + id + '"]').remove();
@@ -256,7 +256,8 @@ function loadRecord(id) {
 }
 
 function finishedLoading(data) {
-    var text = window.formatter.render(data);
+    var text = window.formatters[data.format].render(data.data);
+    document.record = data;
     $('#recordContainer').html(text);
     initializeContentEditable();
 }
@@ -267,19 +268,19 @@ function ajaxLoadFailed(jqXHR, err, msg) {
 function saveRecord() {
     $.ajax({
         type: "POST",
-        url: "/record/" + (typeof(recordId) === 'number' ? recordId : 'new'),
+        url: "/record/" + (typeof(document.record.id) === 'number' ? BN.record.id : 'new'),
         dataType: "json",
-        data: { data: JSON.stringify(window.formatter.decompile($('#recordContainer article').get(0))),
+        data: { data: JSON.stringify(window.formatters[document.record.format].decompile($('#recordContainer article').get(0))),
                 recordtype_id: $('#recordtype-select').val()
               },
         error: ajaxSaveFailed,
     }).done(function(msg) {
-        recordId = parseInt(msg.id, 10);
-        if (typeof(recordId) !== 'undefined') {
+        document.record.id = parseInt(msg.id, 10);
+        if (typeof(document.record.id) !== 'undefined') {
             $('.self-url').each(function () {
-                $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + recordId));
+                $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + document.record.id));
             });
-            History.replaceState({ 'event' : 'save', 'recordId' : recordId }, 'Record ' + recordId, '/record/' + recordId);
+            History.replaceState({ 'event' : 'save', 'recordId' : document.record.id }, 'Record ' + BN.record.id, '/record/' + BN.record.id);
         }
         $('body').removeClass('unsaved-changes');
         addAlert('Successfully saved record', 'success');
@@ -297,13 +298,13 @@ function saveTemplate() {
         type: "POST",
         url: "/resources/template/",
         dataType: "json",
-        data: { data: JSON.stringify(window.formatter.decompile($('#recordContainer article').get(0))),
+        data: { data: JSON.stringify(window.formatters[document.record.format].decompile($('#recordContainer article').get(0))),
                 recordtype: $('#recordtype-select').val(),
                 name: $('#template-name').val()
               },
         error: ajaxTemplateSaveFailed,
     }).done(function(msg) {
-        recordId = parseInt(msg.id, 10);
+        document.record.id = parseInt(msg.id, 10);
         addAlert('Successfully saved template', 'success');
         updateFieldsTOCTree();
     });
@@ -352,7 +353,7 @@ function addLink(field) {
     $('#link-select').on('hidden', function () {
         $('#curlink').removeAttr('id');
     });
-    $('#link-select').load('/record/' + recordId + '/link/select', function () {
+    $('#link-select').load('/record/' + document.record.id + '/link/select', function () {
         $('#link-select').modal('show');
         $('#link-results').on('click', '.record-view-link', null, function () {
             var link = $(this).parents('tr').first().attr('data-id');
@@ -364,7 +365,7 @@ function addLink(field) {
             ev.preventDefault();
         });
         $('#link-form').submit(function (e) {
-            $('#link-results').load('/record/' + recordId + '/link/list/' + field.id + '?q=' + $('#link-q').val());
+            $('#link-results').load('/record/' + document.record.id + '/link/list/' + field.id + '?q=' + $('#link-q').val());
             ev.preventDefault();
         });
     });

@@ -1,7 +1,7 @@
 var Q = require('q'),
     models,
     datastore = require('../lib/datastore'),
-    formatter = require('../lib/formats/ericthesaurus');
+    formatters = require('../lib/formats');
 
 module.exports = Record;
 
@@ -80,7 +80,7 @@ function Record(data) {
         createPromise.promise.then(function(me) {
             var record = new Record({
                 id: me.id,
-                data: JSON.stringify(formatter.snippet(JSON.parse(me.data))),
+                data: JSON.stringify(formatters[me.format].snippet(JSON.parse(me.data))),
                 recordtype_id: me.recordtype_id
             });
             deferred.resolve(record);
@@ -92,7 +92,7 @@ function Record(data) {
         if (typeof this.data === 'undefined' || this.data === null || this.data === '') {
             return '<article><header></header><section></section></article>';
         }
-        return formatter.render(JSON.parse(this.data));
+        return formatters[me.format].render(JSON.parse(this.data));
     };
 
     if (typeof data === 'object') {
