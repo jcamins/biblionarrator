@@ -101,7 +101,7 @@ function addLink(source, target, field, in_label, out_label) {
 
 function addRecord(rec, recordtype, controlno) {
     var deferred = Q.defer();
-    datastore.query('INSERT INTO records (data, recordtype_id, collection_id, controlno, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', [ JSON.stringify(rec), recordtype, 1, controlno ], function (err, results) {
+    datastore.query('INSERT INTO records (data, recordtype_id, collection_id, controlno, format, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())', [ JSON.stringify(rec), recordtype, 1, controlno, 'ericthesaurus' ], function (err, results) {
         if (err) {
             deferred.reject(err);
         } else {
