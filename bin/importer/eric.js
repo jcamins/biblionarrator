@@ -7,6 +7,9 @@ var fs = require('fs'),
 var parser = new xml2js.Parser();
 var recs = { };
 var filenames = process.argv.slice(2);
+var filepromises = [ ];
+var addpromises = [ ];
+var linkpromises = [ ];
 datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
     recs = { };
     if (err) {
@@ -15,8 +18,9 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
         for (var ii in results) {
             recs[results[ii].controlno] = results[ii].id;
         }
-        filenames.forEach(function (filename) {
-            var promises = [ ];
+        filenames.forEach(function (filename, promisenum) {
+            var deferred = Q.defer();
+            filepromises[promisenum] = deferred.promise;
             console.log('Opening file ' + filename);
             fs.readFile(filename, function(err, data) {
                 parser.parseString(data, function (err, result) {
@@ -50,20 +54,19 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                                 if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
                                     if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
                                         recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                                        addpromises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
                                     } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
                                         recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                                        addpromises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
                                     }
                                 }
                             }
                         }
-                        promises.push(addRecord(rec, 20, rec.accno));
+                        addpromises.push(addRecord(rec, 20, rec.accno));
                     }
                 
-                    console.log('Creating ' + promises.length + ' records for ' + filename);
-                    Q.all(promises).then(function (data) {
-                        promises = [];
+                    console.log('Creating ' + addpromises.length + ' records for ' + filename);
+                    Q.all(addpromises).then(function (data) {
                         for (var ii in data) {
                             if (data[ii].accno) {
                                 recs[data[ii].accno] = data[ii];
@@ -77,7 +80,7 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                                     for (var ref in recs[rec].creators) {
                                         ref = recs[rec].creators[ref];
                                         if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 1, 'Created', 'By'));
+                                            linkpromises.push(addLink(recs[rec].id, recs[ref], 1, 'Created', 'By'));
                                         }
                                     }
                                 }
@@ -85,20 +88,23 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                                     for (var ref in recs[rec].subjects) {
                                         ref = recs[rec].subjects[ref];
                                         if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 8, 'Topic Of', 'About'));
+                                            linkpromises.push(addLink(recs[rec].id, recs[ref], 8, 'Topic Of', 'About'));
                                         }
                                     }
                                 }
                             }
                         }
-                        console.log('Creating ' + promises.length + ' links for ' + filename);
-                        return Q.all(promises);
+                        console.log('Creating ' + linkpromises.length + ' links for ' + filename);
+                        return Q.all(linkpromises);
                     }).then(function () {
-                        console.log('done');
-                        process.exit();
+                        console.log('Finished ' + filename);
+                        deferred.resolve(filename);
                     });
                 });
             });
+        });
+        Q.allSettled(filepromises).then(function () {
+            process.exit();
         });
     }
 });
