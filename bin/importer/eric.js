@@ -44,51 +44,53 @@ fs.readFile(process.argv[2], function(err, data) {
                 }
             }
             promises.push(addRecord(rec, 20, rec.accno));
+        }
 
-            datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
-                if (err) {
-                    throw('unable to get subjects');
-                } else {
-                    for (var ii in results) {
-                        recs[results[ii].controlno] = results[ii].id;
-                    }
-                    Q.all(promises).then(function (data) {
-                        promises = [];
-                        for (var ii in data) {
-                            if (data[ii].accno) {
-                                recs[data[ii].accno] = data[ii];
-                            } else if (data[ii].article) {
-                                recs[data[ii].article.children[0].header.children[0].span.children[0]] = data[ii].id;
-                            }
-                        }
-                        for (var rec in recs) {
-                            if (typeof recs[rec] === 'object') {
-                                if (recs[rec].creators) {
-                                    for (var ref in recs[rec].creators) {
-                                        ref = recs[rec].creators[ref];
-                                        if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 1, 'By', 'Created'));
-                                        }
-                                    }
-                                }
-                                if (recs[rec].subjects) {
-                                    for (var ref in recs[rec].subjects) {
-                                        ref = recs[rec].subjects[ref];
-                                        if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 8, 'About', 'Topic of'));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return Q.all(promises);
-                    }).then(function () {
-                        console.log('done');
-                        process.exit();
-                    });
+        console.log('Creating ' + promises.length + ' records');
+        datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
+            if (err) {
+                throw('unable to get subjects');
+            } else {
+                for (var ii in results) {
+                    recs[results[ii].controlno] = results[ii].id;
                 }
-            });
-        };
+                Q.all(promises).then(function (data) {
+                    promises = [];
+                    for (var ii in data) {
+                        if (data[ii].accno) {
+                            recs[data[ii].accno] = data[ii];
+                        } else if (data[ii].article) {
+                            recs[data[ii].article.children[0].header.children[0].span.children[0]] = data[ii].id;
+                        }
+                    }
+                    for (var rec in recs) {
+                        if (typeof recs[rec] === 'object') {
+                            if (recs[rec].creators) {
+                                for (var ref in recs[rec].creators) {
+                                    ref = recs[rec].creators[ref];
+                                    if (recs[ref]) {
+                                        promises.push(addLink(recs[rec].id, recs[ref], 1, 'By', 'Created'));
+                                    }
+                                }
+                            }
+                            if (recs[rec].subjects) {
+                                for (var ref in recs[rec].subjects) {
+                                    ref = recs[rec].subjects[ref];
+                                    if (recs[ref]) {
+                                        promises.push(addLink(recs[rec].id, recs[ref], 8, 'About', 'Topic of'));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    console.log('Creating ' + promises.length + ' links');
+                    return Q.all(promises);
+                }).then(function () {
+                    console.log('done');
+                    process.exit();
+                });
+            }
+        });
     });
 });
 
