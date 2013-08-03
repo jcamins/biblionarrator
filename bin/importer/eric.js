@@ -39,10 +39,14 @@ for (var arg in filenames) {
                 for (var jj in record.metadata[0]['dc:creator']) {
                     if (record.metadata[0]['dc:creator'][jj]['_']) {
                         rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
-                        if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
-                            promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
-                        } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
-                            promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                        if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
+                            if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
+                                recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                                promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                            } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
+                                recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                                promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                            }
                         }
                     }
                 }
@@ -51,6 +55,7 @@ for (var arg in filenames) {
         
             console.log('Creating ' + promises.length + ' records');
             datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
+                recs = { };
                 if (err) {
                     throw('unable to get subjects');
                 } else {
