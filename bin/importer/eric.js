@@ -5,108 +5,94 @@ var fs = require('fs'),
     Q = require('q');
 
 var parser = new xml2js.Parser();
+var filename = process.argv[2]; // It would be great if we could do multiple files in parallel, but in practice the heap gets too big
 var recs = { };
-var filenames = process.argv.slice(2);
-var filepromises = [ ];
-var addpromises = [ ];
-var linkpromises = [ ];
-datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
-    recs = { };
-    if (err) {
-        throw('unable to get subjects');
-    } else {
-        for (var ii in results) {
-            recs[results[ii].controlno] = results[ii].id;
-        }
-        filenames.forEach(function (filename, promisenum) {
-            var deferred = Q.defer();
-            filepromises[promisenum] = deferred.promise;
-            console.log('Opening file ' + filename);
-            fs.readFile(filename, function(err, data) {
-                parser.parseString(data, function (err, result) {
-                    var record;
-                    console.log('Processing ' + result.records.record.length + ' records in ' + filename);
-                    for (var ii in result.records.record) {
-                        if (ii % 1000 === 0 && ii > 0) {
-                            console.log('... ' + ii + ' of ' + result.records.record.length);
-                        }
-                        record = result.records.record[ii];
-                        var rec = {
-                            title: record.metadata[0]['dc:title'][0],
-                            source: record.metadata[0]['dc:source'][0],
-                            citation: record.metadata[0]['eric:citation'][0],
-                            description: record.metadata[0]['dc:description'][0],
-                            publisher: record.metadata[0]['dc:publisher'][0],
-                            subjects: record.metadata[0]['dc:subject'],
-                            types: record.metadata[0]['dc:type'],
-                        };
-                        for (var jj in record.metadata[0]['dc:identifier']) {
-                            if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
-                                rec.doi = record.metadata[0]['dc:identifier'][jj]['_'];
-                            } else if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'eric_accno') {
-                                rec.accno = record.metadata[0]['dc:identifier'][jj]['_'];
-                            }
-                        }
-                        rec.creators = [];
-                        for (var jj in record.metadata[0]['dc:creator']) {
-                            if (record.metadata[0]['dc:creator'][jj]['_']) {
-                                rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
-                                if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
-                                    if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
-                                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                        addpromises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
-                                    } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
-                                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                        addpromises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
-                                    }
-                                }
-                            }
-                        }
-                        addpromises.push(addRecord(rec, 20, rec.accno));
-                    }
-                
-                    console.log('Creating ' + addpromises.length + ' records for ' + filename);
-                    Q.all(addpromises).then(function (data) {
-                        for (var ii in data) {
-                            if (data[ii].accno) {
-                                recs[data[ii].accno] = data[ii];
-                            } else if (data[ii].article) {
-                                recs[data[ii].article.children[0].header.children[0].span.children[0]] = data[ii].id;
-                            }
-                        }
-                        for (var rec in recs) {
-                            if (typeof recs[rec] === 'object') {
-                                if (recs[rec].creators) {
-                                    for (var ref in recs[rec].creators) {
-                                        ref = recs[rec].creators[ref];
-                                        if (recs[ref]) {
-                                            linkpromises.push(addLink(recs[rec].id, recs[ref], 1, 'Created', 'By'));
-                                        }
-                                    }
-                                }
-                                if (recs[rec].subjects) {
-                                    for (var ref in recs[rec].subjects) {
-                                        ref = recs[rec].subjects[ref];
-                                        if (recs[ref]) {
-                                            linkpromises.push(addLink(recs[rec].id, recs[ref], 8, 'Topic Of', 'About'));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        console.log('Creating ' + linkpromises.length + ' links for ' + filename);
-                        return Q.all(linkpromises);
-                    }).then(function () {
-                        console.log('Finished ' + filename);
-                        deferred.resolve(filename);
-                    });
-                });
-            });
-        });
-        Q.allSettled(filepromises).then(function () {
-            process.exit();
-        });
+Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(function (results) {
+    for (var ii in results) {
+        recs[results[ii].controlno] = results[ii].id;
     }
+    return recs;
+}).then(function () {
+    console.log('Opening file ' + filename);
+    return Q.nfcall(fs.readFile, filename);
+}).then(function (data) {
+    console.log('Parsing file ' + filename);
+    return Q.nfcall(parser.parseString, data);
+}).then(function (result) {
+    var promises = [];
+    var record;
+    console.log('Processing ' + result.records.record.length + ' records in ' + filename);
+    for (var ii in result.records.record) {
+        if (ii % 1000 === 0 && ii > 0) {
+            console.log('... ' + ii + ' of ' + result.records.record.length);
+        }
+        record = result.records.record[ii];
+        var rec = {
+            title: record.metadata[0]['dc:title'][0],
+            source: record.metadata[0]['dc:source'][0],
+            citation: record.metadata[0]['eric:citation'][0],
+            description: record.metadata[0]['dc:description'][0],
+            publisher: record.metadata[0]['dc:publisher'][0],
+            subjects: record.metadata[0]['dc:subject'],
+            types: record.metadata[0]['dc:type'],
+        };
+        for (var jj in record.metadata[0]['dc:identifier']) {
+            if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
+                rec.doi = record.metadata[0]['dc:identifier'][jj]['_'];
+            } else if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'eric_accno') {
+                rec.accno = record.metadata[0]['dc:identifier'][jj]['_'];
+            }
+        }
+        rec.creators = [];
+        for (var jj in record.metadata[0]['dc:creator']) {
+            if (record.metadata[0]['dc:creator'][jj]['_']) {
+                rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
+                if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
+                    if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
+                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                    } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
+                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                    }
+                }
+            }
+        }
+        promises.push(addRecord(rec, 20, rec.accno));
+    }
+    console.log('Ready to create ' + promises.length + ' records for ' + filename);
+    return Q.all(promises);
+}).then(function (data) {
+    console.log('Finished creating records');
+    var promises = [ ];
+    var newrecs = [ ];
+    for (var ii in data) {
+        if (data[ii].article) {
+            recs[data[ii].article.children[0].header.children[0].span.children[0]] = data[ii].id;
+        } else {
+            newrecs.push(data[ii]);
+        }
+    }
+    newrecs.forEach(function (rec) {
+        rec.creators.forEach(function (ref) {
+            if (recs[ref]) {
+                promises.push(addLink(rec.id, recs[ref], 1, 'Created', 'By'));
+            }
+        });
+        rec.subjects.forEach(function (ref) {
+            if (recs[ref]) {
+                promises.push(addLink(rec.id, recs[ref], 8, 'Topic Of', 'About'));
+            }
+        });
+    });
+    console.log('Ready to create ' + promises.length + ' links for ' + filename);
+    return Q.all(promises);
+}).then(function () {
+    console.log('Finished creating links');
+    console.log('Successfully loaded ' + filename);
+}).finally(function () {
+    console.log('Finished ' + filename);
+    process.exit();
 });
 
 function addLink(source, target, field, in_label, out_label) {
