@@ -1,7 +1,7 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
     inspect = require('eyes').inspector({maxLength: false}),
-    datastore = require('./lib/datastore'),
+    datastore = require('../../lib/datastore'),
     Q = require('q');
 
 var parser = new xml2js.Parser();

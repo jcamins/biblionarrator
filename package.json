@@ -30,7 +30,8 @@
     "q": "0.9.x",
     "q-io": "1.9.x",
     "browserify": "~2.25.1",
-    "xml2js": "~0.2.8"
+    "xml2js": "~0.2.8",
+    "eyes": "~0.1.8"
   },
   "devDependencies": {
     "chai": "1.7.x",
