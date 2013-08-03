@@ -57,7 +57,7 @@ function RecordList() {
                     seen[records[idx].id] = 1;
                     records[idx].rendered = records[idx].render();
                     records[idx].number = number++;
-                    records[idx].facet = links[idx].type;;
+                    records[idx].facet = links[idx].label;
                     me.records.push(records[idx]);
                     me.mainfacet[links[idx].type] = (parseInt(me.mainfacet[links[idx].type], 10) || 0) + 1;
                 }

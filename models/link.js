@@ -4,7 +4,7 @@ var Q = require('q'),
 
 module.exports = Link;
 
-function Link(source_id, target_id, type) {
+function Link(source_id, target_id, type, label) {
     var deferred = Q.defer();
     var me = this;
     var source;
@@ -14,6 +14,7 @@ function Link(source_id, target_id, type) {
     this.source_id = source_id;
     this.target_id = target_id;
     this.type = type;
+    this.label = label;
 
     this.source = function() {
         source = source || new models.Record(me.source_id);
