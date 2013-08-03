@@ -59,7 +59,7 @@ function RecordList() {
                     records[idx].number = number++;
                     records[idx].facet = links[idx].label;
                     me.records.push(records[idx]);
-                    me.mainfacet[links[idx].type] = (parseInt(me.mainfacet[links[idx].type], 10) || 0) + 1;
+                    me.mainfacet[links[idx].label] = (parseInt(me.mainfacet[links[idx].label], 10) || 0) + 1;
                 }
             }
             me.total = me.records.length;
