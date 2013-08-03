@@ -10,7 +10,11 @@ var promises = [ ];
 fs.readFile(process.argv[2], function(err, data) {
     parser.parseString(data, function (err, result) {
         var record;
+        console.log('Processing ' + result.records.record.length + ' records');
         for (var ii in result.records.record) {
+            if (ii % 1000 === 0) {
+                console.log('... ' + ii + ' of ' + result.records.record.length);
+            }
             record = result.records.record[ii];
             var rec = {
                 title: record.metadata[0]['dc:title'][0],
@@ -48,7 +52,6 @@ fs.readFile(process.argv[2], function(err, data) {
                     for (var ii in results) {
                         recs[results[ii].controlno] = results[ii].id;
                     }
-                    console.log(results);
                     Q.all(promises).then(function (data) {
                         promises = [];
                         for (var ii in data) {
@@ -71,7 +74,6 @@ fs.readFile(process.argv[2], function(err, data) {
                                 if (recs[rec].subjects) {
                                     for (var ref in recs[rec].subjects) {
                                         ref = recs[rec].subjects[ref];
-                                        console.log(ref);
                                         if (recs[ref]) {
                                             promises.push(addLink(recs[rec].id, recs[ref], 8, 'About', 'Topic of'));
                                         }
@@ -108,7 +110,7 @@ function addRecord(rec, recordtype, controlno, format) {
     format = format || 'eric';
     datastore.query('INSERT INTO records (data, recordtype_id, collection_id, controlno, format, created_at, updated_at, deleted) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), 0)', [ JSON.stringify(rec), recordtype, 1, controlno, format ], function (err, results) {
         if (err) {
-        console.log(err);
+            console.log(err);
             deferred.reject(err);
         } else {
             rec.id = results.insertId;
