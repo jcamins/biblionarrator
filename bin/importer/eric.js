@@ -16,9 +16,8 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
         for (var ii in results) {
             recs[results[ii].controlno] = results[ii].id;
         }
-        for (var arg in filenames) {
-            console.log('Opening file ' + filenames[arg]);
-            var filename = filenames[arg];
+        filenames.forEach(function (filename) {
+            console.log('Opening file ' + filename);
             fs.readFile(filename, function(err, data) {
                 parser.parseString(data, function (err, result) {
                     var record;
@@ -100,7 +99,7 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                     });
                 });
             });
-        }
+        });
     }
 });
 
