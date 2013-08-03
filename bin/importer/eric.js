@@ -8,60 +8,60 @@ var parser = new xml2js.Parser();
 var recs = { };
 var promises = [ ];
 var filenames = process.argv.slice(2);
-for (var arg in filenames) {
-    console.log('Opening file ' + filenames[arg]);
-    fs.readFile(filenames[arg], function(err, data) {
-        parser.parseString(data, function (err, result) {
-            var record;
-            console.log('Processing ' + result.records.record.length + ' records');
-            for (var ii in result.records.record) {
-                if (ii % 1000 === 0 && ii > 0) {
-                    console.log('... ' + ii + ' of ' + result.records.record.length);
-                }
-                record = result.records.record[ii];
-                var rec = {
-                    title: record.metadata[0]['dc:title'][0],
-                    source: record.metadata[0]['dc:source'][0],
-                    citation: record.metadata[0]['eric:citation'][0],
-                    description: record.metadata[0]['dc:description'][0],
-                    publisher: record.metadata[0]['dc:publisher'][0],
-                    subjects: record.metadata[0]['dc:subject'],
-                    types: record.metadata[0]['dc:type'],
-                };
-                for (var jj in record.metadata[0]['dc:identifier']) {
-                    if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
-                        rec.doi = record.metadata[0]['dc:identifier'][jj]['_'];
-                    } else if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'eric_accno') {
-                        rec.accno = record.metadata[0]['dc:identifier'][jj]['_'];
-                    }
-                }
-                rec.creators = [];
-                for (var jj in record.metadata[0]['dc:creator']) {
-                    if (record.metadata[0]['dc:creator'][jj]['_']) {
-                        rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
-                        if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
-                            if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
-                                recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
-                            } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
-                                recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                                promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
+    recs = { };
+    if (err) {
+        throw('unable to get subjects');
+    } else {
+        for (var ii in results) {
+            recs[results[ii].controlno] = results[ii].id;
+        }
+        for (var arg in filenames) {
+            console.log('Opening file ' + filenames[arg]);
+            fs.readFile(filenames[arg], function(err, data) {
+                parser.parseString(data, function (err, result) {
+                    var record;
+                    console.log('Processing ' + result.records.record.length + ' records in ' + filenames[arg]);
+                    for (var ii in result.records.record) {
+                        if (ii % 1000 === 0 && ii > 0) {
+                            console.log('... ' + ii + ' of ' + result.records.record.length);
+                        }
+                        record = result.records.record[ii];
+                        var rec = {
+                            title: record.metadata[0]['dc:title'][0],
+                            source: record.metadata[0]['dc:source'][0],
+                            citation: record.metadata[0]['eric:citation'][0],
+                            description: record.metadata[0]['dc:description'][0],
+                            publisher: record.metadata[0]['dc:publisher'][0],
+                            subjects: record.metadata[0]['dc:subject'],
+                            types: record.metadata[0]['dc:type'],
+                        };
+                        for (var jj in record.metadata[0]['dc:identifier']) {
+                            if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
+                                rec.doi = record.metadata[0]['dc:identifier'][jj]['_'];
+                            } else if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'eric_accno') {
+                                rec.accno = record.metadata[0]['dc:identifier'][jj]['_'];
                             }
                         }
+                        rec.creators = [];
+                        for (var jj in record.metadata[0]['dc:creator']) {
+                            if (record.metadata[0]['dc:creator'][jj]['_']) {
+                                rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
+                                if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
+                                    if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
+                                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                                    } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
+                                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
+                                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                                    }
+                                }
+                            }
+                        }
+                        promises.push(addRecord(rec, 20, rec.accno));
                     }
-                }
-                promises.push(addRecord(rec, 20, rec.accno));
-            }
-        
-            console.log('Creating ' + promises.length + ' records');
-            datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
-                recs = { };
-                if (err) {
-                    throw('unable to get subjects');
-                } else {
-                    for (var ii in results) {
-                        recs[results[ii].controlno] = results[ii].id;
-                    }
+                
+                    console.log('Creating ' + promises.length + ' records for ' + filenames[arg]);
                     Q.all(promises).then(function (data) {
                         promises = [];
                         for (var ii in data) {
@@ -91,17 +91,17 @@ for (var arg in filenames) {
                                 }
                             }
                         }
-                        console.log('Creating ' + promises.length + ' links');
+                        console.log('Creating ' + promises.length + ' links for ' + filenames[arg]);
                         return Q.all(promises);
                     }).then(function () {
                         console.log('done');
                         process.exit();
                     });
-                }
+                });
             });
-        });
-    });
-}
+        }
+    }
+});
 
 function addLink(source, target, field, in_label, out_label) {
     var deferred = Q.defer();
