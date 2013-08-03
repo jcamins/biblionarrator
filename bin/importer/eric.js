@@ -18,10 +18,11 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
         }
         for (var arg in filenames) {
             console.log('Opening file ' + filenames[arg]);
-            fs.readFile(filenames[arg], function(err, data) {
+            var filename = filenames[arg];
+            fs.readFile(filename, function(err, data) {
                 parser.parseString(data, function (err, result) {
                     var record;
-                    console.log('Processing ' + result.records.record.length + ' records in ' + filenames[arg]);
+                    console.log('Processing ' + result.records.record.length + ' records in ' + filename);
                     for (var ii in result.records.record) {
                         if (ii % 1000 === 0 && ii > 0) {
                             console.log('... ' + ii + ' of ' + result.records.record.length);
@@ -61,7 +62,7 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                         promises.push(addRecord(rec, 20, rec.accno));
                     }
                 
-                    console.log('Creating ' + promises.length + ' records for ' + filenames[arg]);
+                    console.log('Creating ' + promises.length + ' records for ' + filename);
                     Q.all(promises).then(function (data) {
                         promises = [];
                         for (var ii in data) {
@@ -91,7 +92,7 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
                                 }
                             }
                         }
-                        console.log('Creating ' + promises.length + ' links for ' + filenames[arg]);
+                        console.log('Creating ' + promises.length + ' links for ' + filename);
                         return Q.all(promises);
                     }).then(function () {
                         console.log('done');
