@@ -23,7 +23,7 @@ function Record(data) {
                 } else {
                     var links = [];
                     for (var idx in results) {
-                        links.push(new models.Link(results[idx].target_id, results[idx].rouce_id, results[idx].in_label));
+                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, results[idx].in_label));
                     }
                     deferred.resolve(links);
                 }
