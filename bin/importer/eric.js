@@ -6,7 +6,6 @@ var fs = require('fs'),
 
 var parser = new xml2js.Parser();
 var recs = { };
-var promises = [ ];
 var filenames = process.argv.slice(2);
 datastore.query('SELECT id, controlno FROM records', [ ], function (err, results) {
     recs = { };
@@ -17,6 +16,7 @@ datastore.query('SELECT id, controlno FROM records', [ ], function (err, results
             recs[results[ii].controlno] = results[ii].id;
         }
         filenames.forEach(function (filename) {
+            var promises = [ ];
             console.log('Opening file ' + filename);
             fs.readFile(filename, function(err, data) {
                 parser.parseString(data, function (err, result) {
