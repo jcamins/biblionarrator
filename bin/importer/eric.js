@@ -77,7 +77,7 @@ for (var arg in filenames) {
                                     for (var ref in recs[rec].creators) {
                                         ref = recs[rec].creators[ref];
                                         if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 1, 'By', 'Created'));
+                                            promises.push(addLink(recs[rec].id, recs[ref], 1, 'Created', 'By'));
                                         }
                                     }
                                 }
@@ -85,7 +85,7 @@ for (var arg in filenames) {
                                     for (var ref in recs[rec].subjects) {
                                         ref = recs[rec].subjects[ref];
                                         if (recs[ref]) {
-                                            promises.push(addLink(recs[rec].id, recs[ref], 8, 'About', 'Topic of'));
+                                            promises.push(addLink(recs[rec].id, recs[ref], 8, 'Topic Of', 'About'));
                                         }
                                     }
                                 }
