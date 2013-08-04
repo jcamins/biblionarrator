@@ -15,11 +15,11 @@ var opts = {
     },
 
     tinker: {
-        path: 'local:' + __dirname + '/data/tinker',
+        path: __dirname + '/data/tinker',
     },
 
     neo4j: {
-        path: 'local:' + __dirname + '/data/neo4j',
+        path: __dirname + '/data/neo4j',
     },
 };
 
