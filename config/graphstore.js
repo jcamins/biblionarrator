@@ -16,4 +16,8 @@ module.exports = {
     tinker: {
         path: '/var/lib/tinker/biblionarrator'
     },
+
+    neo4j: {
+        path: '/var/lib/neo4j/biblionarrator'
+    }
 };

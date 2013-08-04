@@ -16,7 +16,11 @@ var opts = {
 
     tinker: {
         path: 'local:' + __dirname + '/data/tinker',
-    }
+    },
+
+    neo4j: {
+        path: 'local:' + __dirname + '/data/neo4j',
+    },
 };
 
 engines.forEach(function (engine) {
@@ -46,7 +50,7 @@ engines.forEach(function (engine) {
         });
     
         it('created expected vertex', function () {
-            expect(g.v(rec1).toJSON()[0].title).to.equal('Great book');
+            expect(g.v(rec1.getIdSync()).toJSON()[0].title).to.equal('Great book');
         });
 
         it('can find new vertex', function () {
@@ -61,7 +65,7 @@ engines.forEach(function (engine) {
         });
     
         it('created second expected vertex', function () {
-            expect(g.v(rec2).toJSON()[0].name).to.equal('Dubious author');
+            expect(g.v(rec2.getIdSync()).toJSON()[0].name).to.equal('Dubious author');
         });
 
         it('can find second new vertex', function () {
@@ -107,6 +111,7 @@ engines.forEach(function (engine) {
 
 rmdirR(__dirname + '/data/orient');
 rmdirR(__dirname + '/data/tinker');
+rmdirR(__dirname + '/data/neo4j');
 
 function rmdirR(path) {
     if( fs.existsSync(path) ) {
