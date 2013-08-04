@@ -4,7 +4,12 @@ module.exports = {
     titan: {
         'storage.backend': 'cassandra',
         'storage.hostname': '127.0.0.1',
-        'storage.keyspace': 'biblionarrator'
+        'storage.keyspace': 'biblionarrator',
+
+        'storage.index.search.backend': 'elasticsearch',
+        'storage.index.search.directory': '/var/lib/elasticsearch/biblionarrator',
+        'storage.index.search.client-only': false,
+        'storage.index.search.local-mode': true
     },
 
     orient: {

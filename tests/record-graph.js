@@ -2,6 +2,7 @@ var opts = {
     engine: 'orient',
     titan: {
         'storage.keyspace': 'bntest',
+        'storage.index.search.directory': __dirname + '/data/titanes',
     },
 
     orient: {
@@ -84,6 +85,7 @@ describe('Record model', function () {
 rmdirR(__dirname + '/data/orient');
 rmdirR(__dirname + '/data/tinker');
 rmdirR(__dirname + '/data/neo4j');
+rmdirR(__dirname + '/data/titanes');
 
 function rmdirR(path) {
     if( fs.existsSync(path) ) {
