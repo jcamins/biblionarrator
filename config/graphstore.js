@@ -12,4 +12,8 @@ module.exports = {
         username: 'biblionarrator',
         password: 'biblionarrator'
     },
+
+    tinker: {
+        path: '/var/lib/tinker/biblionarrator'
+    },
 };

@@ -12,13 +12,11 @@ var opts = {
 
     orient: {
         path: 'local:' + __dirname + '/data/orient',
-    }
-};
+    },
 
-try {
-    fs.mkdirSync(__dirname + '/data');
-    fs.mkdirSync(__dirname + '/data/graph');
-} catch (e) {
+    tinker: {
+        path: 'local:' + __dirname + '/data/tinker',
+    }
 };
 
 engines.forEach(function (engine) {
@@ -93,10 +91,22 @@ engines.forEach(function (engine) {
             graphstore.getDB().commitSync();
             expect(g.E().toArray().length).to.equal(0);
         });
+
+        it('removes vertices successfully', function () {
+            var vertices = g.V().iterator();
+            var element;
+            while (vertices.hasNextSync()){
+                element = vertices.nextSync();
+                element.removeSync();
+            };
+            graphstore.getDB().commitSync();
+            expect(g.V().toArray().length).to.equal(0);
+        });
     });
 });
 
 rmdirR(__dirname + '/data/orient');
+rmdirR(__dirname + '/data/tinker');
 
 function rmdirR(path) {
     if( fs.existsSync(path) ) {

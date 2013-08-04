@@ -38,3 +38,4 @@ publish
 
 paths.php
 node_modules
+cassandra
