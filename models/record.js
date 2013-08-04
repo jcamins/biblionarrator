@@ -73,6 +73,19 @@ function Record(data) {
         v.setPropertySync('deleted', 1);
     };
 
+    this.destroy = function () {
+        var v;
+        if (typeof _v !== 'undefined') {
+            v = me._v.iterator().nextSync();
+        } else if (typeof me._id !== 'undefined') {
+            me._v = g.v(me._id);
+            v = me._v.iterator().nextSync();
+        } else {
+            throw ('record not saved');
+        }
+        v.removeSync();
+    };
+
     this.save = function () {
         var v;
         if (typeof _v !== 'undefined') {

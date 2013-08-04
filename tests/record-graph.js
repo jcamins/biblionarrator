@@ -74,6 +74,11 @@ describe('Record model', function () {
         expect(Record.findOne({'accno': 1002, deleted: 1}).accno).to.equal(1002);
         expect(Record.findAll({'accno': 1002, deleted: 1}).length).to.equal(1);
     });
+    it('is truly gone after being destroyed', function () {
+        rec2 = Record.findOne({ _id: rec2._id, deleted: 1});
+        rec2.destroy();
+        expect(g.V().toArray().length).to.equal(2);
+    });
 });
 
 rmdirR(__dirname + '/data/orient');
