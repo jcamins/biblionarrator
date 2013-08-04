@@ -3,7 +3,7 @@ var expect = require('chai').expect,
     graphstore = require('../lib/graphstore');
 
 
-var engines = [ 'tinker', 'titan', 'orient' ];
+var engines = [ 'orient', 'titan', 'tinker' ];
 
 var opts = {
     titan: {
@@ -11,7 +11,7 @@ var opts = {
     },
 
     orient: {
-        path: 'local:' + __dirname + '/data/graph',
+        path: 'local:' + __dirname + '/data/orient',
     }
 };
 
@@ -25,6 +25,7 @@ engines.forEach(function (engine) {
     var g;
     var rec1;
     var rec2;
+    var edge1;
     describe(engine + ' -', function () {
         before(function () {
             opts.engine = engine;
@@ -42,8 +43,8 @@ engines.forEach(function (engine) {
         it('adding vertex succeeds', function () {
             rec1 = graphstore.getDB().addVertexSync(null);
             rec1.setPropertySync('title', 'Great book');
-            expect(rec1).not.to.be.an('undefined');
             graphstore.getDB().commitSync();
+            expect(rec1).not.to.be.an('undefined');
         });
     
         it('created expected vertex', function () {
@@ -57,8 +58,8 @@ engines.forEach(function (engine) {
         it('adding second vertex succeeds', function () {
             rec2 = graphstore.getDB().addVertexSync(null);
             rec2.setPropertySync('name', 'Dubious author');
-            expect(rec2).not.to.be.an('undefined');
             graphstore.getDB().commitSync();
+            expect(rec2).not.to.be.an('undefined');
         });
     
         it('created second expected vertex', function () {
@@ -72,10 +73,30 @@ engines.forEach(function (engine) {
         it('has exactly 2 vertices', function () {
             expect(g.V().toArray().length).to.equal(2);
         });
+
+        it('adding edge succeeds', function () {
+            edge1 = graphstore.getDB().addEdgeSync(null, rec1, rec2, 'by');
+            graphstore.getDB().commitSync();
+            expect(edge1).not.to.be.an('undefined');
+        });
+
+        it('can find new edge', function () {
+            expect(g.V({'name': 'Dubious author'}).inE().toArray().length).to.equal(1);
+        });
+
+        it('has exactly 1 edge', function () {
+            expect(g.E().toArray().length).to.equal(1);
+        });
+
+        it('removes edge successfully', function () {
+            g.V({'name': 'Dubious author'}).inE().iterator().nextSync().remove();
+            graphstore.getDB().commitSync();
+            expect(g.E().toArray().length).to.equal(0);
+        });
     });
 });
 
-rmdirR(
+rmdirR(__dirname + '/data/orient');
 
 function rmdirR(path) {
     if( fs.existsSync(path) ) {
