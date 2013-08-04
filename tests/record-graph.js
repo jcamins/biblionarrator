@@ -2,7 +2,7 @@ var opts = {
     engine: 'orient',
     titan: {
         'storage.keyspace': 'bntest',
-        'storage.index.search.directory': __dirname + '/data/titanes',
+        //'storage.index.search.directory': __dirname + '/data/titanes',
     },
 
     orient: {
@@ -10,11 +10,11 @@ var opts = {
     },
 
     tinker: {
-        path: 'local:' + __dirname + '/data/tinker',
+        path: __dirname + '/data/tinker',
     },
 
     neo4j: {
-        path: 'local:' + __dirname + '/data/neo4j',
+        path: __dirname + '/data/neo4j',
     },
 };
 
@@ -54,32 +54,26 @@ describe('Record model', function () {
     it('can be retrieved from graphstore directly', function () {
         expect(g.v(rec._id).toArray().length).to.equal(1);
     });
-    it('can be retrieved as a new model', function () {
-        var newrec = Record.findOne({ _id: _id });
-        expect(newrec.accno).to.equal(1001);
+    it('can be by ID retrieved as a new model', function () {
+        expect(Record.findOne({ _id: _id }).accno).to.equal(1001);
     });
-    it('can be retrieved with a filter', function () {
+    it('can be by filter retrieved as a new model', function () {
+        expect(Record.findOne({ accno: 1001 }).accno).to.equal(1001);
+    });
+    it('list can be retrieved with a filter', function () {
         var books = Record.findAll({ type: 'book'});
         expect(books.length).to.equal(2);
     });
-    /*var wantid;
-    var rec;
-    before(function (done) {
-        datastore.query('SELECT id FROM records LIMIT 1', function (err, results, fields) {
-            wantid = results[0].id;
-            rec = new Record(wantid);
-            rec.with(function (val) {
-                rec = val;
-                done();
-            });
-        });
+    it('is not found after being suppressed', function () {
+        rec2 = Record.findOne({ _id: rec2._id});
+        rec2.suppress();
+        expect(Record.findAll({'accno': 1002}).length).to.equal(0);
     });
-    it('has desired id', function () {
-        expect(rec.id).to.equal(wantid);
+    it('can be retrieved after deletion if specifically requested', function () {
+        expect(Record.findOne({ _id: rec2._id, deleted: 1}).accno).to.equal(1002);
+        expect(Record.findOne({'accno': 1002, deleted: 1}).accno).to.equal(1002);
+        expect(Record.findAll({'accno': 1002, deleted: 1}).length).to.equal(1);
     });
-    it('has data', function () {
-        expect(rec.data).to.not.equal(null);
-    });*/
 });
 
 rmdirR(__dirname + '/data/orient');

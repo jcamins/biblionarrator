@@ -3,6 +3,7 @@ var Q = require('q'),
     datastore = require('../lib/datastore'),
     graphstore = require('../lib/graphstore'),
     g = graphstore(),
+    T = g.Tokens,
     formatters = require('../lib/formats');
 
 module.exports = Record;
@@ -59,6 +60,19 @@ function Record(data) {
         return deferred.promise;
     }; */
 
+    this.suppress = function () {
+        var v;
+        if (typeof _v !== 'undefined') {
+            v = me._v.iterator().nextSync();
+        } else if (typeof me._id !== 'undefined') {
+            me._v = g.v(me._id);
+            v = me._v.iterator().nextSync();
+        } else {
+            throw ('record not saved');
+        }
+        v.setPropertySync('deleted', 1);
+    };
+
     this.save = function () {
         var v;
         if (typeof _v !== 'undefined') {
@@ -87,14 +101,11 @@ function Record(data) {
         if (typeof this.data === 'string') {
             this.data = JSON.parse(this.data);
         }
-        var record = new Record({
-            id: me.id,
+        return record = new Record({
+            _id: me.id,
             data: formatters[me.format].snippet(this.data),
             recordtype_id: me.recordtype_id
         });
-            deferred.resolve(record);
-        });
-        return deferred.promise;
     };
 
     this.render = function() {
@@ -119,15 +130,15 @@ function Record(data) {
 Record.findOne = function findOne (filter) {
     var one;
     if (filter._id) {
-        one = g.v(filter._id).toJSON();
+        one = g.v(filter._id).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON()[0];
     } else {
-        one = g.V(filter).toJSON()[0];
+        one = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON()[0];
     }
-    return new Record(one[0]);
+    return new Record(one);
 };
 
 Record.findAll = function findAll (filter) {
-    var all = g.V(filter).toJSON();
+    var all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
     var records = [ ];
     all.forEach(function (one) {
         records.push(new Record(one));
