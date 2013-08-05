@@ -117,6 +117,10 @@
             id: {{record.id}},
             format: '{{record.format}}',
         };
+    {{#else}}
+        document.record = {
+            format: 'bnjson',
+        };
     {{/if}}
 
     var labeltofieldlookup = {
