@@ -92,7 +92,7 @@ engines.forEach(function (engine) {
         });
 
         it('removes edge successfully', function () {
-            g.V({'name': 'Dubious author'}).inE().iterator().nextSync().remove();
+            graphstore.getDB().removeEdgeSync(g.V({'name': 'Dubious author'}).inE().iterator().nextSync());
             graphstore.getDB().commitSync();
             expect(g.E().toArray().length).to.equal(0);
         });
