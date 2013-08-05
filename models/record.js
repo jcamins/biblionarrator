@@ -10,12 +10,9 @@ module.exports = Record;
 
 function Record(data) {
     var me = this;
-    var _v;
 
     this.v = function () {
-        if (typeof _v !== 'undefined') {
-            return _v;
-        } else if (me.id) {
+        if (me.id) {
             return g.v(me.id);
         } else {
             throw('record not saved');
@@ -61,47 +58,29 @@ function Record(data) {
     }; */
 
     this.suppress = function () {
-        var v;
-        if (typeof _v !== 'undefined') {
-            v = me._v.iterator().nextSync();
-        } else if (typeof me.id !== 'undefined') {
-            me._v = g.v(me.id);
-            v = me._v.iterator().nextSync();
-        } else {
-            throw ('record not saved');
-        }
+        var v = me.v().iterator().nextSync();
         v.setPropertySync('deleted', 1);
+        graphstore.getDB().commitSync();
     };
 
     this.destroy = function () {
-        var v;
-        if (typeof _v !== 'undefined') {
-            v = me._v.iterator().nextSync();
-        } else if (typeof me.id !== 'undefined') {
-            me._v = g.v(me.id);
-            v = me._v.iterator().nextSync();
-        } else {
-            throw ('record not saved');
-        }
+        var v = me.v().iterator().nextSync();
         v.removeSync();
+        graphstore.getDB().commitSync();
     };
 
     this.save = function () {
         var v;
-        if (typeof _v !== 'undefined') {
-            v = me._v.iterator().nextSync();
-        } else if (typeof me.id !== 'undefined') {
-            me._v = g.v(me.id);
-            v = me._v.iterator().nextSync();
-        } else {
+        try {
+            v = me.v().iterator().nextSync();
+        } catch (e) {
             v = graphstore.getDB().addVertexSync(null);
-            _v = g.v(v);
         }
         if (typeof me.deleted === 'undefined') {
             me.deleted = 0;
         }
         for (var prop in me) {
-            if (me.hasOwnProperty(prop) && typeof me[prop] !== 'function' && typeof me[prop] !== 'undefined') {
+            if (prop !== 'id' && me.hasOwnProperty(prop) && typeof me[prop] !== 'function' && typeof me[prop] !== 'undefined') {
                 if (typeof me[prop] === 'object') {
                     v.setPropertySync(prop, JSON.stringify(me[prop]));
                 } else {
@@ -121,7 +100,7 @@ function Record(data) {
             this.data = JSON.parse(this.data);
         }
         return record = new Record({
-            _id: me.id,
+            id: me.id,
             data: formatters[me.format].snippet(this.data),
             recordtype_id: me.recordtype_id
         });
@@ -136,6 +115,13 @@ function Record(data) {
         }
         console.log(me);
         return formatters[me.format].render(me.data);
+    };
+
+    this.link = function (type, target) {
+        var source = g.v(me.id).iterator().nextSync();
+        var targ = g.v(target.id).iterator().nextSync();
+        var edge = graphstore.getDB().addEdgeSync(null, source, targ, type);
+        graphstore.getDB().commitSync();
     };
 
     for (var prop in data) {
@@ -163,7 +149,6 @@ Record.findAll = function findAll (filter) {
             all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
         }
     } catch (e) {
-        console.log('caught error');
         all = [ ];
     }
     var records = [ ];

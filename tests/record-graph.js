@@ -86,6 +86,17 @@ describe('Record model', function () {
     it('does not explode when searching for multiple nonexistent records', function () {
         expect(Record.findAll({ accno: '9801234'}).length).to.equal(0);
     });
+    it('can be linked to another record', function () {
+        rec.link('by', rec3);
+        expect(g.E().toArray().length).to.equal(1);
+    });
+    it('can be edited', function () {
+        rec.accno = 1005;
+        rec.save();
+    });
+    it('does not create extra records on editing', function () {
+        expect(g.V().toArray().length).to.equal(2);
+    });
 });
 
 rmdirR(__dirname + '/data/orient');
