@@ -1,7 +1,7 @@
 var graphstore = require('../lib/graphstore'),
     g = graphstore(),
     T = g.Tokens,
-    repl = require("repl")/
+    repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});
     //require('repl.history')(repl, './.node_history');
 
