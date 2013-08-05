@@ -121,9 +121,9 @@ function Record(data) {
     };
 
     this.link = function (type, target) {
-        var source = g.v(me.id).iterator().nextSync();
-        var targ = g.v(target.id).iterator().nextSync();
-        var edge = graphstore.getDB().addEdgeSync(null, source, targ, type);
+        var sv = g.v(me.id).iterator().nextSync();
+        var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
+        var edge = graphstore.getDB().addEdgeSync(null, sv, tv, type);
         graphstore.getDB().commitSync();
     };
 

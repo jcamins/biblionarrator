@@ -17,17 +17,13 @@ exports.linkselect = function(req, res) {
 };
 
 exports.linkadd = function(req, res) {
-    datastore.query('INSERT INTO record_links (source_id, target_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())', [req.params.record_id, req.params.target_id], function(err, results) {
-        if (err) {
-            res.json({
-                error: err
-            });
-        } else {
-            res.json({
-                success: true
-            });
-        }
-    });
+    var record = Record.findOne({id: req.params.record_id});
+    try {
+        record.link(req.params.link_type, req.params.target_id);
+        res.json({ success: true });
+    } catch (e) {
+        res.json({ error: e });
+    }
 };
 
 exports.linklist = function(req, res) {};
@@ -68,7 +64,6 @@ exports.view = function(req, res) {
     var record = Record.findOne({id: req.params.record_id}) || new Record();
     var accept = req.accepts([ 'json', 'html' ]);
     if (accept === 'html') {
-        console.log('want html');
         Q.all([sharedview(), Field.all(), RecordType.all()]).then(function(defdata) {
             var data = defdata[0];
             data.view = 'record';
@@ -84,7 +79,7 @@ exports.view = function(req, res) {
                 }
             });
         }, function(errs) {
-            console.log(errs);
+            res.send(404, errs);
         });
     } else {
         res.json(record);
