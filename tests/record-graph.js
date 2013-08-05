@@ -29,7 +29,7 @@ describe('Record model', function () {
     var rec;
     var rec2;
     var rec3;
-    var _id;
+    var id;
     before(function () {
         rec = new Record({ 'data': JSON.stringify({ 'title': 'Great title', 'author': 'Good author' }), 'accno': 1001, 'type': 'book' });
         rec2 = new Record({ 'data': JSON.stringify({ 'title': 'Lousy title', 'author': 'Good author' }), 'accno': 1002, 'type': 'book' });
@@ -45,17 +45,17 @@ describe('Record model', function () {
     });
     it('saves successfully', function () {
         rec.save();
-        expect(rec._id).to.be.defined;
-        _id = rec._id;
+        expect(rec.id).to.be.defined;
+        id = rec.id;
     });
     it('can be transformed after save', function () {
         expect(rec.v()).to.be.defined;
     });
     it('can be retrieved from graphstore directly', function () {
-        expect(g.v(rec._id).toArray().length).to.equal(1);
+        expect(g.v(rec.id).toArray().length).to.equal(1);
     });
     it('can be by ID retrieved as a new model', function () {
-        expect(Record.findOne({ _id: _id }).accno).to.equal(1001);
+        expect(Record.findOne({ id: id }).accno).to.equal(1001);
     });
     it('can be by filter retrieved as a new model', function () {
         expect(Record.findOne({ accno: 1001 }).accno).to.equal(1001);
@@ -65,22 +65,22 @@ describe('Record model', function () {
         expect(books.length).to.equal(2);
     });
     it('is not found after being suppressed', function () {
-        rec2 = Record.findOne({ _id: rec2._id});
+        rec2 = Record.findOne({ id: rec2.id});
         rec2.suppress();
         expect(Record.findAll({'accno': 1002}).length).to.equal(0);
     });
     it('can be retrieved after deletion if specifically requested', function () {
-        expect(Record.findOne({ _id: rec2._id, deleted: 1}).accno).to.equal(1002);
+        expect(Record.findOne({ id: rec2.id, deleted: 1}).accno).to.equal(1002);
         expect(Record.findOne({'accno': 1002, deleted: 1}).accno).to.equal(1002);
         expect(Record.findAll({'accno': 1002, deleted: 1}).length).to.equal(1);
     });
     it('is truly gone after being destroyed', function () {
-        rec2 = Record.findOne({ _id: rec2._id, deleted: 1});
+        rec2 = Record.findOne({ id: rec2.id, deleted: 1});
         rec2.destroy();
         expect(g.V().toArray().length).to.equal(2);
     });
     it('does not explode when searching for a single nonexistent record', function () {
-        rec2 = Record.findOne({ _id: 1234});
+        rec2 = Record.findOne({ id: 1234});
         expect(rec2).to.not.be.defined;
     });
     it('does not explode when searching for multiple nonexistent records', function () {
@@ -98,7 +98,7 @@ function rmdirR(path) {
         fs.readdirSync(path).forEach(function(file,index){
             var curPath = path + "/" + file;
             if(fs.statSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
+                rmdirR(curPath);
             } else { // delete file
                 fs.unlinkSync(curPath);
             }

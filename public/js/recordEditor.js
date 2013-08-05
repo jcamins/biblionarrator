@@ -275,7 +275,7 @@ function saveRecord() {
               },
         error: ajaxSaveFailed,
     }).done(function(msg) {
-        document.record.id = parseInt(msg.id, 10);
+        document.record.id = msg.id;
         if (typeof(document.record.id) !== 'undefined') {
             $('.self-url').each(function () {
                 $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + document.record.id));
@@ -304,7 +304,7 @@ function saveTemplate() {
               },
         error: ajaxTemplateSaveFailed,
     }).done(function(msg) {
-        document.record.id = parseInt(msg.id, 10);
+        document.record.id = msg.id;
         addAlert('Successfully saved template', 'success');
         updateFieldsTOCTree();
     });

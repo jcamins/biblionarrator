@@ -65,15 +65,16 @@ exports.links = function(req, res) {
 };
 
 exports.view = function(req, res) {
-    var record = new Record(req.params.record_id);
+    var record = Record.findOne({id: req.params.record_id}) || new Record();
     var accept = req.accepts([ 'json', 'html' ]);
     if (accept === 'html') {
-        Q.all([sharedview(), record, Field.all(), RecordType.all()]).then(function(defdata) {
+        console.log('want html');
+        Q.all([sharedview(), Field.all(), RecordType.all()]).then(function(defdata) {
             var data = defdata[0];
             data.view = 'record';
-            data.record = defdata[1];
-            data.fields = defdata[2];
-            data.recordtypes = defdata[3];
+            data.record = record;
+            data.fields = defdata[1];
+            data.recordtypes = defdata[2];
             data.record.rendered = data.record.render();
             res.render('record/interface', data, function(err, html) {
                 if (err) {
@@ -86,9 +87,7 @@ exports.view = function(req, res) {
             console.log(errs);
         });
     } else {
-        record.then(function(rec) {
-            res.json(rec);
-        });
+        res.json(record);
     }
 };
 
@@ -106,15 +105,11 @@ exports.snippet = function(req, res) {
 exports.save = function(req, res) {
     req.body.recordtype_id = req.body.recordtype_id || 1;
     var record = new Record({
-        id: req.params.record_id,
+        key: req.params.record_id,
         data: req.body.data,
-        recordtype_id: req.body.recordtype_id
+        recordtype_id: req.body.recordtype_id,
+        format: 'bnjson'
     });
-    record.then(function(rec) {
-        return rec.save();
-    }).then(function(rec) {
-        res.send(JSON.stringify(rec));
-    }, function(err) {
-        res.send(404, err);
-    });
+    record.save();
+    res.json(record);
 };
