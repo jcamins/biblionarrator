@@ -97,6 +97,9 @@ function Record(data) {
             v = graphstore.getDB().addVertexSync(null);
             _v = g.v(v);
         }
+        if (typeof me.deleted === 'undefined') {
+            me.deleted = 0;
+        }
         for (var prop in me) {
             if (me.hasOwnProperty(prop) && typeof me[prop] !== 'function') {
                 if (typeof me[prop] === 'object') {
@@ -141,17 +144,20 @@ function Record(data) {
 }
 
 Record.findOne = function findOne (filter) {
-    var one;
-    if (filter._id) {
-        one = g.v(filter._id).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON()[0];
-    } else {
-        one = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON()[0];
-    }
-    return new Record(one);
+    return Record.findAll(filter)[0];
 };
 
 Record.findAll = function findAll (filter) {
-    var all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
+    var all;
+    try {
+        if (filter._id) {
+            all = g.v(filter._id).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
+        } else {
+            all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
+        }
+    } catch (e) {
+        all = [ ];
+    }
     var records = [ ];
     all.forEach(function (one) {
         records.push(new Record(one));

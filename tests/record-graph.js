@@ -79,6 +79,13 @@ describe('Record model', function () {
         rec2.destroy();
         expect(g.V().toArray().length).to.equal(2);
     });
+    it('does not explode when searching for a single nonexistent record', function () {
+        rec2 = Record.findOne({ _id: 1234});
+        expect(rec2).to.not.be.defined;
+    });
+    it('does not explode when searching for multiple nonexistent records', function () {
+        expect(Record.findAll({ accno: '9801234'}).length).to.equal(0);
+    });
 });
 
 rmdirR(__dirname + '/data/orient');
