@@ -268,7 +268,7 @@ function ajaxLoadFailed(jqXHR, err, msg) {
 function saveRecord() {
     $.ajax({
         type: "POST",
-        url: "/record/" + (typeof(document.record.id) === 'number' ? document.record.id : 'new'),
+        url: "/record/" + (typeof document.record.id !== 'undefined' ? encodeURIComponent(document.record.id) : 'new'),
         dataType: "json",
         data: { data: JSON.stringify(window.formatters[document.record.format].decompile($('#recordContainer article').get(0))),
                 recordtype_id: $('#recordtype-select').val()
@@ -278,9 +278,9 @@ function saveRecord() {
         document.record.id = msg.id;
         if (typeof(document.record.id) !== 'undefined') {
             $('.self-url').each(function () {
-                $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + document.record.id));
+                $(this).attr('href', $(this).attr('href').replace(window.location.pathname, '/record/' + encodeURIComponent(document.record.id)));
             });
-            History.replaceState({ 'event' : 'save', 'recordId' : document.record.id }, 'Record ' + document.record.id, '/record/' + document.record.id);
+            History.replaceState({ 'event' : 'save', 'recordId' : document.record.id }, 'Record ' + document.record.id, '/record/' + encodeURIComponent(document.record.id));
         }
         $('body').removeClass('unsaved-changes');
         addAlert('Successfully saved record', 'success');

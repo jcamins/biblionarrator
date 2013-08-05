@@ -73,6 +73,9 @@ function Record(data) {
         var v;
         try {
             v = me.v().iterator().nextSync();
+            if (v === null) {
+                throw('invalid id');
+            }
         } catch (e) {
             v = graphstore.getDB().addVertexSync(null);
         }

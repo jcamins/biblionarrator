@@ -99,7 +99,7 @@ exports.snippet = function(req, res) {
 exports.save = function(req, res) {
     req.body.recordtype_id = req.body.recordtype_id || 1;
     var record = new Record({
-        key: req.params.record_id,
+        id: decodeURIComponent(req.params.record_id),
         data: req.body.data,
         recordtype_id: req.body.recordtype_id,
         format: 'bnjson'
