@@ -92,14 +92,8 @@ exports.view = function(req, res) {
 };
 
 exports.snippet = function(req, res) {
-    var record = new Record(req.params.record_id);
-    //if (req.accepts('application/json')) {
-    record.then(function(rec) {
-        return rec.snippet();
-    }).then(function(snippet) {
-        res.json(snippet);
-    });
-    //}
+    var record = Record.findOne({id: req.params.record_id}) || new Record();
+    res.json(record.snippet());
 };
 
 exports.save = function(req, res) {
