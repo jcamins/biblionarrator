@@ -41,7 +41,7 @@ describe('Record model', function () {
         expect(rec.accno).to.equal(1001);
     });
     it('throws exception if transformed prior to save', function () {
-        expect(rec.v).to.throw('record not saved');
+        expect(rec.v).to.throw('model not saved');
     });
     it('saves successfully', function () {
         rec.save();
