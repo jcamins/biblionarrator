@@ -64,12 +64,12 @@ exports.view = function(req, res) {
     var record = Record.findOne({id: req.params.record_id}) || new Record();
     var accept = req.accepts([ 'json', 'html' ]);
     if (accept === 'html') {
-        Q.all([sharedview(), Field.all(), RecordType.all()]).then(function(defdata) {
+        Q.all([sharedview(), Field.all()]).then(function(defdata) {
             var data = defdata[0];
             data.view = 'record';
             data.record = record;
             data.fields = defdata[1];
-            data.recordtypes = defdata[2];
+            data.recordtypes = RecordType.findAll();
             data.record.rendered = data.record.render();
             res.render('record/interface', data, function(err, html) {
                 if (err) {
