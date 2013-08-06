@@ -19,44 +19,6 @@ function Record(data) {
         }
     };
 
-    /*this. in = function(filter) {
-        var Link = require('./link');
-        var deferred = Q.defer();
-        createPromise.promise.then(function(me) {
-            datastore.query('SELECT * FROM record_links WHERE target_id = ?', [me.id], function(err, results, fields) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
-                    var links = [];
-                    for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'In', results[idx].in_label));
-                    }
-                    deferred.resolve(links);
-                }
-            });
-        });
-        return deferred.promise;
-    };
-
-    this.out = function(filter) {
-        var Link = require('./link');
-        var deferred = Q.defer();
-        createPromise.promise.then(function(me) {
-            datastore.query('SELECT * FROM record_links WHERE source_id = ?', [me.id], function(err, results, fields) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
-                    var links = [];
-                    for (var idx in results) {
-                        links.push(new models.Link(results[idx].source_id, results[idx].target_id, 'Out', results[idx].out_label));
-                    }
-                    deferred.resolve(links);
-                }
-            });
-        });
-        return deferred.promise;
-    }; */
-
     this.suppress = function () {
         var v = me.v().iterator().nextSync();
         v.setPropertySync('deleted', 1);
@@ -82,6 +44,7 @@ function Record(data) {
         if (typeof me.deleted === 'undefined') {
             me.deleted = 0;
         }
+        me.model = 'record';
         for (var prop in me) {
             if (prop !== 'id' && me.hasOwnProperty(prop) && typeof me[prop] !== 'function' && typeof me[prop] !== 'undefined') {
                 if (typeof me[prop] === 'object') {
@@ -149,6 +112,7 @@ Record.findAll = function findAll (filter) {
         if (filter.id) {
             all = g.v(filter.id).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
         } else {
+            filter.model = 'record';
             all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
         }
     } catch (e) {
