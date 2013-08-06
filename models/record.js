@@ -34,6 +34,11 @@ function Record(data) {
         graphstore.getDB().commitSync();
     };
 
+    this.links = function () {
+        var facets = new g.HashMap();
+        return new models.RecordList(Record.fromJSON(this.v().bothE().groupCount(facets, '{it.label}').back(1).bothV().except(this.v()).dedup().toJSON()), facets.toJSON());
+    };
+
     this.initialize(data);
 
     return this;

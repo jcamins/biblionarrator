@@ -29,35 +29,23 @@ exports.linkadd = function(req, res) {
 exports.linklist = function(req, res) {};
 
 exports.links = function(req, res) {
-    var list = new RecordList();
-    var record = new Record(req.params.record_id);
-
-    record.then(function(rec) {
-        return Q.all([rec.in(), rec.out()]);
-    }).then(function(defdata) {
-        defdata[0] = defdata[0] || [];
-        defdata[1] = defdata[1] || [];
-        return list.fromlinks(defdata[0].concat(defdata[1]));
-    }).then(function(data) {
-        data.layout = false;
-        data.summary = 'Links for record ' + req.params.record_id;
-        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-        var accept = req.accepts([ 'html', 'json' ]);
-        if (accept === 'html') {
-            res.render('partials/results', data, function(err, html) {
-                if (err) {
-                    res.send(404, err);
-                } else {
-                    res.send(html);
-                }
-            });
-        } else {
-            res.json(data);
-        }
-    }).
-    catch (function(err) {
-        res.send(404, err);
-    });
+    var record = Record.findOne({id: req.params.record_id}) || new Record();
+    var data = record.links();
+    data.layout = false;
+    data.summary = 'Links for record ' + req.params.record_id;
+    data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
+    var accept = req.accepts([ 'html', 'json' ]);
+    if (accept === 'html') {
+        res.render('partials/results', data, function(err, html) {
+            if (err) {
+                res.send(404, err);
+            } else {
+                res.send(html);
+            }
+        });
+    } else {
+        res.json(data);
+    }
 };
 
 exports.view = function(req, res) {

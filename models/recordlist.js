@@ -1,11 +1,17 @@
 var Q = require('q'),
     models,
-    datastore = require('../lib/datastore');
+    graphstore = require('../lib/graphstore');
 
 module.exports = RecordList;
 
-function RecordList() {
-    var me = this;
+function RecordList(records, mainfacet, facets) {
+    records.forEach(function (one) {
+        one.rendered = one.render();
+    });
+    this.records = records;
+    this.mainfacet = mainfacet;
+    this.facets = facets;
+    /*var me = this;
 
     this.search = function(query) {
         var deferred = Q.defer();
@@ -68,6 +74,7 @@ function RecordList() {
         });
         return deferred.promise;
     };
+    */
 }
 
 RecordList.init = function(ref) {
