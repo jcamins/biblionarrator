@@ -37,7 +37,7 @@ function outFunc(it){
 
 r.context.g = g;
 r.context.graphstore = graphstore;
-r.context.inspect = inspect
+r.context.inspect = inspect;
 
 r.on('exit', function () {
   console.log('Good-bye from Gremlin!');
