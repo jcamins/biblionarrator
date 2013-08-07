@@ -88,7 +88,7 @@ engines.forEach(function (engine) {
         });
 
         it('has exactly 1 edge', function () {
-            expect(g.V().bothE().dedup().toArray().length).to.equal(1);
+            expect(g.V().outE().toArray().length).to.equal(1);
         });
 
         it('removes edge successfully', function () {

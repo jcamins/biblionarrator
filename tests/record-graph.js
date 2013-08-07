@@ -88,7 +88,7 @@ describe('Record model', function () {
     });
     it('can be linked to another record', function () {
         rec.link('by', rec3);
-        expect(g.V().bothE().dedup().toArray().length).to.equal(1);
+        expect(g.V().outE().toArray().length).to.equal(1);
     });
     it('can be edited', function () {
         rec.accno = 1005;
