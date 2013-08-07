@@ -19,11 +19,10 @@ RecordList.search = function (query) {
     var results;
     var facets = new g.HashMap();
     if (typeof query === 'object' || query.length === 0) {
-        query = query || { };
-        query.model = 'record';
-        results = g.V(query).as('me').out('recordtype').groupCount(facets, "{it.key}").back('me').has('model', 'record').dedup().toJSON();
+        query = query || null;
+        results = g.V(query).hasNot('model', 'user').as('me').out('recordtype').groupCount(facets, "{it.key}").optional('me').dedup().toJSON();
     } else {
-        results = graphstore.titanSearch(query).as('me').out('recordtype').groupCount(facets, "{it.key}").back('me').has('model', 'record').dedup().toJSON();
+        results = graphstore.textSearch(query).as('me').out('recordtype').groupCount(facets, "{it.key}").optional('me').dedup().toJSON();
     }
     for (var ii in results) {
         results[ii] = models.Record.fromJSON(results[ii]);

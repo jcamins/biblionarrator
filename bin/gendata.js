@@ -1,6 +1,7 @@
 var graphstore = require('../lib/graphstore'),
     g = graphstore(),
-    Record = require('../models/record.js');
+    Record = require('../models/record.js'),
+    RecordType = require('../models/recordtype.js');
 
 var records = {
     mylife: {
@@ -66,7 +67,11 @@ var records = {
 };
 
 for (var key in records) {
-    records[key] = new Record(records[key]);
+    if (records[key].model === 'record') {
+        records[key] = new Record(records[key]);
+    } else if (records[key].model === 'recordtype') {
+        records[key] = new RecordType(records[key]);
+    }
     records[key].save();
 };
 
