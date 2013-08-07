@@ -39,4 +39,14 @@ module.exports = {
         inlabel: 'Death date',
         facetlabel: 'Death date',
     },
+    broader: {
+        outlabel: 'Broader term',
+        inlabel: 'Narrower term',
+        facetlabel: 'Broader term',
+    },
+    preferred: {
+        outlabel: 'Preferred term',
+        inlabel: 'Used for',
+        facetlabel: 'Preferred term',
+    },
 };

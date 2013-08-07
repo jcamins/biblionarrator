@@ -13,7 +13,6 @@ function Record(data) {
         return record = new Record({
             id: this.id,
             data: formatters[this.format].snippet(this.data),
-            recordtype_id: this.recordtype_id
         });
     };
 
