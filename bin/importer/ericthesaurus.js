@@ -16,12 +16,12 @@ var preferred = [ ];
 
 var recordtypes = {
     ericterm:  new RecordType({
-        key: 'ericterm',
+        key: 'Term',
         data: '{"article":{"children":[{"header":{"children":["Term"]}},{"section":{"children":["Terms established for use in the ERIC thesaurus."]}}]}}',
         format: 'bnjson'
     }),
     ericsynonym: new RecordType({
-        key: 'ericsynonym',
+        key: 'Synonym',
         data: '{"article":{"children":[{"header":{"children":["Synonym"]}},{"section":{"children":["Terms that are not used in ERIC."]}}]}}',
         format: 'bnjson'
     }),
@@ -48,7 +48,7 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             promises.push(recHeapProcessor());
         }
         term = result.Nstein.Terms[0].Term[ii];
-        var linksleft;
+        var linksleft = 0;
         var rec = { name: term.Name[0] };
         var recordtype;
         for (var jj in term.Attributes[0].Attribute) {
@@ -78,15 +78,12 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             }
             linksleft++;
         }
-        rec = new Record({ key: term.Name[0], data: rec});
+        rec = new Record({ key: term.Name[0], format: 'ericthesaurus', data: rec});
         rec.save();
         rec.linksleft = linksleft;
         recordtype = recordtype || 'ericterm';
         rec.link('recordtype', recordtypes[recordtype]);
-        rec = handleLinks(rec);
-        if (rec.linksleft > 0) {
-            recs[rec.key] = rec;
-        }
+        recs[rec.key] = rec;
     }
     promises.push(recHeapProcessor());
     return Q.all(promises);
@@ -101,43 +98,43 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
 function recHeapProcessor() {
     return Q.delay(10).then(function () {
         for (var key in recs) {
-            recs[key] = handleLinks(recs[key])
+            handleLinks(key)
         }
     });
 }
 
 function handleLinks(rec) {
-    for (var rec in recs) {
-        for (var ref in recs[rec].broader) {
-            ref = recs[rec].broader[ref];
-            if (recs[ref]) {
-                rec.link('broader', recs[ref]);
-                rec.linksleft--;
-                if (--recs[ref] <= 0) {
-                    delete recs[ref];
-                }
-            }
-        }
-        for (var ref in recs[rec].related) {
-            ref = recs[rec].related[ref];
-            if (recs[ref]) {
-                rec.link('related', recs[ref]);
-                rec.linksleft--;
-                if (--recs[ref] <= 0) {
-                    delete recs[ref];
-                }
-            }
-        }
-        for (var ref in recs[rec].preferred) {
-            ref = recs[rec].preferred[ref];
-            if (recs[ref]) {
-                rec.link('preferred', recs[ref]);
-                rec.linksleft--;
-                if (--recs[ref] <= 0) {
-                    delete recs[ref];
-                }
+    for (var ref in recs[rec].data.broader) {
+        ref = recs[rec].data.broader[ref];
+        if (recs[ref]) {
+            recs[rec].link('broader', recs[ref]);
+            recs[rec].linksleft--;
+            if (--recs[ref].linksleft <= 0) {
+                delete recs[ref];
             }
         }
     }
-    return rec;
+    for (var ref in recs[rec].data.related) {
+        ref = recs[rec].data.related[ref];
+        if (recs[ref]) {
+            recs[rec].link('related', recs[ref]);
+            recs[rec].linksleft--;
+            if (--recs[ref].linksleft <= 0) {
+                delete recs[ref];
+            }
+        }
+    }
+    for (var ref in recs[rec].data.preferred) {
+        ref = recs[rec].data.preferred[ref];
+        if (recs[ref]) {
+            recs[rec].link('preferred', recs[ref]);
+            recs[rec].linksleft--;
+            if (--recs[ref].linksleft <= 0) {
+                delete recs[ref];
+            }
+        }
+    }
+    if (recs[rec].linksleft <= 0) {
+        delete recs[rec];
+    }
 }
