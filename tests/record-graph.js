@@ -10,7 +10,7 @@ var opts = {
     },
 
     tinker: {
-        path: __dirname + '/data/tinker',
+        path: null,
     },
 
     neo4j: {
@@ -88,7 +88,7 @@ describe('Record model', function () {
     });
     it('can be linked to another record', function () {
         rec.link('by', rec3);
-        expect(g.E().toArray().length).to.equal(1);
+        expect(g.V().bothE().dedup().toArray().length).to.equal(1);
     });
     it('can be edited', function () {
         rec.accno = 1005;
@@ -96,6 +96,10 @@ describe('Record model', function () {
     });
     it('does not create extra records on editing', function () {
         expect(g.V().toArray().length).to.equal(2);
+    });
+    it('finds links correctly', function () {
+        var reclist = rec.links();
+        expect(reclist.records.length).to.equal(1);
     });
 });
 

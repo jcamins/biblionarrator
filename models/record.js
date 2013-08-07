@@ -24,7 +24,11 @@ function Record(data) {
         if (typeof this.data === 'string') {
             this.data = JSON.parse(this.data);
         }
-        return formatters[this.format].render(this.data);
+        if (typeof formatters[this.format] === 'undefined') {
+            return '';
+        } else {
+            return formatters[this.format].render(this.data);
+        }
     };
 
     this.link = function (type, target) {
@@ -36,7 +40,7 @@ function Record(data) {
 
     this.links = function () {
         var facets = new g.HashMap();
-        return new models.RecordList(Record.fromJSON(this.v().as('me').copySplit(g._().outE().except('recordtype').groupCount(facets, "{it.label + '@out'}"), g._().inE().groupCount(facets, "{it.label + '@in'}")).fairMerge().back('me').both().has('model', 'record').dedup().toJSON()), facets.toJSON());
+        return new models.RecordList(Record.fromJSON(this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out'}"), g._().inE().groupCount(facets, "{it.label + '@in'}")).fairMerge().back('me').both().dedup().toJSON()), facets.toJSON());
     };
 
     this.initialize(data);

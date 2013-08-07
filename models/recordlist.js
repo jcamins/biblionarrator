@@ -18,7 +18,6 @@ function RecordList(records, mainfacet, facets) {
 RecordList.search = function (query) {
     var results;
     var facets = new g.HashMap();
-    console.log(query);
     if (typeof query === 'object' || query.length === 0) {
         query = query || { };
         query.model = 'record';

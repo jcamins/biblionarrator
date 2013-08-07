@@ -19,7 +19,6 @@ exports.view = function(req, res) {
         for (var idx in list) {
             data[idx] = list[idx];
         }
-        console.log(data);
         data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
         res.render('list/interface', data, function(err, html) {
             if (err) {
