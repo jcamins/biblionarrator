@@ -40,7 +40,7 @@ function Record(data) {
 
     this.links = function () {
         var facets = new g.HashMap();
-        return new models.RecordList(Record.fromJSON(this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out'}"), g._().inE().groupCount(facets, "{it.label + '@in'}")).fairMerge().back('me').both().dedup().toJSON()), facets.toJSON());
+        return new models.RecordList(Record.fromJSON(this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}"), g._().inE().groupCount(facets, "{it.label + '@in@' + it.outV.key.next()}")).fairMerge().back('me').both().dedup().toJSON()), facets.toJSON(), '*');
     };
 
     this.initialize(data);

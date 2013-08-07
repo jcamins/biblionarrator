@@ -52,6 +52,28 @@ var records = {
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["John Smith"]}},{"section":{"children":["An intrepid explorer"]}}]}},
     },
+    1580: {
+        format: 'bnjson',
+        deleted: 0,
+        model: 'record',
+        data: {"article":{"children":[{"header":{"children":["1580"]}},{"section":{"children":["A good year"]}}]}},
+    },
+    1589: {
+        format: 'bnjson',
+        deleted: 0,
+        model: 'record',
+        data: {"article":{"children":[{"header":{"children":["1589"]}},{"section":{"children":["A not-so-good year"]}}]}},
+    },
+    1631: {
+        format: 'bnjson',
+        deleted: 0,
+        model: 'record',
+        data: {"article":{"children":[{"header":{"children":["1631"]}},{"section":{"children":["A tragic year"]}}]}},
+    },
+    date: {
+        key: 'date',
+        model: 'recordtype',
+    },
     book: {
         key: 'book',
         model: 'recordtype',
@@ -76,13 +98,15 @@ for (var key in records) {
 };
 
 records.mylife.link('author', records.johnsmith);
-records.mylife.link('publicationplace', records.newyork);
+records.mylife.link('pubplace', records.newyork);
+records.mylife.link('pubdate', records['1589']);
 records.whynot.link('author', records.jackspratt);
-records.whynot.link('publicationplace', records.london);
-records.jackspratt.link('livedin', records.london);
-records.jackspratt.link('livedin', records.paris);
-records.johnsmith.link('explored', records.paris);
-records.johnsmith.link('explored', records.newyork);
+records.whynot.link('pubplace', records.london);
+records.whynot.link('pubdate', records['1589']);
+records.jackspratt.link('birthdate', records['1580']);
+records.jackspratt.link('deathdate', records['1589']);
+records.johnsmith.link('birthdate', records['1580']);
+records.johnsmith.link('deathdate', records['1631']);
 records.mylife.link('recordtype', records.book);
 records.whynot.link('recordtype', records.book);
 records.jackspratt.link('recordtype', records.person);
@@ -91,3 +115,6 @@ records.billybob.link('recordtype', records.person);
 records.paris.link('recordtype', records.place);
 records.newyork.link('recordtype', records.place);
 records.london.link('recordtype', records.place);
+records['1580'].link('recordtype', records.date);
+records['1589'].link('recordtype', records.date);
+records['1631'].link('recordtype', records.date);
