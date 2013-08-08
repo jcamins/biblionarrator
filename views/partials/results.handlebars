@@ -69,7 +69,29 @@
         {{/each}}
         </tbody>
     </table>
-    {{{paginator}}}
+    {{#if paginator}}
+        <div class="pagination">
+            <ul>
+                {{#if paginator.previous}}
+                    <li class="previous_page"><a data-bind="ajax-replace" data-target=".results" href="{{url}}">« Previous</a></li>
+                {{else}}
+                    <li class="previous_page disabled"><a href="#">« Previous</a></li>
+                {{/if}}
+                {{#each paginator.page}}
+                    {{#if current}}
+                        <li class="active"><a href="#">{{label}}</a></li>
+                    {{else}}
+                        <li><a data-bind="ajax-replace" data-target=".results" href="{{url}}">{{label}}</a></li>
+                    {{/if}}
+                {{/each}}
+                {{#if paginator.next}}
+                    <li class="next_page"><a data-bind="ajax-replace" data-target=".results" href="{{url}}">Next »</a></li>
+                {{else}}
+                    <li class="next_page disabled"><a href="#">Next »</a></li>
+                {{/if}}
+            </ul>
+        </div>
+    {{/if}}
     <div class="result-size">Show <span data-toggle="dropdown-select" class="button-dropdown white">
         <select id="perpage" name="perpage">
             <option value="2">2</option>

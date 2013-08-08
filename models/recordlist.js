@@ -5,53 +5,62 @@ var models,
 
 module.exports = RecordList;
 
-function RecordList(records, facets, mainfacet) {
-    records.forEach(function (one, index) {
-        one.number = index + 1;
+function RecordList(data) {
+    data.records = data.records || [];
+    data.facets = data.facets || {};
+    data.records.forEach(function (one, index) {
+        one.number = data.offset + index + 1;
         one.rendered = one.render();
     });
     var parts;
     var linktype;
     this.facets = { };
     this.mainfacet = { };
-    for (var key in facets) {
+    for (var key in data.facets) {
         parts = key.split('@');
         linktype = linktypes[parts[0]];
         if (linktype) {
-            if (mainfacet === '*') {
+            if (data.mainfacet === '*') {
                 this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] || 0;
-                this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] + facets[key];
+                this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] + data.facets[key];
             }
             if (parts[1] === 'out') {
                 this.facets[linktype['facetlabel']] = this.facets[linktype['facetlabel']] || { };
-                this.facets[linktype['facetlabel']][parts[2]] = facets[key];
+                this.facets[linktype['facetlabel']][parts[2]] = data.facets[key];
             }
         }
     }
-    if (mainfacet !== '*' && linktypes[mainfacet]) {
-        this.mainfacet = this.facets[linktypes[mainfacet]['facetlabel']];
+    if (data.mainfacet !== '*' && linktypes[data.mainfacet]) {
+        this.mainfacet = this.facets[linktypes[data.mainfacet]['facetlabel']];
     }
-    console.log(this.facets);
-    console.log(this.mainfacet);
-    this.records = records;
-    this.count = records.length;
+    this.records = data.records;
+    this.count = data.count;
 
     return this;
 }
 
-RecordList.search = function (query) {
+RecordList.search = function (query, offset, perpage) {
     var results;
     var facets = new g.HashMap();
+    var count = new g.HashMap();
+    var all = new g.ArrayList();
     if (typeof query === 'object' || query.length === 0) {
         query = query || null;
-        results = g.V(query).hasNot('model', 'user').as('me').outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").optional('me').dedup().toJSON();
+        results = g.V(query).as('me').groupCount(count, "{'_'}").back('me').dedup().aggregate(all).range(offset, offset + perpage - 1).toJSON();
     } else {
-        results = graphstore.textSearch(query).as('me').outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").optional('me').dedup().toJSON();
+        results = graphstore.textSearch(query).as('me').groupCount(count, "{'_'}").back('me').dedup().aggregate(all).range(offset, offset + perpage - 1).toJSON();
     }
+    g.start(all).outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").iterate();
     for (var ii in results) {
         results[ii] = models.Record.fromJSON(results[ii]);
     };
-    return new RecordList(results, facets.toJSON(), 'recordtype');
+    return new RecordList({ records: results,
+        facets: facets.toJSON(),
+        mainfacet: 'recordtype',
+        count: count.toJSON()['_'],
+        offset: offset,
+        perpage: perpage
+    });
 };
 
 RecordList.init = function(ref) {
