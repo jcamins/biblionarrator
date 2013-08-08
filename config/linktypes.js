@@ -49,4 +49,9 @@ module.exports = {
         inlabel: 'Used for',
         facetlabel: 'Preferred term',
     },
+    related: {
+        outlabel: 'Related term',
+        inlabel: 'Related term',
+        facetlabel: 'Related term',
+    },
 };

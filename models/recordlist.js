@@ -23,7 +23,7 @@ function RecordList(records, facets, mainfacet) {
                 this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] + facets[key];
             }
             if (parts[1] === 'out') {
-                this.facets[linktype['facetlabel']] = this.facets[linktypes[parts[0]]] || { };
+                this.facets[linktype['facetlabel']] = this.facets[linktype['facetlabel']] || { };
                 this.facets[linktype['facetlabel']][parts[2]] = facets[key];
             }
         }
