@@ -50,12 +50,16 @@ RecordList.search = function (query, offset, perpage) {
     } else {
         results = graphstore.textSearch(query).as('me').groupCount(count, "{'_'}").back('me').dedup().aggregate(all).range(offset, offset + perpage - 1).toJSON();
     }
-    g.start(all).outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").iterate();
+    process.nextTick(function () {
+        g.start(all).outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").iterateAsync(function () {
+            console.log(facets.toJSON());
+        });
+    });
     for (var ii in results) {
         results[ii] = models.Record.fromJSON(results[ii]);
     };
     return new RecordList({ records: results,
-        facets: facets.toJSON(),
+        facets: { },//facets.toJSON(),
         mainfacet: 'recordtype',
         count: count.toJSON()['_'],
         offset: offset,
