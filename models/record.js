@@ -34,7 +34,9 @@ function Record(data) {
         var sv = g.v(this.id).iterator().nextSync();
         var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
         var edge = graphstore.getDB().addEdgeSync(null, sv, tv, type);
-        graphstore.getDB().commitSync();
+        if (graphstore.autocommit) {
+            graphstore.getDB().commitSync();
+        }
     };
 
     this.links = function () {

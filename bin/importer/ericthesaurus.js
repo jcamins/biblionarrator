@@ -14,6 +14,8 @@ var broader = [ ];
 var related = [ ];
 var preferred = [ ];
 
+graphstore.autocommit = false;
+
 var recordtypes = {
     ericterm:  new RecordType({
         key: 'Term',
@@ -41,11 +43,11 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
     var term;
     console.log('Processing ' + result.Nstein.Terms[0].Term.length + ' records in ' + filename);
     lasttime = process.hrtime();
+    var totallinks = 0;
     for (var ii in result.Nstein.Terms[0].Term) {
         if (ii % 1000 === 0 && ii > 0) {
             lasttime = process.hrtime(lasttime);
             console.log("\t Processed 1k records ending in " + ii + ' of ' + result.Nstein.Terms[0].Term.length + ' in ' + (lasttime[0] + lasttime[1] * 1e-9) + ' secs');
-            promises.push(recHeapProcessor());
         }
         term = result.Nstein.Terms[0].Term[ii];
         var linksleft = 0;
@@ -76,34 +78,47 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             } else if (term.Relationships[0].Relationship[jj]['$'].type === 'U') {
                 rec.preferred = term.Relationships[0].Relationship[jj].Is;
             }
-            linksleft++;
+            linksleft += term.Relationships[0].Relationship[jj].Is.length;
         }
+        totallinks += linksleft;
         rec = new Record({ key: term.Name[0], format: 'ericthesaurus', data: rec});
         rec.save();
         rec.linksleft = linksleft;
         recordtype = recordtype || 'ericterm';
         rec.link('recordtype', recordtypes[recordtype]);
         recs[rec.key] = rec;
+        handleLinks(rec.key)
     }
-    promises.push(recHeapProcessor());
-    return Q.all(promises);
-}).done(function () {
+    Object.keys(recs).forEach(handleLinks);
+    process.on('exit', function () {
+        console.log('Had ' + Object.keys(recs).length + ' records with unresolved edges');
+        console.log('Found a total of ' + totallinks + ' links');
+    });
     console.log('Successfully loaded ' + filename);
+    graphstore.getDB().commitSync();
     process.exit();
+}).done(function () {
 }, function (error) {
     console.log('Encountered problems with ' + filename + ': ' + error);
+    if (typeof err === 'object') {
+        if (err.message) {
+            console.log('\nMessage: ' + err.message)
+        }
+        if (err.stack) {
+            console.log('\nStacktrace:')
+            console.log('====================')
+            console.log(err.stack);
+        }
+    } else {
+        console.log('dumpError :: argument is not an object');
+    }
     process.exit();
 });
 
-function recHeapProcessor() {
-    return Q.delay(10).then(function () {
-        for (var key in recs) {
-            handleLinks(key)
-        }
-    });
-}
-
 function handleLinks(rec) {
+    if (typeof recs[rec] === 'undefined') {
+        return;
+    }
     for (var ref in recs[rec].data.broader) {
         ref = recs[rec].data.broader[ref];
         if (recs[ref]) {
@@ -114,11 +129,15 @@ function handleLinks(rec) {
             }
         }
     }
+    var idx;
     for (var ref in recs[rec].data.related) {
         ref = recs[rec].data.related[ref];
         if (recs[ref]) {
             recs[rec].link('related', recs[ref]);
             recs[rec].linksleft--;
+            if ((idx = recs[ref].data.related.indexOf(rec)) !== -1) {
+                recs[ref].data.related.splice(idx, 1);
+            }
             if (--recs[ref].linksleft <= 0) {
                 delete recs[ref];
             }
