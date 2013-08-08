@@ -109,8 +109,6 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             console.log('====================')
             console.log(err.stack);
         }
-    } else {
-        console.log('dumpError :: argument is not an object');
     }
     process.exit();
 });
