@@ -1,8 +1,7 @@
 var models,
     graphstore = require('../lib/graphstore'),
     g = graphstore(),
-    linktypes = require('../config/linktypes'),
-    faceter = require('../lib/faceter');
+    offload = require('../lib/graphoffloader');
 
 module.exports = RecordList;
 
@@ -15,24 +14,11 @@ function RecordList(data) {
     });
     var parts;
     var linktype;
-    this.facets = { };
-    this.mainfacet = { };
-    for (var key in data.facets) {
-        parts = key.split('@');
-        linktype = linktypes[parts[0]];
-        if (linktype) {
-            if (data.mainfacet === '*') {
-                this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] || 0;
-                this.mainfacet[linktype[parts[1] + 'label']] = this.mainfacet[linktype[parts[1] + 'label']] + data.facets[key];
-            }
-            if (parts[1] === 'out') {
-                this.facets[linktype['facetlabel']] = this.facets[linktype['facetlabel']] || { };
-                this.facets[linktype['facetlabel']][parts[2]] = data.facets[key];
-            }
-        }
-    }
-    if (data.mainfacet !== '*' && linktypes[data.mainfacet]) {
-        this.mainfacet = this.facets[linktypes[data.mainfacet]['facetlabel']];
+    this.facets = data.facets || { };
+    if (data.facets) {
+        this.mainfacet = data.facets[data.mainfacet] || { };
+    } else {
+        this.mainfacet = { };
     }
     this.records = data.records;
     this.count = data.count;
@@ -51,9 +37,9 @@ RecordList.search = function (query, offset, perpage, recordcb, facetcb) {
     } else {
         results = graphstore.textSearch(query).as('me').groupCount(count, "{'_'}").back('me').aggregate(all).range(offset, offset + perpage - 1).toJSON();
     }
-    faceter(all.toJSON(), function (facets) {
+    offload('facet', all.toJSON(), function (facets) {
         console.log('we have facets');
-        console.log(facets);
+        console.log(facets.facet);
     });
     for (var ii in results) {
         results[ii] = models.Record.fromJSON(results[ii]);
