@@ -1,7 +1,8 @@
 var models,
     graphstore = require('../lib/graphstore'),
     g = graphstore(),
-    linktypes = require('../config/linktypes');
+    linktypes = require('../config/linktypes'),
+    faceter = require('../lib/faceter');
 
 module.exports = RecordList;
 
@@ -39,27 +40,26 @@ function RecordList(data) {
     return this;
 }
 
-RecordList.search = function (query, offset, perpage) {
+RecordList.search = function (query, offset, perpage, recordcb, facetcb) {
     var results;
-    var facets = new g.HashMap();
+    //var facets = new g.HashMap();
     var count = new g.HashMap();
     var all = new g.ArrayList();
     if (typeof query === 'object' || query.length === 0) {
         query = query || null;
-        results = g.V(query).as('me').groupCount(count, "{'_'}").back('me').dedup().aggregate(all).range(offset, offset + perpage - 1).toJSON();
+        results = g.V(query).as('me').groupCount(count, "{'_'}").back('me').aggregate(all).range(offset, offset + perpage - 1).toJSON();
     } else {
-        results = graphstore.textSearch(query).as('me').groupCount(count, "{'_'}").back('me').dedup().aggregate(all).range(offset, offset + perpage - 1).toJSON();
+        results = graphstore.textSearch(query).as('me').groupCount(count, "{'_'}").back('me').aggregate(all).range(offset, offset + perpage - 1).toJSON();
     }
-    process.nextTick(function () {
-        g.start(all).outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}").iterateAsync(function () {
-            console.log(facets.toJSON());
-        });
+    faceter(all.toJSON(), function (facets) {
+        console.log('we have facets');
+        console.log(facets);
     });
     for (var ii in results) {
         results[ii] = models.Record.fromJSON(results[ii]);
     };
     return new RecordList({ records: results,
-        facets: { },//facets.toJSON(),
+        facets: {},//facets,
         mainfacet: 'recordtype',
         count: count.toJSON()['_'],
         offset: offset,
