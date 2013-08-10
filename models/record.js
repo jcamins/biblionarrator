@@ -3,7 +3,8 @@ var models,
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
     T = g.Tokens,
-    formatters = require('../lib/formats');
+    formatters = require('../lib/formats'),
+    linktypes = require('../config/linktypes');
 
 function Record(data) {
     this.snippet = function() {
@@ -42,9 +43,21 @@ function Record(data) {
     this.links = function () {
         var count = new g.HashMap();
         var facets = new g.HashMap();
+        var records = this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}"), g._().inE().groupCount(facets, "{it.label + '@in@' + it.outV.key.next()}")).fairMerge().back('me').both().dedup().as('results').groupCount(count, "{'_'}").back('results').toJSON();
+        var rawfacets =  facets.toJSON();
+        facets = { '*': { } }
+        var parts, linktype;
+        for (var key in rawfacets) {
+            parts = key.split('@');
+            linktype = linktypes[parts[0]];
+            if (linktype) {
+                facets['*'][linktype[parts[1] + 'label']] = facets['*'][linktype[parts[1] + 'label']] || 0;
+                facets['*'][linktype[parts[1] + 'label']] = facets['*'][linktype[parts[1] + 'label']] + rawfacets[key];
+            }
+        }
         return new models.RecordList({
-            records: Record.fromJSON(this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}"), g._().inE().groupCount(facets, "{it.label + '@in@' + it.outV.key.next()}")).fairMerge().back('me').both().dedup().as('results').groupCount(count, "{'_'}").back('results').toJSON()),
-            facets: facets.toJSON(),
+            records: Record.fromJSON(records),
+            facets: facets,
             mainfacet: '*',
             count: count.toJSON()['_']
         });
