@@ -8,7 +8,9 @@ var engines = [ 'orient', 'titan', 'tinker' ];
 var opts = {
     titan: {
         'storage.keyspace': 'bntest',
-        'storage.index.search.directory': __dirname + '/data/titanes',
+        'storage.index.search.backend': 'lucene',
+        'storage.index.search.directory': __dirname + '/data/titanft',
+        'storage.index.search.client-only': false,
     },
 
     orient: {
@@ -107,24 +109,8 @@ engines.forEach(function (engine) {
             graphstore.getDB().commitSync();
             expect(g.V().toArray().length).to.equal(0);
         });
+        after(function () {
+            g.V().remove();
+        });
     });
 });
-
-rmdirR(__dirname + '/data/orient');
-rmdirR(__dirname + '/data/tinker');
-rmdirR(__dirname + '/data/neo4j');
-rmdirR(__dirname + '/data/titanes');
-
-function rmdirR(path) {
-    if( fs.existsSync(path) ) {
-        fs.readdirSync(path).forEach(function(file,index){
-            var curPath = path + "/" + file;
-            if(fs.statSync(curPath).isDirectory()) { // recurse
-                rmdirR(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};

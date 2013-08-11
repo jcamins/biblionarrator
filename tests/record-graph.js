@@ -1,8 +1,10 @@
 var opts = {
-    engine: 'orient',
+    engine: 'titan',
     titan: {
         'storage.keyspace': 'bntest',
-        //'storage.index.search.directory': __dirname + '/data/titanes',
+        'storage.index.search.backend': 'lucene',
+        'storage.index.search.directory': __dirname + '/data/titanft',
+        'storage.index.search.client-only': false,
     },
 
     orient: {
@@ -97,27 +99,12 @@ describe('Record model', function () {
     it('does not create extra records on editing', function () {
         expect(g.V().toArray().length).to.equal(2);
     });
-    it('finds links correctly', function () {
-        var reclist = rec.links();
-        expect(reclist.records.length).to.equal(1);
+    it('finds links correctly', function (done) {
+        rec.links(0, 20, function (results) {
+            expect(results.records.length).to.equal(1);
+            done();
+        });
     });
 });
 
-rmdirR(__dirname + '/data/orient');
-rmdirR(__dirname + '/data/tinker');
-rmdirR(__dirname + '/data/neo4j');
-rmdirR(__dirname + '/data/titanes');
-
-function rmdirR(path) {
-    if( fs.existsSync(path) ) {
-        fs.readdirSync(path).forEach(function(file,index){
-            var curPath = path + "/" + file;
-            if(fs.statSync(curPath).isDirectory()) { // recurse
-                rmdirR(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};
+g.V().remove();

@@ -1,5 +1,5 @@
 var opts = {
-    engine: 'titan',
+    engine: 'orient',
     titan: {
         'storage.keyspace': 'bntest',
         'storage.index.search.backend': 'lucene',

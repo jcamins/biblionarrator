@@ -2,7 +2,9 @@ var opts = {
     engine: 'titan',
     titan: {
         'storage.keyspace': 'bntest',
+        'storage.index.search.backend': 'lucene',
         'storage.index.search.directory': __dirname + '/data/titanft',
+        'storage.index.search.client-only': false,
     },
 
     orient: {
@@ -30,32 +32,19 @@ describe('RecordList model', function () {
     before(function () {
         require('../bin/gendata');
     });
-    it('finds record using fielded search', function () {
-        var reclist = RecordList.search({ model: 'recordtype' });
-        expect(reclist.records.length).to.equal(3);
+    it('finds record using fielded search', function (done) {
+        RecordList.search({ model: 'recordtype' }, 0, 20, function (list) {
+            expect(list.records.length).to.equal(4);
+            done();
+        });
     });
-    it('finds record using text search', function () {
-        var reclist = RecordList.search('silly');
-        expect(reclist.records.length).to.equal(1);
+    it('finds record using text search', function (done) {
+        RecordList.search('silly', 0, 20, function (list) {
+            expect(list.records.length).to.equal(1);
+            done();
+        });
+    });
+    after(function () {
+        g.V().remove();
     });
 });
-
-rmdirR(__dirname + '/data/orient');
-rmdirR(__dirname + '/data/tinker');
-rmdirR(__dirname + '/data/neo4j');
-rmdirR(__dirname + '/data/titanes');
-
-function rmdirR(path) {
-    if( fs.existsSync(path) ) {
-        fs.readdirSync(path).forEach(function(file,index){
-            var curPath = path + "/" + file;
-            if(fs.statSync(curPath).isDirectory()) { // recurse
-                rmdirR(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};
-
