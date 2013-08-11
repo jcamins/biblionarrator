@@ -105,6 +105,7 @@ describe('Record model', function () {
             done();
         });
     });
+    after(function () {
+        g.V().remove();
+    });
 });
-
-g.V().remove();
