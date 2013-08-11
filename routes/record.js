@@ -30,22 +30,25 @@ exports.linklist = function(req, res) {};
 
 exports.links = function(req, res) {
     var record = Record.findOne({id: req.params.record_id}) || new Record();
-    var data = record.links();
-    data.layout = false;
-    data.summary = 'Links for record ' + req.params.record_id;
-    data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-    var accept = req.accepts([ 'html', 'json' ]);
-    if (accept === 'html') {
-        res.render('partials/results', data, function(err, html) {
-            if (err) {
-                res.send(404, err);
-            } else {
-                res.send(html);
-            }
-        });
-    } else {
-        res.json(data);
-    }
+    var offset = parseInt(req.query.offset, 10) || 0;
+    var perpage = parseInt(req.query.perpage, 10) || 20;
+    record.links(offset, perpage, function (data) {
+        data.layout = false;
+        data.summary = 'Links for record ' + req.params.record_id;
+        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
+        var accept = req.accepts([ 'html', 'json' ]);
+        if (accept === 'html') {
+            res.render('partials/results', data, function(err, html) {
+                if (err) {
+                    res.send(404, err);
+                } else {
+                    res.send(html);
+                }
+            });
+        } else {
+            res.json(data);
+        }
+    });
 };
 
 exports.view = function(req, res) {

@@ -2,9 +2,9 @@ var models,
     graphstore = require('../lib/graphstore'),
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
-    T = g.Tokens,
     formatters = require('../lib/formats'),
-    linktypes = require('../config/linktypes');
+    linktypes = require('../config/linktypes'),
+    offload = require('../lib/graphoffloader');
 
 function Record(data) {
     this.snippet = function() {
@@ -40,26 +40,15 @@ function Record(data) {
         }
     };
 
-    this.links = function () {
-        var count = new g.HashMap();
-        var facets = new g.HashMap();
-        var records = this.v().as('me').copySplit(g._().outE().groupCount(facets, "{it.label + '@out@' + it.inV.key.next()}"), g._().inE().groupCount(facets, "{it.label + '@in@' + it.outV.key.next()}")).fairMerge().back('me').both().dedup().as('results').groupCount(count, "{'_'}").back('results').toJSON();
-        var rawfacets =  facets.toJSON();
-        facets = { '*': { } }
-        var parts, linktype;
-        for (var key in rawfacets) {
-            parts = key.split('@');
-            linktype = linktypes[parts[0]];
-            if (linktype) {
-                facets['*'][linktype[parts[1] + 'label']] = facets['*'][linktype[parts[1] + 'label']] || 0;
-                facets['*'][linktype[parts[1] + 'label']] = facets['*'][linktype[parts[1] + 'label']] + rawfacets[key];
-            }
-        }
-        return new models.RecordList({
-            records: Record.fromJSON(records),
-            facets: facets,
-            mainfacet: '*',
-            count: count.toJSON()['_']
+    this.links = function (offset, perpage, recordcb, facetscb) {
+        offload('linkbrowse', { id: this.id, offset: offset, perpage: perpage }, function (results) {
+            var reclist = new models.RecordList({
+                records: Record.fromJSON(results.linkbrowse.records),
+                facets: results.linkbrowse.facets,
+                mainfacet: '*',
+                count: results.linkbrowse.count
+            });
+            recordcb(reclist);
         });
     };
 
