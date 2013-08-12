@@ -1,6 +1,5 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
-    inspect = require('eyes').inspector({maxLength: false}),
     datastore = require('../../lib/datastore'),
     Q = require('q');
 
@@ -23,6 +22,7 @@ Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(fu
     var record;
     console.log('Processing ' + result.records.record.length + ' records in ' + filename);
     for (var ii in result.records.record) {
+        var jj;
         if (ii % 1000 === 0 && ii > 0) {
             console.log('... ' + ii + ' of ' + result.records.record.length);
         }
@@ -36,7 +36,7 @@ Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(fu
             subjects: record.metadata[0]['dc:subject'],
             types: record.metadata[0]['dc:type'],
         };
-        for (var jj in record.metadata[0]['dc:identifier']) {
+        for (jj in record.metadata[0]['dc:identifier']) {
             if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
                 rec.doi = record.metadata[0]['dc:identifier'][jj]['_'];
             } else if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'eric_accno') {
@@ -44,7 +44,7 @@ Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(fu
             }
         }
         rec.creators = [];
-        for (var jj in record.metadata[0]['dc:creator']) {
+        for (jj in record.metadata[0]['dc:creator']) {
             if (record.metadata[0]['dc:creator'][jj]['_']) {
                 rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
                 if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {

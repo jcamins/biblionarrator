@@ -1,5 +1,4 @@
 var expect = require('chai').expect,
-    fs = require('fs'),
     graphstore = require('../lib/graphstore');
 
 
@@ -105,7 +104,7 @@ engines.forEach(function (engine) {
             while (vertices.hasNextSync()){
                 element = vertices.nextSync();
                 element.removeSync();
-            };
+            }
             graphstore.getDB().commitSync();
             expect(g.V().toArray().length).to.equal(0);
         });

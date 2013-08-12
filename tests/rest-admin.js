@@ -164,7 +164,7 @@ function testAdminTable(resource_type, conf) {
         it('should contain ' + conf.aaData.label, function(done) {
             request.get(testhost + '/resources/' + resource_type).set('Accept', 'application/json').end(function(res) {
                 var found = false;
-                res.body.aaData.forEach(function(el, idx, arr) {
+                res.body.aaData.forEach(function(el) {
                     found = found || conf.aaData.callback(el);
                 });
                 if (!found) {

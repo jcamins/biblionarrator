@@ -1,11 +1,9 @@
 var sharedview = require('../lib/sharedview'),
     models = require('../models'),
     Record = models.Record,
-    RecordList = models.RecordList,
     Field = models.Field,
     RecordType = models.RecordType,
-    Q = require('q'),
-    datastore = require('../lib/datastore.js');
+    Q = require('q');
 
 exports.linkselect = function(req, res) {
     res.render('link-select', {
@@ -49,7 +47,7 @@ exports.links = function(req, res) {
             res.json(data);
         }
     }, function (message) {
-        socketserver.registerPublication(message)
+        socketserver.registerPublication(message);
     });
 };
 

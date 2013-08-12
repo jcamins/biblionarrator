@@ -4,7 +4,7 @@ exports.fieldscss = function(req, res) {
         styles: [],
         fields: []
     };
-    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
+    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results) {
         for (var index in results) {
             data.styles.push({
                 field: {
@@ -15,7 +15,7 @@ exports.fieldscss = function(req, res) {
                 css: results[index].css
             });
         }
-        datastore.query('SELECT * FROM fields', function(err, results, fields) {
+        datastore.query('SELECT * FROM fields', function(err, results) {
             for (var index in results) {
                 data.fields.push({
                     schema: results[index].schema,
@@ -39,7 +39,7 @@ exports.bndbinitializerjs = function(req, res) {
         fields: [],
         records: []
     };
-    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results, fields) {
+    datastore.query('SELECT styles.css, fields.* FROM styles LEFT JOIN fields ON (styles.field_id = fields.id)', function(err, results) {
         for (var index in results) {
             data.styles.push({
                 field: {
@@ -50,9 +50,9 @@ exports.bndbinitializerjs = function(req, res) {
                 css: results[index].css
             });
         }
-        datastore.query('SELECT * FROM fields', function(err, results, fields) {
+        datastore.query('SELECT * FROM fields', function(err, results) {
             data.fields = results;
-            datastore.query('SELECT * FROM records', function(err, results, fields) {
+            datastore.query('SELECT * FROM records', function(err, results) {
                 data.records = results;
                 res.render('bndb_initializer-js.handlebars', {
                     fields: JSON.stringify(data.fields),

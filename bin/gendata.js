@@ -1,6 +1,4 @@
-var graphstore = require('../lib/graphstore'),
-    g = graphstore(),
-    Record = require('../models/record.js'),
+var Record = require('../models/record.js'),
     RecordType = require('../models/recordtype.js');
 
 var records = {
@@ -95,7 +93,7 @@ for (var key in records) {
         records[key] = new RecordType(records[key]);
     }
     records[key].save();
-};
+}
 
 records.mylife.link('author', records.johnsmith);
 records.mylife.link('pubplace', records.newyork);

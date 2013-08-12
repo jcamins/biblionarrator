@@ -1,6 +1,5 @@
 var express = require('express'),
     socketserver = require('./lib/socketserver'),
-    params = require('express-params'),
     handlebars = require('express-hbs'),
     http = require('http'),
     routes = require('./routes');

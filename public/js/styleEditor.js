@@ -6,8 +6,8 @@ function initializeStyleEditor() {
                         { "sWidth": "20%" },
                         { "sWidth": "30%" },
                         { "bSortable": false, "sWidth": "35%" },
-                        { "bSortable": false, "sWidth": "5%" },
-                     ],
+                        { "bSortable": false, "sWidth": "5%" }
+                     ]
     });
     
     $('#btnAddStyle').click(function() {
@@ -75,7 +75,7 @@ function createTagsManager() {
             'labelclass': 'label label-info',
             'typeahead': {
                 'name': 'recordTypes',
-                'local': Object.keys(recordTypes),
+                'local': Object.keys(recordTypes)
             }
         });
         //$(this).parent().find('.recordType').remove();
@@ -105,7 +105,7 @@ function saveStyles() {
         dataType: "json",
         error: function (jqXHR, err, msg) {
             alert(msg);
-        },
+        }
     }).done(function(msg) {
         var obj = msg;
         var ii = 0;
@@ -124,7 +124,7 @@ function delStyle(style) {
         dataType: "json",
         error: function (jqXHR, err, msg) {
             alert(msg);
-        },
+        }
     }).done(function(msg) {
     });
 }

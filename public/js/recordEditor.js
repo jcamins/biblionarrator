@@ -110,7 +110,7 @@ function initializeEditor() {
                 $.ajax({
                     type: "DELETE",
                     url: "/record/" + document.record.id + "/media/" + id,
-                    dataType: "json",
+                    dataType: "json"
                 }).done(function(msg) {
                     $('li[data-id="' + id + '"]').remove();
                     $('.image-gallery-large').remove();
@@ -161,7 +161,7 @@ function setTag(field, sel) {
 function closeTag() {
     var found = false;
     $(rangy.getSelection().getRangeAt(0).commonAncestorContainer).parents('span, a').each(function () {
-        $(this).attr('class').split(' ').reverse().forEach(function (element, index, array) {
+        $(this).attr('class').split(' ').reverse().forEach(function (element) {
             if (found) {
                 return;
             }
@@ -242,7 +242,7 @@ function loadRecord(id) {
         $.ajax({
             type: "GET",
             url: "/record/" + id,
-            dataType: "json",
+            dataType: "json"
         }).done(function(msg) {
             finishedLoading(msg);
             addAlert('Successfully loaded record', 'success');
@@ -273,7 +273,7 @@ function saveRecord() {
         data: { data: JSON.stringify(window.formatters[document.record.format].decompile($('#recordContainer article').get(0))),
                 recordtype_id: $('#recordtype-select').val()
               },
-        error: ajaxSaveFailed,
+        error: ajaxSaveFailed
     }).done(function(msg) {
         document.record.id = msg.id;
         if (typeof(document.record.id) !== 'undefined') {
@@ -302,7 +302,7 @@ function saveTemplate() {
                 recordtype: $('#recordtype-select').val(),
                 name: $('#template-name').val()
               },
-        error: ajaxTemplateSaveFailed,
+        error: ajaxTemplateSaveFailed
     }).done(function(msg) {
         document.record.id = msg.id;
         addAlert('Successfully saved template', 'success');

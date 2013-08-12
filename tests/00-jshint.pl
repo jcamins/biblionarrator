@@ -7,7 +7,7 @@ use File::Spec;
 use File::Find;
 use File::Basename;
 
-my $jshint = 'jshint';
+my $jshint = 'node_modules/jshint/bin/jshint';
 my $root = File::Spec->rel2abs( dirname(__FILE__) . '/..' );
 $root =~ s#tests/\.\.##;
 
@@ -17,14 +17,15 @@ jshint( 'Server-side bin', $root . 'bin' );
 jshint( 'Server-side JS', $root . 'lib' );
 jshint( 'Routes', $root . 'routes' );
 jshint( 'Models', $root . 'models' );
-jshint( 'Client-side JS', $root . 'public/js' );
-jshint( 'Browserified JS', $root . 'clientjs' );
+jshint( 'Client-side JS', $root . 'public/js', 'jshint-client.conf' );
+jshint( 'Browserified JS', $root . 'clientjs', 'jshint-client.conf' );
 jshint( 'Test scripts', $root . 'tests' );
 
 done_testing();
 
 sub jshint {
-    my ( $label, $dir ) = @_;
+    my ( $label, $dir, $config ) = @_;
+    $config ||= 'jshint.conf';
     subtest $label => sub {
         find(
             {
@@ -33,7 +34,7 @@ sub jshint {
                 wanted   => sub {
                     return unless m/[.]js$/;
                     return if m/generated/;
-                    ok(!system("${jshint} --config ${root}jshint.conf $_ 1>&2"), $_);
+                    ok(!system("${jshint} --config ${root}${config} $_ 1>&2"), $_);
                 },
             },
             $dir

@@ -23,7 +23,7 @@ exports.upload = function(req, res) {
                     });
                 } else {
                     req.body.description = req.body.description || '';
-                    datastore.query('INSERT INTO images (description, location, record_id, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', [req.body.description, targetpath, req.params.record_id], function(err, results) {
+                    datastore.query('INSERT INTO images (description, location, record_id, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', [req.body.description, targetpath, req.params.record_id], function(err) {
                         if (err) {
                             res.json({
                                 'error': err

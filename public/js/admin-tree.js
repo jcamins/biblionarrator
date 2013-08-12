@@ -2,7 +2,7 @@ function initializeTree(callbacks) {
     $('#tree').jstree({
         "defaults": {
             "strings": {
-                "new_node": "New " + resourcetype,
+                "new_node": "New " + resourcetype
             }
         },
         "dnd" : {

@@ -23,9 +23,6 @@ var opts = {
 var expect = require('chai').expect,
     graphstore = require('../lib/graphstore'),
     g = graphstore(opts),
-    fs = require('fs'),
-    models = require('../models'),
-    inspect = require('eyes').inspector({maxLength: false}),
     offload = require('../lib/graphoffloader');
 
 describe('Graph offloader', function () {
@@ -44,7 +41,7 @@ describe('Graph offloader', function () {
     });
     it('successfully offloads faceting', function (done) {
         offload('facet', list, function (facets) {
-            expect(facets.facet['Record type']['place']).to.equal(1);
+            expect(facets.facet['Record type'].place).to.equal(1);
             done();
         });
     });

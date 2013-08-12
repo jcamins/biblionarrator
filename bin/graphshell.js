@@ -1,6 +1,5 @@
 var graphstore = require('../lib/graphstore'),
     g = graphstore(),
-    T = g.Tokens,
     repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});
     //require('repl.history')(repl, './.node_history');
@@ -16,7 +15,7 @@ var r = repl.start({
   output: process.stdout,
   terminal: true,
   writer: outFunc
-})
+});
 
 function _isObject(o) {
   return toString.call(o) === '[object Object]';
@@ -28,7 +27,7 @@ function outFunc(it){
       arr = it.toList();
       for (var i = 0, l = arr.sizeSync(); i < l; i++) {
           process.stdout.write('==>'+arr.getSync(i)+'\n');
-      };
+      }
   } else {
       process.stdout.write('==>'+it+'\n');
   }

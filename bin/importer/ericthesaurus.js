@@ -1,18 +1,12 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
-    inspect = require('eyes').inspector({maxLength: false}),
     graphstore = require('../../lib/graphstore'),
     Record = require('../../models/record'),
     RecordType = require('../../models/recordtype'),
-    g = graphstore(),
     Q = require('q');
 
 var parser = new xml2js.Parser();
 var recs = { };
-var promises = [ ];
-var broader = [ ];
-var related = [ ];
-var preferred = [ ];
 
 graphstore.autocommit = false;
 
@@ -39,7 +33,6 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
     console.log('Parsing file ' + filename);
     return Q.nfcall(parser.parseString, data);
 }).then(function (result) {
-    var promises = [];
     var term;
     console.log('Processing ' + result.Nstein.Terms[0].Term.length + ' records in ' + filename);
     lasttime = process.hrtime();
@@ -53,7 +46,8 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
         var linksleft = 0;
         var rec = { name: term.Name[0] };
         var recordtype;
-        for (var jj in term.Attributes[0].Attribute) {
+        var jj;
+        for (jj in term.Attributes[0].Attribute) {
             if (term.Attributes[0].Attribute[jj]['$'].name === 'ScopeNote') {
                 if (term.Attributes[0].Attribute[jj]['_']) {
                     rec.scope = term.Attributes[0].Attribute[jj]['_'];
@@ -66,7 +60,7 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
                 }
             }
         }
-        for (var jj in term.Relationships[0].Relationship) {
+        for (jj in term.Relationships[0].Relationship) {
             if (term.Relationships[0].Relationship[jj]['$'].type === 'UF') {
                 rec.synonyms = term.Relationships[0].Relationship[jj].Is;
             } else if (term.Relationships[0].Relationship[jj]['$'].type === 'BT') {
@@ -87,7 +81,7 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
         recordtype = recordtype || 'ericterm';
         rec.link('recordtype', recordtypes[recordtype]);
         recs[rec.key] = rec;
-        handleLinks(rec.key)
+        handleLinks(rec.key);
     }
     Object.keys(recs).forEach(handleLinks);
     process.on('exit', function () {
@@ -102,11 +96,11 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
     console.log('Encountered problems with ' + filename + ': ' + error);
     if (typeof err === 'object') {
         if (err.message) {
-            console.log('\nMessage: ' + err.message)
+            console.log('\nMessage: ' + err.message);
         }
         if (err.stack) {
-            console.log('\nStacktrace:')
-            console.log('====================')
+            console.log('\nStacktrace:');
+            console.log('====================');
             console.log(err.stack);
         }
     }
@@ -117,7 +111,8 @@ function handleLinks(rec) {
     if (typeof recs[rec] === 'undefined') {
         return;
     }
-    for (var ref in recs[rec].data.broader) {
+    var ref;
+    for (ref in recs[rec].data.broader) {
         ref = recs[rec].data.broader[ref];
         if (recs[ref]) {
             recs[rec].link('broader', recs[ref]);
@@ -128,7 +123,7 @@ function handleLinks(rec) {
         }
     }
     var idx;
-    for (var ref in recs[rec].data.related) {
+    for (ref in recs[rec].data.related) {
         ref = recs[rec].data.related[ref];
         if (recs[ref]) {
             recs[rec].link('related', recs[ref]);
@@ -141,7 +136,7 @@ function handleLinks(rec) {
             }
         }
     }
-    for (var ref in recs[rec].data.preferred) {
+    for (ref in recs[rec].data.preferred) {
         ref = recs[rec].data.preferred[ref];
         if (recs[ref]) {
             recs[rec].link('preferred', recs[ref]);

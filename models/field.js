@@ -32,7 +32,7 @@ function Field (data) {
 
 Field.all = function () {
     var prom = Q.defer();
-    datastore.query('SELECT fields.* FROM fields', [ ], function (err, results, fields) {
+    datastore.query('SELECT fields.* FROM fields', [ ], function (err, results) {
         if (err) {
             prom.reject(err);
         } else {

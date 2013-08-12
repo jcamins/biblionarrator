@@ -2,7 +2,7 @@
     var showCount = function () {
         window.bndb.bookmarks(function (bookmarksdb) {
             bookmarksdb.count(function (num) {
-                if (parseInt(num) > 0) {
+                if (parseInt(num, 10) > 0) {
                     $('.bookmark-count').each(function () { $(this).text(num); });
                 } else {
                     $('.bookmark-count').each(function () { $(this).empty(); });
@@ -49,7 +49,7 @@
     };
 
     bookmarks.show = function() {
-        var data = { records: [] }
+        var data = { records: [] };
         window.bndb.bookmarks(function(bookmarksdb) {
             bookmarksdb.each(function (bookmark) {
                 bookmark.value.rendered = window.formatters[bookmark.value.schema].render(JSON.parse(bookmark.value.data));

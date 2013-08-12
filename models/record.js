@@ -3,7 +3,6 @@ var models,
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
     formatters = require('../lib/formats'),
-    linktypes = require('../config/linktypes'),
     offload = require('../lib/graphoffloader');
 
 function Record(data) {
@@ -11,7 +10,7 @@ function Record(data) {
         if (typeof this.data === 'string') {
             this.data = JSON.parse(this.data);
         }
-        return record = new Record({
+        return new Record({
             id: this.id,
             data: formatters[this.format].snippet(this.data),
         });
@@ -34,7 +33,7 @@ function Record(data) {
     this.link = function (type, target) {
         var sv = g.v(this.id).iterator().nextSync();
         var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
-        var edge = graphstore.getDB().addEdgeSync(null, sv, tv, type);
+        graphstore.getDB().addEdgeSync(null, sv, tv, type);
         if (graphstore.autocommit) {
             graphstore.getDB().commitSync();
         }

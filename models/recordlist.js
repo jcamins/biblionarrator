@@ -1,6 +1,4 @@
 var models,
-    graphstore = require('../lib/graphstore'),
-    g = graphstore(),
     offload = require('../lib/graphoffloader');
 
 module.exports = RecordList;

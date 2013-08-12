@@ -50,7 +50,7 @@ function initializeAdminTable() {
             }
             return nRow;
         },
-        "fnDrawCallback": fnDrawCallback,
+        "fnDrawCallback": fnDrawCallback
     } );
     $('#admintable-filter').keyup(function () {
         oTable.fnFilter($(this).val(), null, false, true);
@@ -98,23 +98,23 @@ function autoSaveCallback(value, settings) {
 
 function fnDrawCallback() {
     var oTable = $('#admintable').dataTable();
-    $('.editable-string').editable(autoSaveCallback, { "onblur" : "submit", });
+    $('.editable-string').editable(autoSaveCallback, { "onblur" : "submit" });
     $('.editable-options').each(function () {
         $(this).editable(autoSaveCallback,
             {
                 "onblur" : "submit",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')].options),
+                "data": eval(columns[$(this).attr('data-column')].options)
             }
         );
     });
-    $('.form-string').editable('', { "onblur" : "ignore", });
+    $('.form-string').editable('', { "onblur" : "ignore" });
     $('.form-options').each(function () {
         $(this).editable('',
             {
                 "onblur" : "ignore",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')].options),
+                "data": eval(columns[$(this).attr('data-column')].options)
             }
         );
     });
@@ -146,7 +146,7 @@ function saveRow(row, updates) {
         url: '/resources/' + resourcetype + (typeof id !== 'undefined' ? '/' + id : ''),
         dataType: 'json',
         type: "POST",
-        data: newdata,
+        data: newdata
     }).success(function () {
         var oTable = $('#admintable').dataTable();
         oTable.fnReloadAjax();

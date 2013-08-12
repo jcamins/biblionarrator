@@ -36,7 +36,7 @@ exports.view = function(req, res) {
                 }
             });
         }, function (message) {
-            socketserver.registerPublication(message)
+            socketserver.registerPublication(message);
         });
     }, function (err) { console.log(err); });
 };

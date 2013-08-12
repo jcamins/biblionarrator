@@ -267,14 +267,14 @@ $(document).ready(function () {
                 $(input).val($(input).val().replace('@' + $(this).parent().attr('data-value') + '#'));
                 $(this).parent().remove();
             });
-        },
+        }
     });
 })( jQuery );
 
 var tocindex;
-var toctree;
+var tocTree;
 
-function traverseTOC(node, depth) {
+function traverseTOC(node) {
     $(node).find('span, a').each(function () {
         if ($(this).attr('data-match') || typeof $(this).attr('class') === 'undefined') {
             return;
@@ -298,7 +298,7 @@ function traverseTOC(node, depth) {
     });
 }
 
-function updateFieldsTOCTree(node) {
+function updateFieldsTOCTree() {
     tocindex = 1;
     $('#fieldsTOC').remove();
     tocTree = document.createElement('div');
@@ -315,7 +315,7 @@ function updateFieldsTOCTree(node) {
 function initializeTOC() {
     $('#fieldsTOC').jstree({
         "plugins" : [ "themes", "html_data", "types", "ui" ],
-        "themes" : { "icons": false },
+        "themes" : { "icons": false }
     });
     $('#fieldsTOC').bind('select_node.jstree', function (e, data) {
         $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });
@@ -328,13 +328,12 @@ function initializeTOC() {
             return false;
         }
     });
-    $('#fieldsTOC').bind('deselect_node.jstree', function (e, data) {
+    $('#fieldsTOC').on('deselect_node.jstree', function () {
         $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });
     });
 }
 
 function addQueryStringParameter(uri, key, value) {
-    var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
     separator = uri.indexOf('?') !== -1 ? "&" : "?";
     return uri + separator + key + "=" + value;
 }

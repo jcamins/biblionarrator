@@ -36,7 +36,8 @@
     "gremlin": "~0.1.14a",
     "sockjs": "~0.3.7",
     "node-uuid": "~1.4.0",
-    "uglify-js": "~2.3.6"
+    "uglify-js": "~2.3.6",
+    "grunt": "~0.4.1"
   },
   "devDependencies": {
     "chai": "1.7.x",

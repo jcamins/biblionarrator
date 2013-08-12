@@ -11,7 +11,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    datastore.query('SELECT * FROM users WHERE id = ?', [id], function(err, results, fields) {
+    datastore.query('SELECT * FROM users WHERE id = ?', [id], function(err, results) {
         return done(err, results[0]);
     });
 });
@@ -25,7 +25,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(
     new LocalStrategy(
         function(username, password, done) {
-            datastore.query('SELECT * FROM users WHERE email = ?', [username], function(err, results, fields) {
+            datastore.query('SELECT * FROM users WHERE email = ?', [username], function(err, results) {
                 if (err) {
                     return done(null, false, {
                         message: 'Unknown user ' + username
