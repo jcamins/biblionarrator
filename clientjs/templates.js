@@ -17,7 +17,7 @@ function Renderer() {
 
     var display = function(data, template, mountpoint) {
         if (typeof mountpoint === 'object') {
-            mountpoint.innerHTML += templates[template](data);
+            mountpoint.innerHTML = templates[template](data);
             $(mountpoint).trigger('rendered');
         }
     };

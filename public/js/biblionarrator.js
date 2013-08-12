@@ -361,6 +361,7 @@ function openSocket() {
 function registerSubscriptions() {
     $('[data-message]').each(function () {
         sockjs.send(JSON.stringify({ register: this.getAttribute('data-message') }));
+        this.text = this.innerHTML = this.getAttribute('data-loading-text');
     });
 }
 
