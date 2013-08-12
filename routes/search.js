@@ -48,7 +48,7 @@ exports.view = function(req, res) {
                 }
             });
         }, function (message) {
-            message.url = req.url;
+            message.url = req.url + req.url.indexOf('?') > -1 ? '' : '?';
             socketserver.registerPublication(message);
         });
     }, function (err) { console.log(err); });
