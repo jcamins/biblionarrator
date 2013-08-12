@@ -431,6 +431,55 @@ footer {
     }
 }
 
+.facet-group {
+    font-size: small;
+    font-family: Verdana, Arial, sans-serif;
+
+    .facet-label {
+        font-weight: bold;
+        font-variant: small-caps;
+        font-family: Verdana, Arial, sans-serif;
+    }
+
+    .facet-options {
+        margin-left: 6px;
+
+        li {
+            list-style: none;
+            padding-left: 0;
+            margin-left: 0;
+            display: none;
+
+            a, .facet-count {
+                color: #955;
+                font-family: Verdana, Arial, sans-serif;
+                font-size: smaller;
+            }
+
+            .facet-count {
+                color: #aaa;
+            }
+
+            &.show-more {
+                display: block;
+                font-style: italic;
+            }
+
+            &:nth-child(-n+5) {
+                display: block;
+            }
+        }
+
+        &.show-all li {
+            display: block;
+
+            &.show-more {
+                display: none;
+            }
+        }
+    }
+}
+
 
 /*** Record editor ***/
 
