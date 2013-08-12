@@ -361,13 +361,14 @@ function openSocket() {
 function registerSubscriptions() {
     $('[data-message]').each(function () {
         sockjs.send(JSON.stringify({ register: this.getAttribute('data-message') }));
-        this.text = this.innerHTML = this.getAttribute('data-loading-text');
     });
 }
 
 function handleMessage(message) {
-    message = JSON.parse(message.data);
-    var mountpoint = $('[data-message="' + message.id + '"]')[0];
-    window.renderer.render(message, 'facets', mountpoint);
-    mountpoint.removeAttribute('data-message');
+    if (message) {
+        message = JSON.parse(message.data);
+        var mountpoint = $('[data-message="' + message.id + '"]')[0];
+        window.renderer.render(message, 'facets', mountpoint);
+        mountpoint.removeAttribute('data-message');
+    }
 }
