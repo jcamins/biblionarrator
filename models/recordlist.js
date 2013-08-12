@@ -7,7 +7,6 @@ module.exports = RecordList;
 
 function RecordList(data) {
     data.records = data.records || [];
-    data.facets = data.facets || {};
     data.offset = data.offset || 0;
     data.records.forEach(function (one, index) {
         one.number = data.offset + index + 1;

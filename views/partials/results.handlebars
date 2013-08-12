@@ -31,9 +31,15 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span2" data-template="facets" data-message="{{facetpub}}">
-        Loading facets
-    </div>
+    {{#if facet}}
+        <div class="span2">
+            {{>facets}}
+        </div>
+    {{else}}
+        <div class="span2" data-template="facets" data-message="{{facetpub}}">
+            Loading facets
+        </div>
+    {{/if}}
     <div class="span10">
     <table id="recordList" class="table">
         <thead>

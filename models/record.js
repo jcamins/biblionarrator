@@ -44,8 +44,7 @@ function Record(data) {
         offload('linkbrowse', { id: this.id, offset: offset, perpage: perpage }, function (results) {
             var reclist = new models.RecordList({
                 records: Record.fromJSON(results.linkbrowse.records),
-                facets: results.linkbrowse.facets,
-                mainfacet: '*',
+                facet: results.linkbrowse.facet,
                 count: results.linkbrowse.count
             });
             recordcb(reclist);

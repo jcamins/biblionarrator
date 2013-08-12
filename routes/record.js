@@ -48,6 +48,8 @@ exports.links = function(req, res) {
         } else {
             res.json(data);
         }
+    }, function (message) {
+        socketserver.registerPublication(message)
     });
 };
 

@@ -89,6 +89,7 @@ function initializeList() {
                 node.setAttribute('data-pane', panes.length);
                 panes.push({ url: url, node: node });
                 bnpanes.select(panes.length - 1);
+                registerSubscriptions();
             },
             failure: function (data) {
             }
