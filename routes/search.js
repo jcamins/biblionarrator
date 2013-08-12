@@ -2,6 +2,7 @@ var sharedview = require('../lib/sharedview'),
     models = require('../models'),
     RecordList = models.RecordList,
     paginator = require('../lib/paginator'),
+    socketserver = require('../lib/socketserver'),
     Q = require('q');
 
 exports.view = function(req, res) {
@@ -34,6 +35,8 @@ exports.view = function(req, res) {
                     res.send(html);
                 }
             });
+        }, function (message) {
+            socketserver.registerPublication(message)
         });
     }, function (err) { console.log(err); });
 };

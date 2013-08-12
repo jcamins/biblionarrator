@@ -1,8 +1,8 @@
 var express = require('express'),
+    socketserver = require('./lib/socketserver'),
     params = require('express-params'),
     handlebars = require('express-hbs'),
-    httpProxy = require('http-proxy'),
-    proxy = new httpProxy.RoutingProxy(),
+    http = require('http'),
     routes = require('./routes');
 
 var app = express();
@@ -31,25 +31,15 @@ if ('development' == app.get('env')) {
 
 routes.init(app);
 
-/* Catch-all route for forwarding to Apache */
-/*app.get('*', function(req, res) {
-    return proxy.proxyRequest(req, res, {
-        host: 'localhost',
-        port: 3500
-    });
-});*/
-
 exports.app = app;
-
-/* No doubt this is the wrong way to emulate supertest. However,
-since it allows us to run tests without starting the server manually,
-for the moment, at least, this is how we're doing it. */
 
 var httpserver;
 
 exports.listen = function(port) {
     port = port || 3000;
-    httpserver = app.listen(port);
+    httpserver = http.createServer(app);
+    socketserver.configure(httpserver);
+    httpserver.listen(port);
 };
 
 exports.testhost = function() {

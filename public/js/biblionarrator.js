@@ -140,6 +140,7 @@ $(document).ready(function () {
             $('.modal:visible').modal('hide');
         }
     });
+    openSocket();
 });
 
 /*(function( bndb, $, undefined ) {
@@ -347,4 +348,25 @@ function updateQueryStringParameter(uri, key, value) {
     else {
         return uri + separator + key + "=" + value;
     }
+}
+
+function openSocket() {
+    var sockjs_url = '/socket';
+    sockjs = new SockJS(sockjs_url);
+
+    sockjs.onopen = registerSubscriptions;
+    sockjs.onmessage = handleMessage;
+}
+
+function registerSubscriptions() {
+    $('[data-message]').each(function () {
+        sockjs.send(JSON.stringify({ register: this.getAttribute('data-message') }));
+    });
+}
+
+function handleMessage(message) {
+    message = JSON.parse(message.data);
+    var mountpoint = $('[data-message="' + message.id + '"]')[0];
+    window.renderer.render(message, 'facets', mountpoint);
+    mountpoint.removeAttribute('data-message');
 }

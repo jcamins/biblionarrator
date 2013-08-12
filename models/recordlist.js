@@ -15,14 +15,11 @@ function RecordList(data) {
     });
     var parts;
     var linktype;
-    this.facets = data.facets || { };
-    if (data.facets) {
-        this.mainfacet = data.facets[data.mainfacet] || { };
-    } else {
-        this.mainfacet = { };
+    for (var prop in data) {
+        if (data.hasOwnProperty(prop) && typeof data[prop] !== 'function') {
+            this[prop] = data[prop];
+        }
     }
-    this.records = data.records;
-    this.count = data.count;
 
     return this;
 }
@@ -30,19 +27,17 @@ function RecordList(data) {
 RecordList.search = function (query, offset, perpage, recordcb, facetcb) {
     offload('search', { query: query, offset: offset, perpage: perpage }, function (results) {
         var records = results.search.records;
-        offload('facet', results.search.list, function (facets) {
-            for (var ii in records) {
-                records[ii] = models.Record.fromJSON(records[ii]);
-            }
-            var reclist = new RecordList({ records: records,
-                facets: facets.facet,
-                mainfacet: 'Record type',
-                count: results.search.count,
-                offset: offset,
-                perpage: perpage
-            });
-            recordcb(reclist);
+        var facetpub = offload('facet', { mainfacet: 'Record type', records: results.search.list, count: results.search.count }, facetcb);
+        for (var ii in records) {
+            records[ii] = models.Record.fromJSON(records[ii]);
+        }
+        var reclist = new RecordList({ records: records,
+            facetpub: facetpub.id,
+            count: results.search.count,
+            offset: offset,
+            perpage: perpage
         });
+        recordcb(reclist);
     });
 };
 

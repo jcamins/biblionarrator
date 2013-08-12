@@ -33,7 +33,10 @@
     "xml2js": "~0.2.8",
     "eyes": "~0.1.8",
     "repl": "~0.1.3",
-    "gremlin": "~0.1.14a"
+    "gremlin": "~0.1.14a",
+    "sockjs": "~0.3.7",
+    "node-uuid": "~1.4.0",
+    "uglify-js": "~2.3.6"
   },
   "devDependencies": {
     "chai": "1.7.x",

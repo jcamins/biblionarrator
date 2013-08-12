@@ -10,7 +10,8 @@ function Renderer() {
     });
 
     var urls = {
-        results: '/views/partials/results.handlebars'
+        results: '/views/partials/results.handlebars',
+        facets: '/views/partials/facets.handlebars'
     };
     var templates = {};
 

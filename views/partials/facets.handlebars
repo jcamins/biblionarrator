@@ -1,0 +1,6 @@
+<ul class="nav nav-pills nav-stacked facet-list">
+    <li class="active"><a href="#all" data-toggle="tab">All ({{facet.count}})</a></li>
+    {{#each facet.mainfacet}}
+        <li><a href="#{{@key}}" data-toggle="tab">{{@key}} ({{this}})</a></li>
+    {{/each}}
+</ul>
