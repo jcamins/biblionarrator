@@ -59,47 +59,7 @@ $(document).ready(function () {
         target.trigger('cookietoggle');
     });
 
-    // Dropdown-select code
-    $('[data-toggle="dropdown-select"]').each(function () {
-        var container = this;
-        $(container).addClass('dropdown');
-        $(container).append('<a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="cur-val"></span> <b class="caret"></b></a><ul class="dropdown-menu select-menu"></ul>');
-        var select = $(this).find('select');
-        var cur = $(this).find('.cur-val');
-        var list = $(this).children('ul');
-        var title = $(select).attr('title');
-        if (typeof title === 'undefined') {
-            title = '';
-        }
-        $(select).hide();
-        $(select).find('option').each(function (index) {
-            if ($(this).attr('data-placeholder') == 'true') {
-                $(cur).text($(this).text());
-            } else if ($(this).attr('selected') == 'selected') {
-                $(cur).text(title + $(this).text());
-                $(container).attr('data-index', index);
-                $(list).append('<li class="selected" data-index="' + index + '"><a href="#">' + $(this).text() + '</a></li>');
-            } else {
-                $(list).append('<li data-index="' + index + '"><a href="#">' + $(this).text() + '</a></li>');
-            }
-        });
-        if ($(cur).text().length === 0) {
-            $(cur).text(title);
-        }
-        $(list).on('click', 'a', null, function () {
-            var newindex = $(this).parent().attr('data-index');
-            $(list).find('.selected').removeClass('selected');
-            $(this).parent().addClass('selected');
-            $(container).attr('data-index', newindex);
-            $(cur).text(title + $(this).text());
-            $(select).val([]);
-            $(select).find('option').removeAttr('selected');
-            $(select).find('option:eq(' + newindex + ')').attr('selected', 'selected');
-            $(select).change();
-            $(container).removeClass('open');
-            return false;
-        });
-    });
+    applyChrome();
 
     // Confirmation triggers
     $('[data-toggle="confirm"]').click(function () {
@@ -143,6 +103,53 @@ $(document).ready(function () {
 
     openSocket();
 });
+
+function applyChrome() {
+    // Dropdown-select code
+    $('[data-toggle="dropdown-select"]').each(function () {
+        if ($(this).hasClass('dropdown')) {
+            return;
+        }
+        var container = this;
+        $(container).addClass('dropdown');
+        $(container).append('<a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="cur-val"></span> <b class="caret"></b></a><ul class="dropdown-menu select-menu"></ul>');
+        var select = $(this).find('select');
+        var cur = $(this).find('.cur-val');
+        var list = $(this).children('ul');
+        var title = $(select).attr('title');
+        if (typeof title === 'undefined') {
+            title = '';
+        }
+        $(select).hide();
+        $(select).find('option').each(function (index) {
+            if ($(this).attr('data-placeholder') == 'true') {
+                $(cur).text($(this).text());
+            } else if ($(this).attr('selected') == 'selected') {
+                $(cur).text(title + $(this).text());
+                $(container).attr('data-index', index);
+                $(list).append('<li class="selected" data-index="' + index + '"><a href="#">' + $(this).text() + '</a></li>');
+            } else {
+                $(list).append('<li data-index="' + index + '"><a href="#">' + $(this).text() + '</a></li>');
+            }
+        });
+        if ($(cur).text().length === 0) {
+            $(cur).text(title);
+        }
+        $(list).on('click', 'a', null, function () {
+            var newindex = $(this).parent().attr('data-index');
+            $(list).find('.selected').removeClass('selected');
+            $(this).parent().addClass('selected');
+            $(container).attr('data-index', newindex);
+            $(cur).text(title + $(this).text());
+            $(select).val([]);
+            $(select).find('option').removeAttr('selected');
+            $(select).find('option:eq(' + newindex + ')').attr('selected', 'selected');
+            $(select).change();
+            $(container).removeClass('open');
+            return false;
+        });
+    });
+}
 
 /*(function( bndb, $, undefined ) {
     bndb.initialize = function (callback) {

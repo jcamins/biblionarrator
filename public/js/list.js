@@ -122,6 +122,7 @@ function initializeList() {
                 //rewriteResults(node);
                 bnpanes.select(index);
                 registerSubscriptions();
+                applyChrome();
             },
             failure: function (data) {
             }
