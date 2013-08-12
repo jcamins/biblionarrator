@@ -23,7 +23,8 @@ var opts = {
 var expect = require('chai').expect,
     graphstore = require('../lib/graphstore'),
     g = graphstore(opts),
-    Record = require('../models/record');
+    models = require('../models'),
+    Record = models.Record;
 
 describe('Record model', function () {
     var rec;

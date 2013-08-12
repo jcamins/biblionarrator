@@ -40,15 +40,15 @@ describe('Graph offloader', function () {
         });
     });
     it('successfully offloads faceting', function (done) {
-        offload('facet', list, function (facets) {
-            expect(facets.facet['Record type'].place).to.equal(1);
+        offload('facet', { records: list, offset: 0, perpage: 20 }, function (results) {
+            expect(results.facet.facets['Record type'].place).to.equal(1);
             done();
         });
     });
     it('successfully browses record links', function (done) {
         offload('linkbrowse', { id: list[0], offset: 0, perpage: 20 }, function (results) {
             expect(results.linkbrowse.count).to.equal(2);
-            expect(results.linkbrowse.facets['*']['Is a']).to.equal(1);
+            expect(results.linkbrowse.facet.facets['*']['Is a']).to.equal(1);
             done();
         });
     });

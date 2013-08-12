@@ -1,8 +1,9 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
     graphstore = require('../../lib/graphstore'),
-    Record = require('../../models/record'),
-    RecordType = require('../../models/recordtype'),
+    models = require('../../models'),
+    Record = models.Record,
+    RecordType = models.RecordType,
     Q = require('q');
 
 var parser = new xml2js.Parser();

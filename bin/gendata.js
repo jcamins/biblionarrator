@@ -1,5 +1,6 @@
-var Record = require('../models/record.js'),
-    RecordType = require('../models/recordtype.js');
+var models = require('../models'),
+    Record = models.Record,
+    RecordType = models.RecordType;
 
 var records = {
     mylife: {
