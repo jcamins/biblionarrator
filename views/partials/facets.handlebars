@@ -5,13 +5,13 @@
     {{/each}}
 </ul>-->
 {{#each facet.facets}}
-    {{#if more}}
     <div class="facet-group">
-    {{else}}
-    <div class="facet-group show-all">
-    {{/if}}
     <span class="facet-label">{{label}}</span>
+    {{#if more}}
     <ul class="facet-options">
+    {{else}}
+    <ul class="facet-options show-all">
+    {{/if}}
     {{#each options}}
         <li><a href="#" data-href="&facet={{type}}:{{link}}" data-target="pane">{{label}} <span class="facet-count">({{count}})</span></a></li>
     {{/each}}

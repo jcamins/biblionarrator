@@ -91,6 +91,7 @@ function initializeList() {
             }
             panes[newidx].node.className = 'pane';
             document.getElementById('search-scroller').appendChild(panes[newidx].node);
+            History.pushState({ 'pane': newidx }, '', panes[newidx].url);
             current = newidx;
         }
     };

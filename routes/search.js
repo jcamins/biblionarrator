@@ -23,7 +23,7 @@ exports.view = function(req, res) {
     });
 
     Q.all([sharedview()]).then(function(data) {
-        data.url = req.url;
+        data.url = req.url.replace(/&?layout=[^&]*/, '');
         data.view = 'results';
         if (query) {
             data.summary = 'Search: ' + query;

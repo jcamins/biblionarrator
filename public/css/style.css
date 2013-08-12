@@ -6656,6 +6656,8 @@ footer p {
 }
 .facet-group .facet-options {
   margin-left: 6px;
+  overflow-y: auto;
+  max-height: 20em;
 }
 .facet-group .facet-options li {
   list-style: none;
