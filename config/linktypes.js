@@ -53,5 +53,5 @@ module.exports = {
         outlabel: 'Related term',
         inlabel: 'Related term',
         facetlabel: 'Related term',
-    },
+    }
 };

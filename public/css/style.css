@@ -7140,7 +7140,7 @@ a.selected {
   font-size: x-small;
   line-height: 120%;
 }
-/*** AJAX load ***/
+/*** Subscriptions ***/
 [data-message] {
   background-image: url('/img/loading.gif');
   background-repeat: no-repeat;

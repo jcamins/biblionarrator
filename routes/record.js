@@ -32,9 +32,10 @@ exports.links = function(req, res) {
     var perpage = parseInt(req.query.perpage, 10) || 20;
     record.links(offset, perpage, function (data) {
         data.layout = false;
-        data.url = req.url + req.url.indexOf('?') > -1 ? '' : '?';
+        data.url = req.url + (req.url.indexOf('?') > -1 ? '' : '?');
         data.summary = 'Links for record ' + req.params.record_id;
         data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
+        //console.log(data);
         var accept = req.accepts([ 'html', 'json' ]);
         if (accept === 'html') {
             res.render('partials/results', data, function(err, html) {
@@ -48,6 +49,7 @@ exports.links = function(req, res) {
             res.json(data);
         }
     }, function (message) {
+        message.url = req.url + (req.url.indexOf('?') > -1 ? '' : '?');
         socketserver.registerPublication(message);
     });
 };

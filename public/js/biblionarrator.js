@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Cookie toggle code
-    $('[data-toggle="cookie-view"]').click(function () {
+    $('body').on('click', '[data-toggle="cookie-view"]', null, function () {
         var target = $($(this).attr('data-target'));
         var activeclass = $(this).attr('data-class');
         var isactive;
@@ -140,6 +140,7 @@ $(document).ready(function () {
             $('.modal:visible').modal('hide');
         }
     });
+
     openSocket();
 });
 
@@ -371,3 +372,4 @@ function handleMessage(message) {
         mountpoint.removeAttribute('data-message');
     }
 }
+

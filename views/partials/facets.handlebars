@@ -1,14 +1,14 @@
 <!--<ul class="nav nav-pills nav-stacked facet-list">
     <li class="active"><a href="" data-toggle="tab">All ({{facet.count}})</a></li>
     {{#each facet.mainfacet.options}}
-        <li><a href="{{../url}}&facet={{this.type}}:{{this.label}}" data-toggle="tab">{{this.label}} ({{this.count}})</a></li>
+        <li><a href="#" data-href="&facet={{this.type}}:{{this.link}}" data-toggle="tab">{{this.label}} ({{this.count}})</a></li>
     {{/each}}
 </ul>-->
 {{#each facet.facets}}
     <div class="facet-group"><span class="facet-label">{{this.label}}</span>
     <ul class="facet-options">
     {{#each options}}
-        <li><a href="{{../../url}}&facet={{this.type}}:{{this.label}}">{{this.label}} ({{this.count}})</a></li>
+        <li><a href="#" data-href="&facet={{this.type}}:{{this.link}}" data-target="pane">{{this.label}} ({{this.count}})</a></li>
     {{/each}}
     </ul>
     </div>

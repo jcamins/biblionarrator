@@ -36,6 +36,28 @@ function initializeList() {
         window.bnpanes.select($(this).attr('data-pane'));
     });
 
+    $('body').on('click', 'a[data-href]', null, function (ev) {
+        var parts = [ $(this).attr('data-href') ];
+        $(this).parents('[data-href]').each(function () {
+            parts.push($(this).attr('data-href'));
+        });
+        parts = parts.reverse();
+        var href = parts[0];
+        for (var ii = 1; ii < parts.length; ii++) {
+            if (parts[ii].indexOf('&') === 0 && href.indexOf('?') === -1) {
+                href = href + '?';
+            }
+            href = href + parts[ii];
+        }
+        $(this).attr('href', href);
+    });
+
+    $('body').on('click', '[data-target="pane"]', null, function (ev) {
+        window.bnpanes.load($(this).attr('href'), $(this).closest('.pane').attr('data-pane'));
+        ev.preventDefault();
+        console.log('target');
+    });
+
     /*$('body').on('click', '.facet-list a', null, function () {
         if ($(this).attr('href') === '#all') {
             $('.resultRow').show();
@@ -73,8 +95,8 @@ function initializeList() {
         }
     };
     
-    bnpanes.load = function (url) {
-        if (typeof current !== 'undefined') {
+    bnpanes.load = function (url, index) {
+        if (typeof current !== 'undefined' && !(typeof index !== 'undefined' && panes[index])) {
             for (var idx = current + 1; idx < panes.length; idx++) {
                 panes[idx].node.parentNode.removeChild(panes[idx].node);
             }
@@ -82,13 +104,22 @@ function initializeList() {
         }
         $.ajax({
             url: url,
+            data: { layout: false },
             success: function (data) {
                 var node = document.createElement('div');
                 node.className = 'pane';
                 node.innerHTML = data;
-                node.setAttribute('data-pane', panes.length);
-                panes.push({ url: url, node: node });
-                bnpanes.select(panes.length - 1);
+                if (typeof index !== 'undefined' && panes[index]) {
+                    node.setAttribute('data-pane', index);
+                    panes[index].node.parentNode.removeChild(panes[index].node);
+                    panes[index] = { url: url, node: node };
+                } else {
+                    node.setAttribute('data-pane', panes.length);
+                    panes.push({ url: url, node: node });
+                    index = panes.length - 1;
+                }
+                //rewriteResults(node);
+                bnpanes.select(index);
                 registerSubscriptions();
             },
             failure: function (data) {

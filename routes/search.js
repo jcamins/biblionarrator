@@ -22,8 +22,8 @@ exports.view = function(req, res) {
         facets.push(obj);
     });
 
-    Q.all([sharedview()]).then(function(defdata) {
-        var data = defdata;
+    Q.all([sharedview()]).then(function(data) {
+        data.url = req.url;
         data.view = 'results';
         if (query) {
             data.summary = 'Search: ' + query;
@@ -32,6 +32,11 @@ exports.view = function(req, res) {
         }
         data.query = query;
         RecordList.search(query, facets, offset, perpage, function (list) {
+            var layout = 'list/interface';
+            if (typeof req.query.layout !== 'undefined' && req.query.layout === 'false') {
+                data.layout = false;
+                layout = 'partials/results';
+            }
             for (var idx in list) {
                 data[idx] = list[idx];
             }
@@ -40,53 +45,16 @@ exports.view = function(req, res) {
                 data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
             }
             data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-            res.render('list/interface', data, function(err, html) {
+            res.render(layout, data, function(err, html) {
                 if (err) {
                     res.send(404, err);
                 } else {
                     res.send(html);
                 }
             });
-        }, function (message) {
-            message.url = req.url + req.url.indexOf('?') > -1 ? '' : '?';
-            socketserver.registerPublication(message);
+        }, function (data) {
+            data.url = req.url;
+            socketserver.registerPublication(data);
         });
     }, function (err) { console.log(err); });
-};
-
-exports.ajax = function(req, res) {
-    var query = req.query.q || '';
-    var facets;
-    var offset = parseInt(req.query.offset, 10) || 0;
-    var perpage = parseInt(req.query.perpage, 10) || 20;
-    var data = { };
-
-    RecordList.search(query, facets, offset, perpage, function (data) {
-        data.url = req.url;
-        data.layout = false;
-        if (query) {
-            data.summary = 'Search: ' + query;
-        } else {
-            data.summary = 'All records';
-        }
-        data.query = query;
-        if (data.count > data.records.length) {
-            data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
-        }
-        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-        var accept = req.accepts([ 'html', 'json' ]);
-        if (accept === 'html') {
-            res.render('partials/results', data, function(err, html) {
-                if (err) {
-                    res.send(404, err);
-                } else {
-                    res.send(html);
-                }
-            });
-        } else {
-            res.json(data);
-        }
-    }, function (message) {
-        socketserver.registerPublication(message);
-    });
 };
