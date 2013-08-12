@@ -32,6 +32,7 @@ exports.links = function(req, res) {
     var perpage = parseInt(req.query.perpage, 10) || 20;
     record.links(offset, perpage, function (data) {
         data.layout = false;
+        data.url = req.url;
         data.summary = 'Links for record ' + req.params.record_id;
         data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
         var accept = req.accepts([ 'html', 'json' ]);

@@ -34,6 +34,7 @@ exports.init = function(app) {
 
     /* Search */
     app.get('/search', search.view);
+    app.get('/search/ajax', search.ajax);
 
     /* Home */
     app.get('/', home);

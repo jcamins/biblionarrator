@@ -8,66 +8,77 @@ var records = {
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["My life in America"]}},{"section":{"children":["Greatest book ever"]}}]}},
+        key: 'My life in America'
     },
     whynot: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["Why I don't eat fat"]}},{"section":{"children":["Not nearly as exciting as it sounds."]}}]}},
+        key: "Why I don't eat fat"
     },
     london: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["London"]}},{"section":{"children":["In England"]}}]}},
+        key: 'London'
     },
     jackspratt: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["Jack Spratt"]}},{"section":{"children":["A British man with strict dietary requirements."]}}]}},
+        key: 'Jack Spratt'
     },
     newyork: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["New York"]}},{"section":{"children":["In the US"]}}]}},
+        key: 'New York'
     },
     billybob: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["Billy Bob"]}},{"section":{"children":["A silly Southerner."]}}]}},
+        key: 'Billy Bob'
     },
     paris: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["Paris"]}},{"section":{"children":["In France"]}}]}},
+        key: 'Paris'
     },
     johnsmith: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
-        data: {"article":{"children":[{"header":{"children":["John Smith"]}},{"section":{"children":["An intrepid explorer"]}}]}},
+        data: {"article":{"children":[{"header":{"children":["John Smith"]}},{"section":{"children":["An intrepid explorer who originally lived in France"]}}]}},
+        key: 'John Smith'
     },
     1580: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["1580"]}},{"section":{"children":["A good year"]}}]}},
+        key: '1580'
     },
     1589: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["1589"]}},{"section":{"children":["A not-so-good year"]}}]}},
+        key: '1589'
     },
     1631: {
         format: 'bnjson',
         deleted: 0,
         model: 'record',
         data: {"article":{"children":[{"header":{"children":["1631"]}},{"section":{"children":["A tragic year"]}}]}},
+        key: '1631'
     },
     date: {
         key: 'date',

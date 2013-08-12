@@ -21,10 +21,10 @@ function RecordList(data) {
     return this;
 }
 
-RecordList.search = function (query, offset, perpage, recordcb, facetcb) {
-    offload('search', { query: query, offset: offset, perpage: perpage }, function (results) {
+RecordList.search = function (query, facets, offset, perpage, recordcb, facetcb) {
+    offload('search', { query: query, facets: facets, offset: offset, perpage: perpage }, function (results) {
         var records = results.search.records;
-        var facetpub = offload('facet', { mainfacet: 'Record type', records: results.search.list, count: results.search.count }, facetcb);
+        var facetpub = offload('facet', { mainfacet: 'recordtype', records: results.search.list, count: results.search.count }, facetcb);
         for (var ii in records) {
             records[ii] = models.Record.fromJSON(records[ii]);
         }

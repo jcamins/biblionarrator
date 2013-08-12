@@ -36,14 +36,14 @@ function initializeList() {
         window.bnpanes.select($(this).attr('data-pane'));
     });
 
-    $('body').on('click', '.facet-list a', null, function () {
+    /*$('body').on('click', '.facet-list a', null, function () {
         if ($(this).attr('href') === '#all') {
             $('.resultRow').show();
         } else {
             $('.resultRow').hide();
             $('.resultRow[data-facet="' + $(this).attr('href') + '"]').show();
         }
-    });
+    });*/
 }
 
 /* The built-in caching from the web browser will almost certainly be sufficient,

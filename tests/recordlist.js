@@ -32,13 +32,19 @@ describe('RecordList model', function () {
         require('../bin/gendata');
     });
     it('finds record using fielded search', function (done) {
-        RecordList.search({ model: 'recordtype' }, 0, 20, function (list) {
+        RecordList.search({ model: 'recordtype' }, [ ], 0, 20, function (list) {
             expect(list.records.length).to.equal(4);
             done();
         });
     });
     it('finds record using text search', function (done) {
-        RecordList.search('silly', 0, 20, function (list) {
+        RecordList.search('France', [ ], 0, 20, function (list) {
+            expect(list.records.length).to.equal(2);
+            done();
+        });
+    });
+    it('handles facets in a text search', function (done) {
+        RecordList.search('France', [ { recordtype: 'place' } ], 0, 20, function (list) {
             expect(list.records.length).to.equal(1);
             done();
         });
