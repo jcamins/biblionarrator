@@ -2,7 +2,8 @@ var express = require('express'),
     socketserver = require('./lib/socketserver'),
     handlebars = require('express-hbs'),
     http = require('http'),
-    routes = require('./routes');
+    routes = require('./routes'),
+    auth = require('./lib/auth');
 
 var app = express();
 
@@ -20,6 +21,7 @@ app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 't
 app.use(express.methodOverride());
 app.use(express.static('public'));
 app.use('/views', express.static(__dirname + '/views'));
+auth.initialize(app);
 app.use(app.router);
 //params.extend(app);
 

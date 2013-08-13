@@ -1,4 +1,5 @@
 var assets = require('./assets'),
+    auth = require('./auth'),
     doc = require('./doc'),
     record = require('./record'),
     media = require('./media'),
@@ -15,6 +16,11 @@ exports.init = function(app) {
     /* Assets */
     app.get('/css/fields.css', assets.fieldscss);
     app.get('/svc/bndb_initializer.js', assets.bndbinitializerjs);
+
+    /* Auth */
+    app.get('/auth/login', auth.login);
+    app.get('/auth/logout', auth.logout);
+    app.post('/auth/browserid', auth.browserid);
 
     /* Docs */
     app.get('/doc/:filename', doc.get);
