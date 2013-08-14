@@ -14,9 +14,16 @@ bibliographic description.
 Installation
 ------------
 
-Biblionarrator has only minimal requirements, and can be installed
-on nearly any system with PHP and MySQL. See doc/install.md for
-detailed instructions.
+Biblionarrator is built on node.js, Titan, and -- currently -- MySQL.
+The current installation instructions are out of date, but there are
+one or two important gotchas in setting up Biblionarrator. In particular,
+The version of gremlin-node that will be automatically installed by
+`npm install` does not work with Biblionarrator. You will need to download
+the version at https://github.com/jcamins/gremlin-node into
+node_modules/gremlin and run `npm install` in that directory prior to
+running `npm install` for Biblionarrator.
+
+See doc/install.md for detailed instructions (once it has been updated).
 
 
 License
