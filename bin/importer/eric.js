@@ -1,25 +1,41 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
-    datastore = require('../../lib/datastore'),
+    graphstore = require('../../lib/graphstore'),
+    models = require('../../models'),
+    Record = models.Record,
+    RecordType = models.RecordType,
     Q = require('q');
 
+graphstore.autocommit = false;
 var parser = new xml2js.Parser();
 var filename = process.argv[2]; // It would be great if we could do multiple files in parallel, but in practice the heap gets too big
 var recs = { };
-Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(function (results) {
-    for (var ii in results) {
-        recs[results[ii].controlno] = results[ii].id;
-    }
-    return recs;
-}).then(function () {
-    console.log('Opening file ' + filename);
-    return Q.nfcall(fs.readFile, filename);
-}).then(function (data) {
+var recordtypes = { };
+recordtypes['person'] = RecordType.findOne({ key: 'Person' });
+recordtypes['institution'] = RecordType.findOne({ key: 'Institution' });
+if (!recordtypes['person']) {
+    recordtypes['person'] = new RecordType({
+        key: 'Person',
+        data: '{"article":{"children":[{"header":{"children":["Person"]}},{"section":{"children":["Individual people."]}}]}}',
+        format: 'bnjson'
+    });
+    recordtypes['person'].save();
+}
+if (!recordtypes['institution']) {
+    recordtypes['institution'] = new RecordType({
+        key: 'Institution',
+        data: '{"article":{"children":[{"header":{"children":["Institution"]}},{"section":{"children":["Institutional entities."]}}]}}',
+        format: 'bnjson'
+    });
+    recordtypes['institution'].save();
+}
+Q.nfcall(fs.readFile, filename).then(function (data) {
     console.log('Parsing file ' + filename);
     return Q.nfcall(parser.parseString, data);
 }).then(function (result) {
-    var promises = [];
     var record;
+    var linkcount = 0;
+    var recordcount = 0;
     console.log('Processing ' + result.records.record.length + ' records in ' + filename);
     for (var ii in result.records.record) {
         var jj;
@@ -44,82 +60,80 @@ Q.npost(datastore, 'query', ['SELECT id, controlno FROM records', [ ] ]).then(fu
             }
         }
         rec.creators = [];
+        var creatorrecs = [ ]
         for (jj in record.metadata[0]['dc:creator']) {
             if (record.metadata[0]['dc:creator'][jj]['_']) {
                 rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
                 if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
                     if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
-                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 2, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                        var childrec = new Record({
+                            key: record.metadata[0]['dc:creator'][jj]['_'],
+                            format: 'bnjson',
+                            data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }
+                        });
+                        childrec.save();
+                        childrec.link('recordtype', recordtypes['person']);
+                        recs[record.metadata[0]['dc:creator'][jj]['_']] = childrec;
+                        recordcount++;
                     } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
-                        recs[record.metadata[0]['dc:creator'][jj]['_']] = 1;
-                        promises.push(addRecord({ "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }, 19, record.metadata[0]['dc:creator'][jj]['_'], 'bnjson'));
+                        var childrec = new Record({
+                            key: record.metadata[0]['dc:creator'][jj]['_'],
+                            format: 'bnjson',
+                            data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }
+                        });
+                        childrec.save();
+                        childrec.link('recordtype', recordtypes['institution']);
+                        recs[record.metadata[0]['dc:creator'][jj]['_']] = childrec;
+                        recordcount++;
                     }
                 }
             }
         }
-        promises.push(addRecord(rec, 20, rec.accno));
+        for (var type in record.metadata[0]['dc:type']) {
+            if (!recs[type]) {
+                var typerec = new RecordType({
+                    key: type,
+                    format: 'bnjson',
+                    data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ type ] } }, ] } }, ] } }
+                });
+                typerec.save();
+                recs[type] = typerec;
+                recordcount++;
+            }
+        }
+        rec = new Record({ key: record.metadata[0]['dc:title'][0], format: 'eric', data: rec });
+        rec.save();
+        linkcount += handleLinks(rec);
     }
-    console.log('Ready to create ' + promises.length + ' records for ' + filename);
-    return Q.all(promises);
-}).then(function (data) {
-    console.log('Finished creating records');
-    var promises = [ ];
-    var newrecs = [ ];
-    for (var ii in data) {
-        if (data[ii].article) {
-            recs[data[ii].article.children[0].header.children[0].span.children[0]] = data[ii].id;
-        } else {
-            newrecs.push(data[ii]);
+    console.log('Created ' + recordcount + ' records, and ' + linkcount + ' links for ' + filename);
+    graphstore.getDB().commitSync();
+    process.exit();
+}).done(function () {
+}, function (error) {
+    console.log('Encountered problems with ' + filename + ': ' + error);
+    if (typeof err === 'object') {
+        if (err.message) {
+            console.log('\nMessage: ' + err.message);
+        }
+        if (err.stack) {
+            console.log('\nStacktrace:');
+            console.log('====================');
+            console.log(err.stack);
         }
     }
-    newrecs.forEach(function (rec) {
-        rec.creators.forEach(function (ref) {
-            if (recs[ref]) {
-                promises.push(addLink(rec.id, recs[ref], 1, 'Created', 'By'));
-            }
-        });
-        rec.subjects.forEach(function (ref) {
-            if (recs[ref]) {
-                promises.push(addLink(rec.id, recs[ref], 8, 'Topic Of', 'About'));
-            }
-        });
-    });
-    console.log('Ready to create ' + promises.length + ' links for ' + filename);
-    return Q.all(promises);
-}).then(function () {
-    console.log('Finished creating links');
-    console.log('Successfully loaded ' + filename);
-}).finally(function () {
-    console.log('Finished ' + filename);
     process.exit();
 });
 
-function addLink(source, target, field, in_label, out_label) {
-    var deferred = Q.defer();
-    datastore.query('INSERT INTO record_links (source_id, target_id, field_id, in_label, out_label, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())', [ source, target, field, in_label, out_label ], function (err, results) {
-        if (err) {
-            console.log(err);
-            deferred.reject(err);
-        } else {
-            deferred.resolve(results);
-        }
-    });
-    return deferred.promise;
+function handleLinks(rec) {
+    var count = 0;
+    var ref;
+    for (ref in rec.data.types) {
+        rec.link('recordtype', Record.findOne({ key: ref }));
+        count++;
+    }
+    for (ref in rec.data.creators) {
+        rec.link('author', Record.findOne({ key: ref }));
+        count++;
+    }
+    return count;
 }
-
-function addRecord(rec, recordtype, controlno, format) {
-    var deferred = Q.defer();
-    format = format || 'eric';
-    datastore.query('INSERT INTO records (data, recordtype_id, collection_id, controlno, format, created_at, updated_at, deleted) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), 0)', [ JSON.stringify(rec), recordtype, 1, controlno, format ], function (err, results) {
-        if (err) {
-            console.log(err);
-            deferred.reject(err);
-        } else {
-            rec.id = results.insertId;
-            deferred.resolve(rec);
-        }
-    });
-    return deferred.promise;
-}
-
