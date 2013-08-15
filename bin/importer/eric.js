@@ -4,16 +4,16 @@ var fs = require('fs'),
     models = require('../../models'),
     Record = models.Record,
     RecordType = models.RecordType,
+    inspect = require('eyes').inspector({maxLength: false});
     Q = require('q');
 
 graphstore.autocommit = false;
 var parser = new xml2js.Parser();
 var filename = process.argv[2]; // It would be great if we could do multiple files in parallel, but in practice the heap gets too big
-var recs = { };
 var recordtypes = { };
 recordtypes['person'] = RecordType.findOne({ key: 'Person' });
 recordtypes['institution'] = RecordType.findOne({ key: 'Institution' });
-if (!recordtypes['person']) {
+if (typeof recordtypes['person'] === 'undefined') {
     recordtypes['person'] = new RecordType({
         key: 'Person',
         data: '{"article":{"children":[{"header":{"children":["Person"]}},{"section":{"children":["Individual people."]}}]}}',
@@ -21,7 +21,7 @@ if (!recordtypes['person']) {
     });
     recordtypes['person'].save();
 }
-if (!recordtypes['institution']) {
+if (typeof recordtypes['institution'] === 'undefined') {
     recordtypes['institution'] = new RecordType({
         key: 'Institution',
         data: '{"article":{"children":[{"header":{"children":["Institution"]}},{"section":{"children":["Institutional entities."]}}]}}',
@@ -36,6 +36,7 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
     var record;
     var linkcount = 0;
     var recordcount = 0;
+    var childrec;
     console.log('Processing ' + result.records.record.length + ' records in ' + filename);
     for (var ii in result.records.record) {
         var jj;
@@ -49,8 +50,9 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             citation: record.metadata[0]['eric:citation'][0],
             description: record.metadata[0]['dc:description'][0],
             publisher: record.metadata[0]['dc:publisher'][0],
-            subjects: record.metadata[0]['dc:subject'],
-            types: record.metadata[0]['dc:type'],
+            types: [ ],
+            subjects: [ ],
+            creators: [ ]
         };
         for (jj in record.metadata[0]['dc:identifier']) {
             if (record.metadata[0]['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
@@ -59,50 +61,67 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
                 rec.accno = record.metadata[0]['dc:identifier'][jj]['_'];
             }
         }
-        rec.creators = [];
-        var creatorrecs = [ ]
         for (jj in record.metadata[0]['dc:creator']) {
             if (record.metadata[0]['dc:creator'][jj]['_']) {
                 rec.creators.push(record.metadata[0]['dc:creator'][jj]['_']);
-                if (!recs[record.metadata[0]['dc:creator'][jj]['_']]) {
+                if (typeof Record.findOne({ key: record.metadata[0]['dc:creator'][jj]['_'] }) === 'undefined') {
                     if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'personal author') {
-                        var childrec = new Record({
+                        childrec = new Record({
                             key: record.metadata[0]['dc:creator'][jj]['_'],
                             format: 'bnjson',
                             data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }
                         });
                         childrec.save();
                         childrec.link('recordtype', recordtypes['person']);
-                        recs[record.metadata[0]['dc:creator'][jj]['_']] = childrec;
+                        childrec = null;
                         recordcount++;
                     } else if (record.metadata[0]['dc:creator'][jj]['$'].scheme === 'institution') {
-                        var childrec = new Record({
+                        childrec = new Record({
                             key: record.metadata[0]['dc:creator'][jj]['_'],
                             format: 'bnjson',
                             data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ record.metadata[0]['dc:creator'][jj]['_'] ] } }, ] } }, ] } }
                         });
                         childrec.save();
                         childrec.link('recordtype', recordtypes['institution']);
-                        recs[record.metadata[0]['dc:creator'][jj]['_']] = childrec;
+                        childrec = null;
                         recordcount++;
                     }
                 }
             }
         }
         for (var type in record.metadata[0]['dc:type']) {
-            if (!recs[type]) {
-                var typerec = new RecordType({
+            type = record.metadata[0]['dc:type'][type];
+            if (typeof type === 'object' && type !== null) {
+                type = type['_'];
+                rec.types.push(type);
+            } else if (typeof type === 'string' && type.length > 0) {
+                rec.types.push(type);
+            } else {
+                continue;
+            }
+            if (typeof RecordType.findOne({ key: type }) === 'undefined') {
+                childrec = new RecordType({
                     key: type,
                     format: 'bnjson',
                     data: { "article":{ "children":[ { "header":{ "children":[ { "span":{ "children":[ type ] } }, ] } }, ] } }
                 });
-                typerec.save();
-                recs[type] = typerec;
+                childrec.save();
+                childrec = null;
                 recordcount++;
             }
         }
-        rec = new Record({ key: record.metadata[0]['dc:title'][0], format: 'eric', data: rec });
+        for (var subject in record.metadata[0]['dc:subject']) {
+            subject = record.metadata[0]['dc:subject'][subject];
+            if (typeof subject === 'object' && subject !== null) {
+                subject = subject['_'];
+                rec.subjects.push(subject);
+            } else if (typeof subject === 'string' && subject.length > 0) {
+                rec.subjects.push(subject);
+            }
+        }
+        rec = new Record({ key: rec.accno, format: 'eric', data: rec });
         rec.save();
+        recordcount++;
         linkcount += handleLinks(rec);
     }
     console.log('Created ' + recordcount + ' records, and ' + linkcount + ' links for ' + filename);
@@ -127,13 +146,26 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
 function handleLinks(rec) {
     var count = 0;
     var ref;
-    for (ref in rec.data.types) {
-        rec.link('recordtype', Record.findOne({ key: ref }));
-        count++;
+    if (rec.data.types.length > 0) {
+        for (ref in rec.data.types) {
+            ref = rec.data.types[ref];
+            rec.link('recordtype', RecordType.findOne({ key: ref }));
+            count++;
+        }
     }
-    for (ref in rec.data.creators) {
-        rec.link('author', Record.findOne({ key: ref }));
-        count++;
+    if (rec.data.creators.length > 0) {
+        for (ref in rec.data.creators) {
+            ref = rec.data.creators[ref];
+            rec.link('author', Record.findOne({ key: ref }));
+            count++;
+        }
+    }
+    if (rec.data.subjects.length > 0) {
+        for (ref in rec.data.subjects) {
+            ref = rec.data.subjects[ref];
+            rec.link('subject', Record.findOne({ key: ref }));
+            count++;
+        }
     }
     return count;
 }

@@ -32,6 +32,9 @@ function Record(data) {
     };
 
     this.link = function (type, target) {
+        if (typeof target === 'undefined' || target === null || target === '') {
+            return;
+        }
         var sv = g.v(this.id).iterator().nextSync();
         var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
         graphstore.getDB().addEdgeSync(null, sv, tv, type);
