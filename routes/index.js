@@ -40,6 +40,7 @@ exports.init = function(app) {
 
     /* Search */
     app.get('/search', search.view);
+    app.get('/map', search.map);
 
     /* Home */
     app.get('/', home);
