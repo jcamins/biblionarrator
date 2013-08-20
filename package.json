@@ -38,7 +38,10 @@
     "node-uuid": "~1.4.0",
     "uglify-js": "~2.3.6",
     "grunt": "~0.4.1",
-    "passport-browserid": "~0.1.4"
+    "passport-browserid": "~0.1.4",
+    "jison": "~0.4.10",
+    "ebnf-parser": "~0.1.8",
+    "lex-parser": "~0.1.4"
   },
   "devDependencies": {
     "chai": "1.7.x",
