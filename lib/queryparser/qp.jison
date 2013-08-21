@@ -1,18 +1,13 @@
 /* description: Parses Biblionarrator queries. */
 
-%{
-var curindex = 'keyword';
-%}
-
 /* lexical grammar */
 %lex
 %%
 
 \s+                         /* skip whitespace */
-"("                         return 'GS'; // Group Start
+"("                         return 'GS';
 ")"                         return 'GE'; // Group End
-(keyword|author|title)      return 'INDEX'
-":"                         return 'SEP'
+(keyword|author|title)\:    return 'INDEX'
 "!"                         return 'NOT'; // Not
 "||"                        return 'OR'; // Or
 "&&"                        return 'AND'; // And
@@ -46,21 +41,34 @@ query
         { $$ = [ 'NOT', $2 ]; }
     | query query
         { $$ = [ 'AND', $1, $2 ]; }
-    | indexterm
+    | node
         { $$ = $1; }
-    | GS query GE
-        { $$ = $2; }
+    | explicit_group_start query explicit_group_end
+        { inspect(yy.indexStack); $$ = $2; }
     ;
 
-indexterm
-    : INDEX SEP atomset
-        { curindex = $1; $$ = [ 'HAS', $1, $3 ]; }
-    | INDEX SEP phrase
-        { curindex = $1; $$ = [ 'HAS', $1, $3 ]; }
-    | atomset
-        { $$ = [ 'HAS', curindex, $1 ]; }
-    | phrase
-        { $$ = [ 'HAS', curindex, $1 ]; }
+explicit_group_start
+    : GS
+        { if (!yy.indexStack) yy.indexStack = [ /*curindex ||*/ 'keyword' ]; }
+        // These contortions make it possible to maintain a default index stack,
+        // but as it turns out, following the close of an explicit group the user
+        // is more likely to expect a return to the 'keyword' index than a return
+        // to the last-set index prior to the explicit group. I am leaving the
+        // code because it took me ages to figure it out, and I don't want to lose
+        // it. Perhaps at some point we will actually find a use for a stack like
+        // this.
+    ;
+
+explicit_group_end
+    : GE
+        { curindex = yy.indexStack.shift(); }
+    ;
+
+node
+    : INDEX object
+        { curindex = $1.slice(0,$1.length - 1); $$ = [ 'HAS', curindex, $2 ]; }
+    | object
+        { if (typeof curindex === 'undefined') curindex = 'keyword'; $$ = [ 'HAS', curindex, $1 ]; }
     ;
 
 phrase
@@ -68,11 +76,16 @@ phrase
         { $$ = [ 'PHRASE', $1.substring(1, $1.length - 1) ]; }
     ;
 
+object
+    : atomset
+    | phrase
+    ;
+
 atomset
     : atomset atom
         { $1.push($2); $$ = $1; }
     | atom
-        { $$ = [ $1 ]; }
+        { $$ = [ 'ATOM', $1 ]; }
     ;
 
 atom
