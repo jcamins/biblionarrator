@@ -49,7 +49,7 @@ query
 
 explicit_group_start
     : GS
-        { if (!yy.indexStack) yy.indexStack = [ /*curindex ||*/ 'keyword' ]; }
+        { if (!yy.indexStack) yy.indexStack = [ /*yy.curindex ||*/ 'keyword' ]; }
         // These contortions make it possible to maintain a default index stack,
         // but as it turns out, following the close of an explicit group the user
         // is more likely to expect a return to the 'keyword' index than a return
@@ -61,14 +61,14 @@ explicit_group_start
 
 explicit_group_end
     : GE
-        { curindex = yy.indexStack.shift(); }
+        { yy.curindex = yy.indexStack.shift(); }
     ;
 
 node
     : INDEX object
-        { curindex = $1.slice(0,$1.length - 1); $$ = [ 'HAS', curindex, $2 ]; }
+        { yy.curindex = $1.slice(0,$1.length - 1); $$ = [ 'HAS', yy.curindex, $2 ]; }
     | object
-        { if (typeof curindex === 'undefined') curindex = 'keyword'; $$ = [ 'HAS', curindex, $1 ]; }
+        { if (typeof yy.curindex === 'undefined') yy.curindex = 'keyword'; $$ = [ 'HAS', yy.curindex, $1 ]; }
     ;
 
 phrase
