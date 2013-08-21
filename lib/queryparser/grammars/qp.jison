@@ -44,7 +44,7 @@ query
     | node
         { $$ = $1; }
     | explicit_group_start query explicit_group_end
-        { inspect(yy.indexStack); $$ = $2; }
+        { $$ = $2; }
     ;
 
 explicit_group_start

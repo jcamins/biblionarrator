@@ -1,0 +1,21 @@
+
+module.exports = {
+    operators: {
+        'AND': '&&',
+        'OR': '\\|\\|',
+        'FS': '{{',
+        'FE': '}}',
+        'GS': '\\(',
+        'GE': '\\)',
+        'REQ': '\\+',
+        'DIS': '-',
+        'MOD': '#',
+        'NOT': '!'
+    },
+    indexes: [
+        'keyword',
+        'author',
+        'title',
+        'date'
+    ]
+};
