@@ -15,16 +15,17 @@ exports.view = function(req, res) {
     var offset = parseInt(req.query.offset, 10) || 0;
     var perpage = parseInt(req.query.perpage, 10) || 20;
 
-    req.query.facet = req.query.facet || [ ];
     if (typeof req.query.facet === 'string') {
         req.query.facet = [ req.query.facet ];
     }
-    req.query.facet.forEach(function (el) {
-        var split = el.split(/:(.*)?/);
-        var obj = { };
-        obj[split[0]] = split[1];
-        facets.push(obj);
-    });
+    if (req.query.facet) {
+        req.query.facet.forEach(function (el) {
+            var split = el.split(/:(.*)?/);
+            var obj = { };
+            obj[split[0]] = split[1];
+            facets.push(obj);
+        });
+    }
     if (req.query.format === 'map') {
         var records = new g.ArrayList();
         var recordtypes = new g.ArrayList();
