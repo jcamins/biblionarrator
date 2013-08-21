@@ -1,10 +1,10 @@
 <!--<ul class="nav nav-pills nav-stacked facet-list">
-    <li class="active"><a href="" data-toggle="tab">All ({{facet.count}})</a></li>
-    {{#each facet.mainfacet.options}}
+    <li class="active"><a href="" data-toggle="tab">All ({{data.count}})</a></li>
+    {{#each data.mainfacet.options}}
         <li><a href="#" data-href="&facet={{this.type}}:{{this.link}}" data-toggle="tab">{{this.label}} ({{this.count}})</a></li>
     {{/each}}
 </ul>-->
-{{#each facet.facets}}
+{{#each data.facets}}
     <div class="facet-group">
     <span class="facet-label">{{label}}</span>
     {{#if more}}

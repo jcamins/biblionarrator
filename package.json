@@ -41,7 +41,8 @@
     "passport-browserid": "~0.1.4",
     "jison": "~0.4.10",
     "ebnf-parser": "~0.1.8",
-    "lex-parser": "~0.1.4"
+    "lex-parser": "~0.1.4",
+    "redis": "~0.8.4"
   },
   "devDependencies": {
     "chai": "1.7.x",

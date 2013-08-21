@@ -1,5 +1,5 @@
 var models,
-    offload = require('../lib/graphoffloader');
+    searchengine = require('../lib/searchengine');
 
 module.exports = RecordList;
 
@@ -20,23 +20,6 @@ function RecordList(data) {
 
     return this;
 }
-
-RecordList.search = function (query, facets, offset, perpage, recordcb, facetcb) {
-    offload('search', { query: query, facets: facets, offset: offset, perpage: perpage }, function (results) {
-        var records = results.search.records;
-        var facetpub = offload('facet', { mainfacet: 'recordtype', records: results.search.list, count: results.search.count }, facetcb);
-        for (var ii in records) {
-            records[ii] = models.Record.fromJSON(records[ii]);
-        }
-        var reclist = new RecordList({ records: records,
-            facetpub: facetpub.id,
-            count: results.search.count,
-            offset: offset,
-            perpage: perpage
-        });
-        recordcb(reclist);
-    });
-};
 
 RecordList.init = function(ref) {
     models = ref;

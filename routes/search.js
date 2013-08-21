@@ -3,9 +3,11 @@ var sharedview = require('../lib/sharedview'),
     RecordList = models.RecordList,
     paginator = require('../lib/paginator'),
     socketserver = require('../lib/socketserver'),
-    Q = require('q');
+    Q = require('q'),
+    searchengine = require('../lib/searchengine');
 var graphstore = require('../lib/graphstore'),
     g = graphstore();
+    inspect = require('eyes').inspector({maxLength: false});
 
 exports.view = function(req, res) {
     var query = req.query.q || '';
@@ -64,7 +66,7 @@ exports.view = function(req, res) {
             data.summary = 'All records';
         }
         data.query = query;
-        RecordList.search(query, facets, offset, perpage, function (list) {
+        searchengine.search({ query: query, facets: facets, offset: offset, perpage: perpage }, function (list) {
             var layout = 'list/interface';
             if (typeof req.query.layout !== 'undefined' && req.query.layout === 'false') {
                 data.layout = false;
@@ -85,9 +87,18 @@ exports.view = function(req, res) {
                     res.send(html);
                 }
             });
+            // Preseed next page
+            searchengine.search({ query: query, facets: facets, offset: offset + perpage, perpage: perpage });
         }, function (data) {
-            data.url = req.url;
-            socketserver.registerPublication(data);
+            if (data !== null) {
+                data.url = req.url;
+                for (var ii = 0; ii < data.facets.length; ii++) {
+                    if (data.facets[ii].label === 'Record Type') {
+                        data.mainfacet = data.facets[ii];
+                    }
+                }
+                socketserver.announcePublication(encodeURIComponent('facets^' + query), data);
+            }
         });
     }, function (err) { console.log(err); });
 };
