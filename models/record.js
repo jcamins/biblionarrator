@@ -3,7 +3,6 @@ var models,
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
     formatters = require('../lib/formats'),
-    models,
     offload = require('../lib/graphoffloader');
 
 function Record(data) {

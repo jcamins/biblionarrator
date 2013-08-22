@@ -1,16 +1,69 @@
+"use strict";
 var sharedview = require('../lib/sharedview'),
     models = require('../models'),
     RecordList = models.RecordList,
+    Query = models.Query,
     paginator = require('../lib/paginator'),
     socketserver = require('../lib/socketserver'),
     Q = require('q'),
-    searchengine = require('../lib/searchengine'),
-    queryparser = require('../lib/queryparser');
+    searchengine = require('../lib/searchengine');
 var graphstore = require('../lib/graphstore'),
-    g = graphstore();
+    g = graphstore(),
     inspect = require('eyes').inspector({maxLength: false});
 
+function prepareQuery(req) {
+    var querystring = req.query.q || '';
+    if (typeof req.query.facet === 'string') {
+        querystring = querystring + ' ' + req.query.facet;
+    } else if (typeof req.query.facet !== 'undefined') {
+        querystring = querystring + ' ' + req.query.facet.join(' ');
+    }
+    return querystring;
+}
 exports.view = function(req, res) {
+    var query = new Query(prepareQuery(req), 'qp');
+    var offset = parseInt(req.query.offset, 10) || 0;
+    var perpage = parseInt(req.query.perpage, 10) || 20;
+
+    Q.all([sharedview()]).then(function(data) {
+        data.url = req.url.replace(/&?layout=[^&]*/, '');
+        data.view = 'results';
+        if (query.canonical) {
+            data.summary = 'Search: ' + query.canonical;
+        } else {
+            data.summary = 'All records';
+        }
+        data.query = query.canonical;
+        searchengine.search({ query: query, offset: offset, perpage: perpage }, function (list) {
+            var layout = 'list/interface';
+            if (req.query.layout === 'false') {
+                data.layout = false;
+                layout = 'partials/results';
+            }
+            for (var idx in list) {
+                data[idx] = list[idx];
+            }
+
+            if (data.count > data.records.length) {
+                data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
+            }
+            data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
+            res.render(layout, data, function(err, html) {
+                if (err) {
+                    res.send(404, err);
+                } else {
+                    res.send(html);
+                }
+            });
+            // Preseed next page
+            searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+        }, function (data) {
+            socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
+        });
+    }, function (err) { res.send(404, err); });
+};
+
+exports.searchmap = function (req, res) {
     var query = req.query.q || '';
     var facets = [ ];
     var offset = parseInt(req.query.offset, 10) || 0;
@@ -21,7 +74,8 @@ exports.view = function(req, res) {
     } else if (typeof req.query.facet !== 'undefined') {
         query = query + ' ' + req.query.facet.join(' ');
     }
-    var queryast = queryparser.parse(query);
+    var queryast = queryparser.qp.parse(query);
+
     if (req.query.format === 'map') {
         var records = new g.ArrayList();
         var recordtypes = new g.ArrayList();
@@ -54,50 +108,6 @@ exports.view = function(req, res) {
         return;
     }
 
-    Q.all([sharedview()]).then(function(data) {
-        data.url = req.url.replace(/&?layout=[^&]*/, '');
-        data.view = 'results';
-        if (query) {
-            data.summary = 'Search: ' + query;
-        } else {
-            data.summary = 'All records';
-        }
-        data.query = query;
-        searchengine.search({ query: queryast, offset: offset, perpage: perpage }, function (list) {
-            var layout = 'list/interface';
-            if (typeof req.query.layout !== 'undefined' && req.query.layout === 'false') {
-                data.layout = false;
-                layout = 'partials/results';
-            }
-            for (var idx in list) {
-                data[idx] = list[idx];
-            }
-
-            if (data.count > data.records.length) {
-                data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
-            }
-            data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-            res.render(layout, data, function(err, html) {
-                if (err) {
-                    res.send(404, err);
-                } else {
-                    res.send(html);
-                }
-            });
-            // Preseed next page
-            searchengine.search({ query: queryast, offset: offset + perpage, perpage: perpage });
-        }, function (data) {
-            if (data !== null) {
-                data.url = req.url;
-                for (var ii = 0; ii < data.facets.length; ii++) {
-                    if (data.facets[ii].label === 'Record Type') {
-                        data.mainfacet = data.facets[ii];
-                    }
-                }
-                socketserver.announcePublication(encodeURIComponent('facets^' + queryparser.canonicalize(queryast)), data);
-            }
-        });
-    }, function (err) { console.log(err); });
 };
 
 exports.map = function (req, res) {

@@ -23,8 +23,9 @@ var opts = {
 var expect = require('chai').expect,
     graphstore = require('../lib/graphstore'),
     g = graphstore(opts),
-    searchengine = require('../lib/searchengine'),
-    queryparser = require('../lib/queryparser');
+    models = require('../models'),
+    Query = models.Query,
+    searchengine = require('../lib/searchengine');
 var inspect = require('eyes').inspector({maxLength: false});
 
 describe('Search engine', function () {
@@ -32,19 +33,19 @@ describe('Search engine', function () {
         require('../bin/gendata');
     });
     it('finds record using fielded search', function (done) {
-        searchengine.search({ query: queryparser.parse('model:recordtype'), offset: 0, perpage: 20 }, function (list) {
+        searchengine.search({ query: new Query('model:recordtype', 'qp'), offset: 0, perpage: 20 }, function (list) {
             expect(list.records.length).to.equal(4);
             done();
         });
     });
     it('finds record using text search', function (done) {
-        searchengine.search({ query: queryparser.parse('France'), offset: 0, perpage: 20 }, function (list) {
+        searchengine.search({ query: new Query('France', 'qp'), offset: 0, perpage: 20 }, function (list) {
             expect(list.records.length).to.equal(2);
             done();
         });
     });
     it('handles facets in a text search', function (done) {
-        searchengine.search({ query: queryparser.parse('France recordtype[place]'), offset: 0, perpage: 20 }, function (list) {
+        searchengine.search({ query: new Query('France recordtype[place]', 'qp'), offset: 0, perpage: 20 }, function (list) {
             expect(list.records.length).to.equal(1);
             done();
         });
