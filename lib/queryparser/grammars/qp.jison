@@ -15,7 +15,7 @@
 "&&"                        return 'AND'; // And
 ["][^"]*["]                 return 'PHR'; // Phrase
 [^\s()!:|&]+                return 'WORD'
-<<EOF>>                     return 'EOF';
+$                           return 'EOF';
 
 
 /lex
@@ -32,6 +32,8 @@ plan
     : query EOF
         {  /*typeof console !== 'undefined' ? console.log($1) : print($1);*/
             return $1; }
+    | EOF
+        { return [ 'NULL' ] }
     ;       
 
 query

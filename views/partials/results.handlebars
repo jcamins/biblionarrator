@@ -82,7 +82,11 @@
                     {{#if current}}
                         <li class="active"><a href="#">{{label}}</a></li>
                     {{else}}
-                        <li><a data-bind="ajax-replace" data-target=".results" href="{{url}}">{{label}}</a></li>
+                        {{#if ellipsis}}
+                            <li class="disabled ellipsis"><a href="#">...</a></li>
+                        {{else}}
+                            <li><a data-bind="ajax-replace" data-target=".results" href="{{url}}">{{label}}</a></li>
+                        {{/if}}
                     {{/if}}
                 {{/each}}
                 {{#if paginator.next}}

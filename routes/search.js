@@ -4,7 +4,8 @@ var sharedview = require('../lib/sharedview'),
     paginator = require('../lib/paginator'),
     socketserver = require('../lib/socketserver'),
     Q = require('q'),
-    searchengine = require('../lib/searchengine');
+    searchengine = require('../lib/searchengine'),
+    queryparser = require('../lib/queryparser');
 var graphstore = require('../lib/graphstore'),
     g = graphstore();
     inspect = require('eyes').inspector({maxLength: false});
@@ -16,16 +17,11 @@ exports.view = function(req, res) {
     var perpage = parseInt(req.query.perpage, 10) || 20;
 
     if (typeof req.query.facet === 'string') {
-        req.query.facet = [ req.query.facet ];
+        query = query + ' ' + req.query.facet;
+    } else if (typeof req.query.facet !== 'undefined') {
+        query = query + ' ' + req.query.facet.join(' ');
     }
-    if (req.query.facet) {
-        req.query.facet.forEach(function (el) {
-            var split = el.split(/:(.*)?/);
-            var obj = { };
-            obj[split[0]] = split[1];
-            facets.push(obj);
-        });
-    }
+    var queryast = queryparser.parse(query);
     if (req.query.format === 'map') {
         var records = new g.ArrayList();
         var recordtypes = new g.ArrayList();
@@ -67,7 +63,7 @@ exports.view = function(req, res) {
             data.summary = 'All records';
         }
         data.query = query;
-        searchengine.search({ query: query, facets: facets, offset: offset, perpage: perpage }, function (list) {
+        searchengine.search({ query: queryast, offset: offset, perpage: perpage }, function (list) {
             var layout = 'list/interface';
             if (typeof req.query.layout !== 'undefined' && req.query.layout === 'false') {
                 data.layout = false;
@@ -89,7 +85,7 @@ exports.view = function(req, res) {
                 }
             });
             // Preseed next page
-            searchengine.search({ query: query, facets: facets, offset: offset + perpage, perpage: perpage });
+            searchengine.search({ query: queryast, offset: offset + perpage, perpage: perpage });
         }, function (data) {
             if (data !== null) {
                 data.url = req.url;
@@ -98,7 +94,7 @@ exports.view = function(req, res) {
                         data.mainfacet = data.facets[ii];
                     }
                 }
-                socketserver.announcePublication(encodeURIComponent('facets^' + JSON.stringify(query)), data);
+                socketserver.announcePublication(encodeURIComponent('facets^' + queryparser.canonicalize(queryast)), data);
             }
         });
     }, function (err) { console.log(err); });
