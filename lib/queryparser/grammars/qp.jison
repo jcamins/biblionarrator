@@ -7,6 +7,8 @@
 \s+                         /* skip whitespace */
 "("                         return 'GS';
 ")"                         return 'GE'; // Group End
+(keyword|author|title)\[    return 'FACET_START';
+\]                          return 'FACET_END';
 (keyword|author|title)\:    return 'INDEX'
 "!"                         return 'NOT'; // Not
 "||"                        return 'OR'; // Or
@@ -65,10 +67,20 @@ explicit_group_end
     ;
 
 node
+    : term
+    | facet
+    ;
+
+term
     : INDEX object
         { yy.curindex = $1.slice(0,$1.length - 1); $$ = [ 'HAS', yy.curindex, $2 ]; }
     | object
         { if (typeof yy.curindex === 'undefined') yy.curindex = 'keyword'; $$ = [ 'HAS', yy.curindex, $1 ]; }
+    ;
+
+facet
+    : FACET_START atomset FACET_END
+        { $$ = [ 'FACET', $1.slice(0,$1.length - 1), $2 ] }
     ;
 
 phrase

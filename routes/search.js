@@ -98,7 +98,7 @@ exports.view = function(req, res) {
                         data.mainfacet = data.facets[ii];
                     }
                 }
-                socketserver.announcePublication(encodeURIComponent('facets^' + query), data);
+                socketserver.announcePublication(encodeURIComponent('facets^' + JSON.stringify(query)), data);
             }
         });
     }, function (err) { console.log(err); });

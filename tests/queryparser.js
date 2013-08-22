@@ -3,7 +3,8 @@ var canonicalqueries = {
     'author:smith': 'author:smith',
     'author:smith title:book': '(author:smith && title:book)',
     'title: book author:smith': '(author:smith && title:book)',
-    'whatever title:book': '(keyword:whatever && title:book)'
+    'whatever title:book': '(keyword:whatever && title:book)',
+    'author[smith, james]': 'author[smith, james]'
 };
 
 var expect = require('chai').expect,
