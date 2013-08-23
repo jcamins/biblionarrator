@@ -4,6 +4,7 @@ var sharedview = require('../lib/sharedview'),
     Field = models.Field,
     RecordType = models.RecordType,
     Query = models.Query,
+    paginator = require('../lib/paginator'),
     searchengine = require('../lib/searchengine'),
     socketserver = require('../lib/socketserver'),
     Q = require('q');
