@@ -36,7 +36,7 @@ exports.view = function(req, res) {
         data.query = query.canonical;
         searchengine.search({ query: query, offset: offset, perpage: perpage }, function (list) {
             var layout = 'list/interface';
-            if (typeof req.query.layout !== 'undefined' && req.query.layout === 'false') {
+            if (typeof req.query.layout !== 'undefined' && req.query.layout === 'none') {
                 data.layout = false;
                 layout = 'partials/results';
             }

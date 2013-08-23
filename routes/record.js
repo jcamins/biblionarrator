@@ -31,36 +31,6 @@ exports.linkadd = function(req, res) {
 
 exports.linklist = function(req, res) {};
 
-exports.links = function(req, res) {
-    var query = new Query('{{linkbrowse:' + req.params.record_id + '}}', 'qp');
-    var record = Record.findOne({id: req.params.record_id}) || new Record();
-    var offset = parseInt(req.query.offset, 10) || 0;
-    var perpage = parseInt(req.query.perpage, 10) || 20;
-    searchengine.search({ query: query, offset: offset, perpage: perpage }, function (data) {
-        data.layout = false;
-        data.url = req.url + (req.url.indexOf('?') > -1 ? '' : '?');
-        data.summary = 'Links for ' + record.key;
-        if (data.count > data.records.length) {
-            data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
-        }
-        //console.log(data);
-        var accept = req.accepts([ 'html', 'json' ]);
-        if (accept === 'html') {
-            res.render('partials/results', data, function(err, html) {
-                if (err) {
-                    res.send(404, err);
-                } else {
-                    res.send(html);
-                }
-            });
-        } else {
-            res.json(data);
-        }
-    }, function (message) {
-        socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), message);
-    });
-};
-
 exports.view = function(req, res) {
     var record = Record.findOne({id: req.params.record_id}) || new Record();
     var accept = req.accepts([ 'json', 'html' ]);

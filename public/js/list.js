@@ -105,7 +105,7 @@ function initializeList() {
         }
         $.ajax({
             url: url,
-            data: { layout: false },
+            data: { layout: 'none' },
             success: function (data) {
                 var node = document.createElement('div');
                 node.className = 'pane';
