@@ -1,3 +1,4 @@
+"use strict";
 exports.Field = require('./field');
 exports.Link = require('./link');
 exports.Query = require('./query');

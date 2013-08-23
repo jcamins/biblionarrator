@@ -3,7 +3,11 @@ var sharedview = require('../lib/sharedview'),
     Record = models.Record,
     Field = models.Field,
     RecordType = models.RecordType,
+    Query = models.Query,
+    searchengine = require('../lib/searchengine'),
+    socketserver = require('../lib/socketserver'),
     Q = require('q');
+var inspect = require('eyes').inspector({maxLength: false});
 
 exports.linkselect = function(req, res) {
     res.render('link-select', {
@@ -27,14 +31,17 @@ exports.linkadd = function(req, res) {
 exports.linklist = function(req, res) {};
 
 exports.links = function(req, res) {
+    var query = new Query('{{linkbrowse:' + req.params.record_id + '}}', 'qp');
     var record = Record.findOne({id: req.params.record_id}) || new Record();
     var offset = parseInt(req.query.offset, 10) || 0;
     var perpage = parseInt(req.query.perpage, 10) || 20;
-    record.links(offset, perpage, function (data) {
+    searchengine.search({ query: query, offset: offset, perpage: perpage }, function (data) {
         data.layout = false;
         data.url = req.url + (req.url.indexOf('?') > -1 ? '' : '?');
-        data.summary = 'Links for record ' + req.params.record_id;
-        data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
+        data.summary = 'Links for ' + record.key;
+        if (data.count > data.records.length) {
+            data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
+        }
         //console.log(data);
         var accept = req.accepts([ 'html', 'json' ]);
         if (accept === 'html') {
@@ -49,8 +56,7 @@ exports.links = function(req, res) {
             res.json(data);
         }
     }, function (message) {
-        message.url = req.url + (req.url.indexOf('?') > -1 ? '' : '?');
-        socketserver.registerPublication(message);
+        socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), message);
     });
 };
 

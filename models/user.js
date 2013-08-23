@@ -1,3 +1,4 @@
+"use strict";
 var models,
     GraphModel = require('../lib/graphmodel');
 

@@ -1,5 +1,5 @@
-var models,
-    searchengine = require('../lib/searchengine');
+"use strict";
+var models;
 
 module.exports = RecordList;
 

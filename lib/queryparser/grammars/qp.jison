@@ -9,12 +9,14 @@
 ")"                         return 'GE'; // Group End
 (keyword|author|title)\[    return 'FACET_START';
 \]                          return 'FACET_END';
+"{{"                        return 'FLOAT_START';
+"}}"                        return 'FLOAT_END';
 (keyword|author|title)\:    return 'INDEX'
 "!"                         return 'NOT'; // Not
 "||"                        return 'OR'; // Or
 "&&"                        return 'AND'; // And
 ["][^"]*["]                 return 'PHR'; // Phrase
-[^\s()!:|&]+                return 'WORD'
+[^{}\s()!:|&]+                return 'WORD'
 $                           return 'EOF';
 
 
@@ -31,7 +33,13 @@ $                           return 'EOF';
 plan
     : query EOF
         {  /*typeof console !== 'undefined' ? console.log($1) : print($1);*/
-            return $1; }
+            if (typeof yy.float !== 'undefined') {
+                yy.float.push($1);
+                return yy.float;
+            } else {
+                return $1;
+            }
+        }
     | EOF
         { return [ 'NULL' ] }
     ;       
@@ -49,6 +57,8 @@ query
         { $$ = $1; }
     | explicit_group_start query explicit_group_end
         { $$ = $2; }
+    | FLOAT_START query FLOAT_END
+        { yy.float = [ 'FLOAT', $2 ]; yy.curindex = 'keyword'; $$ = [] }
     ;
 
 explicit_group_start
