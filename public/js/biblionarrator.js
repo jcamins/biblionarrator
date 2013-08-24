@@ -363,6 +363,10 @@ function openSocket() {
 
     sockjs.onopen = registerSubscriptions;
     sockjs.onmessage = handleMessage;
+    sockjs.onerror = function (err) {
+        alert(err);
+        sockjs.close();
+    };
 }
 
 function registerSubscriptions() {

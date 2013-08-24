@@ -11,12 +11,14 @@
 \]                          return 'FACET_END';
 "{{"                        return 'FLOAT_START';
 "}}"                        return 'FLOAT_END';
+(range)\<                   return 'FILTER_START';
+">"                         return 'FILTER_END';
 (keyword|author|title)\:    return 'INDEX'
 "!"                         return 'NOT'; // Not
 "||"                        return 'OR'; // Or
 "&&"                        return 'AND'; // And
 ["][^"]*["]                 return 'PHR'; // Phrase
-[^{}\s()!:|&]+                return 'WORD'
+[^<>{}\s()!:|&]+            return 'WORD'
 $                           return 'EOF';
 
 
@@ -81,6 +83,7 @@ explicit_group_end
 node
     : term
     | facet
+    | filter
     ;
 
 term
@@ -93,6 +96,11 @@ term
 facet
     : FACET_START atomset FACET_END
         { $$ = [ 'FACET', $1.slice(0,$1.length - 1), $2 ] }
+    ;
+
+filter
+    : FILTER_START atomset FILTER_END
+        { $$ = [ 'FILTER', $1.slice(0,$1.length - 1), $2 ] }
     ;
 
 phrase

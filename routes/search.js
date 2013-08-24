@@ -6,7 +6,8 @@ var sharedview = require('../lib/sharedview'),
     paginator = require('../lib/paginator'),
     socketserver = require('../lib/socketserver'),
     Q = require('q'),
-    searchengine = require('../lib/searchengine');
+    searchengine = require('../lib/searchengine'),
+    extend = require('extend');
 var graphstore = require('../lib/graphstore'),
     g = graphstore(),
     inspect = require('eyes').inspector({maxLength: false});
@@ -20,6 +21,7 @@ function prepareQuery(req) {
     }
     return querystring;
 }
+
 exports.view = function(req, res) {
     var query = new Query(prepareQuery(req), 'qp');
     var offset = parseInt(req.query.offset, 10) || 0;
@@ -40,10 +42,7 @@ exports.view = function(req, res) {
                 data.layout = false;
                 layout = 'partials/results';
             }
-            for (var idx in list) {
-                data[idx] = list[idx];
-            }
-
+            extend(data, list);
             if (data.count > data.records.length) {
                 data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
             }
