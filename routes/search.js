@@ -30,11 +30,6 @@ exports.view = function(req, res) {
     Q.all([sharedview()]).then(function(data) {
         data.url = req.url.replace(/&?layout=[^&]*/, '');
         data.view = 'results';
-        if (query.canonical) {
-            data.summary = 'Search: ' + query.canonical;
-        } else {
-            data.summary = 'All records';
-        }
         data.query = query;
         searchengine.search({ query: query, offset: offset, perpage: perpage }, function (list) {
             var layout = 'list/interface';
