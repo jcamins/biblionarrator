@@ -1,6 +1,7 @@
 var assets = require('./assets'),
     auth = require('./auth'),
     doc = require('./doc'),
+    fields = require('./fields'),
     record = require('./record'),
     media = require('./media'),
     search = require('./search');
@@ -24,6 +25,9 @@ exports.init = function(app) {
 
     /* Docs */
     app.get('/doc/:filename', doc.get);
+
+    /* Fields */
+    app.post('/fields/:schema/:field', fields.save);
 
     /* Record */
     app.get('/record/:record_id/link/select', record.linkselect);
