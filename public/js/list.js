@@ -29,7 +29,7 @@ function initializeList() {
     });
     $('body').on('click', '.explore-links', null, function() {
         var row = $(this).parents('tr');
-        window.bnpanes.load('/record/' + $(row).attr('data-id') + '/links');
+        window.bnpanes.load('/search?q=' + encodeURIComponent('{{linkbrowse:' + $(row).attr('data-id') + '}}'));
     });
 
     $('body').on('click', '.collapsed', null, function () {

@@ -26,7 +26,6 @@ exports.init = function(app) {
     app.get('/doc/:filename', doc.get);
 
     /* Record */
-    app.get('/record/:record_id/links', record.links);
     app.get('/record/:record_id/link/select', record.linkselect);
     app.get('/record/:record_id/link/:link_type/:target_id', record.linkadd);
     app.get('/record/:record_id', record.view);

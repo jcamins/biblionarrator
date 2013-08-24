@@ -1,15 +1,15 @@
 "use strict";
 var models,
-    queryparser = require('../lib/queryparser');
+    queryparser = require('../lib/queryparser'),
+    extend = require('extend');
 
 function Query(string, syntax) {
     var self = this;
 
+    self.ast = queryparser[syntax].parse(string);
     self.original = string;
     self.syntax = syntax;
-    self.ast = queryparser[syntax].parse(string);
-    self.canonical = queryparser.canonicalize(self.ast);
-
+    extend(self, queryparser.decompose(self.ast));
     return self;
 };
 
