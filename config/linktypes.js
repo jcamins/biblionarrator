@@ -2,7 +2,7 @@ module.exports = {
     author: {
         outlabel: 'By',
         inlabel: 'Wrote',
-        facet: 'Author',
+        facetlabel: 'Author',
     },
     subject: {
         outlabel: 'About',

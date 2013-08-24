@@ -25,6 +25,16 @@
     </div>
 </div>
 {{/if}}
+{{#if query.facets}}
+<div class="row-fluid">
+    <div class="span10 offset2">
+        <span class="sort-label">Facet</span> &gt;
+        {{#each query.facets}}
+            <span class="selected-facet">{{label}}: {{value}} <sub><a title="Remove {{label}} facet" class="remove-facet">x</a></sub></span> &gt;
+        {{/each}}
+    </div>
+</div>
+{{/if}}
 <div class="row-fluid">
     <div class="span10 offset2">
         <div class="header-shown resultcount">Showing {{records.length}} of {{count}} records.</div>

@@ -33,7 +33,7 @@ exports.view = function(req, res) {
         } else {
             data.summary = 'All records';
         }
-        data.query = query.canonical;
+        data.query = query;
         searchengine.search({ query: query, offset: offset, perpage: perpage }, function (list) {
             var layout = 'list/interface';
             if (typeof req.query.layout !== 'undefined' && req.query.layout === 'none') {
