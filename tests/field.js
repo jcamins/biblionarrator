@@ -39,5 +39,26 @@ describe('Field model', function () {
             done();
         });
     });
+    it('loads multiple fields successfully', function (done) {
+        field = new Field({ schema: 'testschema', field: 'testfield', css: 'font-weight: bold;' });
+        field.save();
+        field = new Field({ schema: 'testschema', field: 'testfield2', css: 'font-style: italic;' });
+        field.save();
+        Field.all(function (err, results) {
+            expect(err).to.equal(null);
+            expect(results.length).to.equal(2);
+            for (var idx in results) {
+                results[idx].del();
+            }
+            done();
+        });
+    });
+    it('deletes all records from loop successfully', function (done) {
+        Field.all(function (err, results) {
+            expect(err).to.equal(null);
+            expect(results).to.deep.equal([]);
+            done();
+        });
+    });
 });
 
