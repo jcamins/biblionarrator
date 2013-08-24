@@ -23,6 +23,10 @@ function initializeList() {
     $('#perpage').change(function () {
         window.location.href = updateQueryStringParameter(document.URL, 'perpage', $(this).find(':selected').val());
     });
+    $('.remove-facet').click(function(ev) {
+        window.location.href = document.URL.replace($(this).attr('data-facet'), '');
+        ev.preventDefault();
+    });
     $('.add-bookmark').click(function() {
         addBookmark($(this).parents('tr').attr('data-id'));
         return false;
@@ -55,7 +59,6 @@ function initializeList() {
     $('body').on('click', '[data-target="pane"]', null, function (ev) {
         window.bnpanes.load($(this).attr('href'), $(this).closest('.pane').attr('data-pane'));
         ev.preventDefault();
-        console.log('target');
     });
 
     /*$('body').on('click', '.facet-list a', null, function () {

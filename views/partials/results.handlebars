@@ -3,6 +3,16 @@
 <h4 class="summary">
 {{summary}}
 </h4>
+{{#if query.facets}}
+<div class="row-fluid">
+    <div class="span10 facets">
+        <span class="facet-label">Limits</span>
+            {{#each query.facets}}
+                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="Remove {{label}} facet" class="remove-facet" data-facet="{{type}}[{{value}}]" href="#">x</a></sub></span>
+            {{/each}}
+        </span>
+    </div>
+{{/if}}
 {{#if sortings}}
 <div class="row-fluid">
     <div class="span10 offset2">
@@ -22,16 +32,6 @@
                 </span>
             {{/if}}
         {{/with}}
-    </div>
-</div>
-{{/if}}
-{{#if query.facets}}
-<div class="row-fluid">
-    <div class="span10 offset2">
-        <span class="sort-label">Facet</span> &gt;
-        {{#each query.facets}}
-            <span class="selected-facet">{{label}}: {{value}} <sub><a title="Remove {{label}} facet" class="remove-facet">x</a></sub></span> &gt;
-        {{/each}}
     </div>
 </div>
 {{/if}}

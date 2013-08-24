@@ -1,4 +1,5 @@
 var Q = require('q'),
+    extend = require('extend'),
     models,
     datastore = require('../lib/datastore');
 
@@ -6,33 +7,33 @@ module.exports = Field;
 
 function Field (data) {
     var createPromise = Q.defer();
-    var me = this;
+    var self = this;
+
+    self.save = function () {
+        datastore.set('field', self.schema + '_' + self.field, self);
+    };
 
     if (typeof data === 'object') {
-        for (var idx in data) {
-            me[idx] = data[idx];
-        }
-        createPromise.resolve(me);
+        extend(self, data);
+        createPromise.resolve(self);
     } else if (typeof data === 'string') {
-        datastore.query('SELECT fields.* FROM fields WHERE fields.id = ?', [ data ], function (err, results, fields) {
-            for (var idx in fields) {
-                me[fields[idx].name] = results[0][fields[idx].name];
-            }
+        datastore.get('field', data, function (err, results) {
             if (err) {
                 createPromise.reject(err);
             } else {
-                createPromise.resolve(me);
+                extend(self, results);
+                createPromise.resolve(self);
             }
         });
     } else {
-        createPromise.resolve(me);
+        createPromise.resolve(self);
     }
     return createPromise.promise;
 }
 
 Field.all = function () {
     var prom = Q.defer();
-    datastore.query('SELECT fields.* FROM fields', [ ], function (err, results) {
+    datastore.get('field', '*', function (err, results) {
         if (err) {
             prom.reject(err);
         } else {
