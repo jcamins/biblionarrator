@@ -2,9 +2,8 @@ var models = require('../models'),
     Field = models.Field;
 
 exports.fieldscss = function(req, res) {
-    var fields = Field.all();
     var data = { };
-    fields.then(function (fields) {
+    Field.all(function (err, fields) {
         data.fields = fields;
         data.layout = false;
         res.render('fields-css', data, function(err, css) {

@@ -7,6 +7,7 @@ var models,
     offload = require('../lib/graphoffloader');
 
 function Record(data) {
+    this.model = 'record';
     this.snippet = function() {
         if (typeof this.data === 'string') {
             this.data = JSON.parse(this.data);
@@ -61,8 +62,9 @@ function Record(data) {
 
 Record.model = 'record';
 
-module.exports = GraphModel(Record);
+module.exports = Record;
 
+GraphModel.extend(Record);
 
 Record.init = function(ref) {
     models = ref;
