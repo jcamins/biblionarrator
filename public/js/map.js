@@ -40,14 +40,14 @@
                 .distance(30)
                 .size([width, height])
                 .nodes(data.records)
-                .links(data.links)
+                .links(data.edges)
                 .start();
         
             var drag = force.drag()
                 .on("dragstart", dragstart);
         
             var link = svg.selectAll(".map-link")
-                .data(data.links)
+                .data(data.edges)
                 .enter().append("line")
                 .attr("class", "link")
                 .style("stroke", function (d) { return edgecolors(d._label); })
@@ -111,9 +111,9 @@
         
             function neighboring(a, b) {
                 if (a && b) {
-                    for (var ii = 0; ii < data.links.length; ii++) {
-                        if ((data.links[ii].source === a && data.links[ii].target === b)
-                                || (data.links[ii].source === b && data.links[ii].target === a)) {
+                    for (var ii = 0; ii < data.edges.length; ii++) {
+                        if ((data.edges[ii].source === a && data.edges[ii].target === b)
+                                || (data.edges[ii].source === b && data.edges[ii].target === a)) {
                             return true;
                         }
                     }

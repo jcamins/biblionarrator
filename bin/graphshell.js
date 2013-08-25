@@ -37,6 +37,7 @@ function outFunc(it){
 r.context.g = g;
 r.context.graphstore = graphstore;
 r.context.inspect = inspect;
+r.context.Text = g.java.import('com.thinkaurelius.titan.core.attribute.Text');
 
 r.on('exit', function () {
   console.log('Good-bye from Gremlin!');
