@@ -102,12 +102,6 @@ describe('Record model', function () {
     it('does not create extra records on editing', function () {
         expect(g.V().toArray().length).to.equal(2);
     });
-    it('finds links correctly', function (done) {
-        rec.links(0, 20, function (results) {
-            expect(results.records.length).to.equal(1);
-            done();
-        });
-    });
     after(function () {
         g.V().remove();
     });

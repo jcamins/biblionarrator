@@ -44,17 +44,6 @@ function Record(data) {
         }
     };
 
-    this.links = function (offset, perpage, recordcb, facetscb) {
-        offload('linkbrowse', { id: this.id, offset: offset, perpage: perpage }, function (results) {
-            var reclist = new models.RecordList({
-                records: Record.fromJSON(results.linkbrowse.records),
-                facet: results.linkbrowse.facet,
-                count: results.linkbrowse.count
-            });
-            recordcb(reclist);
-        });
-    };
-
     this.initialize(data);
 
     return this;
