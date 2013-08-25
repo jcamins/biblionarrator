@@ -104,7 +104,7 @@ exports.searchmap = function (req, res) {
 
 };
 
-exports.map = function (req, res) {
+exports.landmarkmap = function (req, res) {
     if (typeof req.query.landmark === 'string') {
         req.query.landmark = [ req.query.landmark ];
     }

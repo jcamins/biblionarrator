@@ -6514,6 +6514,7 @@ footer p {
   display: inline-block;
   border-radius: 4px;
   border: #ddd 1px solid;
+  font-weight: bold;
 }
 .facets .selected-facet .facet-label {
   padding: 1px 4px 1px 2px;
@@ -6642,6 +6643,18 @@ footer p {
 }
 #recordList .recordPane button.explore-links .explore-icon {
   background-image: url('/img/map.svg');
+  width: 24px;
+  height: 33px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  float: right;
+}
+#recordList .recordPane button.mark-landmark {
+  padding: 0;
+}
+#recordList .recordPane button.mark-landmark .landmark-icon {
+  background-image: url('/img/mapmarker.svg');
   width: 24px;
   height: 33px;
   background-size: contain;
