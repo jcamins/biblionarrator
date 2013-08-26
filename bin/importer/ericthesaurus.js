@@ -76,7 +76,7 @@ Q.nfcall(fs.readFile, filename).then(function (data) {
             linksleft += term.Relationships[0].Relationship[jj].Is.length;
         }
         totallinks += linksleft;
-        rec = new Record({ key: term.Name[0], format: 'ericthesaurus', data: rec});
+        rec = new Record({ format: 'ericthesaurus', data: rec});
         rec.save();
         rec.linksleft = linksleft;
         recordtype = recordtype || 'ericterm';

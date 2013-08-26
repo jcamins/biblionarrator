@@ -1,10 +1,10 @@
 "use strict";
 var models,
+    extend = require('extend'),
     graphstore = require('../lib/graphstore'),
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
-    formatters = require('../lib/formats'),
-    offload = require('../lib/graphoffloader');
+    formatters = require('../lib/formats');
 
 function Record(data) {
     this.model = 'record';
@@ -45,6 +45,10 @@ function Record(data) {
     };
 
     this.initialize(data);
+
+    if (typeof formatters[this.format] !== 'undefined') {
+        extend(this, formatters[this.format].indexes(this.data));
+    }
 
     return this;
 }
