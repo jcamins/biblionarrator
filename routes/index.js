@@ -28,6 +28,10 @@ exports.init = function(app) {
 
     /* Fields */
     app.post('/fields/:schema/:field', fields.save);
+    app.get('/admin/fields/:schema/:field', fields.admin);
+    app.get('/admin/fields', fields.admin);
+    app.get('/fields/editor/:schema/:field', fields.editor);
+    app.get('/fields/editor', fields.editor);
 
     /* Record */
     app.get('/record/:record_id/link/select', record.linkselect);

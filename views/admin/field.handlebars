@@ -1,0 +1,145 @@
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+    <div id="controlbar" class="navbar-inner">
+        <div class="container-fluid">
+            <ul class="nav">
+                <li><a href="#" type="submit" id="saveField" form="fieldform">Save</a></li>
+                <li><a href="#" id="delField">Delete</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="content" class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2 pull-left">
+            <a id="add-field" class="btn btn-small jstree-draggable" href="/admin/fields/new"><i class="icon-hand-down"></i> Add field</a>
+            <div id="tree">
+                <ul>
+                    {{#each hierarchy}}
+                    {{> fieldhierarchy}}
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <div id="fieldeditor" class="span10 pull-right">
+            {{#with field}}
+            {{> 'admin/field-editor'}}
+            {{/with}}
+        </div>
+    </div>
+</div>
+
+{{#contentFor 'styles'}}
+    <link href="/css/fields.css" media="all" type="text/css" rel="stylesheet">
+{{/contentFor}}
+
+{{#contentFor 'javascript'}}
+<script type="text/javascript" src="/lib/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/dataTables.fnReloadAjax.js"></script>
+<script type="text/javascript" src="/js/dataTables.bootstrap-paging.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/admin-table.js"></script>
+<script type="text/javascript" src="/lib/js/jstree/jquery.jstree.js"></script>
+<script type="text/javascript" src="/js/styleEditor.js"></script>
+<script type="text/javascript" src="/js/admin-tree.js"></script>
+<script type="text/javascript">
+var controlColumn = '<button class="btn btn-mini editStyle"><i class="icon-pencil"></i></button>';
+var recordTypes = { 
+    {{#each recordtypes}}
+        '{{name}}': {{id}},
+    {{/each}}
+}; //'Book', 'Person', 'Organization', 'Stamp', 'Coin' ];
+var treeCallbacks = {
+    'move_node' : function(e, data) {
+        /*$.ajax({
+            url: '/fields/' + data.rslt.o[0].getAttribute('data-id'),
+            type: "POST",
+            dataType: "json",
+            data: { 
+                    'parent': data.rslt.np[0].getAttribute('data-id')
+                  }
+        });*/
+    },
+    'create' : function(e, data) {
+        $('#fieldeditor').load('/fields/editor', function (msg, s) { 
+            initializeStyleEditor();
+            $('#field-label').text(data.rslt.name);
+            $('#field-schema').val();
+            $('#field-field').val(data.rslt.name.toLowerCase());
+            $('#tree .selected').removeClass('selected');
+            $(data.rslt.obj).children('a').addClass('selected');
+            if (data.args[1] === 'inside') {
+                $('#field-parent').val(data.rslt.parent[0].getAttribute('data-id'));
+            } else {
+                $('#field-parent').val('');
+            }
+            History.pushState({ 'event' : 'new' }, 'New field', '/admin/field/new');
+        });
+    }
+};
+
+var resourcetype = 'field';
+
+$(document).ready(function() {
+    $('#tree').on('click', 'a', null, function() {
+        $('#tree .selected').removeClass('selected');
+        $(this).addClass('selected');
+        var fieldParent = $(this).parents('li').first().parents('li').first().attr('data-id');
+        if (fieldParent === 'undefined') {
+            fieldParent = '';
+        }
+        $('#field-parent').val(fieldParent);
+        $('#fieldeditor').load($(this).attr('data-editor'), function (msg, s) { 
+            initializeStyleEditor();
+        });
+        return false;
+    });
+    $(document).on('change', '#field-field, #field-schema', null, function() {
+        $('#heading').text($('#field-field').val() + ' (' + $('#field-schema').val() + ')');
+        $('#saveField').addClass('field-changed');
+    });
+    initializeTree(treeCallbacks);
+    $('#add-field').click(function() {
+        $('#tree').jstree('create', null, 'last', 'New field');
+        return false;
+    });
+    initializeStyleEditor();
+    $('#delField').click(function() {
+        $.ajax({
+            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-field').val(),
+            type: "DELETE"
+        }).done(function() {
+            $('#fieldeditor').empty()
+            initializeTree(treeCallbacks);
+        });
+        return false;
+    });
+    $('#saveField').click(function() {
+        $.ajax({
+            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-field').val(),
+            type: "POST",
+            dataType: "json",
+            data: { 
+                    'field': $('#field-field').val(),
+                    'schema': $('#field-schema').val(),
+                    'label': $('#field-label').text(),
+                    'description': $('#field-description').val(),
+                    'parent': $('#field-parent').val(),
+                    'link': $('#field-link').is(':checked') ? 1 : 0,
+                    'sortable': $('#field-sortable').is(':checked') ? 1 : 0,
+                  }
+        }).done(function (data) {
+            $('#field-id').val(data.id);
+            History.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field - ' + data.label, '/admin/fields/' + data.schema + '/' + data.field);
+            $('#tree .selected').each(function() {
+                $(this).parent().attr('data-id', data.id);
+                $(this).attr('href', '/admin/fields/' + data.schema + '/' + data.field);
+            });
+            $('#saveField').removeClass('field-changed');
+        });
+        return false;
+    });
+    $('#saveLinks').click(function() {
+    });
+});
+</script>
+{{/contentFor}}

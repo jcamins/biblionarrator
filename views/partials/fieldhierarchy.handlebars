@@ -1,0 +1,9 @@
+<li data-id="{{schema}}_{{field}}"><a data-editor="/fields/editor/{{schema}}/{{field}}" href="/admin/fields/{{schema}}/{{field}}">{{label}}</a>
+{{#if children.length}}
+    <ul>
+        {{#each children}}
+            {{>fieldhierarchy}}
+        {{/each}}
+    </ul>
+{{/if}}
+</li>

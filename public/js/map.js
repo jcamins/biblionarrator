@@ -15,16 +15,16 @@
         
             var boxwidth = width * 0.8;
             var boxheight = height * 0.8;
+            for (var ii = 0; ii < data.records.length; ii++) {
+                data.records[ii].x = width / 2;
+                data.records[ii].y = height / 2;
+            }
             if (typeof data.landmarks !== 'undefined') {
                 for (var ii = 0; ii < data.landmarks.length; ii++) {
                     data.records[data.recmap[data.landmarks[ii]]].x = 0.1 * width + (boxwidth / 2) + (boxwidth / 2) * Math.cos((2 * Math.PI / data.landmarks.length) * ii);
                     data.records[data.recmap[data.landmarks[ii]]].y = 0.1 * height + (boxheight / 2) + (boxheight / 2) * Math.sin((2 * Math.PI / data.landmarks.length) * ii);
                     data.records[data.recmap[data.landmarks[ii]]].fixed = true;
                 }
-            }
-            for (var ii = 0; ii < data.records.length; ii++) {
-                data.records[ii].x = width / 2;
-                data.records[ii].y = height / 2;
             }
         
             var current;
@@ -37,7 +37,7 @@
         
             var force = d3.layout.force()
                 .charge(-800)
-                .distance(30)
+                .distance(60)
                 .size([width, height])
                 .nodes(data.records)
                 .links(data.edges)

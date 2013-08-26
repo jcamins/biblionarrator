@@ -11,7 +11,8 @@ function Renderer() {
 
     var urls = {
         results: '/views/partials/results.handlebars',
-        facets: '/views/partials/facets.handlebars'
+        facets: '/views/partials/facets.handlebars',
+        'field-editor': '/views/partials/admin/field-editor.handlebars'
     };
     var templates = {};
 

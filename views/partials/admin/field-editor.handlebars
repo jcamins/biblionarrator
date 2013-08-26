@@ -1,0 +1,82 @@
+<form data-id="{{schema}}_{{field}}" id="fieldform" action="/resources/field/{{schemal}}/{{field}}" method="POST">
+<h2 contenteditable="true" id="field-label">{{label}}</h2>
+
+<div class="row-fluid">
+<div class="span12">
+    <fieldset id="fieldGeneral">
+        <legend>General</legend>
+        <input id="field-parent" type="hidden" name="parent" value=""></input>
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="field-schema">Schema:</label><input id="field-schema" type="text" name="schema" value="{{schema}}"></input>
+            </div>
+            <div class="span3">
+                <label for="field-field">Field:</label><input id="field-field" type="text" name="field" value="{{field}}"></input>
+            </div>
+            <div class="span3">
+                <label for="field-link">Link:</label><input id="field-link" type="checkbox" name="link"
+                {{#if link}}
+                checked="checked"
+                {{/if}}
+                ></input>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="field-description">Description:</label><textarea id="field-description" name="description">{{description}}</textarea>
+            </div>
+            <div class="span3">
+                <label for="field-sortable">Sortable:</label><input id="field-sortable" type="checkbox" name="sortable"
+                {{#if sortable}}
+                checked="checked"
+                {{/if}}
+                ></input>
+            </div>
+        </div>
+    </fieldset>
+</div>
+</div>
+<div class="row-fluid">
+<div class="span6">
+    <fieldset id="fieldStyles">
+    <legend>Styles</legend>
+    <div id="styles_ajax">
+        <button id="btnAddStyle" class="btn btn-small">Add style</button>
+        <table id="styleTable" class="table table-striped">
+        <thead>
+        <tr><th>Record types</th><th>Style</th><th>Example text</th><th></th></tr>
+        </thead>
+        <tbody>
+        {{#each styles}}
+            <tr>
+            <td>
+                <div class="style-record-type-cell">
+                    <input type="text" name="styleRecordTypes" placeholder="Record types" class="styleRecordTypes" value="{{recordtypeslist}}"></input>
+                </div>
+            </td>
+            <td><textarea class="styleEntry">{{css}}</textarea></td>
+            <td>
+                <div class="exampleText">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+            </td>
+            <td>
+                <!--<button class="btn btn-mini saveStyle"><i class="icon-ok"></i></button>-->
+                <button class="btn btn-mini delStyle"><i class="icon-remove"></i></button>
+            </td>
+            </tr>
+        {{/each}}
+        </tbody>
+        </table>
+    </div>
+    </fieldset>
+</div>
+<div class="span6">
+    <fieldset id="fieldLinks">
+    <legend>Relationships</legend>
+        {{#each recordtype}}
+            <div><input type="checkbox" {{selected}}>{{name}}</input><div>
+        {{/each}}
+    </fieldset>
+</div>
+</div>
+</form>
+

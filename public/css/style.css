@@ -7195,6 +7195,11 @@ a.selected {
 .table-striped tbody > tr:nth-child(odd) > th {
   background-color: #f3f3f3;
 }
+/*** Admin tree ***/
+#add-field {
+  display: block;
+  margin-bottom: 8px;
+}
 /*** Dropdown customizations ***/
 .dropdown-menu > li > span {
   display: block;
