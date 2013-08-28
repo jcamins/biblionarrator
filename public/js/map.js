@@ -5,7 +5,7 @@
             .remove();
 
         d3.json(url, function (error, data) {
-            var width = 960,
+            var width = parseInt($('#visualization').css('width'), 10),
                 height = 500,
                 radius = height / 2.5;
         

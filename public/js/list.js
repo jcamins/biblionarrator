@@ -1,3 +1,5 @@
+var landmarks = [ ];
+
 function initializeList() {
     $('body').on('click', '.preview', null, function() {
         var button = this;
@@ -35,6 +37,23 @@ function initializeList() {
         var row = $(this).parents('tr');
         window.bnpanes.load('/search?q=' + encodeURIComponent('{{linkbrowse:' + $(row).attr('data-id') + '}}'));
     });
+    $('body').on('click', '.mark-landmark:not(.selected)', null, function () {
+        var row = $(this).parents('tr');
+        landmarks.push($(row).attr('data-id'));
+        $(this).addClass('selected');
+    });
+
+    $('#visualize-landmarks').click(function () {
+        if ($(this).hasClass('active')) {
+            $('#visualization').hide();
+            $(this).removeClass('active');
+        } else {
+            $('#visualization').show();
+            window.bnvis.landmarks(landmarks);
+            $(this).addClass('active');
+        }
+    });
+
 
     $('body').on('click', '.collapsed', null, function () {
         window.bnpanes.select($(this).attr('data-pane'));

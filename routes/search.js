@@ -75,7 +75,7 @@ exports.map = function (req, res) {
         landmarks: req.query.landmark,
         records: req.query.records || req.query.landmark,
         depth: req.query.depth || 1,
-        size: req.query.size || 60
+        size: req.query.size || 30
     };
     var mapkey;
     if (typeof req.query.landmark !== 'undefined') {

@@ -446,7 +446,12 @@ footer {
                     background-repeat: no-repeat;
                     display: block;
                     float: right;
+                }
 
+                &.selected {
+                    .landmark-icon {
+                        background-image: url('/img/mapmarkerred.svg');
+                    }
                 }
             }
         }
@@ -538,6 +543,18 @@ footer {
             }
         }
     }
+}
+
+#visualization {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-top: black 2px solid;
+    border-left: black 2px solid;
+    border-right: black 2px solid;
+    background: white;
+    width: 80%;
+    margin: auto;
+    display: none;
 }
 
 
