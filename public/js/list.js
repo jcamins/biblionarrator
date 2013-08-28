@@ -64,6 +64,7 @@ function initializeList() {
     $('#showmore a').click(function (ev) {
         ev.preventDefault();
         var a = this;
+        var offset = parseInt($(a).attr('data-offset'), 10);
         $.ajax({
             url: $(a).attr('href'),
             accept: { json: 'application/json' },
@@ -72,9 +73,10 @@ function initializeList() {
                 offset: $(a).attr('data-offset')
             }
         }).done(function (data) {
-            $(a).attr('data-offset', parseInt($(a).attr('data-offset'), 10) + 20);
+            $(a).attr('data-offset', offset + 20);
             window.renderer.render(data, 'resultstable', function (newrows) {
                 $('#showmore').before(newrows);
+                History.pushState({ 'event' : 'search' }, 'Search', $(a).attr('href') + '&perpage=' + (offset + 20) + '#result' + offset);
             });
         });
     });
