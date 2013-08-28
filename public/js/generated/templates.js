@@ -12,6 +12,7 @@ function Renderer() {
 
     var urls = {
         results: '/views/partials/results.handlebars',
+        resultstable: '/views/partials/resultstable.handlebars',
         facets: '/views/partials/facets.handlebars',
         'field-editor': '/views/partials/admin/field-editor.handlebars'
     };
@@ -21,6 +22,8 @@ function Renderer() {
         if (typeof mountpoint === 'object') {
             mountpoint.innerHTML = templates[template](data);
             $(mountpoint).trigger('rendered');
+        } else if (typeof mountpoint === 'function') {
+            mountpoint(templates[template](data));
         }
     };
 

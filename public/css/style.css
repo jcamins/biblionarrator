@@ -6670,6 +6670,20 @@ footer p {
   margin-top: 0px;
   font-size: 90%;
 }
+#showmore a {
+  width: 90%;
+  text-align: center;
+  display: inline-block;
+  border-radius: 5px;
+  color: #444;
+  background: #f0f0f4;
+  margin-left: 5%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border: 1px #ccc solid;
+  box-shadow: -2px -2px 4px #dddddd;
+  font-style: italic;
+}
 .result-size {
   float: right;
   font-size: 90%;

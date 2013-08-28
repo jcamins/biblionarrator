@@ -61,6 +61,24 @@ function initializeList() {
         ev.preventDefault();
     });
 
+    $('#showmore a').click(function (ev) {
+        ev.preventDefault();
+        var a = this;
+        $.ajax({
+            url: $(a).attr('href'),
+            accept: { json: 'application/json' },
+            dataType: 'json',
+            data: {
+                offset: $(a).attr('data-offset')
+            }
+        }).done(function (data) {
+            $(a).attr('data-offset', parseInt($(a).attr('data-offset'), 10) + 20);
+            window.renderer.render(data, 'resultstable', function (newrows) {
+                $('#showmore').before(newrows);
+            });
+        });
+    });
+
     /*$('body').on('click', '.facet-list a', null, function () {
         if ($(this).attr('href') === '#all') {
             $('.resultRow').show();

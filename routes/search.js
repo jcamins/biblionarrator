@@ -29,6 +29,7 @@ exports.view = function(req, res) {
     var offset = parseInt(req.query.offset, 10) || 0;
     var perpage = parseInt(req.query.perpage, 10) || 20;
     
+    var accept = req.accepts([ 'html', 'json' ]);
     Q.all([sharedview()]).then(function(data) {
         data.url = req.url.replace(/&?layout=[^&]*/, '');
         data.view = 'results';
@@ -47,19 +48,19 @@ exports.view = function(req, res) {
                 });
                 return exports.map(req, res);
             };
-            if (data.count > data.records.length) {
-                data.paginator = paginator(offset, data.count, perpage, req.path, req.query);
+            if (accept === 'html') {
+                res.render(layout, data, function(err, html) {
+                    if (err) {
+                        res.send(404, err);
+                    } else {
+                        res.send(html);
+                    }
+                });
+            } else {
+                res.json(list);
             }
-            data.sortings = { available: [ { schema: 'mods', field: 'title', label: 'Title' } ] };
-            res.render(layout, data, function(err, html) {
-                if (err) {
-                    res.send(404, err);
-                } else {
-                    res.send(html);
-                }
-            });
             // Preseed next page
-            searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+            //searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
         }, function (data) {
             socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
         });
