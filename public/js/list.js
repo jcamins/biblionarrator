@@ -45,10 +45,10 @@ function initializeList() {
 
     $('#visualize-landmarks').click(function () {
         if ($(this).hasClass('active')) {
-            $('#visualization').hide();
+            $('#visualization-container').hide();
             $(this).removeClass('active');
         } else {
-            $('#visualization').show();
+            $('#visualization-container').show();
             window.bnvis.landmarks(landmarks);
             $(this).addClass('active');
         }

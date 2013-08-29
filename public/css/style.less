@@ -545,16 +545,50 @@ footer {
     }
 }
 
-#visualization {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-top: black 2px solid;
-    border-left: black 2px solid;
-    border-right: black 2px solid;
-    background: white;
-    width: 80%;
-    margin: auto;
+#visualization-container {
     display: none;
+
+    .visualization-key {
+        legend {
+            color: white;
+            border-bottom: none;
+        }
+
+        ul {
+            list-style: none;
+            margin-left: -10px;
+
+            li {
+                padding-left: 8px;
+                border-radius: 8px;
+                margin-bottom: 4px;
+                color: black;
+            }
+        }
+    }
+
+    #nodekey {
+        float: left;
+        width: 8%;
+        padding-right: 20px;
+    }
+
+    #edgekey {
+        float: right;
+        width: 8%;
+    }
+
+    #visualization {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-top: black 2px solid;
+        border-left: black 2px solid;
+        border-right: black 2px solid;
+        background: white;
+        width: 80%;
+        margin: auto;
+        float: left
+    }
 }
 
 

@@ -3,6 +3,8 @@
     function drawMap(url) {
         d3.select("#visualization svg")
             .remove();
+        d3.select("#nodekey ul li").remove();
+        d3.select("#edgekey ul li").remove();
 
         d3.json(url, function (error, data) {
             var width = parseInt($('#visualization').css('width'), 10),
@@ -65,8 +67,9 @@
         
             node.append("circle")
                 .attr("r", function (d) { return radiusscale(d.weight); })
-                .style("stroke-width", "2px")
-                .style("stroke", function (d) { return nodecolors(d.recordtype); });
+                .style("stroke-width", "0.5px")
+                .style("stroke", "black")
+                .style("fill", function (d) { return nodecolors(d.recordtype); });
         
             node.append("title")
                 .text(function(d) { return d.key; });
@@ -76,6 +79,18 @@
                 .attr("dy", ".35em")
                 .text(function(d) { return d.key; });
         
+            d3.select('#nodekey').append('ul').selectAll('.nodekeyentry')
+                .data(nodecolors.domain().filter(function (d) { return (typeof d !== 'undefined'); }))
+                .enter().append('li')
+                    .text(function (d) { return d; })
+                    .style('background-color', function (d) { return nodecolors(d); });
+        
+            d3.select('#edgekey').append('ul').selectAll('.edgekeyentry')
+                .data(edgecolors.domain().filter(function (d) { return (typeof d !== 'undefined'); }))
+                .enter().append('li')
+                    .text(function (d) { return d; })
+                    .style('background-color', function (d) { return edgecolors(d); });
+
         
             force.on("tick", function() {
                 link.attr("x1", function(d) { return d.source.x; })

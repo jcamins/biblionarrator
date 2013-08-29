@@ -8,6 +8,33 @@
  *
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+.hide-text {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 article,
 aside,
 details,
@@ -5244,33 +5271,6 @@ a.badge:focus {
  *
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
-.clearfix {
-  *zoom: 1;
-}
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-  line-height: 0;
-}
-.clearfix:after {
-  clear: both;
-}
-.hide-text {
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
-.input-block-level {
-  display: block;
-  width: 100%;
-  min-height: 30px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 @-ms-viewport {
   width: device-width;
 }
@@ -6738,7 +6738,33 @@ footer p {
 .facet-group .facet-options.show-all li.show-more {
   display: none;
 }
-#visualization {
+#visualization-container {
+  display: none;
+}
+#visualization-container .visualization-key legend {
+  color: white;
+  border-bottom: none;
+}
+#visualization-container .visualization-key ul {
+  list-style: none;
+  margin-left: -10px;
+}
+#visualization-container .visualization-key ul li {
+  padding-left: 8px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  color: black;
+}
+#visualization-container #nodekey {
+  float: left;
+  width: 8%;
+  padding-right: 20px;
+}
+#visualization-container #edgekey {
+  float: right;
+  width: 8%;
+}
+#visualization-container #visualization {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   border-top: black 2px solid;
@@ -6747,7 +6773,7 @@ footer p {
   background: white;
   width: 80%;
   margin: auto;
-  display: none;
+  float: left;
 }
 /*** Record editor ***/
 .editor-toolbar {
