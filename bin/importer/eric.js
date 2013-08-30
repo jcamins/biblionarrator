@@ -50,7 +50,9 @@ xml.on('endElement: record', function (record) {
         Q.all(promises).then(function () {
             graphstore.getDB().commitSync();
             promises = [ ];
-            xml.resume();
+            setTimeout(function () {
+                xml.resume();
+            }, 100)
         });
     }
     mainrecordcount++;
