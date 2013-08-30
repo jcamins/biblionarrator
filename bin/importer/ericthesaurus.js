@@ -11,20 +11,27 @@ var recs = { };
 
 graphstore.autocommit = false;
 
-var recordtypes = {
-    ericterm:  new RecordType({
+var recordtypes = { };
+
+recordtypes['ericterm'] = RecordType.findOne({ key: 'Term' });
+recordtypes['ericsynonym'] = RecordType.findOne({key: 'Synonym' });
+
+if (typeof recordtypes['ericterm'] === 'undefined' ) {
+    recordtypes['ericterm'] =  new RecordType({
         key: 'Term',
         data: '{"article":{"children":[{"header":{"children":["Term"]}},{"section":{"children":["Terms established for use in the ERIC thesaurus."]}}]}}',
         format: 'bnjson'
-    }),
-    ericsynonym: new RecordType({
+    });
+    recordtypes['ericterm'].save();
+}
+if (typeof recordtypes['ericsynonym'] === 'undefined' ) {
+    recordtypes['ericsynonym'] = new RecordType({
         key: 'Synonym',
         data: '{"article":{"children":[{"header":{"children":["Synonym"]}},{"section":{"children":["Terms that are not used in ERIC."]}}]}}',
         format: 'bnjson'
-    }),
-};
-recordtypes['ericterm'].save();
-recordtypes['ericsynonym'].save();
+    });
+    recordtypes['ericsynonym'].save();
+}
 
 var filename = process.argv[2]; // It would be great if we could do multiple files in parallel, but in practice the heap gets too big
 
