@@ -7,22 +7,19 @@ module.exports = {
         'storage.keyspace': 'biblionarrator',
 
         'storage.index.search.backend': 'elasticsearch',
-        'storage.index.search.directory': '/var/lib/elasticsearch/biblionarrator',
-        'storage.index.search.client-only': false,
-        'storage.index.search.local-mode': true
+        'storage.index.search.client-only': true,
+        'storage.index.search.hostname': '127.0.0.1'
     },
 
     orient: {
         path: 'local:/var/lib/orient/biblionarrator',
-        username: 'biblionarrator',
-        password: 'biblionarrator'
+        username: 'admin',
+        password: 'admin'
     },
 
     tinker: {
-        path: '/var/lib/tinker/biblionarrator'
     },
 
     neo4j: {
-        path: '/var/lib/neo4j/biblionarrator'
     }
 };

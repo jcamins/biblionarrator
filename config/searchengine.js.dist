@@ -3,19 +3,21 @@ module.exports = {
     operators: {
         'AND': '&&',
         'OR': '\\|\\|',
-        'FS': '{{',
-        'FE': '}}',
+        'FLOAT_START': '\\{\\{',
+        'FLOAT_END': '\\}\\}',
         'GS': '\\(',
         'GE': '\\)',
         'REQ': '\\+',
         'DIS': '-',
         'MOD': '#',
-        'NOT': '!'
+        'NOT': '!',
+        'FACET_START': '\\[',
+        'FACET_END': '\\]',
+        'FILTER_START': '(range)<',
+        'FILTER_END': '>'
     },
-    indexes: [
-        'keyword',
-        'author',
-        'title',
-        'date'
+    schemas: [
+        'ericthesaurus',
+        'eric'
     ]
 };

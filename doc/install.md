@@ -6,13 +6,10 @@ Requirements
 
 Biblionarrator requires a server with the following:
 
-* Apache, nginx, or another web server that supports CGI, FastCGI, or
-  other compatible technology
-* MySQL
-* PHP 5.3+
-* Mcrypt, MySQL, Tidy, and XSL PHP5 extensions
 * Node.js 0.8+
 * npm (node package manager)
+* ElasticSearch 0.90.3
+* Apache Cassandra 
 
 *NOTE*: After step 1 you will need to run (in the biblionarrator root):
 
@@ -23,37 +20,34 @@ If you are setting up a development environment, you will also need:
 
 * git
 * make
-* lesscss and node.js
+* lesscss
 
 Installation procedure
 ----------------------
 
-0) Install prerequisites.
+0) Install Java 6 or Java 7 from Oracle following the procedure appropriate to
+   your operating system.
 
-   Under Debian/Ubuntu, the following command will install everything other than
-   lesscss and the web server:
+1) Install Node.js from http://nodejs.org/
 
-    sudo apt-get install git make php5 php5-cli php5-mcrypt php5-mysql php5-tidy php5-xsl
+   A PPA is available for Debian/Ubuntu, and Node.js is available for
+   Fedora/CentOS/RHEL from the EPEL repository.
 
-   To install nginx and fpm under Debian/Ubuntu, run the following command:
+2) Install Cassandra by following the instructions at http://www.datastax.com/documentation/gettingstarted/index.html
 
-    sudo apt-get install nginx php5-fpm
+3) Install ElasticSearch from http://www.elasticsearch.org/overview/#installation
 
-   To install Apache2 under Debian/Ubuntu, run the following command:
+4) Install redis from http://redis.io/
+   
+   On Debian/Ubuntu:
 
-    sudo apt-get install apache2
+    sudo apt-get install redis-server
 
-   lesscss is packaged for Ubuntu but not Debian. If you are using Ubuntu,
-   it can be installed with the following command:
+   Redis is available for Fedora/CentOS/RHEL from the EPEL repository.
 
-    sudo apt-get install node-less npm
-
-1) Download Biblionarrator. You can download a zip file from GitHub at
-   https://github.com/jcamins/biblionarrator/archive/master.zip or
+5) Download Biblionarrator. You can download a zip file from GitHub at
+   https://github.com/biblionarrator/biblionarrator/archive/master.zip or
    clone the git repo:
-
-    git clone git://git.cpbibliography.com/biblionarrator.git
-or
 
     git clone git://github.com/biblionarrator/biblionarrator.git
 
