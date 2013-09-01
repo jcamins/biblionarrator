@@ -111,6 +111,15 @@ module.exports = function(grunt) {
                     destination: 'doc/api'
                 }
             }
+        },
+        compress: {
+            dist: {
+                options: {
+                    archive: '../biblionarrator-<%= pkg.version %>.tar.gz',
+                    mode: 'tgz'
+                },
+                src: [ './**' ]
+            }
         }
     });
 
@@ -120,8 +129,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ])
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ])
     grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
+    grunt.registerTask('release', [ 'default', 'compress' ])
 };
