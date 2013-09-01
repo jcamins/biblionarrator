@@ -72,11 +72,13 @@
 
     bookmarks.remove = function(id) {
         window.bndb.bookmarks(function (bookmarksdb) {
+            /*jshint es3:false */
             bookmarksdb.delete(id).done(function () {
                 flashBookmark('This item has been removed from your bookmarks');
                 showCount();
             }, function (err) {
             });
+            /*jshint es3:true */
         });
     };
 

@@ -47,6 +47,7 @@ module.exports = function(grunt) {
                 options: {
                     "loopfunc": true,
                     "sub": true,
+                    "es3": true,
                     globals: {
                         module: true,
                         window: true,
