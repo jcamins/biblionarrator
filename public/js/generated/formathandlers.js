@@ -106,9 +106,26 @@ module.exports.snippet = function(recorddata) {
     return snippetdata;
 };
 
-module.exports.indexes = function(recorddata) {};
+function stringify (object) {
+    var string = '';
+    if (typeof object !== 'object') {
+        return object;
+    }
+    for (var el in object) {
+        string = string + ' ' + stringify(object[el]);
+    }
+    return string;
+}
 
+module.exports.indexes = function(recorddata) {
+    return {
+        keyword: stringify(recorddata)
+    };
+};
+
+/*jshint unused:false */ /* Not yet implemented */
 module.exports.links = function(recorddata) {};
+/*jshnit unused: true */
 
 module.exports.decompile = function(htmldom) {
     return dom2raw(htmldom);
@@ -188,7 +205,7 @@ module.exports.snippet = function(recorddata) {
 };
 
 function stringify (object) {
-    var string = ''
+    var string = '';
     if (typeof object !== 'object') {
         return object;
     }
@@ -199,7 +216,7 @@ function stringify (object) {
 }
 
 module.exports.indexes = function(recorddata) {
-    return indexes = {
+    return {
         key: recorddata.accno,
         title: recorddata.title,
         source: recorddata.source,
@@ -212,11 +229,12 @@ module.exports.indexes = function(recorddata) {
 };
 
 
+/*jshint unused:false */ /* Not yet implemented */
 module.exports.links = function(recorddata) {};
 
 module.exports.decompile = function(htmldom) {
 };
-
+/*jshint unused:true */
 
 },{}],4:[function(require,module,exports){
 module.exports.render = function(recorddata) {
@@ -275,7 +293,7 @@ module.exports.snippet = function(recorddata) {
 };
 
 function stringify (object) {
-    var string = ''
+    var string = '';
     if (typeof object !== 'object') {
         return object;
     }
@@ -286,17 +304,19 @@ function stringify (object) {
 }
 
 module.exports.indexes = function(recorddata) {
-    return indexes = {
+    return {
         key: recorddata.name,
         scopenote: recorddata.scope,
         keyword: stringify(recorddata)
     };
 };
 
+/*jshint unused:false */ /* Not yet implemented */
 module.exports.links = function(recorddata) {};
 
 module.exports.decompile = function(htmldom) {
 };
+/*jshint unused:true */
 
 },{}],5:[function(require,module,exports){
 module.exports = {
