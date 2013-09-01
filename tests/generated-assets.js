@@ -22,7 +22,7 @@ describe('fields.css', function() {
     });
 });
 
-describe('svc/bndb_initializer', function() {
+/*describe('svc/bndb_initializer', function() {
     var res;
     before(function (done) {
         request.get(testhost + '/svc/bndb_initializer.js').end(function(r) {
@@ -37,4 +37,4 @@ describe('svc/bndb_initializer', function() {
     it('valid JS', function() {
         expect(jshint(res.text)).to.equal(true);
     });
-});
+});*/
