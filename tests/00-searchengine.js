@@ -1,24 +1,36 @@
-var decomposedqueries = {
-    'smith': { canonical: 'keyword:smith' },
-    'author:smith': { canonical: 'author:smith' },
-    'author:smith title:book': { canonical: '(author:smith && title:book)' },
-    'title: book author:smith': { canonical: '(title:book && author:smith)' },
-    'whatever title:book': { canonical: '(keyword:whatever && title:book)' },
-    'author[smith, james]': {
-        canonical: 'author[smith, james]',
-        facets: [ { type: 'author', label: 'Author', value: 'smith, james', link: 'author%5Bsmith%2C%20james%5D' } ]
+var opts = {
+    engine: 'titan',
+    titan: {
+        'storage.keyspace': 'bntest',
+        'storage.index.search.backend': 'lucene',
+        'storage.index.search.directory': __dirname + '/data/titanft',
+        'storage.index.search.client-only': false,
     },
-    '{{author:smith}}' : { canonical: '{{author:smith}} ' },
-    '{{author:smith}} stuff': { canonical: '{{author:smith}} (keyword:stuff)' },
-    'stuff {{author:smith}}': { canonical: '{{author:smith}} (keyword:stuff)' },
-    'smith range<0 20>': { canonical: '(keyword:smith && range<0 20>)' }
+
+    orient: {
+        path: 'local:' + __dirname + '/data/orient',
+    },
+
+    tinker: {
+        path: null,
+    },
+
+    neo4j: {
+        path: __dirname + '/data/neo4j',
+    },
 };
 
 var expect = require('chai').expect,
-    queryparser = require('../lib/queryparser');
+    queryparser = require('../lib/queryparser'),
+    graphstore = require('../lib/graphstore'),
+    g = graphstore(opts),
+    models = require('../models'),
+    Query = models.Query,
+    searchengine = require('../lib/searchengine');
+var inspect = require('eyes').inspector({maxLength: false});
 
-describe('Query parser', function () {
-    before(function (done) {
+describe('Search engine', function () {
+    before(function () {
         queryparser.initialize({
             operators: {
                 'AND': '&&',
@@ -76,14 +88,28 @@ describe('Query parser', function () {
                 }
             }
         });
-        done();
+        require('../bin/gendata');
     });
-    Object.keys(decomposedqueries).forEach(function (query) {
-        it('decomposes ' + query + ' properly', function () {
-            var decomposed = queryparser.decompose(queryparser.parse(query));
-            for (var key in decomposedqueries[query]) {
-                expect(decomposed[key]).to.deep.equal(decomposedqueries[query][key]);
-            }
+    it('finds record using fielded search', function (done) {
+        searchengine.search({ query: new Query('model:recordtype', 'qp'), offset: 0, perpage: 20 }, function (list) {
+            expect(list.records.length).to.equal(4);
+            done();
         });
     });
+    it('finds record using text search', function (done) {
+        searchengine.search({ query: new Query('France', 'qp'), offset: 0, perpage: 20 }, function (list) {
+            expect(list.records.length).to.equal(2);
+            done();
+        });
+    });
+    it('handles facets in a text search', function (done) {
+        searchengine.search({ query: new Query('France recordtype[place]', 'qp'), offset: 0, perpage: 20 }, function (list) {
+            expect(list.records.length).to.equal(1);
+            done();
+        });
+    });
+    after(function () {
+        g.V().remove();
+    });
 });
+
