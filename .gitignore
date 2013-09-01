@@ -39,3 +39,9 @@ publish
 paths.php
 node_modules
 cassandra
+
+# Generated assets
+doc/api
+public/js/generated
+public/css/style.css
+public/css/style.min.css
