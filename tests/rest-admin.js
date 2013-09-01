@@ -2,7 +2,7 @@ var expect = require('chai').expect,
     request = require('superagent').agent(),
     testhost = 'http://localhost:3500';
 
-describe('Authentication', function() {
+describe.skip('Authentication', function() {
     it('Can authenticate successfully', function(done) {
         request.post(testhost + '/user/login').type('form').send({
             username: 'tester@test.com',
@@ -14,7 +14,7 @@ describe('Authentication', function() {
     });
 });
 
-describe('User', function() {
+describe.skip('User', function() {
     testAdminTable('user', {
         aaData: {
             label: 'test user',
@@ -83,7 +83,7 @@ describe('User', function() {
     });
 });
 
-describe('Collection', function() {
+describe.skip('Collection', function() {
     testAdminTable('collection', {
         aaData: {
             label: 'Sample collection',
