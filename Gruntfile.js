@@ -24,20 +24,49 @@ module.exports = function(grunt) {
             },
         },
         jshint: {
-            files: [
-                'server.js',
-                'routes/*.js',
-                'models/*.js',
-                'bin/**/*.js',
-                'lib/**/*.js',
-                'tests/*.js'
-            ],
-            options: {
-                "loopfunc": true,
-                "unused": true,
-                "sub": true,
-                global: {
-                    module: true
+            server: {
+                src: [
+                    'server.js',
+                    'routes/*.js',
+                    'models/*.js',
+                    'bin/**/*.js',
+                    'lib/**/*.js',
+                ],
+                options: {
+                    "loopfunc": true,
+                    "unused": true,
+                    "sub": true,
+                    "node": true,
+                }
+            },
+            client: {
+                src: [
+                    'public/js/*.js',
+                    'clientjs/*.js',
+                ],
+                options: {
+                    "loopfunc": true,
+                    "unused": true,
+                    "sub": true,
+                    globals: {
+                        module: true,
+                        window: true,
+                        require: true
+                    }
+                }
+            },
+            tests: {
+                src: [
+                    'tests/*.js'
+                ],
+                options: {
+                    "loopfunc": true,
+                    "unused": true,
+                    "sub": true,
+                    globals: {
+                        module: true,
+                        require: true
+                    }
                 }
             }
         },
