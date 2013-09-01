@@ -79,6 +79,13 @@ module.exports = function(grunt) {
                 }
             }
         },
+        csslint: {
+            dist: {
+                options: {
+                },
+                src: [ 'public/css/*.css' ]
+            }
+        },
         mochaTest: {
             test: {
                 options: {
@@ -127,6 +134,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-contrib-compress');

@@ -61,7 +61,8 @@
     "blanket": "~1.1.5",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-jsdoc": "~0.4.0",
-    "grunt-contrib-compress": "~0.5.2"
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-contrib-csslint": "~0.1.2"
   },
   "bundledDependencies": [],
   "license": "AGPLv3",
