@@ -43,19 +43,22 @@ module.exports = function(grunt) {
         },
         mochaTest: {
             test: {
-                options: { reporter: 'spec' }
+                options: {
+                    reporter: 'spec',
+                    require: 'tests/coverage/blanket.js'
+                },
+                src: [
+                    'tests/*.js',
+                ]
             },
-            src: [
-                'tests/*.js',
-            ]
-        },
-        coverage: {
-            options: {
-                reporter: 'html-cov',
-                quiet: true,
-                captureFile: 'coverage.html'
-            },
-            src: [ 'tests/*.js' ]
+            coverage: {
+                options: {
+                    reporter: 'html-cov',
+                    quiet: true,
+                    captureFile: 'coverage.html'
+                },
+                src: [ 'tests/*.js' ]
+            }
         }
     });
 
@@ -65,5 +68,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
 
     grunt.registerTask('test', [ 'mochaTest' ])
-    grunt.registerTask('default', [ 'browserify', 'less' ]);
+    grunt.registerTask('default', [ 'browserify', 'less', 'mochaTest' ]);
 };
