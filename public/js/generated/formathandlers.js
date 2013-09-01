@@ -1,4 +1,4 @@
-;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
+;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 window = window || {};
 window.formatters = window.formatters || require('../lib/formats');
 
@@ -116,10 +116,11 @@ module.exports.decompile = function(htmldom) {
 
 },{}],3:[function(require,module,exports){
 module.exports.render = function(recorddata) {
+    var ii;
     var rendered = '<article><header><span class="dc_title">' + recorddata.title + '</span> (<span class="eric_accno">' + recorddata.accno + '</span>)';
     if (recorddata.creators) {
         rendered = rendered + '<div>';
-        for (var ii in recorddata.creators) {
+        for (ii in recorddata.creators) {
             rendered = rendered + '<span class="dc_creator">' + recorddata.creators[ii] + '</span>; ';
         }
         rendered = rendered + '</div>';
@@ -147,14 +148,14 @@ module.exports.render = function(recorddata) {
     }
     if (recorddata.subjects) {
         rendered = rendered + '<section><em>Subjects:</em><ul>';
-        for (var ii in recorddata.subjects) {
+        for (ii in recorddata.subjects) {
             rendered = rendered + '<li><span class="dc_subject">' + recorddata.subjects[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
     }
     if (recorddata.types) {
         rendered = rendered + '<section><em>Publication type:</em><ul>';
-        for (var ii in recorddata.types) {
+        for (ii in recorddata.types) {
             rendered = rendered + '<li><span class="dc_type">' + recorddata.types[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
@@ -186,7 +187,30 @@ module.exports.snippet = function(recorddata) {
     return rendered;
 };
 
-module.exports.indexes = function(recorddata) {};
+function stringify (object) {
+    var string = ''
+    if (typeof object !== 'object') {
+        return object;
+    }
+    for (var el in object) {
+        string = string + ' ' + stringify(object[el]);
+    }
+    return string;
+}
+
+module.exports.indexes = function(recorddata) {
+    return indexes = {
+        key: recorddata.accno,
+        title: recorddata.title,
+        source: recorddata.source,
+        citation: recorddata.citation,
+        description: recorddata.description,
+        publisher: recorddata.publisher,
+        uri: recorddata.uri,
+        keyword: stringify(recorddata)
+    };
+};
+
 
 module.exports.links = function(recorddata) {};
 
@@ -196,6 +220,7 @@ module.exports.decompile = function(htmldom) {
 
 },{}],4:[function(require,module,exports){
 module.exports.render = function(recorddata) {
+    var ii;
     var rendered = '<article><header><span class="eric_term">' + recorddata.name + '</span>';
     if (recorddata.scope) {
         rendered = rendered + '<span class="eric_scope">' + recorddata.scope + '</span>';
@@ -203,35 +228,35 @@ module.exports.render = function(recorddata) {
     rendered = rendered + '</header>';
     if (recorddata.narrower) {
         rendered = rendered + '<section><em>Narrower terms:</em><ul>';
-        for (var ii in recorddata.narrower) {
+        for (ii in recorddata.narrower) {
             rendered = rendered + '<li><span class="eric_narrower">' + recorddata.narrower[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
     }
     if (recorddata.broader) {
         rendered = rendered + '<section><em>Broader terms:</em><ul>';
-        for (var ii in recorddata.broader) {
+        for (ii in recorddata.broader) {
             rendered = rendered + '<li><span class="eric_broader">' + recorddata.broader[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
     }
     if (recorddata.related) {
         rendered = rendered + '<section><em>Related terms:</em><ul>';
-        for (var ii in recorddata.related) {
+        for (ii in recorddata.related) {
             rendered = rendered + '<li><span class="eric_related">' + recorddata.related[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
     }
     if (recorddata.preferred) {
         rendered = rendered + '<section><em>Instead of this term, use:</em><ul>';
-        for (var ii in recorddata.preferred) {
+        for (ii in recorddata.preferred) {
             rendered = rendered + '<li><span class="eric_preferred">' + recorddata.preferred[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
     }
     if (recorddata.synonyms) {
         rendered = rendered + '<section><em>Synonyms:</em><ul>';
-        for (var ii in recorddata.synonyms) {
+        for (ii in recorddata.synonyms) {
             rendered = rendered + '<li><span class="eric_synonyms">' + recorddata.synonyms[ii] + '</span></li>';
         }
         rendered = rendered + '</ul></section>';
@@ -249,7 +274,24 @@ module.exports.snippet = function(recorddata) {
     return rendered;
 };
 
-module.exports.indexes = function(recorddata) {};
+function stringify (object) {
+    var string = ''
+    if (typeof object !== 'object') {
+        return object;
+    }
+    for (var el in object) {
+        string = string + ' ' + stringify(object[el]);
+    }
+    return string;
+}
+
+module.exports.indexes = function(recorddata) {
+    return indexes = {
+        key: recorddata.name,
+        scopenote: recorddata.scope,
+        keyword: stringify(recorddata)
+    };
+};
 
 module.exports.links = function(recorddata) {};
 
@@ -261,7 +303,7 @@ module.exports = {
     bnjson: require('./bnjson'),
     ericthesaurus: require('./ericthesaurus'),
     eric: require('./eric')
-}
+};
 
 },{"./bnjson":2,"./eric":3,"./ericthesaurus":4}]},{},[1])
 ;
