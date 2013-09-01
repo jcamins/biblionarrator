@@ -8,6 +8,7 @@ Biblionarrator requires a server with the following:
 
 * Node.js 0.8+
 * npm (node package manager)
+* grunt
 * ElasticSearch 0.90.3
 * Apache Cassandra 
 
@@ -45,7 +46,11 @@ Installation procedure
 
    Redis is available for Fedora/CentOS/RHEL from the EPEL repository.
 
-5) Download Biblionarrator. You can download a zip file from GitHub at
+5) Install grunt by running:
+
+    sudo npm install -g grunt-cli
+
+6) Download Biblionarrator. You can download a zip file from GitHub at
    https://github.com/biblionarrator/biblionarrator/archive/master.zip or
    clone the git repo:
 
@@ -53,19 +58,29 @@ Installation procedure
 
     cd biblionarrator
 
-6) Install Biblionarrator's dependencies using npm
+7) Install Biblionarrator's dependencies using npm
 
     npm install
 
-7) Copy the configuration files in config/ with the extension .dist
+8) Configure Biblionarrator with grunt
+
+    grunt
+
+   The above command will run all the unit tests, check the code for violations,
+   and generate API documentation. If you do not want to do those three things
+   in addition to the regular build, you can use:
+
+    grunt build
+
+8) Copy the configuration files in config/ with the extension .dist
    for your local configuration, and customize them for your particular
    needs:
 
    cp config/auth.js.dist config/auth.js
    [etc.]
 
-8) Start Biblionarrator
+9) Start Biblionarrator
     
     node bin/start.js
 
-9) Enjoy Biblionarrator
+10) Enjoy Biblionarrator
