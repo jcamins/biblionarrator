@@ -52,7 +52,12 @@
     "less": "1.4.x",
     "mocha": "1.11.x",
     "PrettyCSS": "0.3.x",
-    "superagent": "0.15.x"
+    "superagent": "0.15.x",
+    "grunt": "~0.4.1",
+    "grunt-browserify": "~1.2.4",
+    "grunt-contrib-less": "~0.7.0",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-mocha-test": "~0.6.3"
   },
   "bundledDependencies": [],
   "license": "AGPLv3",
