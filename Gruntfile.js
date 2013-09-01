@@ -62,6 +62,7 @@ module.exports = function(grunt) {
                     "loopfunc": true,
                     "unused": true,
                     "sub": true,
+                    "expr": true,
                     globals: {
                         module: true,
                         require: true

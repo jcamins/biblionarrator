@@ -1,7 +1,6 @@
 var expect = require('chai').expect,
     request = require('superagent').agent(),
     PrettyCSS = require('PrettyCSS'),
-    jshint = require('jshint').JSHINT,
     testhost = require('../server').testhost();
 
 

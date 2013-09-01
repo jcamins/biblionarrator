@@ -27,7 +27,6 @@ var expect = require('chai').expect,
     models = require('../models'),
     Query = models.Query,
     searchengine = require('../lib/searchengine');
-var inspect = require('eyes').inspector({maxLength: false});
 
 describe('Search engine', function () {
     before(function () {

@@ -1,6 +1,5 @@
 var expect = require('chai').expect,
     datastore = require('../lib/datastore');
-var inspect = require('eyes').inspector({maxLength: false});
 
 describe('Datastore', function () {
     it('saves and retrieves single key', function (done) {
