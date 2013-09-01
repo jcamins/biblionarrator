@@ -10,6 +10,14 @@ module.exports = function(grunt) {
                 options: { }
             }
         },
+        uglify: {
+            dist: {
+                files: {
+                    'public/js/generated/formathandlers.min.js': [ 'public/js/generated/formathandlers.js' ],
+                    'public/js/generated/templates.min.js': [ 'public/js/generated/templates.js' ],
+                }
+            }
+        },
         less: {
             dist: {
                 files: {
@@ -93,10 +101,11 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
 
-    grunt.registerTask('test', [ 'mochaTest' ])
-    grunt.registerTask('default', [ 'browserify', 'less', 'mochaTest' ]);
+    grunt.registerTask('test', [ 'jshint', 'mochaTest' ])
+    grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest' ]);
 };
