@@ -104,7 +104,7 @@ function fnDrawCallback() {
             {
                 "onblur" : "submit",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')].options)
+                "data": columns[$(this).attr('data-column')]['options']
             }
         );
     });
@@ -114,7 +114,7 @@ function fnDrawCallback() {
             {
                 "onblur" : "ignore",
                 "type": "select",
-                "data": eval(columns[$(this).attr('data-column')].options)
+                "data": columns[$(this).attr('data-column')]['options']
             }
         );
     });

@@ -17,12 +17,13 @@
         
             var boxwidth = width * 0.8;
             var boxheight = height * 0.8;
-            for (var ii = 0; ii < data.records.length; ii++) {
+            var ii;
+            for (ii = 0; ii < data.records.length; ii++) {
                 data.records[ii].x = width / 2;
                 data.records[ii].y = height / 2;
             }
             if (typeof data.landmarks !== 'undefined') {
-                for (var ii = 0; ii < data.landmarks.length; ii++) {
+                for (ii = 0; ii < data.landmarks.length; ii++) {
                     data.records[data.recmap[data.landmarks[ii]]].x = 0.1 * width + (boxwidth / 2) + (boxwidth / 2) * Math.cos((2 * Math.PI / data.landmarks.length) * ii);
                     data.records[data.recmap[data.landmarks[ii]]].y = 0.1 * height + (boxheight / 2) + (boxheight / 2) * Math.sin((2 * Math.PI / data.landmarks.length) * ii);
                     data.records[data.recmap[data.landmarks[ii]]].fixed = true;
@@ -92,6 +93,7 @@
                     .style('background-color', function (d) { return edgecolors(d); });
 
         
+            /*jshint -W093 */ /* We meant an assignment */
             force.on("tick", function() {
                 link.attr("x1", function(d) { return d.source.x; })
                     .attr("y1", function(d) { return d.source.y; })
@@ -102,6 +104,7 @@
                     .attr("cy", function(d) { return d.y = Math.max(15, Math.min(height - 15, d.y)); })
                     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
             });
+            /*jshint +W093 */
         
             function dragstart(d) {
                 d.fixed = true;
@@ -127,8 +130,7 @@
             function neighboring(a, b) {
                 if (a && b) {
                     for (var ii = 0; ii < data.edges.length; ii++) {
-                        if ((data.edges[ii].source === a && data.edges[ii].target === b)
-                                || (data.edges[ii].source === b && data.edges[ii].target === a)) {
+                        if ((data.edges[ii].source === a && data.edges[ii].target === b) || (data.edges[ii].source === b && data.edges[ii].target === a)) {
                             return true;
                         }
                     }
@@ -156,7 +158,7 @@
             url += 'landmark=' + landmark + '&';
         });
         drawMap(url);
-    }   
+    };
 
     bnvis.searchmap = function (search) {
         if (search.indexOf('?') === -1) {
@@ -166,5 +168,5 @@
         }
         search += 'format=map';
         drawMap(search);
-    }
+    };
 }( window.bnvis = window.bnvis || {}));

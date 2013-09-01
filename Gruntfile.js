@@ -46,7 +46,6 @@ module.exports = function(grunt) {
                 ],
                 options: {
                     "loopfunc": true,
-                    "unused": true,
                     "sub": true,
                     globals: {
                         module: true,
