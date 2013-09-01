@@ -25,7 +25,7 @@ var expect = require('chai').expect,
     g = graphstore(opts),
     offload = require('../lib/graphoffloader');
 
-describe('Graph offloader', function () {
+describe.skip('Graph offloader', function () {
     before(function () {
         require('../bin/gendata');
     });
@@ -52,6 +52,8 @@ describe('Graph offloader', function () {
             done();
         });
     });
+    after(function () {
+        g.V().remove();
+    });
 });
 
-g.V().remove();
