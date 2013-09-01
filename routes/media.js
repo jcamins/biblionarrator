@@ -2,6 +2,7 @@ var crypto = require('crypto'),
     fs = require('fs'),
     qfs = require('q-io/fs');
 
+/*jshint unused:false */ /* Not yet updated */
 exports.upload = function(req, res) {
     var datastore = require('../lib/datastore.js');
     var shasum = crypto.createHash('sha1');
@@ -51,3 +52,4 @@ exports.del = function(req, res) {
         });
     });
 };
+/*jshint unused:true */

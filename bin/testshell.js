@@ -20,8 +20,7 @@ var opts = {
     },
 };
 
-var expect = require('chai').expect,
-    graphstore = require('../lib/graphstore'),
+var graphstore = require('../lib/graphstore'),
     g = graphstore(opts),
     models = require('../models'),
     Query = models.Query,
@@ -68,6 +67,8 @@ r.context.g = g;
 r.context.graphstore = graphstore;
 r.context.inspect = inspect;
 r.context.Text = g.java.import('com.thinkaurelius.titan.core.attribute.Text');
+r.context.Query = Query;
+r.context.searchengine = searchengine;
 
 r.on('exit', function () {
   console.log('Good-bye from Gremlin!');

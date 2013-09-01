@@ -4,7 +4,6 @@ var fs = require('fs'),
     models = require('../../models'),
     Record = models.Record,
     RecordType = models.RecordType,
-    inspect = require('eyes').inspector({maxLength: false});
     Q = require('q');
 
 graphstore.autocommit = false;
@@ -52,7 +51,7 @@ xml.on('endElement: record', function (record) {
             promises = [ ];
             setTimeout(function () {
                 xml.resume();
-            }, 100)
+            }, 100);
         });
     }
     mainrecordcount++;
@@ -67,6 +66,7 @@ xml.on('endElement: record', function (record) {
         subjects: [ ],
         creators: [ ]
     };
+    var jj;
     for (jj in record.metadata['dc:identifier']) {
         if (record.metadata['dc:identifier'][jj]['$'].scheme === 'dcterms:URI') {
             rec.doi = record.metadata['dc:identifier'][jj]['$text'];

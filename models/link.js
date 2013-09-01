@@ -4,6 +4,7 @@ var Q = require('q'),
 
 module.exports = Link;
 
+/*jshint unused:false */ /* Not fully implemented */
 function Link(source_id, target_id, type, label) {
     var deferred = Q.defer();
     var me = this;
@@ -52,6 +53,7 @@ function Link(source_id, target_id, type, label) {
         deferred.promise.then(callback);
     };
 }
+/*jshint unused:true */
 
 Link.init = function(ref) {
     models = ref;

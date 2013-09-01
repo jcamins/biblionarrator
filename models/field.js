@@ -6,7 +6,7 @@ module.exports = Field;
 
 function Field (data) {
     var self = this;
-    self.model = 'Field'
+    self.model = 'Field';
     extend(self, data);
 
     Object.defineProperties(self, {

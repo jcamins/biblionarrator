@@ -3,12 +3,7 @@ var sharedview = require('../lib/sharedview'),
     Record = models.Record,
     Field = models.Field,
     RecordType = models.RecordType,
-    Query = models.Query,
-    paginator = require('../lib/paginator'),
-    searchengine = require('../lib/searchengine'),
-    socketserver = require('../lib/socketserver'),
     Q = require('q');
-var inspect = require('eyes').inspector({maxLength: false});
 
 exports.linkselect = function(req, res) {
     res.render('link-select', {
@@ -29,7 +24,9 @@ exports.linkadd = function(req, res) {
     }
 };
 
+/*jshint unused:false */ /* Not yet implemented */
 exports.linklist = function(req, res) {};
+/*jshint unused:true */
 
 exports.view = function(req, res) {
     var record = Record.findOne({id: req.params.record_id}) || new Record();

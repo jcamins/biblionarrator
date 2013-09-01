@@ -11,7 +11,7 @@ function Query(string, syntax) {
     self.syntax = syntax;
     extend(self, queryparser.decompose(self.ast));
     return self;
-};
+}
 
 module.exports = Query;
 

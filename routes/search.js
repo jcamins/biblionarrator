@@ -1,18 +1,13 @@
 "use strict";
 var sharedview = require('../lib/sharedview'),
     models = require('../models'),
-    RecordList = models.RecordList,
     Query = models.Query,
-    paginator = require('../lib/paginator'),
     socketserver = require('../lib/socketserver'),
     Q = require('q'),
     searchengine = require('../lib/searchengine'),
     extend = require('extend');
-var graphstore = require('../lib/graphstore'),
-    g = graphstore();
 var offload = require('../lib/graphoffloader'),
-    cache = require('../lib/cache'),
-    inspect = require('eyes').inspector({maxLength: false});
+    cache = require('../lib/cache');
 
 function prepareQuery(req) {
     var querystring = req.query.q || '';
@@ -47,7 +42,7 @@ exports.view = function(req, res) {
                     req.query.records.push(rec.id);
                 });
                 return exports.map(req, res);
-            };
+            }
             if (accept === 'html') {
                 res.render(layout, data, function(err, html) {
                     if (err) {
