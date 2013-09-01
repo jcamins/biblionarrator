@@ -97,6 +97,20 @@ module.exports = function(grunt) {
                 },
                 src: [ 'tests/*.js' ]
             }
+        },
+        jsdoc: {
+            dist: {
+                src: [
+                    'lib/**/*.js',
+                    'models/*.js',
+                    'routes/*.js',
+                    'bin/**/*.js',
+                    'tests/*.js'
+                ],
+                options: {
+                    destination: 'doc/api'
+                }
+            }
         }
     });
 
@@ -105,7 +119,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-jsdoc');
 
-    grunt.registerTask('test', [ 'jshint', 'mochaTest' ])
-    grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest' ]);
+    grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ])
+    grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ])
+    grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
 };
