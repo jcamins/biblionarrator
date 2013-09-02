@@ -96,13 +96,21 @@ Vagrant installation
 
     vagrant box add precise64 http://files.vagrantup.com/precise64.box
 
-4) Provision your Vagrant box:
+4) Download Biblionarrator. You can download a zip file from GitHub at
+   https://github.com/biblionarrator/biblionarrator/archive/master.zip or
+   clone the git repo:
+
+    git clone git://github.com/biblionarrator/biblionarrator.git
+    cd biblionarrator
+
+
+5) Provision your Vagrant box:
 
     vagrant up
 
    When asked, choose your computer's primary network interface for bridging.
 
-5) Connect the configured machine:
+6) Connect to the configured machine:
 
     vagrant ssh
 
