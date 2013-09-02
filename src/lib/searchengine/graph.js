@@ -1,4 +1,4 @@
-var offload = require('bnworker');
+var offload = require('bngraphworker');
 
 module.exports.search = function (options, recordcb, facetcb) {
     offload('search', options, function (results) {

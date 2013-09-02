@@ -6,7 +6,7 @@ var sharedview = require('../lib/sharedview'),
     Q = require('q'),
     searchengine = require('../lib/searchengine'),
     extend = require('extend');
-var offload = require('bnworker'),
+var offload = require('bngraphworker'),
     cache = require('../lib/cache');
 
 function prepareQuery(req) {
