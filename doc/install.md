@@ -72,15 +72,16 @@ Installation procedure
 
     grunt build
 
-8) Copy the configuration files in config/ with the extension .dist
-   for your local configuration, and customize them for your particular
-   needs:
+9) Run the grunt-based installer and answer the questions based on your planned
+   configuration
 
-   cp config/auth.js.dist config/auth.js
-   [etc.]
+    grunt install
 
-9) Start Biblionarrator
+   Make any further changes your configuration requires to the configuration files
+   in config/
+
+10) Start Biblionarrator
     
     node bin/start.js
 
-10) Enjoy Biblionarrator
+11) Enjoy Biblionarrator
