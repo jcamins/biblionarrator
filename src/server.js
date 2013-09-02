@@ -3,24 +3,25 @@ var express = require('express'),
     handlebars = require('express-hbs'),
     http = require('http'),
     routes = require('./routes'),
+    path = require('path'),
     auth = require('./lib/auth');
 
 var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('views', path.normalize(__dirname + '/../views'));
 app.engine('handlebars', handlebars.express3({
-        partialsDir: __dirname + '/views/partials',
-        defaultLayout: __dirname + '/views/layouts/main.handlebars'
+        partialsDir: path.normalize(__dirname + '/../views/partials'),
+        defaultLayout: path.normalize(__dirname + '/../views/layouts/main.handlebars')
     }));
 app.set('view engine', 'handlebars');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 'tmp' }));
 app.use(express.methodOverride());
-app.use(express.static('public'));
-app.use('/views', express.static(__dirname + '/views'));
+app.use(express.static(path.normalize(__dirname + '/../public')));
+app.use('/views', express.static(path.normalize(__dirname + '/../views')));
 auth.initialize(app);
 app.use(app.router);
 //params.extend(app);
