@@ -1,4 +1,4 @@
-var graphstore = require('../lib/graphstore'),
+var graphstore = require('bngraphstore'),
     g = graphstore(),
     repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});

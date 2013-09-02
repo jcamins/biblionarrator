@@ -22,7 +22,7 @@ var opts = {
 
 var expect = require('chai').expect,
     queryparser = require('../src/node_modules/queryparser'),
-    graphstore = require('../src/lib/graphstore'),
+    graphstore = require('../src/node_modules/bngraphstore'),
     g = graphstore(opts),
     models = require('../src/models'),
     Query = models.Query,

@@ -1,7 +1,7 @@
 "use strict";
 var models = require('../../models'),
     Record = models.Record,
-    graphstore = require('../../lib/graphstore'),
+    graphstore = require('bngraphstore'),
     g = graphstore();
 
 graphstore.autocommit = false;

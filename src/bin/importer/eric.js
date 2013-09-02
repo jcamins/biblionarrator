@@ -1,6 +1,6 @@
 var fs = require('fs'),
     XmlStream = require('xml-stream'),
-    graphstore = require('../../lib/graphstore'),
+    graphstore = require('bngraphstore'),
     models = require('../../models'),
     Record = models.Record,
     RecordType = models.RecordType,

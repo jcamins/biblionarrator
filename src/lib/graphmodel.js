@@ -1,7 +1,7 @@
 "use strict";
 var util = require('util'),
     extend = require('extend'),
-    graphstore = require('../lib/graphstore'),
+    graphstore = require('bngraphstore'),
     g = graphstore(),
     T = g.Tokens;
 

@@ -1,7 +1,7 @@
 "use strict";
 var models,
     extend = require('extend'),
-    graphstore = require('../lib/graphstore'),
+    graphstore = require('bngraphstore'),
     GraphModel = require('../lib/graphmodel'),
     g = graphstore(),
     formatters = require('../lib/formats');

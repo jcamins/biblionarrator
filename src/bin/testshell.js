@@ -20,7 +20,7 @@ var opts = {
     },
 };
 
-var graphstore = require('../lib/graphstore'),
+var graphstore = require('bngraphstore'),
     g = graphstore(opts),
     models = require('../models'),
     Query = models.Query,
