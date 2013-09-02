@@ -104,7 +104,7 @@ describe('Search engine', function () {
                 }
             }
        });
-        require('../src/bin/gendata');
+        require('../tools/graphstore/gendata');
     });
     it('finds record using fielded search', function (done) {
         searchengine.search({ query: new Query('model:recordtype', 'qp'), offset: 0, perpage: 20 }, function (list) {
