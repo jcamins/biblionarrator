@@ -1,6 +1,10 @@
 Installing Biblionarrator
 =========================
 
+*NOTE*: If you are installing Biblionarrator for testing or development purposes
+you may want to use Vagrant for the installation. In that case, see the section
+at the end entitled [Vagrant installation]
+
 Requirements
 ------------
 
@@ -79,3 +83,32 @@ Installation procedure
     node bin/start.js
 
 11) Enjoy Biblionarrator
+
+
+Vagrant installation
+====================
+
+1) Install VirtualBox from https://www.virtualbox.org/
+
+2) Follow the instructions on http://www.vagrantup.com/ to install Vagrant.
+
+3) Configure the 64-bit Ubuntu Precise box for use with Vagrant:
+
+    vagrant box add precise64 http://files.vagrantup.com/precise64.box
+
+4) Provision your Vagrant box:
+
+    vagrant up
+
+   When asked, choose your computer's primary network interface for bridging.
+
+5) Connect the configured machine:
+
+    vagrant ssh
+
+   Or:
+
+    ssh vagrant@192.168.214.214
+
+   The second option may be more stable, but requires you to enter a password
+   (default: vagrant).
