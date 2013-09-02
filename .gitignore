@@ -37,7 +37,6 @@ publish
 .idea
 
 paths.php
-node_modules
 cassandra
 
 # Generated assets

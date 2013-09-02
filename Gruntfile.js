@@ -4,8 +4,8 @@ module.exports = function(grunt) {
         browserify: {
             dist: {
                 files: {
-                    'public/js/generated/formathandlers.js': ['clientjs/formathandlers.js'],
-                    'public/js/generated/templates.js': ['clientjs/templates.js'],
+                    'public/js/generated/formathandlers.js': ['src/clientjs/formathandlers.js'],
+                    'public/js/generated/templates.js': ['src/clientjs/templates.js'],
                 },
                 options: { }
             }
@@ -34,11 +34,12 @@ module.exports = function(grunt) {
         jshint: {
             server: {
                 src: [
-                    'server.js',
-                    'routes/*.js',
-                    'models/*.js',
-                    'bin/**/*.js',
-                    'lib/**/*.js',
+                    'src/server.js',
+                    'src/routes/*.js',
+                    'src/models/*.js',
+                    'src/bin/**/*.js',
+                    'src/lib/**/*.js',
+                    'src/node_modules/**/*.js',
                 ],
                 options: {
                     "loopfunc": true,
@@ -50,7 +51,7 @@ module.exports = function(grunt) {
             client: {
                 src: [
                     'public/js/*.js',
-                    'clientjs/*.js',
+                    'src/clientjs/*.js',
                 ],
                 options: {
                     "loopfunc": true,

@@ -1,3 +1,3 @@
 require('blanket')({
-    pattern: '.'
+    pattern: 'src/'
 });
