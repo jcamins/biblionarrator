@@ -21,12 +21,12 @@ var opts = {
 };
 
 var expect = require('chai').expect,
-    queryparser = require('../lib/queryparser'),
-    graphstore = require('../lib/graphstore'),
+    queryparser = require('../src/node_modules/queryparser'),
+    graphstore = require('../src/lib/graphstore'),
     g = graphstore(opts),
-    models = require('../models'),
+    models = require('../src/models'),
     Query = models.Query,
-    searchengine = require('../lib/searchengine');
+    searchengine = require('../src/lib/searchengine');
 
 describe('Search engine', function () {
     before(function () {
@@ -85,9 +85,26 @@ describe('Search engine', function () {
                     unique: false,
                     multivalue: false
                 }
+            },
+            linktypes: {
+                "author": {
+                    "outlabel": "By",
+                    "inlabel": "Wrote",
+                    "facetlabel": "Author"
+                },
+                "subject": {
+                    "outlabel": "About",
+                    "inlabel": "Topic of",
+                    "facetlabel": "Subject"
+                },
+                "recordtype": {
+                    "outlabel": "Is a",
+                    "inlabel": "Example of",
+                    "facetlabel": "Record type"
+                }
             }
-        });
-        require('../bin/gendata');
+       });
+        require('../src/bin/gendata');
     });
     it('finds record using fielded search', function (done) {
         searchengine.search({ query: new Query('model:recordtype', 'qp'), offset: 0, perpage: 20 }, function (list) {

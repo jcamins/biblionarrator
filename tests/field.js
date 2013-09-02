@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
-    models = require('../models'),
+    models = require('../src/models'),
     Field = models.Field,
-    datastore = require('../lib/datastore');
+    datastore = require('../src/lib/datastore');
 
 describe('Field model', function () {
     var field;

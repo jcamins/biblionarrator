@@ -2,7 +2,7 @@ var expect = require('chai').expect,
     request = require('superagent').agent(),
     fs = require('fs'),
     marked = require('marked'),
-    testhost = require('../server').testhost();
+    testhost = require('../src/server').testhost();
 
 
 describe('install markdown document', function() {

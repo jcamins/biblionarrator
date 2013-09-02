@@ -21,13 +21,13 @@ var opts = {
 };
 
 var expect = require('chai').expect,
-    graphstore = require('../lib/graphstore'),
+    graphstore = require('../src/lib/graphstore'),
     g = graphstore(opts),
-    offload = require('../lib/graphoffloader');
+    offload = require('../src/lib/graphoffloader');
 
 describe.skip('Graph offloader', function () {
     before(function () {
-        require('../bin/gendata');
+        require('../src/bin/gendata');
     });
     var list;
     it('successfully offloads a search', function (done) {

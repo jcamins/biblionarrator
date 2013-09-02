@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-    graphstore = require('../lib/graphstore');
+    graphstore = require('../src/lib/graphstore');
 
 
 var engines = [ 'orient', 'titan', 'tinker' ];

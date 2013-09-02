@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
     request = require('superagent').agent(),
     PrettyCSS = require('PrettyCSS'),
-    testhost = require('../server').testhost();
+    testhost = require('../src/server').testhost();
 
 
 describe('fields.css', function() {

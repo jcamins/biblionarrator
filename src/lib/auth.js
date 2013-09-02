@@ -3,7 +3,7 @@ var passport = require('passport'),
     BrowserIDStrategy = require('passport-browserid').Strategy,
     models = require('../models'),
     User = models.User,
-    config = require('../config/auth');
+    config = require('../../config/auth');
 
 module.exports.initialize = function (app) {
     passport.serializeUser(function(user, done) {

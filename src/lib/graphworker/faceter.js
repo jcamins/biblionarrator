@@ -1,6 +1,6 @@
 var graphstore = require('../graphstore'),
     g = graphstore(),
-    linktypes = require('../../config/linktypes');
+    linktypes = require('../../../config/linktypes');
 
 module.exports = function (input) {
     var facets = new g.HashMap();

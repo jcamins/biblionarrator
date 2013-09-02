@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-    datastore = require('../lib/datastore');
+    datastore = require('../src/lib/datastore');
 
 describe('Datastore', function () {
     it('saves and retrieves single key', function (done) {

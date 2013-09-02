@@ -1,9 +1,10 @@
 "use strict";
 var config = { },
+    extend = require('extend'),
     g = require('gremlin'),
-    seconfig = require('../config/searchengine'),
+    seconfig = require('../../config/searchengine'),
     schema = require('./schemas'),
-    queryparser = require('./queryparser');
+    queryparser = require('queryparser');
 
 var db;
 var engine;
@@ -12,14 +13,14 @@ seconfig.schemas.forEach(function (which) {
     schema.use(which);
 });
 
-queryparser.initialize(schema);
+queryparser.initialize(extend(seconfig, schema));
 
 module.exports = function graph(opts) {
     if (process.env['BN_GRAPHSTORE']) {
         config = JSON.parse(process.env['BN_GRAPHSTORE']);
         engine = config.engine || config.default;
     } else {
-        config = require('../config/graphstore');
+        config = require('../../config/graphstore');
         engine = config.engine || config.default;
     }
     if (typeof opts !== 'undefined') {
