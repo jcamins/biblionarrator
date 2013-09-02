@@ -79,7 +79,7 @@ Installation procedure
 
 10) Start Biblionarrator
     
-    node bin/start.js
+    bin/biblionarrator-server
 
 11) Enjoy Biblionarrator
 
@@ -130,7 +130,7 @@ Vagrant installation
 
 8) Start Biblionarrator
     
-    node bin/start.js
+    bin/biblionarrator-server
 
 9) Enjoy Biblionarrator
 
