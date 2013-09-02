@@ -1,7 +1,8 @@
+#!/usr/bin/env node
 var fs = require('fs'),
     XmlStream = require('xml-stream'),
-    graphstore = require('bngraphstore'),
-    models = require('../../models'),
+    graphstore = require('../../src/node_modules/bngraphstore'),
+    models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType,
     Q = require('q');

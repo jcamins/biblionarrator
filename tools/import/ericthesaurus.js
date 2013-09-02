@@ -1,7 +1,7 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
-    graphstore = require('bngraphstore'),
-    models = require('../../models'),
+    graphstore = require('../../src/node_modules/bngraphstore'),
+    models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType,
     Q = require('q');
