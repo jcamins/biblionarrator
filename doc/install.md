@@ -53,7 +53,6 @@ Installation procedure
    clone the git repo:
 
     git clone git://github.com/biblionarrator/biblionarrator.git
-
     cd biblionarrator
 
 7) Install Biblionarrator's dependencies using npm
@@ -120,3 +119,18 @@ Vagrant installation
 
    The second option may be more stable, but requires you to enter a password
    (default: vagrant).
+
+7) Run the grunt-based installer and answer the questions based on your planned
+   configuration
+
+    grunt install
+
+   Make any further changes your configuration requires to the configuration files
+   in config/
+
+8) Start Biblionarrator
+    
+    node bin/start.js
+
+9) Enjoy Biblionarrator
+
