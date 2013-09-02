@@ -9,19 +9,13 @@ Biblionarrator requires a server with the following:
 * Node.js 0.8+
 * npm (node package manager)
 * grunt
-* ElasticSearch 0.90.3
-* Apache Cassandra 
+* Redis
 
-*NOTE*: After step 1 you will need to run (in the biblionarrator root):
+These instructions assume you will be using Titan with Apache Cassandra
+and ElasticSearch 0.90+. However, depending on your desired configuration, you
+may not need one or both of them.
 
-    npm install
-
-
-If you are setting up a development environment, you will also need:
-
-* git
-* make
-* lesscss
+If you are setting up a development environment, you will also need git.
 
 Installation procedure
 ----------------------
