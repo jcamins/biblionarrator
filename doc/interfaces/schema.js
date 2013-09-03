@@ -1,7 +1,7 @@
 /**
  * @namespace
- * @alias npm:bn-schema-*
- * @desc Schemas are implemented as separate npm modules in the bn-schema
+ * @alias bn-schema-
+ * @desc Schemas are implemented as separate npm modules in the bn-schema-*
  * namespace. The schema described here is used only for documentation purposes.
  */
 var schema = {
