@@ -1,4 +1,4 @@
-var graphstore = require('bngraphstore'),
+var graphstore = require('../../src/node_modules/bngraphstore'),
     g = graphstore(),
     repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});
