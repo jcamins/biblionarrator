@@ -1,6 +1,8 @@
 var opts = {
     engine: 'titan',
     titan: {
+        'storage.backend': 'cassandra',
+        'storage.hostname': '127.0.0.1',
         'storage.keyspace': 'bntest',
         'storage.index.search.backend': 'lucene',
         'storage.index.search.directory': __dirname + '/data/titanft',
@@ -18,6 +20,80 @@ var opts = {
     neo4j: {
         path: __dirname + '/data/neo4j',
     },
+    schema:  {
+        operators: {
+           'AND': '&&',
+           'OR': '\\|\\|',
+           'FLOAT_START': '\\{\\{',
+           'FLOAT_END': '\\}\\}',
+           'GS': '\\(',
+           'GE': '\\)',
+           'REQ': '\\+',
+           'DIS': '-',
+           'MOD': '#',
+           'NOT': '!',
+           'FACET_START': '\\[',
+           'FACET_END': '\\]',
+           'FILTER_START': '(range)<',
+           'FILTER_END': '>'
+        },
+        indexes: {
+            author: {
+                type: 'edge',
+                unidirected: false
+            },
+            title: {
+                type: 'text'
+            },
+            keyword: {
+                type: 'text',
+                unique: false,
+                multivalue: false
+            },
+            key: {
+                type: 'property',
+                datatype: 'String',
+                unique: true,
+                multivalue: false
+            },
+            recordtype: {
+                type: 'edge',
+                unidirected: true
+            },
+            model: {
+                type: 'property',
+                datatype: 'String',
+                unique: false,
+                multivalue: false
+            },
+            linkbrowse: {
+                type: 'dbcallback'
+            },
+            vorder: {
+                type: 'property',
+                datatype: 'Integer',
+                unique: false,
+                multivalue: false
+            }
+        },
+        linktypes: {
+            "author": {
+                "outlabel": "By",
+                "inlabel": "Wrote",
+                "facetlabel": "Author"
+            },
+            "subject": {
+                "outlabel": "About",
+                "inlabel": "Topic of",
+                "facetlabel": "Subject"
+            },
+            "recordtype": {
+                "outlabel": "Is a",
+                "inlabel": "Example of",
+                "facetlabel": "Record type"
+            }
+        }
+    }
 };
 
 var expect = require('chai').expect,
@@ -30,80 +106,7 @@ var expect = require('chai').expect,
 
 describe('Search engine', function () {
     before(function () {
-        queryparser.initialize({
-            operators: {
-                'AND': '&&',
-                'OR': '\\|\\|',
-                'FLOAT_START': '\\{\\{',
-                'FLOAT_END': '\\}\\}',
-                'GS': '\\(',
-                'GE': '\\)',
-                'REQ': '\\+',
-                'DIS': '-',
-                'MOD': '#',
-                'NOT': '!',
-                'FACET_START': '\\[',
-                'FACET_END': '\\]',
-                'FILTER_START': '(range)<',
-                'FILTER_END': '>'
-            },
-            indexes: {
-                author: {
-                    type: 'edge',
-                    unidirected: false
-                },
-                title: {
-                    type: 'text'
-                },
-                keyword: {
-                    type: 'text',
-                    unique: false,
-                    multivalue: false
-                },
-                key: {
-                    type: 'property',
-                    datatype: 'String',
-                    unique: true,
-                    multivalue: false
-                },
-                recordtype: {
-                    type: 'edge',
-                    unidirected: true
-                },
-                model: {
-                    type: 'property',
-                    datatype: 'String',
-                    unique: false,
-                    multivalue: false
-                },
-                linkbrowse: {
-                    type: 'dbcallback'
-                },
-                vorder: {
-                    type: 'property',
-                    datatype: 'Integer',
-                    unique: false,
-                    multivalue: false
-                }
-            },
-            linktypes: {
-                "author": {
-                    "outlabel": "By",
-                    "inlabel": "Wrote",
-                    "facetlabel": "Author"
-                },
-                "subject": {
-                    "outlabel": "About",
-                    "inlabel": "Topic of",
-                    "facetlabel": "Subject"
-                },
-                "recordtype": {
-                    "outlabel": "Is a",
-                    "inlabel": "Example of",
-                    "facetlabel": "Record type"
-                }
-            }
-       });
+        queryparser.initialize(opts.schema);
         require('../tools/graphstore/gendata');
     });
     it('finds record using fielded search', function (done) {
