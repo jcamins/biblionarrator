@@ -1,14 +1,11 @@
 #!/usr/bin/env node
-var fs = require('fs'),
-    XmlStream = require('xml-stream'),
+var XMLImporter = require('../../src/node_modules/bnimporter/xml'),
     graphstore = require('../../src/node_modules/bngraphstore'),
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType,
     Q = require('q');
 
-graphstore.autocommit = false;
-var filename = process.argv[2]; // It would be great if we could do multiple files in parallel, but in practice the heap gets too big
 var recordtypes = { };
 recordtypes['person'] = RecordType.findOne({ key: 'Person' });
 recordtypes['institution'] = RecordType.findOne({ key: 'Institution' });
@@ -28,33 +25,23 @@ if (typeof recordtypes['institution'] === 'undefined') {
     });
     recordtypes['institution'].save();
 }
-var stream = fs.createReadStream(filename);
-var xml = new XmlStream(stream);
 var linkcount = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
-xml.collect('dc:creator');
-xml.collect('dc:subject');
-xml.collect('dc:type');
-xml.collect('dc:identifier');
-xml.collect('dcterms:educationLevel');
 
-var promises = [ ];
+var importer = new XMLImporter({
+    files: [ process.argv[2] ],
+    collect: [
+        'dc:creator',
+        'dc:subject',
+        'dc:type',
+        'dc:identifier',
+        'dcterms:educationLevel'
+    ],
+    recordElement: 'record'
+});
 
-xml.on('endElement: record', function (record) {
-    var mypromise = Q.defer();
-    promises.push(mypromise.promise);
-    console.log("Just saw source record " + mainrecordcount);
-    if (mainrecordcount % 1000 === 0 && mainrecordcount > 0) {
-        xml.pause();
-        Q.all(promises).then(function () {
-            graphstore.getDB().commitSync();
-            promises = [ ];
-            setTimeout(function () {
-                xml.resume();
-            }, 100);
-        });
-    }
+importer.on('record', function (record, mypromise) {
     mainrecordcount++;
     recordcount++;
     var rec = {
@@ -140,9 +127,7 @@ xml.on('endElement: record', function (record) {
     mypromise.resolve(true);
 });
 
-xml.on('end', function () {
-    console.log("Processed " + mainrecordcount + " records and created " + recordcount + " records/" + linkcount + " links");
-    graphstore.getDB().commitSync();
+importer.on('done', function () {
     process.exit();
 });
 
