@@ -35,6 +35,31 @@ var schema = {
      * @property indexes[name].unidirected
      * Applicable to edge indexes only. If set to true, the indexed edge is
      * unidirectional and cannot be traversed in the reverse direction.
+     *
+     * @example
+     *  module.exports = {
+     *      indexes: {
+     *          keyword: {
+     *              type: 'text',
+     *              unique: false,
+     *              multivalue: false
+     *          },
+     *          key: {
+     *              type: 'property',
+     *              datatype: 'String',
+     *              unique: true,
+     *              multivalue: false
+     *          },
+     *          recordtype: {
+     *              type: 'edge',
+     *              unidirected: true
+     *          },
+     *          linkbrowse: {
+     *              type: 'dbcallback'
+     *          }
+     *      }
+     *  };
+     *
      */
     indexes: {
         name: {
