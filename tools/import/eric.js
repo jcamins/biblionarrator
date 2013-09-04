@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var XMLImporter = require('../../src/node_modules/bnimporter/xml'),
+var XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/node_modules/bngraphstore'),
     models = require('../../src/models'),
     Record = models.Record,
