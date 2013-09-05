@@ -1,5 +1,6 @@
 /**
- * @namespace importers
+ * @namespace
+ * @alias importer
  * @desc Standardized API for Biblionarrator stream-based importers. Importer
  * scripts should handle all relevant events.
  */
@@ -7,37 +8,59 @@
 /**
  * @constructor
  * @param options {object} Configuration options for the stream importer
- * Configuration options are format-specific, except for a standard files
- * array which contains a list of the files to be imported.
+ * Configuration options are mostly format-specific
+ * @param options.files {array} files to be imported
+ * @param options.collect {array} (XML-based importers) list of elements that should
+ * be parsed into arrays rather than scalars
+ * @param options.recordElement {string} (XML-based importers) record element
+ *
+ * @fires Importer#filestart
+ *
+ * @fires Importer#filefinish
+ *
+ * @fires Importer#commit
+ *
+ * @fires Importer#record
+ *
+ * @fires Importer#done
  */
 
 var Importer = function (options) {
     /**
-     * @event filestart
-     * Fired when the stream has been initialized and a file is about to be processed.
+     * Fired when the stream has been initialized and a file is about to be processed
+     *
+     * @event Importer#filestart
      */
-     this.emit('filestart');
+    this.emit('filestart');
 
-     /**
-      * @event filefinish
-      * Fired when a file has been processed.
-      */
-     this.emit('filefinish');
+    /**
+     * Fired when a file has been processed
+     *
+     * @event Importer#filefinish
+     */
+    this.emit('filefinish');
 
-     /**
-      * @event commit
-      * @param promise
-      * Fired every thousand records or at the end of the file. Once any
-      * processing that must be done has been completed, you must call
-      * promise.resolve(true)
-      */
-     var promise;
-     this.emit('commit', promise);
+    /**
+     * Fired every thousand records or at the end of the file.
+     *
+     * @event Importer#commit
+     * @param promise {promise} This promise must be resolved by a listener
+     * after the transaction has been committed
+     */
+    this.emit('commit', promise);
 
-     /**
-      * @event record
-      * @param data {object} Javascript object with the record's data.
-      * Fired every time a record has been read from a file.
-      */
-      this.emit('record');
+    /**
+     * Fired for every record read. Records are not guaranteed to be processed in series
+     *
+     * @event Importer#record
+     * @param record {object} Object with the data for a single record
+     */
+    this.emit('record', record);
+
+    /**
+     * Fired when all files are finished
+     *
+     * @event Importer#done
+     */
+    this.emit('done');
 };
