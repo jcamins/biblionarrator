@@ -3,8 +3,9 @@ var XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/node_modules/bngraphstore'),
     models = require('../../src/models'),
     Record = models.Record,
-    RecordType = models.RecordType,
-    Q = require('q');
+    RecordType = models.RecordType;
+
+graphstore.autocommit = false;
 
 var recordtypes = { };
 recordtypes['person'] = RecordType.findOne({ key: 'Person' });
@@ -125,6 +126,11 @@ importer.on('record', function (record, mypromise) {
     recordcount++;
     linkcount += handleLinks(rec);
     mypromise.resolve(true);
+});
+
+importer.on('commit', function (promise) {
+    graphstore.getDB().commitSync();
+    promise.resolve(true);
 });
 
 importer.on('done', function () {

@@ -2,9 +2,9 @@ var XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/node_modules/bngraphstore'),
     models = require('../../src/models'),
     Record = models.Record,
-    RecordType = models.RecordType,
-    inspect = require('eyes').inspector({maxLength: false}),
-    Q = require('q');
+    RecordType = models.RecordType;
+
+graphstore.autocommit = false;
 
 var recs = { };
 
@@ -47,7 +47,6 @@ importer.on('record', function (term, mypromise) {
     var rec = { name: term.Name };
     var recordtype;
     var jj;
-    inspect(term);
     for (jj in term.Attributes.Attribute) {
         if (term.Attributes.Attribute[jj]['$'].name === 'ScopeNote') {
             if (term.Attributes.Attribute[jj]['$text']) {
@@ -87,6 +86,11 @@ importer.on('record', function (term, mypromise) {
 });
 importer.on('filefinish', function() {
     Object.keys(recs).forEach(handleLinks);
+});
+
+importer.on('commit', function (promise) {
+    graphstore.getDB().commitSync();
+    promise.resolve(true);
 });
 
 importer.on('done', function() {
