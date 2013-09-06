@@ -34,6 +34,13 @@ app.use(express.session({
 }));
 app.use(flash());
 auth.initialize(app);
+app.use(function(req, res, next) {
+    app.locals({
+        user: req.user,
+        error: req.flash('error')
+    });
+    next();
+});
 app.use(app.router);
 //params.extend(app);
 

@@ -72,17 +72,20 @@
                                     <i class="icon-user icon-white"></i><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {{#if user}}
+                                        <li><span>{{user.email}}</span></li>
+                                        <li><a href="/user/settings">Settings</a></li>
+                                        <li><a href="/user/templates">My templates</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="/auth/logout">Sign out</a></li>
+                                    {{else}}
                                         <form id="navbarLogin" action="/user/login" method="post" accept-charset="UTF-8">
                                             <input id="navbarLoginUser" type="text" name="username" placeholder="Username"></input>
                                             <input id="navbarLoginPassword" type="password" name="password" placeholder="Password"></input>
                                             <input type="hidden" name="redirect" value="{{url}}"></input>
                                             <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">Sign in</button>
                                         </form>
-                                    <li><span>{{user.email}}</span></li>
-                                    <li><a href="/user/settings">Settings</a></li>
-                                    <li><a href="/user/templates">My templates</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="/user/logout">Sign out</a></li>
+                                    {{/if}}
                                 </ul>
                             </li>
                             <li class="dropdown visible-desktop">

@@ -6,7 +6,7 @@ module.exports.dologin = passport.authenticate('local', { failureRedirect: '/aut
 
 /*jshint -W030 */ /* No idea */
 module.exports.login = function(req, res){
-    res.render('login', { error: req.flash('error'), user: req.user });
+    res.render('login');
 };
 /*jshint +W030 */
 
