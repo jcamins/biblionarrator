@@ -22,9 +22,6 @@ module.exports.initialize = function (app) {
         function(email, done) {
             var user = User.findOne({ email: email });
             var err;
-            if (typeof user === 'undefined') {
-                err = 'No such user';
-            }
             return done(err, user);
         }
     ));
@@ -32,7 +29,7 @@ module.exports.initialize = function (app) {
         function(username, password, done) {
             var user = User.findOne({ email: username });
             if (!user || user.password !== password) {
-                return done(null, false);
+                return done(null, false, { message: 'BADCREDENTIAL' });
             }
             return done(null, user);
         }
@@ -48,9 +45,7 @@ module.exports.passport = passport;
 
 module.exports.can = checkAuth;
 
-var inspect = require('eyes').inspector({maxLength: false});
 function checkAuth(req, res, next) {
-    inspect(req);
     if (req.isAuthenticated()) { return next(); }
     res.redirect('/auth/login');
 }

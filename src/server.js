@@ -1,6 +1,7 @@
 var express = require('express'),
     socketserver = require('./lib/socketserver'),
     handlebars = require('express-hbs'),
+    flash = require('connect-flash'),
     http = require('http'),
     routes = require('./routes'),
     path = require('path'),
@@ -31,6 +32,7 @@ app.use(express.session({
     }),
     secret: 'biblionarrator'
 }));
+app.use(flash());
 auth.initialize(app);
 app.use(app.router);
 //params.extend(app);

@@ -28,7 +28,9 @@ DataModel.all = function (Model, callback) {
             map[idx] = new Model(results[idx]);
             list.push(map[idx]);
         }
-        callback(err, list, map);
+        if (typeof callback === 'function') {
+            callback(err, list, map);
+        }
     });
 };
 

@@ -4,6 +4,9 @@
             <div class="row-fluid">
                 <div class="span6">
                     <h2>Sign in</h2>
+                    {{#if error}}
+                    <div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>User or password not recognized</div>
+                    {{/if}}
                     <form action="/auth/login" method="post">
                         <div class="control-group">
                             <input type="text" id="login-username" name="username" placeholder="User name"></input>
