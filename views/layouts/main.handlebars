@@ -79,7 +79,7 @@
                                         <li class="divider"></li>
                                         <li><a href="/auth/logout">Sign out</a></li>
                                     {{else}}
-                                        <form id="navbarLogin" action="/user/login" method="post" accept-charset="UTF-8">
+                                        <form id="navbarLogin" action="/auth/login" method="post" accept-charset="UTF-8">
                                             <input id="navbarLoginUser" type="text" name="username" placeholder="Username"></input>
                                             <input id="navbarLoginPassword" type="password" name="password" placeholder="Password"></input>
                                             <input type="hidden" name="redirect" value="{{url}}"></input>
