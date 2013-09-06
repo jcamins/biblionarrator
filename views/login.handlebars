@@ -3,12 +3,21 @@
         <div class="span10 pull-right">
             <div class="row-fluid">
                 <div class="span6">
-                    <h2>Login</h2>
+                    <h2>Sign in</h2>
+                    <form action="/auth/login" method="post">
+                        <div class="control-group">
+                            <input type="text" id="login-username" name="username" placeholder="User name"></input>
+                        </div>
+                        <div class="control-group">
+                            <input type="password" id="login-password" name="password" placeholder="Password"></input>
+                        </div>
+                        <button class="btn btn-small btn-primary" type="submit">Sign in with password</button>
+                        <img src="https://developer.mozilla.org/files/3969/plain_sign_in_blue.png" id="browserid"/>
+                    </form>
                     <form action="/auth/browserid" method="post" style="display:none;">
                         <input type="text" name="assertion"/>
                     </form>
 
-                    <img src="https://developer.mozilla.org/files/3969/plain_sign_in_blue.png" id="browserid"/>
                 </div>
             </div>
         </div>

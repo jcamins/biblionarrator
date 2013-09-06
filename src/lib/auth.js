@@ -1,6 +1,7 @@
 "use strict";
 var passport = require('passport'),
     BrowserIDStrategy = require('passport-browserid').Strategy,
+    LocalStrategy = require('passport-local').Strategy,
     models = require('../models'),
     User = models.User,
     config = require('../../config/auth');
@@ -27,6 +28,15 @@ module.exports.initialize = function (app) {
             return done(err, user);
         }
     ));
+    passport.use(new LocalStrategy(
+        function(username, password, done) {
+            var user = User.findOne({ email: username });
+            if (!user || user.password !== password) {
+                return done(null, false);
+            }
+            return done(null, user);
+        }
+    ));
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -36,7 +46,11 @@ module.exports.initialize = function (app) {
 
 module.exports.passport = passport;
 
+module.exports.can = checkAuth;
+
+var inspect = require('eyes').inspector({maxLength: false});
 function checkAuth(req, res, next) {
+    inspect(req);
     if (req.isAuthenticated()) { return next(); }
     res.redirect('/auth/login');
 }

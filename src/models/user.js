@@ -1,18 +1,23 @@
 "use strict";
 var models,
-    GraphModel = require('../lib/graphmodel');
+    config = require('../../config/auth'),
+    extend = require('extend');
+//    GraphModel = require('../lib/graphmodel');
 
 function User(data) {
-    this.model = 'user';
-    this.initialize(data);
+    extend(this, data);
     return this;
 }
+
+User.findOne = function (options) {
+    var user = config.users[options.email];
+    user.email = options.email;
+    return new User(user);
+};
 
 User.model = 'user';
 
 module.exports = User;
-
-GraphModel.extend(User);
 
 User.init = function(ref) {
     models = ref;

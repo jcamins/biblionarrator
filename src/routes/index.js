@@ -4,7 +4,8 @@ var assets = require('./assets'),
     fields = require('./fields'),
     record = require('./record'),
     media = require('./media'),
-    search = require('./search');
+    search = require('./search'),
+    authmw = require('../lib/auth');
 
 exports.init = function(app) {
 
@@ -20,6 +21,7 @@ exports.init = function(app) {
 
     /* Auth */
     app.get('/auth/login', auth.login);
+    app.post('/auth/login', auth.dologin);
     app.get('/auth/logout', auth.logout);
     app.post('/auth/browserid', auth.browserid);
 
@@ -27,11 +29,11 @@ exports.init = function(app) {
     app.get('/doc/:filename', doc.get);
 
     /* Fields */
-    app.post('/fields/:schema/:field', fields.save);
-    app.get('/admin/fields/:schema/:field', fields.admin);
-    app.get('/admin/fields', fields.admin);
-    app.get('/fields/editor/:schema/:field', fields.editor);
-    app.get('/fields/editor', fields.editor);
+    app.post('/fields/:schema/:field', authmw.can, fields.save);
+    app.get('/admin/fields/:schema/:field', authmw.can, fields.admin);
+    app.get('/admin/fields', authmw.can, fields.admin);
+    app.get('/fields/editor/:schema/:field', authmw.can, fields.editor);
+    app.get('/fields/editor', authmw.can, fields.editor);
 
     /* Record */
     app.get('/record/:record_id/link/select', record.linkselect);

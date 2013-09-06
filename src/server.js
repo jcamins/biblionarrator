@@ -7,6 +7,7 @@ var express = require('express'),
     auth = require('./lib/auth');
 
 var app = express();
+var RedisStore = require('connect-redis')(express);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -22,6 +23,14 @@ app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 't
 app.use(express.methodOverride());
 app.use(express.static(path.normalize(__dirname + '/../public')));
 app.use('/views', express.static(path.normalize(__dirname + '/../views')));
+app.use(express.cookieParser());
+app.use(express.session({ 
+    store: new RedisStore({
+        host: 'localhost',
+        port: 6379
+    }),
+    secret: 'biblionarrator'
+}));
 auth.initialize(app);
 app.use(app.router);
 //params.extend(app);
