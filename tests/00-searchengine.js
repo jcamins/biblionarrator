@@ -76,7 +76,7 @@ var opts = {
                 multivalue: false
             }
         },
-        linktypes: {
+        facets: {
             "author": {
                 "outlabel": "By",
                 "inlabel": "Wrote",
@@ -106,7 +106,6 @@ var expect = require('chai').expect,
 
 describe('Search engine', function () {
     before(function () {
-        queryparser.initialize(opts.schema);
         require('../tools/graphstore/gendata');
     });
     it('finds record using fielded search', function (done) {
