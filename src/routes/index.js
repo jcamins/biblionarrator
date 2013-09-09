@@ -29,8 +29,9 @@ exports.init = function(app) {
     app.get('/doc/:filename', doc.get);
 
     /* Fields */
-    app.post('/fields/:schema/:field', authmw.can, fields.save);
-    app.get('/admin/fields/:schema/:field', authmw.can, fields.admin);
+    app.get('/fields/:schema/:name', authmw.can, fields.get);
+    app.post('/fields/:schema/:name', authmw.can, fields.save);
+    app.get('/admin/fields/:schema/:name', authmw.can, fields.admin);
     app.get('/admin/fields', authmw.can, fields.admin);
     app.get('/fields/editor/:schema/:field', authmw.can, fields.editor);
     app.get('/fields/editor', authmw.can, fields.editor);

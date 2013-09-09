@@ -802,7 +802,7 @@ textArea.styleEntry {
 
 /* General controls and components */
 
-#fieldGeneral {
+#fieldGeneral, #fieldIndexing {
     label, input {
         font-size: 85%;
     }
@@ -1178,6 +1178,18 @@ a.selected {
 #add-field {
     display: block;
     margin-bottom: 8px;
+}
+
+#field-description {
+    max-width: 100%;
+}
+
+.indexing-option {
+    display: none;
+
+    &.active {
+        display: block;
+    }
 }
 
 /*** Dropdown customizations ***/

@@ -1,36 +1,111 @@
-<form data-id="{{schema}}_{{field}}" id="fieldform" action="/resources/field/{{schemal}}/{{field}}" method="POST">
+<form data-id="{{schema}}_{{name}}" id="fieldform" action="/fields/{{schemal}}/{{name}}" method="POST">
 <h2 contenteditable="true" id="field-label">{{label}}</h2>
 
 <div class="row-fluid">
-<div class="span12">
+<div class="span6">
     <fieldset id="fieldGeneral">
         <legend>General</legend>
         <input id="field-parent" type="hidden" name="parent" value=""></input>
         <div class="row-fluid">
-            <div class="span3">
-                <label for="field-schema">Schema:</label><input id="field-schema" type="text" name="schema" value="{{schema}}"></input>
+            <div class="span6">
+                <label for="field-schema">Schema:</label><input id="field-schema" {{#if config}}disabled="disabled"{{/if}} type="text" name="schema" value="{{schema}}"></input>
             </div>
-            <div class="span3">
-                <label for="field-field">Field:</label><input id="field-field" type="text" name="field" value="{{field}}"></input>
-            </div>
-            <div class="span3">
-                <label for="field-link">Link:</label><input id="field-link" type="checkbox" name="link"
-                {{#if link}}
-                checked="checked"
-                {{/if}}
-                ></input>
+            <div class="span6">
+                <label for="field-name">Name:</label><input id="field-name" {{#if config}}disabled="disabled"{{/if}} type="text" name="name" value="{{name}}"></input>
             </div>
         </div>
         <div class="row-fluid">
-            <div class="span3">
+            <div class="span6">
                 <label for="field-description">Description:</label><textarea id="field-description" name="description">{{description}}</textarea>
             </div>
-            <div class="span3">
+            <div class="span6">
                 <label for="field-sortable">Sortable:</label><input id="field-sortable" type="checkbox" name="sortable"
                 {{#if sortable}}
                 checked="checked"
                 {{/if}}
                 ></input>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<div class="span6">
+    <fieldset id="fieldIndexing">
+        <legend>Indexing</legend>
+        <div class="row-fluid">
+            <div class="span6">
+                <label for="index-name">Index name:</label>
+                <input type="text" name="index-name" id="index-name" value="{{index}}">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <ul class="nav nav-tabs">
+                    <li><a id="unindexed-selector" href="#indexing-unindexed" data-toggle="tab">Unindexed</a></li>
+                    <li><a id="property-selector" href="#indexing-property" data-toggle="tab">Property</a></li>
+                    <li><a id="edge-selector" href="#indexing-edge" data-toggle="tab">Edge</a></li>
+                    <li><a id="other-selector" href="#indexing-other" data-toggle="tab">Other</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <div class="indexing-option" id="indexing-unindexed">
+                    This field will be used for display only, and will not be available
+                    for searching other than general keyword search.
+                </div>
+                <div class="indexing-option" id="indexing-property">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label for="field-indexdatatype">Type</label>
+                            <select id="field-indexdatatype" name="field-indexdatatype">
+                                <option value="String">String</option>
+                                <option value="text">Text</option>
+                                <option value="Integer">Integer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <label for="field-indexunique">Unique:</label>
+                            <input id="field-indexunique" type="checkbox" name="indexunique">
+                        </div>
+                        <div class="span6">
+                            <label for="field-indexmultivalue">Multi-value:</label>
+                            <input id="field-indexmultivalue" type="checkbox" name="indexmultivalue">
+                        </div>
+                    </div>
+                </div>
+                <div class="indexing-option" id="indexing-edge">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="btn-group" data-toggle="buttons-radio">
+                                <button class="edge-type btn" id="field-edgeregular" type="button">Regular</button>
+                                <button class="edge-type btn" id="field-edgeunidirected" type="button">Unidirected</button>
+                                <button class="edge-type btn" id="field-edgeinverse" type="button">Inverse</button>
+                                <button class="edge-type btn" id="field-edgeboth" type="button">Bidirectional</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <label for="field-masteredge">Master edge (for inverse):</label>
+                            <input id="field-masteredge" name="masteredge" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="indexing-option" id="indexing-other">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            Other types of indexing are not yet configurable from the interface.
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label for="field-indexothertype">Type</label>
+                            <input id="field-indexothertype" name="index-othertype" type="text" disabled="disabled" value="{{type}}">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </fieldset>
@@ -71,7 +146,7 @@
 </div>
 <div class="span6">
     <fieldset id="fieldLinks">
-    <legend>Relationships</legend>
+    <legend>Linking</legend>
         {{#each recordtype}}
             <div><input type="checkbox" {{selected}}>{{name}}</input><div>
         {{/each}}

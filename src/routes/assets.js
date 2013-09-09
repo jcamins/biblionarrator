@@ -4,7 +4,10 @@ var models = require('../models'),
 exports.fieldscss = function(req, res) {
     var data = { };
     Field.all(function (err, fields) {
-        data.fields = fields;
+        data.fields = [ ];
+        Object.keys(fields).forEach(function (field) {
+            data.fields.push(fields[field]);
+        });
         data.layout = false;
         res.render('fields-css', data, function(err, css) {
             res.setHeader('Content-Type', 'text/css');

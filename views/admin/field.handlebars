@@ -21,9 +21,6 @@
             </div>
         </div>
         <div id="fieldeditor" class="span10 pull-right">
-            {{#with field}}
-            {{> 'admin/field-editor'}}
-            {{/with}}
         </div>
     </div>
 </div>
@@ -60,11 +57,12 @@ var treeCallbacks = {
         });*/
     },
     'create' : function(e, data) {
-        $('#fieldeditor').load('/fields/editor', function (msg, s) { 
+        window.renderer.render({ }, 'field-editor', function(newEditor) {
+            document.querySelector('#fieldeditor').innerHTML = newEditor;
             initializeStyleEditor();
             $('#field-label').text(data.rslt.name);
             $('#field-schema').val();
-            $('#field-field').val(data.rslt.name.toLowerCase());
+            $('#field-name').val(data.rslt.name.toLowerCase());
             $('#tree .selected').removeClass('selected');
             $(data.rslt.obj).children('a').addClass('selected');
             if (data.args[1] === 'inside') {
@@ -72,7 +70,7 @@ var treeCallbacks = {
             } else {
                 $('#field-parent').val('');
             }
-            History.pushState({ 'event' : 'new' }, 'New field', '/admin/field/new');
+            History.pushState({ 'event' : 'new' }, 'New field', '/admin/fields/new/new');
         });
     }
 };
@@ -80,21 +78,33 @@ var treeCallbacks = {
 var resourcetype = 'field';
 
 $(document).ready(function() {
-    $('#tree').on('click', 'a', null, function() {
+    {{#if field}}
+        $.ajax({
+            url: '/fields/{{field.schema}}/{{field.name}}',
+            accept: { json: 'application/json' },
+            dataType: 'json',
+        }).done(function (data) {
+            showRecord(data);
+        });
+    {{/if}}
+    $('#tree').on('click', 'a', null, function(ev) {
+        ev.preventDefault();
         $('#tree .selected').removeClass('selected');
         $(this).addClass('selected');
         var fieldParent = $(this).parents('li').first().parents('li').first().attr('data-id');
         if (fieldParent === 'undefined') {
             fieldParent = '';
         }
-        $('#field-parent').val(fieldParent);
-        $('#fieldeditor').load($(this).attr('data-editor'), function (msg, s) { 
-            initializeStyleEditor();
+        $.ajax({
+            url: '/fields/' + $(this).attr('data-schema') + '/' + $(this).attr('data-name'),
+            accept: { json: 'application/json' },
+            dataType: 'json',
+        }).done(function (data) {
+            showRecord(data, fieldParent);
         });
-        return false;
     });
-    $(document).on('change', '#field-field, #field-schema', null, function() {
-        $('#heading').text($('#field-field').val() + ' (' + $('#field-schema').val() + ')');
+    $(document).on('change', '#field-name, #field-schema', null, function() {
+        $('#heading').text($('#field-name').val() + ' (' + $('#field-schema').val() + ')');
         $('#saveField').addClass('field-changed');
     });
     initializeTree(treeCallbacks);
@@ -105,7 +115,7 @@ $(document).ready(function() {
     initializeStyleEditor();
     $('#delField').click(function() {
         $.ajax({
-            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-field').val(),
+            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-name').val(),
             type: "DELETE"
         }).done(function() {
             $('#fieldeditor').empty()
@@ -114,25 +124,59 @@ $(document).ready(function() {
         return false;
     });
     $('#saveField').click(function() {
+        var data = { 
+            'name': $('#field-name').val(),
+            'schema': $('#field-schema').val(),
+            'label': $('#field-label').text(),
+            'description': $('#field-description').val(),
+            'sortable': $('#field-sortable').is(':checked') ? 1 : 0,
+            'index': $('#index-name').val() || $('#field-name').val()
+        };
+        if ($('#field-parent').val().length > 0) {
+            data.parent = $('#field-parent').val();
+        }
+        switch ($('.indexing-option.active').attr('id')) {
+            case 'indexing-property':
+                if ($('#field-indexdatatype').val() === 'text') {
+                    data.type = 'text';
+                } else {
+                    data.type = 'property';
+                    data.datatype = $('#field-indexdatatype').val();
+                    data.unique = document.querySelector('#field-indexunique').checked;
+                    data.multivalue = document.querySelector('#field-indexmultivalue').checked;
+                }
+                break;
+            case 'indexing-edge':
+                switch ($('.edge-type.active').attr('id')) {
+                    case 'field-edgeregular':
+                        data.type = 'edge';
+                        break;
+                    case 'field-edgeunidirected':
+                        data.type = 'uniedge';
+                        break;
+                    case 'field-edgeinverse':
+                        data.type = 'inverseedge';
+                        data.edge = $('#field-masteredge').val();
+                        break;
+                    case 'field-edgeboth':
+                        data.type = 'biedge';
+                        break;
+                }
+                break;
+            case 'indexing-other':
+                data.type = $('#field-indexothertype').val();
+                break;
+        }
         $.ajax({
-            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-field').val(),
+            url: '/fields/' + $('#field-schema').val() + '/' + $('#field-name').val(),
             type: "POST",
             dataType: "json",
-            data: { 
-                    'field': $('#field-field').val(),
-                    'schema': $('#field-schema').val(),
-                    'label': $('#field-label').text(),
-                    'description': $('#field-description').val(),
-                    'parent': $('#field-parent').val(),
-                    'link': $('#field-link').is(':checked') ? 1 : 0,
-                    'sortable': $('#field-sortable').is(':checked') ? 1 : 0,
-                  }
+            data: data
         }).done(function (data) {
-            $('#field-id').val(data.id);
-            History.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field - ' + data.label, '/admin/fields/' + data.schema + '/' + data.field);
+            History.replaceState({ 'event' : 'save', 'id' : data.id }, 'Field - ' + data.label, '/admin/fields/' + data.schema + '/' + data.name);
             $('#tree .selected').each(function() {
                 $(this).parent().attr('data-id', data.id);
-                $(this).attr('href', '/admin/fields/' + data.schema + '/' + data.field);
+                $(this).attr('href', '/admin/fields/' + data.schema + '/' + data.name);
             });
             $('#saveField').removeClass('field-changed');
         });
@@ -141,5 +185,53 @@ $(document).ready(function() {
     $('#saveLinks').click(function() {
     });
 });
+
+function showIndex(data) {
+    data.type = data.type || '';
+    switch (data.type) {
+    case 'property':
+        $('#property-selector').click();
+        $('#field-indexdatatype').val(data.datatype);
+        break;
+    case 'text':
+        $('#property-selector').click();
+        $('#field-indexdatatype').val('text');
+        break;
+    case 'edge':
+        $('#edge-selector').click();
+        $('#field-edgeregular').click();
+        break;
+    case 'inverseedge':
+        $('#edge-selector').click();
+        $('#field-edgeinverse').click();
+        $('#field-masteredge').val(data.edge);
+        break;
+    case 'biedge':
+        $('#edge-selector').click();
+        $('#field-edgeboth').click();
+        break;
+    case 'uniedge':
+        $('#edge-selector').click();
+        $('#field-edgeunidirected').click();
+        break;
+    case '':
+        $('#unindexed-selector').click();
+        break;
+    default:
+        $('#other-selector').click();
+        break;
+    }
+}
+
+function showRecord(data, fieldParent) {
+    window.renderer.render(data, 'field-editor', function (newEditor) {
+        document.querySelector('#fieldeditor').innerHTML = newEditor;
+        if (typeof fieldParent !== 'undefined') {
+            $('#field-parent').val(fieldParent);
+        }
+        showIndex(data);
+        initializeStyleEditor();
+    });
+}
 </script>
 {{/contentFor}}
