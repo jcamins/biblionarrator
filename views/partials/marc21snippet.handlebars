@@ -1,0 +1,21 @@
+<article><header>
+{{#marc record}}
+<span class="isbd_titleproper">{{f245.a}}</span> <span class="isbd_titleremainder">{{subfstring f245 'hbfgknpsc'}}</span>
+{{#if f250}}<span class="label_isbd_edition">Edition: </span><span class="isbd_edition">{{subfstring f250 'ab'}}</span>{{/if}}
+{{#if f773}}<span class="label_isbd_source">Source: </span><span class="isbd_source">{{subfstring f773 'at'}}</span>{{/if}}
+{{#if f260}}<span class="label_isbd_publisher">Publisher: </span><span class="isbd_publisher">{{subfstring f260 'abcg'}}</span>{{/if}}
+{{#field f246}}<span class="label_isbd_titlevariant">Other title: </span><span class="isbd_titlevariant">{{subfstring this 'ab'}}</span>{{/field}}
+{{#field f242}}<span class="label_isbd_titletranslated">Translated title: </span><span class="isbd_titletranslated">{{subfstring this 'abh'}}</span>{{/field}}
+{{#field f856}}<span class="label_isbd_uri">Online access: </span><span class="isbd_uri"><a href="{{u}}">{{subffirst this 'y3zu'}}</a></span>{{/field}}
+</header>
+<section>
+{{#field '5..'}}<span class="isbd_note">{{subfstring this 'abcdefghijklmnopqrstuvwxyz'}}</span>{{/field}}
+</section>
+<section>
+{{#field '[17](00|10|11)'}}<span class="isbd_author">{{subfstring this 'abcdefghijklmnopqrstuvwxyz'}}</span>{{/field}}
+</section>
+<section>
+{{#field '6..'}}<span class="isbd_subject">{{subfstring this 'abcdefghijklmnopqrstuvwxyz' '--'}}</span>{{/field}}
+</section>
+{{/marc}}
+</article>

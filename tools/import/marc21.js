@@ -4,6 +4,7 @@ var JSONImporter = require('bn-importers/lib/json'),
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
+var inspect = require('eyes').inspector({maxLength: false});
 
 graphstore.autocommit = false;
 
@@ -16,9 +17,10 @@ var recordcount = 0;
 var mainrecordcount = 0;
 
 importer.on('record', function (record, mypromise) {
+    var rec = new Record({ format: 'marc21', data: record });
+    rec.save();
     mainrecordcount++;
     recordcount++;
-    console.log(record);
 });
 
 importer.on('commit', function (promise) {

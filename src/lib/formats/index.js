@@ -1,5 +1,6 @@
 module.exports = {
     bnjson: require('./bnjson'),
     ericthesaurus: require('./ericthesaurus'),
-    eric: require('./eric')
+    eric: require('./eric'),
+    marc21: require('./marc21')
 };
