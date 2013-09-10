@@ -5,15 +5,15 @@
 }
 
 {{#each fields}}
-    .showtags .{{schema}}_{{field}}:before {
+    .showtags .{{schema}}_{{name}}:before {
         content: "<{{label}}>";
     }
 
-    .showtags .{{schema}}_{{field}}:after {
+    .showtags .{{schema}}_{{name}}:after {
         content: "</{{label}}>";
     }
 
-    .{{schema}}_{{field}} {
+    .{{schema}}_{{name}} {
         {{#if link}}
             color: inherit;
         {{/if}}
