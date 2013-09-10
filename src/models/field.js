@@ -49,8 +49,9 @@ Field.all = function (callback) {
                 delete fields[field];
             }
         });
-        console.log(fields);
-        callback(err, fields);
+        if (typeof callback === 'function') {
+            callback(err, fields);
+        }
     });
 };
 
