@@ -42,7 +42,7 @@ function initializeList() {
         landmarks.push($(row).attr('data-id'));
         $(this).addClass('selected');
     });
-    $('body').on('click', '.mark-landmark:.selected)', null, function () {
+    $('body').on('click', '.mark-landmark.selected', null, function () {
         var row = $(this).parents('tr');
         landmarks.push($(row).attr('data-id'));
         for (var ii = 0; ii < landmarks.length; ii++) {
