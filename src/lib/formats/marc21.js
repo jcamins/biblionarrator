@@ -194,7 +194,10 @@ module.exports.indexes = function(recorddata) {
 var field2link = [
     { re: new RegExp('[17](00|10|11)'), link: 'author_e', subfields: 'abcdfghijklmnopqrstu' },
     { re: new RegExp('6..'), link: 'subject_e', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('6(00|10|11)'), link: 'subject_e', subfields: 'abcdfghijklmnopqrstuw' },
 ];
+
+var cleanre = new RegExp('[.,:/;\s]+$');
 
 module.exports.links = function(recorddata) {
     var links = [ ];
@@ -202,7 +205,13 @@ module.exports.links = function(recorddata) {
     for (var ii = 0; ii < record.fields.length; ii++) {
         field2link.forEach(function (def) {
             if (record.fields[ii].tag.match(def.re)) {
-                links.push({ key: record.fields[ii].string(def.subfields), link: def.link, vivify: true });
+                var key = record.fields[ii].string(def.subfields);
+                key = key.replace(cleanre, '');
+                links.push({ key: key, link: def.link, vivify: {
+                    key: key,
+                    data: '{"article":{"children":[{"header":{"children":["' + key + '"]}},{"section":{"children":["&nbsp;"]}}]}}',
+                    format: 'bnjson'
+                }});
             }
         });
     }

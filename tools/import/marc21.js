@@ -17,22 +17,24 @@ var linkcount = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
 
+var linklookup = { };
+
 importer.on('record', function (record, mypromise) {
     var rec = new Record({ format: 'marc21', data: record });
     rec.save();
     var links = marcformat.links(record);
     links.forEach(function (link) {
-        var target = Record.findOne({ key: link.key });
-        if (typeof target === 'undefined' && link.vivify) {
-            target = new Record({
-                key: link.key,
-                data: '{"article":{"children":[{"header":{"children":["' + link.key + '"]}},{"section":{"children":["&nbsp;"]}}]}}',
-                format: 'bnjson'
-            });
+        var target = linklookup[link.key];
+        if (typeof target === 'undefined') {
+            target = Record.findOne({ key: link.key });
+        }
+        if (typeof target === 'undefined' && typeof link.vivify === 'object') {
+            target = new Record(link.vivify);
             target.save();
             recordcount++;
         }
         if (typeof target !== 'undefined') {
+            linklookup[link.key] = linklookup[link.key] || target.id;
             rec.link(link.link, target);
             linkcount++;
         }
