@@ -217,56 +217,41 @@ module.exports = function(grunt) {
             },
             instance: {
                 files: {
-                    'config/auth.js': function (fs, fd, done) {
-                        var data = require('./config/auth.js.dist');
-                        fs.writeSync(fd, 'module.exports = ' + JSON.stringify(data, null, 4) + ';');
-                        done();
-                    },
-                    'config/graphstore.js': function (fs, fd, done) {
-                        var data = require('./config/graphstore.js.dist');
-                        data.default = grunt.config('biblionarrator.currentdb');
+                    'config/config.json': function (fs, fd, done) {
+                        var data = require('./config/config.json.dist');
+                        data.graphstore.engine = grunt.config('biblionarrator.currentdb');
                         switch (data.default) {
                         case 'titan':
-                            data.titan['storage.keyspace'] = grunt.config('biblionarrator.keyspace');
+                            data.graphstore.titan['storage.keyspace'] = grunt.config('biblionarrator.keyspace');
                             switch (grunt.config('biblionarrator.searchbackend')) {
                             case 'esembedded':
-                                data.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
-                                data.titan['storage.index.search.client-only'] = false;
-                                data.titan['storage.index.search.local-mode'] = true;
+                                data.graphstore.titan['storage.index.search.backend'] = 'elasticsearch';
+                                data.graphstore.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
+                                data.graphstore.titan['storage.index.search.client-only'] = false;
+                                data.graphstore.titan['storage.index.search.local-mode'] = true;
                                 break;
                             case 'esremote':
-                                data.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.titan['storage.index.search.client-only'] = true;
-                                data.titan['storage.index.search.hostname'] = '127.0.0.1';
+                                data.graphstore.titan['storage.index.search.backend'] = 'elasticsearch';
+                                data.graphstore.titan['storage.index.search.client-only'] = true;
+                                data.graphstore.titan['storage.index.search.hostname'] = '127.0.0.1';
                                 break;
                             case 'lucene':
-                                data.titan['storage.index.search.backend'] = 'lucene';
-                                data.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
+                                data.graphstore.titan['storage.index.search.backend'] = 'lucene';
+                                data.graphstore.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
                                 break;
                             }
                             break;
                         case 'orient':
-                            data.orient.path = 'local:' + grunt.config('biblionarrator.dbpath');
-                            data.orient.username = grunt.config('biblionarrator.dbuser');
-                            data.orient.password = grunt.config('biblionarrator.dbpass');
+                            data.graphstore.orient.path = 'local:' + grunt.config('biblionarrator.dbpath');
+                            data.graphstore.orient.username = grunt.config('biblionarrator.dbuser');
+                            data.graphstore.orient.password = grunt.config('biblionarrator.dbpass');
                             break;
                         case 'tinker':
-                            data.tinker.path = grunt.config('biblionarrator.dbpath');
+                            data.graphstore.tinker.path = grunt.config('biblionarrator.dbpath');
                             break;
                         }
-                        fs.writeSync(fd, 'module.exports = ' + JSON.stringify(data, null, 4) + ';');
-                        done();
-                    },
-                    'config/linktypes.js': function (fs, fd, done) {
-                        var data = require('./config/linktypes.js.dist');
-                        fs.writeSync(fd, 'module.exports = ' + JSON.stringify(data, null, 4) + ';');
-                        done();
-                    },
-                    'config/searchengine.js': function (fs, fd, done) {
-                        var data = require('./config/searchengine.js.dist');
                         data.schemas = grunt.config('biblionarrator.schemas');
-                        fs.writeSync(fd, 'module.exports = ' + JSON.stringify(data, null, 4) + ';');
+                        fs.writeSync(fd, JSON.stringify(data, null, 4));
                         done();
                     }
                 }

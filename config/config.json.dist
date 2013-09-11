@@ -24,11 +24,11 @@
         "titan": {
             "storage.backend": "cassandra",
             "storage.hostname": "127.0.0.1",
-            "storage.keyspace": "bn_eric",
+            "storage.keyspace": "biblionarrator",
             "storage.index.search.backend": "elasticsearch",
             "storage.index.search.client-only": true,
             "storage.index.search.hostname": "127.0.0.1",
-            "storage.index.search.index-name": "bn_eric"
+            "storage.index.search.index-name": "biblionarrator"
         },
         "orient": {
             "path": "local:/var/lib/orient/biblionarrator",
