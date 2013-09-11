@@ -4,7 +4,7 @@ var Handlebars = require('handlebars'),
 
 function MARCRecord(record) {
     this.fields = [ ];
-    var ii, jj;
+    var ii;
     if (typeof record.fields !== 'undefined') {
         for (ii = 0; ii < record.fields.length; ii++) {
             var f = Object.keys(record.fields[ii])[0];
@@ -115,20 +115,21 @@ Handlebars.registerHelper('subffirst', function (field, subfields) {
 });
 
 Handlebars.registerHelper('field', function (field, options) {
+    var ii, string;
     if (typeof field === 'undefined' || typeof options === 'undefined') {
         return '';
     } else if (typeof field === 'string') {
-        var string = '';
+        string = '';
         var re = new RegExp('^' + field);
-        for (var ii = 0; ii < this.fields.length; ii++) {
+        for (ii = 0; ii < this.fields.length; ii++) {
             if (this.fields[ii].tag.match(re)) {
                 string = string + options.fn(this.fields[ii]);
             }
         }
         return string;
     } else if (util.isArray(field)) {
-        var string = '';
-        for (var ii = 0; ii < field.length; ii++) {
+        string = '';
+        for (ii = 0; ii < field.length; ii++) {
             string = string + options.fn(field[ii]);
         }
     } else {
@@ -197,7 +198,7 @@ var field2link = [
     { re: new RegExp('6(00|10|11)'), link: 'subject_e', subfields: 'abcdfghijklmnopqrstuw' },
 ];
 
-var cleanre = new RegExp('[.,:/;\s]+$');
+var cleanre = new RegExp('[.,:/; \t]+$');
 
 module.exports.links = function(recorddata) {
     var links = [ ];

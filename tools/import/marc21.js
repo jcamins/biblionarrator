@@ -3,9 +3,7 @@ var JSONImporter = require('bn-importers/lib/json'),
     graphstore = require('../../src/node_modules/bngraphstore'),
     models = require('../../src/models'),
     Record = models.Record,
-    RecordType = models.RecordType,
-    marcformat = require('../../src/lib/formats').marc21;
-var inspect = require('eyes').inspector({maxLength: false});
+    RecordType = models.RecordType;
 
 graphstore.autocommit = false;
 
@@ -22,7 +20,7 @@ var linklookup = { };
 importer.on('record', function (record, mypromise) {
     var rec = new Record({ format: 'marc21', data: record });
     rec.save();
-    var links = marcformat.links(record);
+    var links = rec.getLinks();
     links.forEach(function (link) {
         var target = linklookup[link.key];
         if (typeof target === 'undefined') {

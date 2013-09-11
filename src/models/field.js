@@ -2,7 +2,6 @@ var models,
     extend = require('extend'),
     DataModel = require('../lib/datamodel'),
     searchengine = require('../lib/config').searchengine;
-var inspect = require('eyes').inspector({maxLength: false});
 
 module.exports = Field;
 

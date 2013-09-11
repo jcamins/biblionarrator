@@ -62,6 +62,14 @@ function Record(data) {
         }
     };
 
+    this.getLinks = function () {
+        if (typeof formatters[this.format] === 'undefined') {
+            return [];
+        } else {
+            return formatters[this.format].links(this.data);
+        }
+    };
+
     this.initialize(data);
 
     if (typeof formatters[this.format] !== 'undefined') {
