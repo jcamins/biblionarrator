@@ -1,5 +1,13 @@
 #!/usr/bin/env node
-var server = require('../src/server');
+var argv = require('optimist')
+    .usage('Usage: $0 -p [port] -c [config]')
+    .argv;
 
-server.listen(3000);
-console.log('Listening on port 3000');
+var config = argv.c || process.env['BN_CONF'] || 'config/config.json';
+var environment = require('../src/lib/environment');
+environment.load(config);
+var server = require('../src/server');
+var port = argv.p || 3000;
+
+server.listen(port);
+console.log('Listening on port ' + port + ' using configuration from ' + config);
