@@ -1,0 +1,47 @@
+{
+    "operators": {
+        "AND": "&&",
+        "OR": "\\|\\|",
+        "FLOAT_START": "\\{\\{",
+        "FLOAT_END": "\\}\\}",
+        "GS": "\\(",
+        "GE": "\\)",
+        "REQ": "\\+",
+        "DIS": "-",
+        "MOD": "#",
+        "NOT": "!",
+        "FACET_START": "\\[",
+        "FACET_END": "\\]",
+        "FILTER_START": "(range)<",
+        "FILTER_END": ">"
+    },
+    "schemas": [
+        "ericthesaurus",
+        "eric"
+    ],
+    "graphstore": {
+        "engine": "titan",
+        "titan": {
+            "storage.backend": "cassandra",
+            "storage.hostname": "127.0.0.1",
+            "storage.keyspace": "bn_eric",
+            "storage.index.search.backend": "elasticsearch",
+            "storage.index.search.client-only": true,
+            "storage.index.search.hostname": "127.0.0.1",
+            "storage.index.search.index-name": "bn_eric"
+        },
+        "orient": {
+            "path": "local:/var/lib/orient/biblionarrator",
+            "username": "admin",
+            "password": "admin"
+        },
+        "tinker": { },
+        "neo4j": { }
+    },
+    "users": {
+        "systemuser@somewhere.com": {
+            "password": "systempass"
+        }
+    },
+    "domain": "http://localhost:3000/"
+}
