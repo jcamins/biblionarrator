@@ -73,12 +73,12 @@
                 .style("fill", function (d) { return nodecolors(d.recordtype); });
         
             node.append("title")
-                .text(function(d) { return d.key; });
+                .text(function(d) { return d.key || d.titleproper; });
         
             node.append("text")
                 .attr("x", 12)
                 .attr("dy", ".35em")
-                .text(function(d) { return d.key; });
+                .text(function(d) { return d.key || d.titleproper; });
         
             d3.select('#nodekey').append('ul').selectAll('.nodekeyentry')
                 .data(nodecolors.domain().filter(function (d) { return (typeof d !== 'undefined'); }))

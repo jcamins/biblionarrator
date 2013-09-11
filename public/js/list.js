@@ -42,6 +42,17 @@ function initializeList() {
         landmarks.push($(row).attr('data-id'));
         $(this).addClass('selected');
     });
+    $('body').on('click', '.mark-landmark:.selected)', null, function () {
+        var row = $(this).parents('tr');
+        landmarks.push($(row).attr('data-id'));
+        for (var ii = 0; ii < landmarks.length; ii++) {
+            if (landmarks[ii] === $(row).attr('data-id')) {
+                landmarks.splice(ii, 1);
+                break;
+            }
+        }
+        $(this).removeClass('selected');
+    });
 
     $('#visualize-landmarks').click(function () {
         if ($(this).hasClass('active')) {
