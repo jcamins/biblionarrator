@@ -1,7 +1,7 @@
 var models,
     extend = require('extend'),
     DataModel = require('../lib/datamodel'),
-    searchengine = require('../lib/config').searchengine;
+    environment = require('../lib/environment');
 
 module.exports = Field;
 
@@ -23,7 +23,7 @@ DataModel.extend(Field);
 
 Field.findOne = function (key, callback) {
     DataModel.findOne(Field, key, function (err, model) {
-        var field = searchengine.fields[key] || { };
+        var field = environment.fields[key] || { };
         if (model !== null) {
             extend(true, field, model);
         }
@@ -34,8 +34,8 @@ Field.findOne = function (key, callback) {
 Field.all = function (callback) {
     DataModel.all(Field, function (err, list, map) {
         var fields = { };
-        Object.keys(searchengine.fields).forEach(function (field) {
-            fields[field] = searchengine.fields[field];
+        Object.keys(environment.fields).forEach(function (field) {
+            fields[field] = environment.fields[field];
         });
         Object.keys(map).forEach(function (field) {
             if (map[field] !== null) {

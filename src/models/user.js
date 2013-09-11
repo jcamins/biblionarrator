@@ -1,6 +1,6 @@
 "use strict";
 var models,
-    config = require('../../config/auth'),
+    environment = require('../lib/environment'),
     extend = require('extend');
 //    GraphModel = require('../lib/graphmodel');
 
@@ -10,7 +10,7 @@ function User(data) {
 }
 
 User.findOne = function (options) {
-    var user = config.users[options.email];
+    var user = environment.users[options.email];
     user.email = options.email;
     return new User(user);
 };

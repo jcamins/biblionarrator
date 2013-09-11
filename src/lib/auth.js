@@ -4,7 +4,7 @@ var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     models = require('../models'),
     User = models.User,
-    config = require('../../config/auth');
+    environment = require('./environment');
 
 module.exports.initialize = function (app) {
     passport.serializeUser(function(user, done) {
@@ -17,7 +17,7 @@ module.exports.initialize = function (app) {
     });
 
     passport.use(new BrowserIDStrategy({
-            audience: config.audience
+            audience: environment.domain
         },
         function(email, done) {
             var user = User.findOne({ email: email });
