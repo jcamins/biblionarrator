@@ -1,14 +1,16 @@
+var argv = require('optimist')
+    .usage('Usage: $0 -c [config]')
+    .argv;
+
+if (typeof argv.c !== 'undefined') {
+    var environment = require('../../src/lib/environment').load(argv.c);
+}
+
 var graphstore = require('../../src/node_modules/bngraphstore'),
     g = graphstore(),
     repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});
     //require('repl.history')(repl, './.node_history');
-var argv = require('optimist')
-    .usage('Usage: $0 -c [config]')
-    .argv;
-var config = argv.c || process.env['BN_CONF'] || __dirname + '/../../config/config.json';
-var environment = require('../src/lib/environment');
-
 process.stdout.write('\n');
 process.stdout.write('         \\,,,/' + '\n');
 process.stdout.write('         (o o)' + '\n');

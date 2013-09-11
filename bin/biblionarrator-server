@@ -3,11 +3,12 @@ var argv = require('optimist')
     .usage('Usage: $0 -p [port] -c [config]')
     .argv;
 
-var config = argv.c || process.env['BN_CONF'] || __dirname + '/../config/config.json';
-var environment = require('../src/lib/environment');
-environment.load(config);
+if (typeof argv.c !== 'undefined') {
+    var environment = require('../src/lib/environment').load(argv.c);
+}
+argv.c = argv.c || 'defaults';
 var server = require('../src/server');
 var port = argv.p || 3000;
 
 server.listen(port);
-console.log('Listening on port ' + port + ' using configuration from ' + config);
+console.log('Listening on port ' + port + ' using configuration from ' + argv.c);
