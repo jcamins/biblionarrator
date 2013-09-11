@@ -2,6 +2,26 @@ var Handlebars = require('handlebars'),
     fs = require('fs'),
     util = require('util');
 
+function MARCRecord(record) {
+    this.fields = [ ];
+    var ii, jj;
+    if (typeof record.fields !== 'undefined') {
+        for (ii = 0; ii < record.fields.length; ii++) {
+            var f = Object.keys(record.fields[ii])[0];
+            var newfield = new MARCField(f, record.fields[ii][f]);
+            if (typeof this['f' + f] === 'undefined') {
+                this['f' + f] = newfield;
+            } else if (util.isArray(this['f' + f])) {
+                this['f' + f].push(newfield);
+            } else {
+                this['f' + f] = [ this['f' + f], newfield ];
+            }
+            this.fields.push(newfield);
+        }
+    }
+    return this;
+}
+
 function MARCField(tag, object) {
     this.tag = tag;
     if (typeof object.subfields === 'undefined') {
@@ -117,20 +137,7 @@ Handlebars.registerHelper('field', function (field, options) {
 });
 
 Handlebars.registerHelper('marc', function (record, options) {
-    var marcrec = { fields: [ ] };
-    var ii, jj;
-    for (ii = 0; ii < record.fields.length; ii++) {
-        var f = Object.keys(record.fields[ii])[0];
-        var newfield = new MARCField(f, record.fields[ii][f]);
-        if (typeof marcrec['f' + f] === 'undefined') {
-            marcrec['f' + f] = newfield;
-        } else if (util.isArray(marcrec['f' + f])) {
-            marcrec['f' + f].push(newfield);
-        } else {
-            marcrec['f' + f] = [ marcrec['f' + f], newfield ];
-        }
-        marcrec.fields.push(newfield);
-    }
+    var marcrec = new MARCRecord (record);
     return options.fn(marcrec);
 });
 
@@ -150,21 +157,59 @@ function stringify (object) {
         return object;
     }
     for (var el in object) {
+        if (el === 'ind1' || el === 'ind2') {
+            continue;
+        }
         string = string + ' ' + stringify(object[el]);
     }
     return string;
 }
 
+var field2index = [
+    { re: new RegExp('[17](00|10|11)'), index: 'author', subfields: 'abcdfghijklmnopqrstu' },
+    { re: new RegExp('24.'), index: 'title', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('245'), index: 'titleproper', subfields: 'a' },
+    { re: new RegExp('245'), index: 'titleremainder', subfields: 'bcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('246'), index: 'titlevariant', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('250'), index: 'edition', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('260'), index: 'publisher', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('5..'), index: 'note', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+    { re: new RegExp('6..'), index: 'subject', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+];
+
 module.exports.indexes = function(recorddata) {
-    return {
-        keyword: stringify(recorddata)
-    };
+    var indexes = { keyword: stringify(recorddata) };
+    var record = new MARCRecord(recorddata);
+    for (var ii = 0; ii < record.fields.length; ii++) {
+        field2index.forEach(function (def) {
+            if (record.fields[ii].tag.match(def.re)) {
+                indexes[def.index] = indexes[def.index] || '';
+                indexes[def.index] = indexes[def.index] + record.fields[ii].string(def.subfields) + ' ';
+            }
+        });
+    }
+    return indexes;
 };
 
+var field2link = [
+    { re: new RegExp('[17](00|10|11)'), link: 'author_e', subfields: 'abcdfghijklmnopqrstu' },
+    { re: new RegExp('6..'), link: 'subject_e', subfields: 'abcdfghijklmnopqrstuvwxyz' },
+];
+
+module.exports.links = function(recorddata) {
+    var links = [ ];
+    var record = new MARCRecord(recorddata);
+    for (var ii = 0; ii < record.fields.length; ii++) {
+        field2link.forEach(function (def) {
+            if (record.fields[ii].tag.match(def.re)) {
+                links.push({ key: record.fields[ii].string(def.subfields), link: def.link, vivify: true });
+            }
+        });
+    }
+    return links;
+};
 
 /*jshint unused:false */ /* Not yet implemented */
-module.exports.links = function(recorddata) {};
-
 module.exports.decompile = function(htmldom) {
 };
 /*jshint unused:true */
