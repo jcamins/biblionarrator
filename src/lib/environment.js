@@ -42,12 +42,9 @@ var defaultconfig = {
     }
 };
 
-var config = { };
-var environment = { };
-
 function Environment(config) {
+    var self = this;
     if (typeof config !== 'undefined') {
-        var self = this;
         extend(self, config);
         self.fields = self.fields || { };
         self.indexes = self.indexes || { };
