@@ -1,12 +1,12 @@
 "use strict";
 var models,
-    queryparser = require('queryparser'),
+    queryparser = require('../lib/environment').queryparser,
     extend = require('extend');
 
 function Query(string, syntax) {
     var self = this;
 
-    self.ast = queryparser.parsers[syntax].parse(string);
+    self.ast = queryparser.parse(syntax, string);
     self.original = string;
     self.syntax = syntax;
     extend(self, queryparser.decompose(self.ast));

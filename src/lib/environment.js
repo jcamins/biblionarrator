@@ -1,5 +1,5 @@
 var extend = require('extend'),
-    queryparser = require('queryparser');
+    QueryParser = require('queryparser');
 
 var defaultconfig = {
     "operators": {
@@ -73,7 +73,7 @@ function Environment(config) {
                 }
             }
         });
-        queryparser.initialize(self);
+        self.queryparser = new QueryParser(self);
     }
     self.load = Environment.load;
     self.set = Environment.set;
