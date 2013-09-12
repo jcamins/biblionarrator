@@ -12,3 +12,7 @@ var port = argv.p || 3000;
 
 server.listen(port);
 console.log('Listening on port ' + port + ' using configuration from ' + argv.c);
+
+process.on('SIGINT', function () {
+    process.exit();
+});
