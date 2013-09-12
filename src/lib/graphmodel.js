@@ -1,8 +1,8 @@
 "use strict";
 var util = require('util'),
     extend = require('extend'),
-    graphstore = require('bngraphstore'),
-    g = graphstore(),
+    graphstore = require('./environment').graphstore,
+    g = graphstore.g,
     T = g.Tokens;
 
 module.exports = GraphModel;
@@ -53,7 +53,7 @@ GraphModel.prototype.suppress = function () {
     var v = this.v().iterator().nextSync();
     v.setPropertySync('deleted', 1);
     if (graphstore.autocommit) {
-        graphstore.getDB().commitSync();
+        graphstore.db.commitSync();
     }
 };
 
@@ -61,7 +61,7 @@ GraphModel.prototype.destroy = function () {
     var v = this.v().iterator().nextSync();
     v.removeSync();
     if (graphstore.autocommit) {
-        graphstore.getDB().commitSync();
+        graphstore.db.commitSync();
     }
 };
 
@@ -84,7 +84,7 @@ GraphModel.prototype.save = function () {
         }
         this.vorder = parseInt(this.v().both().count(), 10);
     } catch (e) {
-        v = graphstore.getDB().addVertexSync(null);
+        v = graphstore.db.addVertexSync(null);
         this.vorder = 0;
     }
     if (typeof this.deleted === 'undefined') {
@@ -100,7 +100,7 @@ GraphModel.prototype.save = function () {
         }
     }
     if (graphstore.autocommit) {
-        graphstore.getDB().commitSync();
+        graphstore.db.commitSync();
     }
     this.id = v.toString();
     this.id = this.id.replace(/^v\[#?/, '');

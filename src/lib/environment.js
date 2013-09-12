@@ -1,5 +1,6 @@
 var extend = require('extend'),
-    QueryParser = require('queryparser');
+    QueryParser = require('queryparser'),
+    GraphStore = require('bngraphstore');
 
 var defaultconfig = {
     "operators": {
@@ -22,7 +23,7 @@ var defaultconfig = {
         "ericthesaurus",
         "eric"
     ],
-    "graphstore": {
+    "graphconf": {
         "engine": "tinker",
         "titan": {
             "storage.backend": "cassandra",
@@ -49,6 +50,7 @@ function Environment(config) {
         self.fields = self.fields || { };
         self.indexes = self.indexes || { };
         self.facets = self.facets || { };
+        self.schemas = self.schemas || [ ];
         self.schemas.unshift('common');
         self.schemas.forEach(function (which) {
             var newschema = { };
@@ -70,7 +72,18 @@ function Environment(config) {
                 }
             }
         });
-        self.queryparser = new QueryParser(self);
+        try {
+            self.queryparser = new QueryParser(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
+        try {
+            self.graphstore = new GraphStore(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
     }
     self.load = Environment.load;
     self.set = Environment.set;

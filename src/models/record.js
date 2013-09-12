@@ -1,9 +1,9 @@
 "use strict";
 var models,
     extend = require('extend'),
-    graphstore = require('bngraphstore'),
+    graphstore = require('../lib/environment').graphstore,
+    g = graphstore.g,
     GraphModel = require('../lib/graphmodel'),
-    g = graphstore(),
     formatters = require('../lib/formats');
 
 /**
@@ -54,11 +54,11 @@ function Record(data) {
         }
         var sv = g.v(this.id).iterator().nextSync();
         var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
-        graphstore.getDB().addEdgeSync(null, sv, tv, type);
+        graphstore.db.addEdgeSync(null, sv, tv, type);
         sv.setPropertySync('vorder', sv.getPropertySync('vorder'));
         tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
         if (graphstore.autocommit) {
-            graphstore.getDB().commitSync();
+            graphstore.db.commitSync();
         }
     };
 

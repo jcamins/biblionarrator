@@ -1,6 +1,7 @@
-var opts = {
+var graphconf = {
     engine: 'titan',
     titan: {
+        'storage.backend': 'cassandra',
         'storage.keyspace': 'bntest',
         'storage.index.search.backend': 'lucene',
         'storage.index.search.directory': __dirname + '/data/titanft',
@@ -21,8 +22,10 @@ var opts = {
 };
 
 var expect = require('chai').expect,
-    graphstore = require('../src/node_modules/bngraphstore'),
-    g = graphstore(opts),
+    environment = require('../src/lib/environment');
+    environment = environment.set({ graphconf: graphconf });
+var graphstore = environment.graphstore,
+    g = graphstore.g,
     models = require('../src/models'),
     Record = models.Record;
 
