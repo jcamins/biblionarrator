@@ -218,7 +218,7 @@ module.exports = function(grunt) {
             instance: {
                 files: {
                     'config/config.json': function (fs, fd, done) {
-                        var data = require('./config/config.json.dist');
+                        var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json.dist'));
                         data.graphstore.engine = grunt.config('biblionarrator.currentdb');
                         switch (data.default) {
                         case 'titan':
