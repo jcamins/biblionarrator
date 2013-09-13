@@ -1,6 +1,6 @@
 var Q = require('q'),
     models,
-    datastore = require('../lib/datastore');
+    datastore = require('../lib/environment').datastore;
 
 module.exports = Link;
 

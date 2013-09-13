@@ -1,4 +1,4 @@
-var datastore = require('../lib/datastore'),
+var datastore = require('../lib/environment').datastore,
     util = require('util');
 
 module.exports = DataModel;

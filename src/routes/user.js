@@ -1,5 +1,5 @@
 var passport = require('passport'),
-    datastore = require('../lib/datastore'),
+    datastore = require('../lib/environment').datastore,
     LocalStrategy = require('passport-local').Strategy;
 
 app.use(passport.initialize());

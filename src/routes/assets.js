@@ -17,7 +17,7 @@ exports.fieldscss = function(req, res) {
 };
 
 exports.bndbinitializerjs = function(req, res) {
-    var datastore = require('../lib/datastore.js');
+    var datastore = require('../lib/environment').datastore;
     var data = {
         styles: [],
         fields: [],

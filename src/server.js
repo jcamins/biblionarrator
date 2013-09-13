@@ -1,4 +1,5 @@
-var express = require('express'),
+var environment = require('./lib/environment'),
+    express = require('express'),
     socketserver = require('./lib/socketserver'),
     handlebars = require('express-hbs'),
     flash = require('connect-flash'),
@@ -27,8 +28,7 @@ app.use('/views', express.static(path.normalize(__dirname + '/../views')));
 app.use(express.cookieParser());
 app.use(express.session({ 
     store: new RedisStore({
-        host: 'localhost',
-        port: 6379
+        client: environment.datastore.client()
     }),
     secret: 'biblionarrator'
 }));

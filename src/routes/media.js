@@ -4,7 +4,7 @@ var crypto = require('crypto'),
 
 /*jshint unused:false */ /* Not yet updated */
 exports.upload = function(req, res) {
-    var datastore = require('../lib/datastore.js');
+    var datastore = require('../lib/environment').datastore;
     var shasum = crypto.createHash('sha1');
     shasum.update(req.params.record_id.toString(), 'utf8');
     var tmppath = req.files.media.path;
@@ -44,7 +44,7 @@ exports.upload = function(req, res) {
 };
 
 exports.del = function(req, res) {
-    var datastore = require('../lib/datastore.js');
+    var datastore = require('../lib/environment').datastore;
     datastore.query('DELETE FROM images WHERE record_id = ? AND id = ?', [req.params.record_id, req.params.media_id], function(err, results) {
         // We should probably also delete the image files, but we didn't in PHP either
         res.json({

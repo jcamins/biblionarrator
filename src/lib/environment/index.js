@@ -1,6 +1,7 @@
 var extend = require('extend'),
     QueryParser = require('queryparser'),
-    GraphStore = require('./graphstore');
+    GraphStore = require('./graphstore'),
+    DataStore = require('./datastore');
 
 var defaultconfig = {
     "operators": {
@@ -80,6 +81,12 @@ function Environment(config) {
         }
         try {
             self.graphstore = new GraphStore(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
+        try {
+            self.datastore = new DataStore(self);
         } catch (e) {
             self.errors = self.errors || [ ];
             self.errors.push(e);
