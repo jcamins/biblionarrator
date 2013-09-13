@@ -219,35 +219,35 @@ module.exports = function(grunt) {
                 files: {
                     'config/config.json': function (fs, fd, done) {
                         var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json.dist'));
-                        data.graphstore.engine = grunt.config('biblionarrator.currentdb');
+                        data.graphconf.engine = grunt.config('biblionarrator.currentdb');
                         switch (data.default) {
                         case 'titan':
-                            data.graphstore.titan['storage.keyspace'] = grunt.config('biblionarrator.keyspace');
+                            data.graphconf.titan['storage.keyspace'] = grunt.config('biblionarrator.keyspace');
                             switch (grunt.config('biblionarrator.searchbackend')) {
                             case 'esembedded':
-                                data.graphstore.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.graphstore.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
-                                data.graphstore.titan['storage.index.search.client-only'] = false;
-                                data.graphstore.titan['storage.index.search.local-mode'] = true;
+                                data.graphconf.titan['storage.index.search.backend'] = 'elasticsearch';
+                                data.graphconf.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
+                                data.graphconf.titan['storage.index.search.client-only'] = false;
+                                data.graphconf.titan['storage.index.search.local-mode'] = true;
                                 break;
                             case 'esremote':
-                                data.graphstore.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.graphstore.titan['storage.index.search.client-only'] = true;
-                                data.graphstore.titan['storage.index.search.hostname'] = '127.0.0.1';
+                                data.graphconf.titan['storage.index.search.backend'] = 'elasticsearch';
+                                data.graphconf.titan['storage.index.search.client-only'] = true;
+                                data.graphconf.titan['storage.index.search.hostname'] = '127.0.0.1';
                                 break;
                             case 'lucene':
-                                data.graphstore.titan['storage.index.search.backend'] = 'lucene';
-                                data.graphstore.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
+                                data.graphconf.titan['storage.index.search.backend'] = 'lucene';
+                                data.graphconf.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
                                 break;
                             }
                             break;
                         case 'orient':
-                            data.graphstore.orient.path = 'local:' + grunt.config('biblionarrator.dbpath');
-                            data.graphstore.orient.username = grunt.config('biblionarrator.dbuser');
-                            data.graphstore.orient.password = grunt.config('biblionarrator.dbpass');
+                            data.graphconf.orient.path = 'local:' + grunt.config('biblionarrator.dbpath');
+                            data.graphconf.orient.username = grunt.config('biblionarrator.dbuser');
+                            data.graphconf.orient.password = grunt.config('biblionarrator.dbpass');
                             break;
                         case 'tinker':
-                            data.graphstore.tinker.path = grunt.config('biblionarrator.dbpath');
+                            data.graphconf.tinker.path = grunt.config('biblionarrator.dbpath');
                             break;
                         }
                         data.schemas = grunt.config('biblionarrator.schemas');

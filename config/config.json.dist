@@ -19,7 +19,7 @@
         "ericthesaurus",
         "eric"
     ],
-    "graphstore": {
+    "graphconf": {
         "engine": "titan",
         "titan": {
             "storage.backend": "cassandra",
