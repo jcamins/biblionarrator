@@ -12,6 +12,8 @@ var config = {
 
         orient: {
             path: 'local:' + __dirname + '/data/orient',
+            "username": "admin",
+            "password": "admin"
         },
 
         tinker: {

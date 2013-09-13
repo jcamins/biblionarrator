@@ -1,53 +1,53 @@
 var expect = require('chai').expect,
-    graphstore = require('../');
+    GraphStore = require('../src/lib/environment/graphstore');
 
 
 var engines = [ 'orient', 'titan', 'tinker' ];
 
-var opts = {
-    titan: {
-        'storage.keyspace': 'bntest',
-        'storage.index.search.backend': 'lucene',
-        'storage.index.search.directory': __dirname + '/data/titanft',
-        'storage.index.search.client-only': false,
-    },
-
-    orient: {
-        path: 'local:' + __dirname + '/data/orient',
-    },
-
-    tinker: {
-        path: __dirname + '/data/tinker',
-    },
-
-    neo4j: {
-        path: __dirname + '/data/neo4j',
-    },
+var config = {
+    "graphconf": {
+        "engine": "tinker",
+        "titan": {
+            'storage.backend': 'cassandra',
+            'storage.keyspace': 'bntest',
+            'storage.index.search.backend': 'lucene',
+            'storage.index.search.directory': __dirname + '/data/titanft',
+            'storage.index.search.client-only': false,
+        },
+        "orient": {
+            'path': 'local:' + __dirname + '/data/orient',
+            "username": "admin",
+            "password": "admin"
+        },
+        "tinker": { }
+    }
 };
 
 engines.forEach(function (engine) {
+    var graphstore;
     var g;
     var rec1;
     var rec2;
     var edge1;
     describe(engine + ' -', function () {
         before(function () {
-            opts.engine = engine;
-            g = graphstore(opts);
+            config.graphconf.engine = engine;
+            graphstore = new GraphStore(config);
+            g = graphstore.g;
         });
 
         it('has the expected engine', function () {
-            expect(graphstore.getEngine()).to.equal(engine);
+            expect(graphstore.engine).to.equal(engine);
         });
 
         it('has database defined', function () {
-            expect(graphstore.getDB()).not.to.be.an('undefined');
+            expect(graphstore.db).not.to.be.an('undefined');
         });
 
         it('adding vertex succeeds', function () {
-            rec1 = graphstore.getDB().addVertexSync(null);
+            rec1 = graphstore.db.addVertexSync(null);
             rec1.setPropertySync('title', 'Great book');
-            graphstore.getDB().commitSync();
+            graphstore.db.commitSync();
             expect(rec1).not.to.be.an('undefined');
         });
     
@@ -60,9 +60,9 @@ engines.forEach(function (engine) {
         });
 
         it('adding second vertex succeeds', function () {
-            rec2 = graphstore.getDB().addVertexSync(null);
+            rec2 = graphstore.db.addVertexSync(null);
             rec2.setPropertySync('name', 'Dubious author');
-            graphstore.getDB().commitSync();
+            graphstore.db.commitSync();
             expect(rec2).not.to.be.an('undefined');
         });
     
@@ -79,8 +79,8 @@ engines.forEach(function (engine) {
         });
 
         it('adding edge succeeds', function () {
-            edge1 = graphstore.getDB().addEdgeSync(null, rec1, rec2, 'by');
-            graphstore.getDB().commitSync();
+            edge1 = graphstore.db.addEdgeSync(null, rec1, rec2, 'by');
+            graphstore.db.commitSync();
             expect(edge1).not.to.be.an('undefined');
         });
 
@@ -93,8 +93,8 @@ engines.forEach(function (engine) {
         });
 
         it('removes edge successfully', function () {
-            graphstore.getDB().removeEdgeSync(g.V({'name': 'Dubious author'}).inE().iterator().nextSync());
-            graphstore.getDB().commitSync();
+            graphstore.db.removeEdgeSync(g.V({'name': 'Dubious author'}).inE().iterator().nextSync());
+            graphstore.db.commitSync();
             expect(g.E().toArray().length).to.equal(0);
         });
 
@@ -105,7 +105,7 @@ engines.forEach(function (engine) {
                 element = vertices.nextSync();
                 element.removeSync();
             }
-            graphstore.getDB().commitSync();
+            graphstore.db.commitSync();
             expect(g.V().toArray().length).to.equal(0);
         });
         after(function () {

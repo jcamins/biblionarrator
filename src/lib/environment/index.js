@@ -1,6 +1,6 @@
 var extend = require('extend'),
     QueryParser = require('queryparser'),
-    GraphStore = require('bngraphstore');
+    GraphStore = require('./graphstore');
 
 var defaultconfig = {
     "operators": {
