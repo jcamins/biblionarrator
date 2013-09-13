@@ -1,5 +1,5 @@
 var XMLImporter = require('bn-importers/lib/xml'),
-    graphstore = require('../../src/node_modules/bngraphstore'),
+    graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
@@ -89,7 +89,7 @@ importer.on('filefinish', function() {
 });
 
 importer.on('commit', function (promise) {
-    graphstore.getDB().commitSync();
+    graphstore.db.commitSync();
     promise.resolve(true);
 });
 

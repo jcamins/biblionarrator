@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var JSONImporter = require('bn-importers/lib/json'),
-    graphstore = require('../../src/node_modules/bngraphstore'),
+    graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
@@ -43,7 +43,7 @@ importer.on('record', function (record, mypromise) {
 });
 
 importer.on('commit', function (promise) {
-    graphstore.getDB().commitSync();
+    graphstore.db.commitSync();
     promise.resolve(true);
 });
 
