@@ -4,10 +4,12 @@ var argv = require('optimist')
 
 if (typeof argv.c !== 'undefined') {
     var environment = require('../../src/lib/environment').load(argv.c);
+} else {
+    var environment = require('../../src/lib/environment');
 }
 
-var graphstore = require('../../src/node_modules/bngraphstore'),
-    g = graphstore(),
+var graphstore = environment.graphstore,
+    g = graphstore.g,
     repl = require("repl"),
     inspect = require('eyes').inspector({maxLength: false});
     //require('repl.history')(repl, './.node_history');

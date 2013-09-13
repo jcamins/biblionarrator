@@ -1,7 +1,7 @@
 "use strict";
 var sockjs = require('sockjs'),
     sockjs_opts = {sockjs_url: "/lib/js/sockjs-0.3.min.js"},
-    cache = require('./cache');
+    cache = require('./environment').cache;
 
 var sockjs_server;
 

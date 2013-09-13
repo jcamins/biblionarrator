@@ -5,6 +5,10 @@ function DataStore(config) {
     var self = this;
     var client = redis.createClient();
 
+    client.on('error', function (err) {
+        console.log("Non-fatal datastore error: " + err);
+    });
+
     this.get = function (model, key, callback) {
         if (key === '*') {
             client.hgetall(self.namespace + model, function (err, results) {

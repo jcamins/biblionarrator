@@ -1,6 +1,6 @@
 var models = require('../../models'),
     graph = require('./graph'),
-    cache = require('../cache');
+    cache = require('../environment').cache;
 
 module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);
