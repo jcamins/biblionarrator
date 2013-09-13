@@ -45,7 +45,7 @@
     "redis": "~0.8.4",
     "extend": "~1.1.3",
     "xml-stream": "~0.4.3",
-    "bn-editors": "https://github.com/biblionarrator/bn-importers/tarball/master",
+    "bn-importers": "https://github.com/biblionarrator/bn-importers/tarball/master",
     "connect-redis": "~1.4.5",
     "connect-flash": "~0.1.1"
   },
