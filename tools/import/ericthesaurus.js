@@ -89,8 +89,9 @@ importer.on('filefinish', function() {
 });
 
 importer.on('commit', function (promise) {
-    graphstore.db.commitSync();
-    promise.resolve(true);
+    graphstore.db.commit(function () {
+        promise.resolve(true);
+    });
 });
 
 importer.on('done', function() {
