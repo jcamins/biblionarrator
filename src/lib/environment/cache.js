@@ -1,7 +1,7 @@
 "use strict";
 var redis = require('redis');
 
-function Cache(config) {
+function Cache() {
     var self = this;
     var client = redis.createClient();
 
