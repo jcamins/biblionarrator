@@ -20,7 +20,7 @@ app.engine('handlebars', handlebars.express3({
     }));
 app.set('view engine', 'handlebars');
 app.use(express.favicon());
-app.use(express.logger({ format: ':remote-addr - - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:response-time ms)', stream: environment.accesslog }));
+app.use(express.logger({ format: environment.logs.accessformat || ':remote-addr - - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" (:response-time ms)', stream: environment.accesslog }));
 app.use(express.bodyParser({ hash: 'sha1', keepExtensions: 'true', uploadDir: 'tmp' }));
 app.use(express.methodOverride());
 app.use(express.static(path.normalize(__dirname + '/../public')));
