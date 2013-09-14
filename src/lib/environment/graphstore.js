@@ -102,6 +102,9 @@ function connect(config, engine, g) {
         }
         db.commitSync = function () {
         };
+        db.commit = function (callback) {
+            callback();
+        };
     } else if (engine === 'neo4j') {
         var Neo4jGraph = g.java.import("com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
         db = new Neo4jGraph(config.graphconf[engine].path);
