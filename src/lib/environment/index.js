@@ -98,6 +98,9 @@ function Environment(config) {
             self.errors = self.errors || [ ];
             self.errors.push(e);
         }
+        if (self.errors) {
+            console.log("Errors loading environment: \n" + self.errors.join(' *'));
+        }
     }
     self.load = Environment.load;
     self.set = Environment.set;
