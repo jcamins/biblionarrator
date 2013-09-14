@@ -1,5 +1,10 @@
-var extend = require('extend'),
-    QueryParser = require('queryparser'),
+var fs = require('fs'),
+    path = require('path'),
+    extend = require('extend');
+
+process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resolve(__dirname, '../../../config/log4j.properties') + ' -Dlogback.configurationFile=' + path.resolve(__dirname, '../../../config/logback.xml');
+
+var QueryParser = require('queryparser'),
     GraphStore = require('./graphstore'),
     DataStore = require('./datastore'),
     Cache = require('./cache');
@@ -47,6 +52,17 @@ var defaultconfig = {
 
 function Environment(config) {
     var self = this;
+    if (typeof config === 'undefined' || typeof config.logs === 'undefined' || typeof config.logs.error === 'undefined' || config.logs.error === '-') {
+        self.errorlog = process.stderr;
+    } else {
+        self.errorlog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.error), { flags: 'a' });
+    }
+    if (typeof config === 'undefined' || typeof config.logs === 'undefined' || typeof config.logs.access === 'undefined' || config.logs.access === '-') {
+        self.accesslog = process.stdout;
+    } else {
+        self.accesslog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.access), { flags: 'a' });
+    }
+
     if (typeof config !== 'undefined') {
         extend(self, config);
         self.fields = self.fields || { };

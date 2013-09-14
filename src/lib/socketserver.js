@@ -1,7 +1,7 @@
 "use strict";
 var sockjs = require('sockjs'),
-    sockjs_opts = {sockjs_url: "/lib/js/sockjs-0.3.min.js"},
-    cache = require('./environment').cache;
+    environment = require('./environment'),
+    cache = environment.cache;
 
 var sockjs_server;
 
@@ -9,6 +9,16 @@ var subscriptions = { };
 
 
 module.exports.configure = function (server) {
+    var sockjs_opts = {
+        sockjs_url: "/lib/js/sockjs-0.3.min.js",
+        log: function (severity, line) {
+            if (severity === 'info') {
+                environment.accesslog.write("Socket server: " + line + "\n");
+            } else {
+                environment.errorlog.write("Socket server: " + line + "\n");
+            }
+        }
+    };
     sockjs_server = sockjs.createServer(sockjs_opts);
     sockjs_server.on('connection', function(conn) {
         conn.on('data', function(message) {
