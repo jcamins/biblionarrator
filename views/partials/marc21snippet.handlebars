@@ -2,7 +2,7 @@
 {{#marc record}}
 <div><span class="isbd_titleproper">{{f245.a}}</span> <span class="isbd_titleremainder">{{subfstring f245 'hbfgknpsc'}}</span></div>
 {{#if f250}}<div><span class="label_isbd_edition">Edition: </span><span class="isbd_edition">{{subfstring f250 'ab'}}</span></div>{{/if}}
-{{#if f773}}<div><span class="label_isbd_source">Source: </span><span class="isbd_source">{{subfstring f773 'at'}}</span></div>{{/if}}
+{{#field f773}}<div><span class="label_isbd_source">Source: </span><span class="isbd_source">{{subfstring this 'at'}}</span></div>{{/field}}
 {{#if f260}}<div><span class="label_isbd_publisher">Publisher: </span><span class="isbd_publisher">{{subfstring f260 'abcg'}}</span></div>{{/if}}
 {{#field f246}}<div><span class="label_isbd_titlevariant">Other title: </span><span class="isbd_titlevariant">{{subfstring this 'ab'}}</span></div>{{/field}}
 {{#field f242}}<div><span class="label_isbd_titletranslated">Translated title: </span><span class="isbd_titletranslated">{{subfstring this 'abh'}}</span></div>{{/field}}
