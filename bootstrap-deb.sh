@@ -27,8 +27,8 @@ dpkg -i oracle-java-dummy*.deb
 apt-get install -f -y
 update-java-alternatives -s java-7-oracle
 apt-get install -y redis-server nodejs maven make g++ git vim
-wget -q https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.3.deb
-dpkg -i elasticsearch-0.90.3.deb
+wget -q https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.0.deb
+dpkg -i elasticsearch-0.90.0.deb
 apt-get install -f -y
 RUNLEVEL=1 apt-get install -y dsc12
 update-rc.d cassandra disable
