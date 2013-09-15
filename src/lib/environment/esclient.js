@@ -17,8 +17,12 @@ function ESClient(config) {
     };
 
     self.index = { };
+    self.fields = [ ];
     for (var index in config.indexes) {
         self.index[config.indexes[index].id] = index;
+        if (config.indexes[index].system && (config.indexes[index].type === 'text' || config.indexes[index].type === 'property')) {
+            self.fields.push(config.indexes[index].id);
+        }
     }
 
     return self;

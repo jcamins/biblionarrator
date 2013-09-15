@@ -36,7 +36,7 @@ function QueryPlan(tree, supports, environment) {
     if (supports.elasticsearch) {
         self.esquery = prepareESQuery(self.partial);
         self.esquery.size = 5000;
-        if (self.vertexquery.length === 0 || self.pipeline.length === 0) {
+        if (self.vertexquery.length === 0 && self.pipeline.length === 0) {
             self.esonly = true;
         } else {
             self.esquery.fields = [ ];
