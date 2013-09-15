@@ -43,9 +43,8 @@ importer.on('record', function (record, mypromise) {
 });
 
 importer.on('commit', function (promise) {
-    graphstore.db.commit(function () {
-        promise.resolve(true);
-    });
+    graphstore.db.commitSync();
+    promise.resolve(true);
 });
 
 importer.on('done', function () {

@@ -210,7 +210,7 @@ module.exports.links = function(recorddata) {
                 key = key.replace(cleanre, '');
                 links.push({ key: key, link: def.link, vivify: {
                     key: key,
-                    data: '{"article":{"children":[{"header":{"children":["' + key + '"]}},{"section":{"children":["&nbsp;"]}}]}}',
+                    data: { "article":{"children":[{"header":{"children":[ key ]}},{"section":{"children":["&nbsp;"]}}]}},
                     format: 'bnjson'
                 }});
             }

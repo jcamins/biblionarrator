@@ -7,7 +7,9 @@ process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resol
 var QueryParser = require('queryparser'),
     GraphStore = require('./graphstore'),
     DataStore = require('./datastore'),
-    Cache = require('./cache');
+    Cache = require('./cache'),
+    ESClient = require('./esclient'),
+    QueryBuilder = require('./querybuilder');
 
 var defaultconfig = {
     "operators": {
@@ -110,6 +112,18 @@ function Environment(config) {
         }
         try {
             self.cache = new Cache(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
+        try {
+            self.esclient = new ESClient(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
+        try {
+            self.querybuilder = new QueryBuilder(self);
         } catch (e) {
             self.errors = self.errors || [ ];
             self.errors.push(e);

@@ -48,7 +48,8 @@
     "bn-importers": "https://github.com/biblionarrator/bn-importers/tarball/master",
     "connect-redis": "~1.4.5",
     "connect-flash": "~0.1.1",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "elasticsearchclient": "~0.5.3"
   },
   "devDependencies": {
     "chai": "1.7.x",

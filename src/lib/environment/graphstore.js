@@ -27,6 +27,7 @@ function GraphStore(config, engine) {
     };*/
 
     self.engine = engine || config.engine || config.graphconf.engine;
+    self.searchbackend = config.graphconf[self.engine]['storage.index.search.backend'];
 
     self.db = connect(config, self.engine, g);
     process.on('exit', function () {
@@ -47,6 +48,7 @@ function connect(config, engine, g) {
         var Direction = g.Direction,
             Type = g.ClassTypes;
         var UniqCon = g.java.import("com.thinkaurelius.titan.core.TypeMaker$UniquenessConsistency");
+        var LongEncoding = g.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding');
 
         var gconf = new BaseConfiguration();
         for (var property in config.graphconf[engine]) {
@@ -56,38 +58,50 @@ function connect(config, engine, g) {
 
         for (var name in config.indexes) {
             var index = config.indexes[name];
+            var backends;
             try {
                 switch (index.type) {
                     case 'edge':
                         if (index.unidirected) {
-                            db.makeTypeSync().nameSync(name).unidirectedSync().makeEdgeLabelSync();
+                            index.id = db.makeTypeSync().nameSync(name).unidirectedSync().makeEdgeLabelSync().getIdSync();
                         } else {
-                            db.makeTypeSync().nameSync(name).makeEdgeLabelSync();
+                            index.id = db.makeTypeSync().nameSync(name).makeEdgeLabelSync().getIdSync();
                         }
                         break;
                     case 'property':
-                        if (index.unique && !index.multivalue) {
-                            db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class)
-                                .indexedSync(Type.Vertex.class)
-                                .uniqueSync(Direction.BOTH, UniqCon.LOCK).makePropertyKeySync();
-                        } else if (index.unique) {
-                            db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class)
-                                .indexedSync(Type.Vertex.class).uniqueSync(Direction.IN).makePropertyKeySync();
-                        } else if (!index.multivalue) {
-                            db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class)
-                                .indexedSync(Type.Vertex.class).uniqueSync(Direction.OUT).makePropertyKeySync();
+                        if (index.system) {
+                            backends = [ 'standard', 'search' ];
                         } else {
-                            db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class)
-                                .indexedSync(Type.Vertex.class).makePropertyKeySync();
+                            backends = [ 'standard' ];
                         }
+                        var type = db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class);
+                        backends.forEach(function (backend) {
+                            type = type.indexedSync(backend, Type.Vertex.class);
+                        });
+                        if (index.unique && !index.multivalue) {
+                            type = type.uniqueSync(Direction.BOTH, UniqCon.LOCK);
+                        } else if (index.unique) {
+                            type = type.uniqueSync(Direction.IN);
+                        } else if (!index.multivalue) {
+                            type = type.uniqueSync(Direction.OUT);
+                            // Multi-valued keys are not actually a thing, API not withstanding.
+                        }
+                        index.id = type.makePropertyKeySync().getIdSync();
                         break;
                     case 'text':
-                        db.makeTypeSync().nameSync(name).dataTypeSync(Type.String.class)
+                        index.id = db.makeTypeSync().nameSync(name).dataTypeSync(Type.String.class)
                             .indexedSync("search", Type.Vertex.class)
-                            .uniqueSync(Direction.OUT).makePropertyKeySync();
+                            .uniqueSync(Direction.OUT).makePropertyKeySync().getIdSync();
                         break;
                 }
             } catch (e) {
+                var type = db.getTypeSync(name);
+                if (type !== null) {
+                    index.id = type.getIdSync();
+                }
+            }
+            if (typeof index.id !== 'undefined' && index.id !== null) {
+                index.id = LongEncoding.encodeSync(index.id);
             }
         }
     } else if (engine === 'orient') {
