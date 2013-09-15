@@ -28,13 +28,20 @@ function QueryPlan(tree, supports, environment) {
     self.partial = new PartialPlan();
 
     optimizeTree(tree, self.partial, supports, environment);
-    if (supports.elasticsearch) {
-        self.esquery = prepareESQuery(self.partial);
-        self.esquery.size = 5000;
-    }
+
     self.vertexquery = self.partial.vertexq;
     self.pipeline = self.partial.pipeline;
     self.unoptimizable = self.partial.unoptimizable;
+
+    if (supports.elasticsearch) {
+        self.esquery = prepareESQuery(self.partial);
+        self.esquery.size = 5000;
+        if (self.vertexquery.length === 0 || self.pipeline.length === 0) {
+            self.esonly = true;
+        } else {
+            self.esquery.fields = [ ];
+        }
+    }
     return self;
 }
 
@@ -49,6 +56,7 @@ function PartialPlan(options) {
 }
 
 function optimizeTree(tree, query, supports, environment) {
+    var op;
     switch (tree[0]) {
     case 'AND':
         optimizeTree(tree[1], query, supports, environment);
@@ -71,6 +79,8 @@ function optimizeTree(tree, query, supports, environment) {
                     { exceptStep: 'not' + (notplan.nextlabel + 1) }
                 ]);
             query.nextlabel = notplan.nextlabel + 2;
+        } else {
+            query.unoptimizable = true;
         }
         break;
     case 'HAS':
@@ -91,8 +101,24 @@ function optimizeTree(tree, query, supports, environment) {
                 query.pipeline.push({ filter: "{it.data?.count('" + analyzeValue(tree[2]) + "') >= 1}" });
             }
             break;
+        case 'edge':
+            op = op || 'out';
+        case 'inverseedge':
+            op = op || 'in';
+        case 'biedge':
+            op = op || 'both';
+            var pipeop = { };
+            pipeop[op] = [ tree[1] ];
+            query.pipeline = query.pipeline.concat([
+                { as: [ 'trunk' + query.nextlabel ] },
+                pipeop,
+                { has: [ 'key', analyzeValue(tree[2]) ] },
+                { back: [ 'trunk' + query.nextlabel ] }
+            ]);
+            query.nextlabel++;
+            break;
         default:
-            // TODO: Implement edges and dbcallbacks
+            // TODO: Implement dbcallbacks
             query.unoptimizable = true;
             break;
         }
