@@ -5,11 +5,13 @@ function ESClient(config) {
     var client;
 
     if (config.graphconf.engine === 'titan' && config.graphconf.titan["storage.index.search.backend"] === "elasticsearch") {
+        self.inuse = true;
         client = new ElasticSearchClient({
             host: config.graphconf.titan["storage.index.search.hostname"],
             port: 9200,
             secure: false
         });
+        self.indexname = config.graphconf.titan["storage.index.search.index-name"] || 'titan';
     }
 
     self.search = function () {
@@ -24,29 +26,43 @@ function ESClient(config) {
             self.fields.push(config.indexes[index].id);
         }
     }
-    if (Object.keys(config.static_relevance_bumps).length > 0) {
-        var static_relevance = '';
-        var bumpcount = 0;
-        var bumpeq = '';
-        for (field in config.static_relevance_bumps) {
-            static_relevance = static_relevance + "lu" + bumpcount + "=" + makeMVELMap(config.static_relevance_bumps[field]) + ";v" + bumpcount + "=doc['" + config.indexes[field].id + "'].value;";
-            bumpcount++;
-        }
-        static_relevance = static_relevance + '(';
-        for (var ii = 0; ii < bumpcount; ii++) {
-            if (ii > 0) {
-                static_relevance = static_relevance + '+';
+    if (self.inuse) {
+        var vorderquery = { query: { match_all: {} }, facets: { vorder: { statistical: { field: config.indexes['vorder'].id } } }, "size": 0 };
+        self.search(self.indexname, 'vertex', vorderquery, function (err, data) {
+            if (typeof err === 'undefined') {
+                data = JSON.parse(data);
             }
-            static_relevance = static_relevance + 'lu' + ii + '[v' + ii + '] or 0';
-        }
-        static_relevance = static_relevance + ')/' + bumpcount;
-        if (bumpcount > 0) {
-            self.rescore = { window_size: 500, query: { rescore_query: { custom_score: { query: { match_all: { } } } }, rescore_query_weight: 1.5 } };
-            self.rescore.query.rescore_query.custom_score.script = static_relevance;
-        }
+            var maxvorder;
+            var static_relevance = '';
+            if (typeof data.facets !== 'undefined') {
+                maxvorder = data.facets.vorder.max;
+            }
+            if (Object.keys(config.static_relevance_bumps).length > 0) {
+                var bumpcount = 0;
+                for (field in config.static_relevance_bumps) {
+                    static_relevance = static_relevance + "lu" + bumpcount + "=" + makeMVELMap(config.static_relevance_bumps[field]) + ";v" + bumpcount + "=doc['" + config.indexes[field].id + "'].value;";
+                    bumpcount++;
+                }
+                static_relevance = static_relevance + "(((";
+                for (var ii = 0; ii < bumpcount; ii++) {
+                    if (ii > 0) {
+                        static_relevance = static_relevance + '+';
+                    }
+                    static_relevance = static_relevance + 'lu' + ii + '[v' + ii + '] or 0';
+                }
+                static_relevance = static_relevance + ")/" + bumpcount + "f)+1)";
+                if (maxvorder) {
+                    static_relevance = static_relevance + "*((doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1)";
+                }
+            } else {
+                static_relevance = "(doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1";
+            }
+            if (static_relevance.length > 0) {
+                self.rescore = { window_size: 500, query: { rescore_query: { custom_score: { query: { match_all: { } } } }, rescore_query_weight: 1.5 } };
+                self.rescore.query.rescore_query.custom_score.script = static_relevance;
+            }
+        });
     }
-
-    self.min_score = 0.25;
 
     return self;
 }
