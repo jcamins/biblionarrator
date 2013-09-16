@@ -18,7 +18,7 @@ var mainrecordcount = 0;
 var linklookup = { };
 
 importer.on('record', function (record, mypromise) {
-    var rec = new Record({ format: 'marc21', data: record });
+    var rec = new Record({ format: 'marc21', data: record, recordclass: 'biblio' });
     rec.save();
     var links = rec.getLinks();
     links.forEach(function (link) {

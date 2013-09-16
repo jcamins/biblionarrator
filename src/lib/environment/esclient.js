@@ -24,6 +24,14 @@ function ESClient(config) {
             self.fields.push(config.indexes[index].id);
         }
     }
+    self.relevance_bumps = [ ];
+    config.relevance_bumps.forEach(function(relevance_bump) {
+        var bump = { };
+        bump[relevance_bump.type] = { filter: { term: { } } };
+        bump[relevance_bump.type].filter.term[config.indexes[relevance_bump.field].id] = relevance_bump.value;
+        bump[relevance_bump.type].boost = relevance_bump.boost;
+        self.relevance_bumps.push(bump);
+    });
 
     return self;
 }

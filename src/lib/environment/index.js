@@ -70,9 +70,13 @@ function Environment(config) {
         self.fields = self.fields || { };
         self.indexes = self.indexes || { };
         self.facets = self.facets || { };
+        self.relevance_bumps = self.relevance_bumps || [ ];
         self.schemas = self.schemas || [ ];
-        self.schemas.unshift('common');
-        self.schemas.forEach(function (which) {
+        if (typeof self.fields.data === 'undefined') {
+            self.schemas.unshift('common');
+        }
+        var which;
+        while (which = self.schemas.shift()) {
             var newschema = { };
             try {
                 newschema = require('bn-schema-' + which);
@@ -85,13 +89,16 @@ function Environment(config) {
                     self.indexes[field] = newschema.fields[field];
                     self.indexes[field].field = newschema.prefix  + '_' + field;
                 });
+                if (newschema.relevance_bumps) {
+                    self.relevance_bumps = self.relevance_bumps.concat(newschema.relevance_bumps);
+                }
                 extend(self.facets, newschema.facets);
             } catch (e) {
                 if (e.code === 'MODULE_NOT_FOUND') {
                     console.log('Schema ' + which + ' is not available');
                 }
             }
-        });
+        }
         try {
             self.queryparser = new QueryParser(self);
         } catch (e) {

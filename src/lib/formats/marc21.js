@@ -211,7 +211,8 @@ module.exports.links = function(recorddata) {
                 links.push({ key: key, link: def.link, vivify: {
                     key: key,
                     data: { "article":{"children":[{"header":{"children":[ key ]}},{"section":{"children":["&nbsp;"]}}]}},
-                    format: 'bnjson'
+                    format: 'bnjson',
+                    recordclass: 'authstub'
                 }});
             }
         });
