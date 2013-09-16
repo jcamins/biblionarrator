@@ -18,6 +18,17 @@ function Cache() {
         });
     };
 
+    this.mget = function (keys, callback) {
+        client.mget(keys, function (err, values) {
+            for (var ii = 0; ii < values.length; ii++) {
+                values[ii] = JSON.parse(values[ii]);
+            }
+            if (typeof callback === 'function') {
+                callback(err, values);
+            }
+        });
+    };
+
     this.set = function (key, value, expiration, callback) {
         value = JSON.stringify(value);
         client.set(key, value, function (err, reply) {
