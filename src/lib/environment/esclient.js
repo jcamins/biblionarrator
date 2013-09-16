@@ -20,20 +20,46 @@ function ESClient(config) {
     self.fields = [ ];
     for (var index in config.indexes) {
         self.index[config.indexes[index].id] = index;
-        if (config.indexes[index].system && (config.indexes[index].type === 'text' || config.indexes[index].type === 'property')) {
+        if (config.indexes[index].system && (config.indexes[index].type === 'text' || config.indexes[index].type === 'property') && index !== 'keyword') {
             self.fields.push(config.indexes[index].id);
         }
     }
-    self.relevance_bumps = [ ];
-    config.relevance_bumps.forEach(function(relevance_bump) {
-        var bump = { };
-        bump[relevance_bump.type] = { filter: { term: { } } };
-        bump[relevance_bump.type].filter.term[config.indexes[relevance_bump.field].id] = relevance_bump.value;
-        bump[relevance_bump.type].boost = relevance_bump.boost;
-        self.relevance_bumps.push(bump);
-    });
+    if (Object.keys(config.static_relevance_bumps).length > 0) {
+        var static_relevance = '';
+        var bumpcount = 0;
+        var bumpeq = '';
+        for (field in config.static_relevance_bumps) {
+            static_relevance = static_relevance + "lu" + bumpcount + "=" + makeMVELMap(config.static_relevance_bumps[field]) + ";v" + bumpcount + "=doc['" + config.indexes[field].id + "'].value;";
+            bumpcount++;
+        }
+        static_relevance = static_relevance + '(';
+        for (var ii = 0; ii < bumpcount; ii++) {
+            if (ii > 0) {
+                static_relevance = static_relevance + '+';
+            }
+            static_relevance = static_relevance + 'lu' + ii + '[v' + ii + '] or 0';
+        }
+        static_relevance = static_relevance + ')/' + bumpcount;
+        if (bumpcount > 0) {
+            self.rescore = { window_size: 500, query: { rescore_query: { custom_score: { query: { match_all: { } } } }, rescore_query_weight: 1.5 } };
+            self.rescore.query.rescore_query.custom_score.script = static_relevance;
+        }
+    }
+
+    self.min_score = 0.25;
 
     return self;
 }
 
 module.exports = ESClient;
+
+function makeMVELMap(object) {
+    var map = '';
+    for (var key in object) {
+        if (map.length > 0) {
+            map = map + ',';
+        }
+        map = map + "'" + key + "':" + object[key];
+    }
+    return '[' + map + ']';
+}

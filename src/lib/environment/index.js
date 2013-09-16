@@ -70,7 +70,7 @@ function Environment(config) {
         self.fields = self.fields || { };
         self.indexes = self.indexes || { };
         self.facets = self.facets || { };
-        self.relevance_bumps = self.relevance_bumps || [ ];
+        self.static_relevance_bumps = self.static_relevance_bumps || { };
         self.schemas = self.schemas || [ ];
         if (typeof self.fields.data === 'undefined') {
             self.schemas.unshift('common');
@@ -89,8 +89,8 @@ function Environment(config) {
                     self.indexes[field] = newschema.fields[field];
                     self.indexes[field].field = newschema.prefix  + '_' + field;
                 });
-                if (newschema.relevance_bumps) {
-                    self.relevance_bumps = self.relevance_bumps.concat(newschema.relevance_bumps);
+                if (newschema.static_relevance_bumps) {
+                    extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
                 }
                 extend(self.facets, newschema.facets);
             } catch (e) {

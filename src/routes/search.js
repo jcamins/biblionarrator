@@ -36,6 +36,9 @@ exports.view = function(req, res) {
                 layout = 'partials/results';
             }
             extend(data, list);
+            if (data.count > data.offset + data.records.length) {
+                data.more = true;
+            }
             if (req.query.format === 'map') {
                 req.query.records = [ ];
                 data.records.forEach(function (rec) {

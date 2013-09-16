@@ -1,6 +1,7 @@
 var models = require('../../models'),
     graph = require('./graph'),
     cache = require('../environment').cache;
+var inspect = require('eyes').inspector({maxLength: false});
 
 module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);
@@ -24,11 +25,10 @@ module.exports.search = function (options, recordcb, facetcb) {
                 }
                 cache.set(recordskey, reclist, 600);
             }, function (results) {
-                var facets = results.facet;
                 if (typeof facetcb === 'function') {
-                    facetcb(facets);
+                    facetcb(results);
                 }
-                cache.set(facetskey, facets, 600);
+                cache.set(facetskey, results, 600);
             });
         } else {
             if (typeof recordcb === 'function') {

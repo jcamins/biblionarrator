@@ -33,9 +33,8 @@ function QueryPlan(tree, supports, environment) {
     self.pipeline = self.partial.pipeline;
     self.unoptimizable = self.partial.unoptimizable;
 
-    if (supports.elasticsearch) {
+    if (supports.elasticsearch && self.partial.textq.length > 0) {
         self.esquery = prepareESQuery(self.partial);
-        self.esquery.size = 5000;
         if (self.vertexquery.length === 0 && self.pipeline.length === 0) {
             self.esonly = true;
         } else {
