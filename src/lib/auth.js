@@ -16,15 +16,17 @@ module.exports.initialize = function (app) {
         done(null, user);
     });
 
-    passport.use(new BrowserIDStrategy({
-            audience: environment.domain
-        },
-        function(email, done) {
-            var user = User.findOne({ email: email });
-            var err;
-            return done(err, user);
-        }
-    ));
+    if (environment.domain) {
+        passport.use(new BrowserIDStrategy({
+                audience: environment.domain
+            },
+            function(email, done) {
+                var user = User.findOne({ email: email });
+                var err;
+                return done(err, user);
+            }
+        ));
+    }
     passport.use(new LocalStrategy(
         function(username, password, done) {
             var user = User.findOne({ email: username });

@@ -65,13 +65,14 @@ function Environment(config) {
         self.accesslog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.access), { flags: 'a' });
     }
 
+    self.fields = { };
+    self.indexes = { };
+    self.facets = { };
+    self.static_relevance_bumps = { };
+    self.schemas = [ ];
+    self.logs = { };
     if (typeof config !== 'undefined') {
         extend(self, config);
-        self.fields = self.fields || { };
-        self.indexes = self.indexes || { };
-        self.facets = self.facets || { };
-        self.static_relevance_bumps = self.static_relevance_bumps || { };
-        self.schemas = self.schemas || [ ];
         if (typeof self.fields.data === 'undefined') {
             self.schemas.unshift('common');
         }
