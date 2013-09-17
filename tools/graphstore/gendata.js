@@ -2,6 +2,11 @@ var models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
 
+var mylife = Record.findOne({ key: 'My life in America' });
+if (typeof mylife !== 'undefined' && mylife !== null) {
+    console.log('Sample data already generated!');
+    return;
+}
 var records = {
     mylife: {
         format: 'bnjson',
