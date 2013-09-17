@@ -1,3 +1,4 @@
 require('blanket')({
-    pattern: 'src/'
+    pattern: 'src/',
+    ignoreError: true
 });

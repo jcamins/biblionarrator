@@ -159,7 +159,7 @@ Environment.set = function setConfig(config) {
 
 process.on('message', function (message) {
     if (typeof message.setEnv !== 'undefined') {
-        Environment.set(message.setEnv);
+        Environment.set(JSON.parse(message.setEnv));
     }
 });
 
