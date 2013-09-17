@@ -270,9 +270,22 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-prompt');
     grunt.loadNpmTasks('grunt-file-creator');
 
+    grunt.registerTask('genuser', 'Generate system user', function() {
+        var fs = require('fs'),
+            bcrypt = require('bcrypt'),
+            pwgen = require('password-generator');
+        var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
+        var password = pwgen(16);
+        data.users = { 'systemuser': { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser' } };
+        fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
+        console.log("Your systemuser has been created with the following password: " + password);
+        console.log("  If you forget this password you can generate a new password");
+        console.log("  for the systemuser by rerunning `grunt genuser`");
+    });
+
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ]);
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('release', [ 'default', 'compress' ]);
-    grunt.registerTask('install', [ 'prompt', 'file-creator' ]);
+    grunt.registerTask('install', [ 'prompt', 'file-creator', 'genuser' ]);
 };

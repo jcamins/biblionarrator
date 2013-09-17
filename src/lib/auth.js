@@ -12,8 +12,7 @@ module.exports.initialize = function (app) {
     });
 
     passport.deserializeUser(function(email, done) {
-        var user = User.findOne({ email: email });
-        done(null, user);
+        User.findOne(email, done);
     });
 
     if (environment.domain) {
@@ -21,19 +20,27 @@ module.exports.initialize = function (app) {
                 audience: environment.domain
             },
             function(email, done) {
-                var user = User.findOne({ email: email });
-                var err;
-                return done(err, user);
+                User.findOne(email, done);
             }
         ));
     }
     passport.use(new LocalStrategy(
         function(username, password, done) {
-            var user = User.findOne({ email: username });
-            if (!user || user.password !== password) {
-                return done(null, false, { message: 'BADCREDENTIAL' });
-            }
-            return done(null, user);
+            User.findOne(username, function (err, user) {
+                if (err) {
+                    done(err, null);
+                } else if (!user) {
+                    done(null, false, { message: 'BADCREDENTIAL' });
+                } else {
+                    user.authenticate(password, function (success) {
+                        if (success) {
+                            return done(null, user);
+                        } else {
+                            return done(null, false, { message: 'BADCREDENTIAL' });
+                        }
+                    });
+                }
+            });
         }
     ));
 

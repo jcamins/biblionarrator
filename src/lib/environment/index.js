@@ -1,5 +1,6 @@
 var fs = require('fs'),
     path = require('path'),
+    bcrypt = require('bcrypt'),
     extend = require('extend');
 
 process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resolve(__dirname, '../../../config/log4j.properties') + ' -Dlogback.configurationFile=' + path.resolve(__dirname, '../../../config/logback.xml');
@@ -65,6 +66,7 @@ function Environment(config) {
         self.accesslog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.access), { flags: 'a' });
     }
 
+    self.salt = bcrypt.genSaltSync(10);
     self.fields = { };
     self.indexes = { };
     self.facets = { };

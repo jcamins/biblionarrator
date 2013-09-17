@@ -23,13 +23,15 @@ DataModel.extend(Field);
 
 Field.findOne = function (key, callback) {
     DataModel.findOne(Field, key, function (err, model) {
-        var field = environment.fields[key] || { };
-        if (model !== null) {
-            extend(true, field, model);
-            callback(err, new Field(field));
-        } else {
+        var field = environment.fields[key];
+        if ((err || model === null) && typeof field === 'undefined') {
             callback(err, null);
         }
+        field = field || { };
+        if (model !== null) {
+            extend(true, field, model);
+        }
+        callback(err, new Field(field));
     });
 };
 
