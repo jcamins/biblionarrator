@@ -55,7 +55,7 @@ function Record(data) {
         var sv = g.v(this.id).iterator().nextSync();
         var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
         graphstore.db.addEdgeSync(null, sv, tv, type);
-        sv.setPropertySync('vorder', sv.getPropertySync('vorder'));
+        sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
         tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
         if (graphstore.autocommit) {
             graphstore.db.commitSync();
