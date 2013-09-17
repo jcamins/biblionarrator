@@ -1,12 +1,14 @@
 var expect = require('chai').expect,
     models = require('../src/models'),
     Field = models.Field,
-    datastore = require('../src/lib/datastore');
+    environment = require('../src/lib/environment'),
+    datastore = environment.datastore;
 
 describe('Field model', function () {
     var field;
     before(function (done) {
-        datastore.namespace('test');
+        environment.fields = [ ];
+        datastore.namespace = 'test#';
         done();
     });
     it('retrieves no model when db is empty', function (done) {
@@ -24,7 +26,7 @@ describe('Field model', function () {
         });
     });
     it('saves field successfully', function (done) {
-        field = new Field({ schema: 'testschema', field: 'testfield', css: 'font-weight: bold;' });
+        field = new Field({ schema: 'testschema', name: 'testfield', css: 'font-weight: bold;' });
         field.save();
         Field.findOne('testschema_testfield', function (err, results) {
             expect(results).to.deep.equal(field);
@@ -40,13 +42,13 @@ describe('Field model', function () {
         });
     });
     it('loads multiple fields successfully', function (done) {
-        field = new Field({ schema: 'testschema', field: 'testfield', css: 'font-weight: bold;' });
+        field = new Field({ schema: 'testschema', name: 'testfield', css: 'font-weight: bold;' });
         field.save();
-        field = new Field({ schema: 'testschema', field: 'testfield2', css: 'font-style: italic;' });
+        field = new Field({ schema: 'testschema', name: 'testfield2', css: 'font-style: italic;' });
         field.save();
         Field.all(function (err, results) {
             expect(err).to.equal(null);
-            expect(results.length).to.equal(2);
+            expect(Object.keys(results).length).to.equal(2);
             for (var idx in results) {
                 results[idx].del();
             }

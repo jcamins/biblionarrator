@@ -26,8 +26,10 @@ Field.findOne = function (key, callback) {
         var field = environment.fields[key] || { };
         if (model !== null) {
             extend(true, field, model);
+            callback(err, new Field(field));
+        } else {
+            callback(err, null);
         }
-        callback(err, new Field(field));
     });
 };
 
@@ -39,7 +41,7 @@ Field.all = function (callback) {
         });
         Object.keys(map).forEach(function (field) {
             if (map[field] !== null) {
-                fields[field] = fields[field] || { };
+                fields[field] = fields[field] || new Field();
                 extend(true, fields[field], map[field]);
             }
         });
