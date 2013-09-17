@@ -1,7 +1,6 @@
 var models = require('../../models'),
     graph = require('./graph'),
     cache = require('../environment').cache;
-var inspect = require('eyes').inspector({maxLength: false});
 
 module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);

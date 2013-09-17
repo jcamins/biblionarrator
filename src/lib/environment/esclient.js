@@ -1,3 +1,4 @@
+"use strict";
 var ElasticSearchClient = require('elasticsearchclient');
 
 function ESClient(config) {
@@ -39,7 +40,7 @@ function ESClient(config) {
             }
             if (Object.keys(config.static_relevance_bumps).length > 0) {
                 var bumpcount = 0;
-                for (field in config.static_relevance_bumps) {
+                for (var field in config.static_relevance_bumps) {
                     static_relevance = static_relevance + "lu" + bumpcount + "=" + makeMVELMap(config.static_relevance_bumps[field]) + ";v" + bumpcount + "=doc['" + config.indexes[field].id + "'].value;";
                     bumpcount++;
                 }

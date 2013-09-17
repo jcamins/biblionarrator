@@ -56,6 +56,7 @@ function PartialPlan(options) {
 
 function optimizeTree(tree, query, supports, environment) {
     var op;
+    /*jshint -W086*/ /* No 'break' between cases */
     switch (tree[0]) {
     case 'AND':
         optimizeTree(tree[1], query, supports, environment);
@@ -122,11 +123,10 @@ function optimizeTree(tree, query, supports, environment) {
             break;
         }
         break;
-    //case 'FLOAT':
-    //case 'OR':
     default:
         query.unoptimizable = true;
     }
+    /*jshint +W086*/
     return query;
 }
 

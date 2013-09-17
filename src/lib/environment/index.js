@@ -76,7 +76,7 @@ function Environment(config) {
             self.schemas.unshift('common');
         }
         var which;
-        while (which = self.schemas.shift()) {
+        while ((which = self.schemas.shift())) {
             var newschema = { };
             try {
                 newschema = require('bn-schema-' + which);
