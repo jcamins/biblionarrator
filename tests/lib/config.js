@@ -6,7 +6,9 @@ var config = {
         engine: 'titan',
         titan: {
             'storage.backend': 'cassandra',
+            'storage.directory': path.resolve(__dirname, '../data/titandb'),
             'storage.keyspace': 'bntest',
+            //'storage.transactions': false,
             'storage.index.search.backend': 'lucene',
             'storage.index.search.directory': path.resolve(__dirname, '../data/titanft'),
         },
