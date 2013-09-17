@@ -110,6 +110,7 @@ engines.forEach(function (engine) {
         });
         after(function () {
             g.V().remove();
+            graphstore.db.commitSync();
         });
     });
 });

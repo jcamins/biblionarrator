@@ -1,29 +1,6 @@
-var graphconf = {
-    engine: 'titan',
-    titan: {
-        'storage.backend': 'cassandra',
-        'storage.keyspace': 'bntest',
-        'storage.index.search.backend': 'lucene',
-        'storage.index.search.directory': __dirname + '/data/titanft',
-        'storage.index.search.client-only': false,
-    },
-
-    orient: {
-        path: 'local:' + __dirname + '/data/orient',
-    },
-
-    tinker: {
-        path: null,
-    },
-
-    neo4j: {
-        path: __dirname + '/data/neo4j',
-    },
-};
-
 var expect = require('chai').expect,
+    config = require('./lib/config'),
     environment = require('../src/lib/environment');
-    environment = environment.set({ graphconf: graphconf });
 var graphstore = environment.graphstore,
     g = graphstore.g,
     models = require('../src/models'),

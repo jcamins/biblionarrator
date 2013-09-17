@@ -1,4 +1,5 @@
 var expect = require('chai').expect,
+    config = require('./lib/config'),
     models = require('../src/models'),
     Field = models.Field,
     environment = require('../src/lib/environment'),

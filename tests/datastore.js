@@ -1,4 +1,5 @@
 var expect = require('chai').expect,
+    config = require('./lib/config'),
     datastore = require('../src/lib/environment').datastore;
 
 describe('Datastore', function () {
