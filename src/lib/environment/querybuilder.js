@@ -1,6 +1,5 @@
 "use strict";
 var extend = require('extend');
-var Text = { };
 
 function QueryBuilder(config) {
     var self = this;
@@ -12,7 +11,6 @@ function QueryBuilder(config) {
 
     if (config.graphstore.engine === 'titan') {
         supports.contains = true;
-        Text = config.graphstore.g.java.import('com.thinkaurelius.titan.core.attribute.Text');
     }
     if (config.graphstore.searchbackend === 'elasticsearch') {
         supports.elasticsearch = true;
@@ -95,7 +93,7 @@ function optimizeTree(tree, query, supports, environment) {
                 query.textq.push(analyzeESValue(tree[2], environment.indexes[tree[1]].id));
             } else if (supports.contains) {
                 analyzeContainsValue(tree[2]).forEach(function (value) {
-                    query.vertexq.push([ tree[1], Text.CONTAINS, value ]);
+                    query.vertexq.push([ tree[1], 'contains', value ]);
                 });
             } else {
                 query.pipeline.push({ filter: "{it.data?.count('" + analyzeValue(tree[2]) + "') >= 1}" });
