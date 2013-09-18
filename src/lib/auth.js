@@ -97,8 +97,12 @@ module.exports.redirect = function(req, res) {
 };
 
 module.exports.loginform = function login(req, res) {
-    var messages = { redirect: req.flash('redirect') };
-    req.flash('redirect', messages.redirect);
+    var messages = { };
+    var redirect = req.flash('redirect');
+    if (redirect.length > 0) {
+        messages.redirect = redirect;
+        req.flash('redirect', redirect);
+    }
     var error = req.flash('error');
     if (error.length > 0) {
         error = error[0].split(':');

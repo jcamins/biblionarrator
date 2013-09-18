@@ -274,7 +274,7 @@ module.exports = function(grunt) {
             bcrypt = require('bcrypt'),
             pwgen = require('password-generator');
         var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
-        var password = pwgen(16);
+        var password = grunt.option('password') || pwgen(16);
         data.users = { 'systemuser': { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser', 'permissions': '*' } };
         fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
         console.log("Your systemuser has been created with the following password: " + password);
