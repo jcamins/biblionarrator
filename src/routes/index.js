@@ -1,11 +1,10 @@
 var assets = require('./assets'),
-    auth = require('./auth'),
     doc = require('./doc'),
     fields = require('./fields'),
     record = require('./record'),
     media = require('./media'),
     search = require('./search'),
-    authmw = require('../lib/auth');
+    auth = require('../lib/auth');
 
 exports.init = function(app) {
 
@@ -20,21 +19,21 @@ exports.init = function(app) {
     app.get('/svc/bndb_initializer.js', assets.bndbinitializerjs);
 
     /* Auth */
-    app.get('/auth/login', auth.login);
-    app.post('/auth/login', auth.dologin);
+    app.get('/auth/login', auth.loginform);
+    app.post('/auth/login', auth.localauth, auth.redirect);
     app.get('/auth/logout', auth.logout);
-    app.post('/auth/browserid', auth.browserid);
+    app.post('/auth/browserid', auth.browseridauth, auth.redirect);
 
     /* Docs */
     app.get('/doc/:filename', doc.get);
 
     /* Fields */
-    app.get('/fields/:schema/:name', authmw.can, fields.get);
-    app.post('/fields/:schema/:name', authmw.can, fields.save);
-    app.get('/admin/fields/:schema/:name', authmw.can, fields.admin);
-    app.get('/admin/fields', authmw.can, fields.admin);
-    app.get('/fields/editor/:schema/:field', authmw.can, fields.editor);
-    app.get('/fields/editor', authmw.can, fields.editor);
+    app.get('/fields/:schema/:name', auth.can('view', 'field'), fields.get);
+    app.post('/fields/:schema/:name', auth.can('edit', 'field'), fields.save);
+    app.get('/admin/fields/:schema/:name', auth.can('view', 'field'), fields.admin);
+    app.get('/admin/fields', auth.can('view', 'field'), fields.admin);
+    app.get('/fields/editor/:schema/:field', auth.can('view', 'field'), fields.editor);
+    app.get('/fields/editor', auth.can('view', 'field'), fields.editor);
 
     /* Record */
     app.get('/record/:record_id/link/select', record.linkselect);
@@ -59,19 +58,13 @@ exports.init = function(app) {
 };
 
 function home(req, res) {
-    res.render('home', {}, function(err, html) {
-        res.send(html);
-    });
+    res.render('home');
 }
 
 function about(req, res) {
-    res.render('about', { view: 'about' }, function(err, html) {
-        res.send(html);
-    });
+    res.render('about');
 }
 
 function admin(req, res) {
-    res.render('admin', {}, function(err, html) {
-        res.send(html);
-    });
+    res.render('admin');
 }

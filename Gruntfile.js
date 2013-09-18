@@ -275,7 +275,7 @@ module.exports = function(grunt) {
             pwgen = require('password-generator');
         var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
         var password = pwgen(16);
-        data.users = { 'systemuser': { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser' } };
+        data.users = { 'systemuser': { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser', 'permissions': '*' } };
         fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
         console.log("Your systemuser has been created with the following password: " + password);
         console.log("  If you forget this password you can generate a new password");

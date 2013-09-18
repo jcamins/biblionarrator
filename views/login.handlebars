@@ -5,8 +5,11 @@
                 <div class="span6">
                     <h2>Sign in</h2>
                     {{#if error}}
-                    <div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>User or password not recognized</div>
+                    <div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>{{error}}</div>
                     {{/if}}
+                    <form action="/auth/browserid" method="post" style="display:none;">
+                        <input type="text" name="assertion"/>
+                    </form>
                     <form action="/auth/login" method="post">
                         <div class="control-group">
                             <input type="text" id="login-username" name="username" placeholder="User name"></input>
@@ -14,11 +17,9 @@
                         <div class="control-group">
                             <input type="password" id="login-password" name="password" placeholder="Password"></input>
                         </div>
+                        <input type="hidden" name="redirect" value="{{redirect}}"></input>
                         <button class="btn btn-small btn-primary" type="submit">Sign in with password</button>
                         <img src="https://developer.mozilla.org/files/3969/plain_sign_in_blue.png" id="browserid"/>
-                    </form>
-                    <form action="/auth/browserid" method="post" style="display:none;">
-                        <input type="text" name="assertion"/>
                     </form>
 
                 </div>

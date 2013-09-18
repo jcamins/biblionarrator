@@ -39,8 +39,10 @@
         "neo4j": { }
     },
     "users": {
-        "systemuser@somewhere.com": {
-            "password": "systempass"
+        "systemuser": {
+            "password": "systempass",
+            "email": "systemuser",
+            "permissions": "*"
         }
     },
     "domain": "http://localhost:3000/"

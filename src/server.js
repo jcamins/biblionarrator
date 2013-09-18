@@ -37,7 +37,6 @@ auth.initialize(app);
 app.use(function(req, res, next) {
     app.locals({
         user: req.user,
-        error: req.flash('error')
     });
     next();
 });

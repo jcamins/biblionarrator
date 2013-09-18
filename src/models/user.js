@@ -48,7 +48,11 @@ User.findOne = function (email, callback) {
         if (model !== null) {
             extend(true, user, model);
         }
-        callback(err, new User(user));
+        if (Object.keys(user).length > 0) {
+            callback(err, new User(user));
+        } else {
+            callback(err, null);
+        }
     });
 };
 
