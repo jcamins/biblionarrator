@@ -68,10 +68,11 @@ function can(action, object) {
     if (typeof acls[key] !== 'function') {
         acls[key] = function (req, res, next) {
             if (typeof req.user !== 'undefined' && req.user.permission[key]) {
+                req.flash('loginredirect');
                 next();
             } else {
                 req.flash('error', 'NOTPERMITTED:' + key);
-                req.flash('redirect', req.url);
+                req.flash('loginredirect', req.url);
                 res.redirect('/auth/login');
             }
         };
@@ -92,10 +93,11 @@ module.exports.redirect = function(req, res) {
 
 module.exports.loginform = function login(req, res) {
     var messages = { };
-    var redirect = req.flash('redirect');
+    var redirect = req.flash('loginredirect');
     if (redirect.length > 0) {
+        redirect = redirect[0];
         messages.redirect = redirect;
-        req.flash('redirect', redirect);
+        req.flash('loginredirect', redirect);
     }
     var error = req.flash('error');
     if (error.length > 0) {
