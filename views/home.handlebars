@@ -15,8 +15,12 @@
                         <li><a href="/auth/login">Log in</a></li>
                         {{/unless}}
                         <li><a href="/search">Search catalog</a></li>
+                        {{#if user.permission.edit_record}}
                         <li><a href="/record/new">Create new record</a></li>
+                        {{/if}}
+                        {{#if user.permission.edit_admin}}
                         <li><a href="/admin">Administer system</a></li>
+                        {{/if}}
                     </ul>
                 </div>
             </div>

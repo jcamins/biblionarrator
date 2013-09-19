@@ -1,0 +1,11 @@
+module.exports = {
+    'view_field': 'view fields',
+    'edit_field': 'edit fields',
+    'view_record': 'view records',
+    'edit_record': 'edit records',
+    'view_user': 'view users',
+    'edit_user': 'edit users',
+    'view_collection': 'view collections',
+    'edit_collection': 'edit collections',
+    'edit_admin': 'administer system'
+};

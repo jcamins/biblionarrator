@@ -3,7 +3,8 @@ var extend = require('extend'),
     bcrypt = require('bcrypt'),
     models,
     environment = require('../lib/environment'),
-    DataModel = require('../lib/datamodel');
+    DataModel = require('../lib/datamodel'),
+    permissions = require('../lib/permissions');
 
 function User(data) {
     var self = this;
@@ -32,6 +33,12 @@ function User(data) {
             "get": function () { return self.name; }
         }
     });
+    if (self.permissions === '*') {
+        self.permission = { };
+        Object.keys(permissions).forEach(function (permission) {
+            self.permission[permission] = true;
+        });
+    }
 
     return self;
 }

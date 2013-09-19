@@ -91,10 +91,18 @@
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
+                                    {{#if user.permission.edit_admin}}
                                     <li><a href="/admin">Home</a></li>
+                                    {{/if}}
+                                    {{#if user.permission.view_field}}
                                     <li><a href="/admin/fields">Fields</a></li>
+                                    {{/if}}
+                                    {{#if user.permission.view_user}}
                                     <li><a href="/admin/user">Users</a></li>
+                                    {{/if}}
+                                    {{#if user.permission.view_collection}}
                                     <li><a href="/admin/collection">Collections</a></li>
+                                    {{/if}}
                                     <li><a href="/admin/recordtype">Record types</a></li>
                                     <li><a href="/admin/settings">Settings</a></li>
                                     <li><a href="/admin/templates">Templates</a></li>

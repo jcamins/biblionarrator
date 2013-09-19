@@ -4,7 +4,8 @@ var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     models = require('../models'),
     User = models.User,
-    environment = require('./environment');
+    environment = require('./environment'),
+    permissions = require('./permissions');
 
 module.exports.initialize = function (app) {
     passport.serializeUser(function(user, done) {
@@ -60,20 +61,13 @@ module.exports.passport = passport;
 
 module.exports.can = can;
 
-var permissions = {
-    'view_field': 'view fields',
-    'edit_field': 'edit fields',
-    'view_record': 'view records',
-    'edit_record': 'edit records',
-};
-
 var acls = { };
 
 function can(action, object) {
     var key = action + '_' + object;
     if (typeof acls[key] !== 'function') {
         acls[key] = function (req, res, next) {
-            if (typeof req.user !== 'undefined' && typeof req.user.permissions !== 'undefined' && (req.user.permissions === '*' || req.user.permissions[key])) {
+            if (typeof req.user !== 'undefined' && req.user.permission[key]) {
                 next();
             } else {
                 req.flash('error', 'NOTPERMITTED:' + key);
