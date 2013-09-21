@@ -36,7 +36,11 @@ exports.view = function(req, res) {
             var data = defdata[0];
             data.view = 'record';
             data.record = record;
-            Field.all(function (err, fields) {
+            Field.all(function (err, fieldmap) {
+                data.fields = [ ];
+                for (var field in fieldmap) {
+                    data.fields.push(fieldmap[field]);
+                }
                 data.fields = fields;
                 data.recordtypes = RecordType.findAll();
                 data.record.rendered = data.record.render();

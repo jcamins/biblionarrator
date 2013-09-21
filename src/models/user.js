@@ -64,7 +64,7 @@ User.findOne = function (email, callback) {
 };
 
 User.all = function (callback) {
-    DataModel.all(User, function (err, list, map) {
+    DataModel.all(User, function (err, map) {
         var users = { };
         Object.keys(environment.users).forEach(function (user) {
             users[user] = environment.users[user];

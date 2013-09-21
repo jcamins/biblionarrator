@@ -36,7 +36,7 @@ Field.findOne = function (key, callback) {
 };
 
 Field.all = function (callback) {
-    DataModel.all(Field, function (err, list, map) {
+    DataModel.all(Field, function (err, map) {
         var fields = { };
         Object.keys(environment.fields).forEach(function (field) {
             fields[field] = environment.fields[field];
