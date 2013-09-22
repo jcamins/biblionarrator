@@ -14,6 +14,11 @@ DataModel.prototype.del = function () {
     datastore.del(this.model, this.id);
 };
 
+DataModel.prototype.changeId = function (oldid) {
+    datastore.del(this.model, oldid);
+    datastore.set(this.model, this.id, this);
+};
+
 DataModel.findOne = function (Model, key, callback) {
     datastore.get(Model.name, key, function (err, results) {
         callback(err, results === null ? null : new Model(results));
