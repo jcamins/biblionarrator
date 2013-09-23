@@ -326,7 +326,7 @@ module.exports = function(grunt) {
         var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
         var password = grunt.option('password');
         var generated;
-        if (password === '') {
+        if (typeof password === 'undefined') {
             generated = true;
             password = pwgen(16);
         }
