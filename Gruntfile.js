@@ -203,7 +203,8 @@ module.exports = function(grunt) {
                             default: [ ],
                             choices: [
                                 'eric',
-                                'ericthesaurus'
+                                'ericthesaurus',
+                                'isbd'
                             ]
                         }
                     ]
