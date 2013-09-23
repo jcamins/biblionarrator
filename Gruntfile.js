@@ -208,6 +208,56 @@ module.exports = function(grunt) {
                         }
                     ]
                 }
+            },
+            user: {
+                options: {
+                    questions: [
+                        {
+                            config: 'biblionarrator.email',
+                            type: 'input',
+                            message: 'Username (e-mail address)?',
+                            default: 'user@biblionarrator.com',
+                            when: function(answers) {
+                                return typeof grunt.option('email') === 'undefined';
+                            }
+                        },
+                        {
+                            config: 'biblionarrator.name',
+                            type: 'input',
+                            message: 'Real name?',
+                            default: 'John Smith',
+                            when: function(answers) {
+                                return typeof grunt.option('name') === 'undefined';
+                            }
+                        },
+                        {
+                            config: 'biblionarrator.password',
+                            type: 'password',
+                            message: 'Password (leave blank to autogenerate)?',
+                            default: '',
+                            when: function(answers) {
+                                return typeof grunt.option('password') === 'undefined';
+                            }
+                        },
+                        {
+                            config: 'biblionarrator.permissions',
+                            type: 'checkbox',
+                            message: 'Permissions?',
+                            default: [ '*' ],
+                            choices: function(answers) {
+                                var permissions = require('./src/lib/permissions');
+                                var choices = [ { name: 'all (super user)', value: '*' } ];
+                                for (var perm in permissions) {
+                                    choices.push({ name: permissions[perm], value: perm });
+                                }
+                                return choices;
+                            },
+                            when: function(answers) {
+                                return typeof grunt.option('permissions') === 'undefined';
+                            }
+                        }
+                    ]
+                }
             }
         },
         'file-creator': {
@@ -269,22 +319,58 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-prompt');
     grunt.loadNpmTasks('grunt-file-creator');
 
-    grunt.registerTask('genuser', 'Generate system user', function() {
+    grunt.registerTask('passwd', 'Generate system user password', function() {
         var fs = require('fs'),
             bcrypt = require('bcrypt'),
             pwgen = require('password-generator');
         var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
-        var password = grunt.option('password') || pwgen(16);
-        data.users = { 'systemuser': { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser', 'permissions': '*' } };
+        var password = grunt.option('password');
+        var generated;
+        if (password === '') {
+            generated = true;
+            password = pwgen(16);
+        }
+        data.users = data.users || { };
+        data.users.systemuser = { '_password': bcrypt.hashSync(password, 10), 'email': 'systemuser', 'permissions': '*' };
         fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
-        console.log("Your systemuser has been created with the following password: " + password);
-        console.log("  If you forget this password you can generate a new password");
-        console.log("  for the systemuser by rerunning `grunt genuser`");
+        if (generated) {
+            console.log("Your systemuser has been created with the following password: " + password);
+            console.log("  If you forget this password you can generate a new password");
+            console.log("  for the systemuser by rerunning `grunt passwd`");
+        }
+    });
+    grunt.registerTask('createUser', 'Create User', function () {
+        var fs = require('fs'),
+            bcrypt = require('bcrypt'),
+            pwgen = require('password-generator');
+        var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json'));
+        var email = grunt.option('email') || grunt.config('biblionarrator.email');
+        var name = grunt.option('name') || grunt.config('biblionarrator.name');
+        var password = grunt.option('password') || grunt.config('biblionarrator.password');
+        var permissions = grunt.option('permissions') || grunt.config('biblionarrator.permissions');
+        if (typeof permissions === 'string') {
+            permissions = permissions.split(',');
+        }
+        if (permissions[0] === '*') {
+            permissions = '*';
+        }
+        var generated;
+        if (password === '') {
+            generated = true;
+            password = pwgen(16);
+        }
+        data.users = data.users || { };
+        data.users[email] = { '_password': bcrypt.hashSync(password, 10), 'email': email, 'name': name, 'permissions': permissions };
+        fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
+        if (generated) {
+            console.log("The user " + email + " has been created with the following automatically-generated password: " + password);
+        }
     });
 
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ]);
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('release', [ 'default', 'compress' ]);
-    grunt.registerTask('install', [ 'prompt', 'file-creator', 'genuser' ]);
+    grunt.registerTask('install', [ 'prompt:instance', 'file-creator', 'passwd' ]);
+    grunt.registerTask('genuser', [ 'prompt:user', 'createUser' ]);
 };
