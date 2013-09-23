@@ -51,7 +51,8 @@
     "optimist": "~0.6.0",
     "elasticsearchclient": "~0.5.3",
     "bcrypt": "~0.7.7",
-    "password-generator": "~0.2.1"
+    "password-generator": "~0.2.1",
+    "grunt-jsdoc": "~0.4.1"
   },
   "devDependencies": {
     "chai": "1.7.x",
