@@ -1,13 +1,12 @@
-window.Handlebars = require('handlebars');
+environment = window.environment;
+window.renderer = new WindowRenderer();
 
-window.renderer = new Renderer();
+environment.renderer.registerHelper('contentFor', function (name, fn, fnElse) {
+    return '<div id="contentFor-' + name + '" class="contentFor">' + fn(this) + '</div>';
+});
 
-function Renderer() {
+function WindowRenderer() {
     var me = this;
-
-    window.Handlebars.registerHelper('contentFor', function (name, fn, fnElse) {
-        return '<div id="contentFor-' + name + '" class="contentFor">' + fn(this) + '</div>';
-    });
 
     var urls = {
         results: '/views/partials/results.handlebars',
@@ -17,30 +16,34 @@ function Renderer() {
     };
     var templates = {};
 
-    var display = function(data, template, mountpoint) {
+    var display = function(rendered, mountpoint) {
         if (typeof mountpoint === 'object') {
-            mountpoint.innerHTML = templates[template](data);
+            mountpoint.innerHTML = rendered;
             $(mountpoint).trigger('rendered');
         } else if (typeof mountpoint === 'function') {
-            mountpoint(templates[template](data));
+            mountpoint(rendered);
         }
     };
 
-    this.preload = function(template) {
-        me.render({}, template);
-    };
-
-    this.render = function(data, template, mountpoint) {
-        if (templates[template]) {
-            display(data, template, mountpoint);
+    this.load = function(template, callback) {
+        if (environment.renderer.registered(template)) {
+            callback();
         } else {
             $.ajax({
                 url: urls[template]
             }).done(function(hbs) {
-                templates[template] = window.Handlebars.compile(hbs);
-                display(data, template, mountpoint);
+                environment.renderer.register(template, hbs);
+                if (typeof callback === 'function') {
+                    callback();
+                }
             });
         }
+    };
+
+    this.render = function(data, template, mountpoint) {
+        this.load(template, function () {
+            display(environment.renderer.render(template, data), mountpoint);
+        });
     };
 
     this.renderRemote = function(url, template, mountpoint) {

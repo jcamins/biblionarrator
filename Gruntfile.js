@@ -2,12 +2,24 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
+            environment: {
+                files: {
+                    'public/js/generated/environment.js': ['src/clientjs/environment.js']
+                },
+                options: {
+                    alias: [ 'src/clientjs/environment.js:environment' ]
+                }
+            },
             dist: {
                 files: {
                     'public/js/generated/formathandlers.js': ['src/clientjs/formathandlers.js'],
-                    'public/js/generated/templates.js': ['src/clientjs/templates.js'],
+                    'public/js/generated/templates.js': ['src/clientjs/templates.js']
                 },
-                options: { }
+                options: {
+                    ignore: [ 'src/lib/environment/index.js' ],
+                    external: [ 'environment' ],
+                    transform: [ 'brfs' ]
+                }
             }
         },
         uglify: {

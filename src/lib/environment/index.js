@@ -10,7 +10,8 @@ var QueryParser = require('queryparser'),
     DataStore = require('./datastore'),
     Cache = require('./cache'),
     ESClient = require('./esclient'),
-    QueryBuilder = require('./querybuilder');
+    QueryBuilder = require('./querybuilder'),
+    Renderer = require('./renderer');
 
 var defaultconfig = {
     "operators": {
@@ -134,6 +135,12 @@ function Environment(config) {
         }
         try {
             self.querybuilder = new QueryBuilder(self);
+        } catch (e) {
+            self.errors = self.errors || [ ];
+            self.errors.push(e);
+        }
+        try {
+            self.renderer = new Renderer(self);
         } catch (e) {
             self.errors = self.errors || [ ];
             self.errors.push(e);
