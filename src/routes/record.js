@@ -41,7 +41,6 @@ exports.view = function(req, res) {
                 for (var field in fieldmap) {
                     data.fields.push(fieldmap[field]);
                 }
-                data.fields = fields;
                 data.recordtypes = RecordType.findAll();
                 data.record.rendered = data.record.render();
                 res.render('record/interface', data, function(err, html) {
