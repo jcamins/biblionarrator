@@ -78,8 +78,11 @@ exports.map = function (req, res) {
     var mapkey;
     if (typeof req.query.landmark !== 'undefined') {
         mapkey = encodeURIComponent('landmarkmap^' + req.query.landmark.join('^'));
-    } else {
+    } else if (typeof req.query.records !== 'undefined') {
         mapkey = encodeURIComponent('recordmap^' + req.query.records.join('^'));
+    }
+    if (typeof mapkey !== 'undefined') {
+        res.json({ });
     }
     cache.get(mapkey, function (cacherecerror, cachemap) {
         if (cacherecerror || cachemap === null) {
