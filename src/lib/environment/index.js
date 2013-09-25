@@ -74,6 +74,12 @@ function Environment(config) {
     self.static_relevance_bumps = { };
     self.schemas = [ ];
     self.logs = { };
+    try {
+        self.renderer = new Renderer(self);
+    } catch (e) {
+        self.errors = self.errors || [ ];
+        self.errors.push(e);
+    }
     if (typeof config !== 'undefined') {
         extend(self, config);
         if (typeof self.fields.data === 'undefined') {
@@ -96,11 +102,16 @@ function Environment(config) {
                 if (newschema.static_relevance_bumps) {
                     extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
                 }
+                console.log(newschema.templates);
+                if (newschema.templates) {
+                    newschema.templates.forEach(function (template) {
+                        self.renderer.register(template, fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }));
+                    });
+                }
                 extend(self.facets, newschema.facets);
             } catch (e) {
-                if (e.code === 'MODULE_NOT_FOUND') {
-                    console.log('Schema ' + which + ' is not available');
-                }
+                self.errors = self.errors || [ ];
+                self.errors.push(e);
             }
         }
         try {
@@ -135,12 +146,6 @@ function Environment(config) {
         }
         try {
             self.querybuilder = new QueryBuilder(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.renderer = new Renderer(self);
         } catch (e) {
             self.errors = self.errors || [ ];
             self.errors.push(e);

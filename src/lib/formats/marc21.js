@@ -7,8 +7,6 @@ if (typeof window === 'undefined') {
     environment = window.environment;
 }
 
-environment.renderer.register('marc21', fs.readFileSync(__dirname + '/../../../views/partials/marc21snippet.handlebars', { encoding: 'utf8' }));
-
 module.exports.render = function(recorddata) {
     return environment.renderer.render('marc21', { record: recorddata });
 };
