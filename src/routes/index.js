@@ -1,6 +1,5 @@
 var assets = require('./assets'),
     doc = require('./doc'),
-    template = require('./template'),
     fields = require('./fields'),
     record = require('./record'),
     media = require('./media'),
@@ -51,9 +50,6 @@ exports.init = function(app) {
     /* Search */
     app.get('/search', search.view);
     app.get('/map', search.map);
-
-    /* Templates */
-    app.get('/admin/templates', template.admin);
 
     /* Home */
     app.get('/', home);
