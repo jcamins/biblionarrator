@@ -2,7 +2,7 @@
 function GraphStore(config, engine) {
     var self = this;
     var g = require('gremlin');
-
+    var heartbeatInterval;
 
     this.getDB = function () {
         return self.db;
@@ -11,6 +11,9 @@ function GraphStore(config, engine) {
         return self.engine;
     };
     this.destroy = function () {
+        if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+        }
         try {
             self.db.shutdownSync();
             delete self.db;
@@ -21,15 +24,19 @@ function GraphStore(config, engine) {
 
     self.autocommit = true;
     self.g = g;
-    /*function () {
-        g.SetGraph(self.db);
-        return g;
-    };*/
 
     self.engine = engine || config.engine || config.graphconf.engine;
     self.searchbackend = config.graphconf[self.engine]['storage.index.search.backend'];
 
     self.db = connect(config, self.engine, g);
+    if (typeof self.db.isOpenSync === 'function') {
+        heartbeatInterval = setInterval(function () {
+            if (!self.db.isOpenSync()) {
+                self.db = connect(config, self.engine, g);
+            }
+        }, 5000);
+    }
+
     process.on('exit', function () {
         self.destroy();
     });
