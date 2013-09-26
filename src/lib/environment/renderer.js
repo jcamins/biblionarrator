@@ -55,6 +55,10 @@ function Renderer(config) {
         Handlebars.registerHelper.apply(Handlebars, arguments);
     };
 
+    this.registerPartial = function () {
+        Handlebars.registerPartial.apply(Handlebars, arguments);
+    };
+
     this.register = function (name, template) {
         templates[name] = Handlebars.compile(template);
         return templates[name];

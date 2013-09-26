@@ -57,4 +57,15 @@ function WindowRenderer() {
             console.log(errorThrown);
         });
     };
+
+    this.registerPartial = function(template, callback) {
+        $.ajax({
+            url: urls[template]
+        }).done(function(data) {
+            environment.renderer.registerPartial(template, data);
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
 }

@@ -40,3 +40,5 @@ function Record(data) {
 
     return this;
 }
+
+window.models = { Record: Record };

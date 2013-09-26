@@ -50,22 +50,24 @@
 
     bookmarks.show = function() {
         var data = { records: [] };
-        window.bndb.bookmarks(function(bookmarksdb) {
-            bookmarksdb.each(function (bookmark) {
-                var record = new Record(JSON.parse(bookmark.value));
-                bookmark.value.rendered = record.render();
-                data.records.push(bookmark.value);
-            }).done(function () {
-                var mountpoint = document.createElement('div');
-                data.count = data.total = data.records.length;
-                window.renderer.render(data, 'results', mountpoint);
-                $(mountpoint).on('rendered', function () {
-                    $('#controlbar .nav').empty();
-                    var cb = $(mountpoint).find('#contentFor-controlbar');
-                    $(cb).appendTo($('#controlbar .nav'));
-                    $(cb).removeAttr('id');
-                    $('.leftPane').empty();
-                    $(mountpoint).appendTo('.leftPane');
+        window.renderer.registerPartial('resultstable', function () {
+            window.bndb.bookmarks(function(bookmarksdb) {
+                bookmarksdb.each(function (bookmark) {
+                    var record = new window.models.Record(bookmark.value);
+                    bookmark.value.rendered = record.render();
+                    data.records.push(bookmark.value);
+                }).done(function () {
+                    var mountpoint = document.createElement('div');
+                    data.count = data.total = data.records.length;
+                    window.renderer.render(data, 'results', mountpoint);
+                    $(mountpoint).on('rendered', function () {
+                        $('#controlbar .nav').empty();
+                        var cb = $(mountpoint).find('#contentFor-controlbar');
+                        $(cb).appendTo($('#controlbar .nav'));
+                        $(cb).removeAttr('id');
+                        $('.leftPane').empty();
+                        $(mountpoint).appendTo('.leftPane');
+                    });
                 });
             });
         });
@@ -86,8 +88,9 @@
 }( window.bookmarks = window.bookmarks || {}, jQuery ));
 
 $(document).ready(function () {
-    $('.show-bookmarks').click(function () {
+    $('.show-bookmarks').click(function (ev) {
         window.bookmarks.show();
         History.pushState({ 'event' : 'bookmarks' }, 'Bookmarks', '/bookmarks');
+        ev.preventDefault();
     });
 });

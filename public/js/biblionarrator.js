@@ -157,12 +157,6 @@ function applyChrome() {
             "version": 1,
             "schema": {
                 "1": function(versionTransaction){
-                    var fields = versionTransaction.createObjectStore("fields", {
-                        "keyPath": "id"
-                    });
-                    var styles = versionTransaction.createObjectStore("styles", {
-                        "keyPath": "id"
-                    });
                     var records = versionTransaction.createObjectStore("records", {
                         "keyPath": "id"
                     });
@@ -180,27 +174,6 @@ function applyChrome() {
 
     bndb.populate = function() {
         bndb.initialize(function () {
-            $.indexedDB("biblionarrator").transaction(["records", "fields", "styles"]).then(function(){
-                console.log("Transaction completed, all data inserted");
-            }, function(err, e){
-                console.log("Transaction NOT completed", err, e);
-            }, function(transaction){
-                var fields = transaction.objectStore("fields");
-                fields.clear();
-                $.each(bndb.resources.fields, function () {
-                    fields.add(this);
-                });
-                var styles = transaction.objectStore("styles");
-                records.clear();
-                $.each(bndb.resources.styles, function () {
-                    styles.add(this);
-                });
-                var records = transaction.objectStore("records");
-                fields.clear();
-                $.each(bndb.resources.records, function () {
-                    records.add(this);
-                });
-            });
         });
     };
 

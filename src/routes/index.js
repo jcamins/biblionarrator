@@ -1,4 +1,5 @@
 var assets = require('./assets'),
+    bookmarks = require('./bookmarks'),
     doc = require('./doc'),
     fields = require('./fields'),
     record = require('./record'),
@@ -24,6 +25,9 @@ exports.init = function(app) {
     app.post('/auth/login', auth.localauth, auth.redirect);
     app.get('/auth/logout', auth.logout);
     app.post('/auth/browserid', auth.browseridauth, auth.redirect);
+
+    /* Bookmarks */
+    app.get('/bookmarks', bookmarks.view);
 
     /* Docs */
     app.get('/doc/:filename', doc.get);
