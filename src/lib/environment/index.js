@@ -53,8 +53,8 @@ var defaultconfig = {
     }
 };
 
-function resolveRoot(path) {
-    return path.resolve(__dirname, '../../..', path);
+function resolveRoot(file) {
+    return path.resolve(__dirname, '../../..', file);
 }
 
 function Environment(config) {
@@ -77,7 +77,7 @@ function Environment(config) {
         if (config.logs.error && config.logs.error !== '-') {
             self.errorlog = fs.createWriteStream(resolveRoot(config.logs.error), { flags: 'a' });
         }
-    } catch (e) { }
+    } catch (e) { console.log(e); }
     try {
         if (config.logs.access && config.logs.access !== '-') {
             self.accesslog = fs.createWriteStream(resolveRoot(config.logs.access), { flags: 'a' });
@@ -106,7 +106,7 @@ function Environment(config) {
             }
             if (newschema.templates) {
                 newschema.templates.forEach(function (template) {
-                    self.templates[template] = { name: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
+                    self.templates[template] = { id: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
                 });
             }
             extend(self.facets, newschema.facets);

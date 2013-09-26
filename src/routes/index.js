@@ -4,6 +4,7 @@ var assets = require('./assets'),
     record = require('./record'),
     media = require('./media'),
     search = require('./search'),
+    template = require('./template'),
     auth = require('../lib/auth');
 
 exports.init = function(app) {
@@ -50,6 +51,10 @@ exports.init = function(app) {
     /* Search */
     app.get('/search', search.view);
     app.get('/map', search.map);
+
+    /* Template */
+    app.get('/template', template.get);
+    app.get('/template/:template', template.get);
 
     /* Home */
     app.get('/', home);

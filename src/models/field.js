@@ -16,6 +16,12 @@ function Field (data) {
         }
     });
 
+
+    self.save = function () {
+        environment.templates[self.id] = self;
+        datastore.set(self.model, self.id, self);
+    };
+
     return self;
 }
 
