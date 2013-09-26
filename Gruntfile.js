@@ -13,7 +13,8 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     'public/js/generated/formathandlers.js': ['src/clientjs/formathandlers.js'],
-                    'public/js/generated/templates.js': ['src/clientjs/templates.js']
+                    'public/js/generated/templates.js': ['src/clientjs/templates.js'],
+                    'public/js/generated/models.js': ['src/clientjs/models.js']
                 },
                 options: {
                     ignore: [ 'src/lib/environment/index.js' ],

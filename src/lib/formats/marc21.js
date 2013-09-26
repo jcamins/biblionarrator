@@ -7,12 +7,8 @@ if (typeof window === 'undefined') {
     environment = window.environment;
 }
 
-module.exports.render = function(recorddata) {
-    return environment.renderer.render('marc21', { record: recorddata });
-};
-
 module.exports.snippet = function(recorddata) {
-    return environment.renderer.render('marc21', { record: recorddata });
+    return recorddata;
 };
 
 function stringify (object) {

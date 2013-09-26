@@ -52,7 +52,8 @@
         var data = { records: [] };
         window.bndb.bookmarks(function(bookmarksdb) {
             bookmarksdb.each(function (bookmark) {
-                bookmark.value.rendered = window.formatters[bookmark.value.schema].render(JSON.parse(bookmark.value.data));
+                var record = new Record(JSON.parse(bookmark.value));
+                bookmark.value.rendered = record.render();
                 data.records.push(bookmark.value);
             }).done(function () {
                 var mountpoint = document.createElement('div');

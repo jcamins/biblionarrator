@@ -1,7 +1,8 @@
 "use strict";
 var models,
     extend = require('extend'),
-    graphstore = require('../lib/environment').graphstore,
+    environment = require('../lib/environment'),
+    graphstore = environment.graphstore,
     g = graphstore.g,
     GraphModel = require('../lib/graphmodel'),
     formatters = require('../lib/formats');
@@ -24,8 +25,10 @@ function Record(data) {
         }
         if (typeof formatters[this.format] === 'undefined') {
             return '';
-        } else {
+        } else if (typeof formatters[this.format].render === 'function') {
             return formatters[this.format].render(this.data);
+        } else {
+            return environment.renderer.render(this.template || this.format, { record: this.data });
         }
     };
 

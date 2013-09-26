@@ -256,9 +256,8 @@ function loadRecord(id) {
 }
 
 function finishedLoading(data) {
-    var text = window.formatters[data.format].render(data.data);
-    document.record = data;
-    $('#recordContainer').html(text);
+    document.record = new Record(data);
+    $('#recordContainer').html(document.record.render());
     initializeContentEditable();
 }
 

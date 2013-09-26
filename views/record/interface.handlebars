@@ -120,18 +120,18 @@
     {{/if}}
 
     var labeltofieldlookup = {
-        {{#fields}}
-            "{{label}}": "{{schema}}_{{field}}",
-        {{/fields}}
+        {{#each fields}}
+            "{{label}}": "{{schema}}_{{name}}",
+        {{/each}}
         };
     var fieldlist = {
-        {{#fields}}
-            "{{schema}}_{{field}}": {
+        {{#each fields}}
+            "{{schema}}_{{name}}": {
                 'label': "{{label}}",
-                'link': {{link}},
-                'id': {{id}},
+                'link': '{{link}}',
+                'id': '{{id}}',
             },
-        {{/fields}}
+        {{/each}}
         };
     var currentSelection;
     $(document).ready(function() {
