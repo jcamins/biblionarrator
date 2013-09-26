@@ -81,8 +81,8 @@ exports.map = function (req, res) {
     } else if (typeof req.query.records !== 'undefined') {
         mapkey = encodeURIComponent('recordmap^' + req.query.records.join('^'));
     }
-    if (typeof mapkey !== 'undefined') {
-        res.json({ });
+    if (typeof mapkey === 'undefined') {
+        return res.json({ });
     }
     cache.get(mapkey, function (cacherecerror, cachemap) {
         if (cacherecerror || cachemap === null) {

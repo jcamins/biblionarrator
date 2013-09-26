@@ -55,7 +55,7 @@ function initializeList() {
 
     $('#visualize-landmarks').click(function () {
         if ($(this).hasClass('active')) {
-            $('#visualization-container').hide();
+            $('#visualization-container, .visualization-key').hide();
             $(this).removeClass('active');
         } else {
             $('#visualization-container').show();

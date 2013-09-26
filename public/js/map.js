@@ -3,10 +3,22 @@
     function drawMap(url) {
         d3.select("#visualization svg")
             .remove();
+        d3.select("#visualization span")
+            .remove();
         d3.select("#nodekey ul li").remove();
         d3.select("#edgekey ul li").remove();
 
         d3.json(url, function (error, data) {
+            if (typeof data.records === 'undefined' || data.records.length === 0) {
+                d3.select('#visualization').append('span').text('Nothing to visualize');
+                setTimeout(function () {
+                    document.querySelector('#visualization-container').style.display = 'none';
+                }, 3000);
+                return;
+            }
+            document.querySelectorAll('.visualization-key').forEach(function (element) {
+                element.style.display = 'block';
+            });
             var width = parseInt($('#visualization').css('width'), 10),
                 height = 500,
                 radius = height / 2.5;
