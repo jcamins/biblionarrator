@@ -64,6 +64,17 @@ function initializeList() {
         }
     });
 
+    $('#visualize-search').click(function () {
+        if ($(this).hasClass('active')) {
+            $('#visualization-container, .visualization-key').hide();
+            $(this).removeClass('active');
+        } else {
+            $('#visualization-container').show();
+            window.bnvis.searchmap(window.location.href);
+            $(this).addClass('active');
+        }
+    });
+
 
     $('body').on('click', '.collapsed', null, function () {
         window.bnpanes.select($(this).attr('data-pane'));

@@ -16,9 +16,8 @@
                 }, 3000);
                 return;
             }
-            document.querySelectorAll('.visualization-key').forEach(function (element) {
-                element.style.display = 'block';
-            });
+            document.querySelector('#nodekey').style.display = 'block';
+            document.querySelector('#edgekey').style.display = 'block';
             var width = parseInt($('#visualization').css('width'), 10),
                 height = 500,
                 radius = height / 2.5;
@@ -82,7 +81,7 @@
                 .attr("r", function (d) { return radiusscale(d.weight); })
                 .style("stroke-width", "0.5px")
                 .style("stroke", "black")
-                .style("fill", function (d) { return nodecolors(d.recordtype); });
+                .style("fill", function (d) { return nodecolors(d.recordclass); });
         
             node.append("title")
                 .text(function(d) { return d.key || d.titleproper; });
@@ -176,6 +175,7 @@
         if (search.indexOf('?') === -1) {
             search += '?';
         } else {
+            search = search.replace(/#.*$/, '');
             search += '&';
         }
         search += 'format=map';
