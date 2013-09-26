@@ -69,7 +69,7 @@
                             <ul id="bookmark-dropdown" class="dropdown-menu"><li><span id="bookmark-message"></span></li></ul>
                             </li>
                             <li class="dropdown">
-                                <a href="/user/login" class="hidden-desktop"><i class="icon-user icon-white"></i></a>
+                                <a href="/auth/login" class="hidden-desktop"><i class="icon-user icon-white"></i></a>
                                 <a href="#" class="dropdown-toggle visible-desktop" data-toggle="dropdown">
                                     <i class="icon-user icon-white"></i><b class="caret"></b>
                                 </a>
@@ -90,26 +90,34 @@
                                     {{/if}}
                                 </ul>
                             </li>
+                            {{#if user}}
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {{#if user.permission.edit_admin}}
                                     <li><a href="/admin">Home</a></li>
                                     {{/if}}
-                                    {{#if user.permission.view_field}}
+                                    {{#if user.permission.edit_field}}
                                     <li><a href="/admin/fields">Fields</a></li>
                                     {{/if}}
-                                    {{#if user.permission.view_user}}
+                                    {{#if user.permission.edit_user}}
                                     <li><a href="/admin/user">Users</a></li>
                                     {{/if}}
-                                    {{#if user.permission.view_collection}}
+                                    {{#if user.permission.edit_collection}}
                                     <li><a href="/admin/collection">Collections</a></li>
                                     {{/if}}
+                                    {{#if user.permission.edit_recordtypes}}
                                     <li><a href="/admin/recordtype">Record types</a></li>
+                                    {{/if}}
+                                    {{#if user.permission.edit_settings}}
                                     <li><a href="/admin/settings">Settings</a></li>
+                                    {{/if}}
+                                    {{#if user.permission.edit_templates}}
                                     <li><a href="/admin/templates">Templates</a></li>
+                                    {{/if}}
                                 </ul>
                             </li>
+                            {{/if}}
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
