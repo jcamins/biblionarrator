@@ -7,12 +7,24 @@
     <div class="row-fluid">
         <div class="span10 pull-right">
             <ul class="home-links">
+                {{#if user.permission.edit_field}}
                 <li><a href="/admin/fields">Fields</a></li>
+                {{/if}}
+                {{#if user.permission.edit_user}}
                 <li><a href="/admin/user">Users</a></li>
+                {{/if}}
+                {{#if user.permission.edit_collection}}
                 <li><a href="/admin/collection">Collections</a></li>
+                {{/if}}
+                {{#if user.permission.edit_recordtypes}}
                 <li><a href="/admin/recordtype">Record types</a></li>
+                {{/if}}
+                {{#if user.permission.edit_settings}}
                 <li><a href="/admin/settings">Settings</a></li>
+                {{/if}}
+                {{#if user.permission.edit_templates}}
                 <li><a href="/admin/templates">Templates</a></li>
+                {{/if}}
             </ul>
         </div>
         

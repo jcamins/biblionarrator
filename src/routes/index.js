@@ -63,7 +63,8 @@ exports.init = function(app) {
     /* Home */
     app.get('/', home);
     app.get('/about', about);
-    app.get('/admin', admin);
+    app.get('/help', about);
+    app.get('/admin', auth.can('edit', 'admin'), admin);
 };
 
 function home(req, res) {

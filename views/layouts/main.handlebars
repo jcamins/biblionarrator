@@ -146,7 +146,9 @@
                     User settings
                 @endif-- >
                 </a></li>
+                {{#if user.permission.edit_admin}}
                 <li><a href="/admin">System administration</a></li>
+                {{/if}}
                 <li><span>{{user.email}}</span></li>
                 <li><a href="/help">Help</a></li>
             </ul>
