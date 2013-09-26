@@ -22,7 +22,7 @@ function User(data) {
     };
 
     self.setPassword = function (password, callback) {
-        bcrypt.hash(password, environment.salt, function (err, hash) {
+        bcrypt.hash(password, 10, function (err, hash) {
             self._password = hash;
             callback(self);
         });

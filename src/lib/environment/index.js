@@ -1,6 +1,5 @@
 var fs = require('fs'),
     path = require('path'),
-    bcrypt = require('bcrypt'),
     extend = require('extend');
 
 process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resolve(__dirname, '../../../config/log4j.properties') + ' -Dlogback.configurationFile=' + path.resolve(__dirname, '../../../config/logback.xml');
@@ -54,111 +53,107 @@ var defaultconfig = {
     }
 };
 
+function resolveRoot(path) {
+    return path.resolve(__dirname, '../../..', path);
+}
+
 function Environment(config) {
     var self = this;
-    if (typeof config === 'undefined' || typeof config.logs === 'undefined' || typeof config.logs.error === 'undefined' || config.logs.error === '-') {
-        self.errorlog = process.stderr;
-    } else {
-        self.errorlog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.error), { flags: 'a' });
-    }
-    if (typeof config === 'undefined' || typeof config.logs === 'undefined' || typeof config.logs.access === 'undefined' || config.logs.access === '-') {
-        self.accesslog = process.stdout;
-    } else {
-        self.accesslog = fs.createWriteStream(path.resolve(__dirname, '../../..', config.logs.access), { flags: 'a' });
-    }
 
-    self.salt = bcrypt.genSaltSync(10);
-    self.fields = { };
-    self.indexes = { };
-    self.facets = { };
-    self.static_relevance_bumps = { };
-    self.schemas = [ ];
-    self.logs = { };
+    config = config || { };
+    extend(true, self, {
+        fields: { },
+        indexes: { },
+        facets: { },
+        static_relevance_bumps: { },
+        schemas: [ ],
+        logs: { },
+        templates: { },
+        errors: [ ],
+        errorlog: process.stderr,
+        accesslog: process.stdout
+    });
+    try {
+        if (config.logs.error && config.logs.error !== '-') {
+            self.errorlog = fs.createWriteStream(resolveRoot(config.logs.error), { flags: 'a' });
+        }
+    } catch (e) { }
+    try {
+        if (config.logs.access && config.logs.access !== '-') {
+            self.accesslog = fs.createWriteStream(resolveRoot(config.logs.access), { flags: 'a' });
+        }
+    } catch (e) { }
+
+    extend(self, config);
+    if (typeof self.fields.data === 'undefined') {
+        self.schemas.unshift('common');
+    }
+    var which;
+    while ((which = self.schemas.shift())) {
+        var newschema = { };
+        try {
+            newschema = require('bn-schema-' + which);
+            Object.keys(newschema.fields).forEach(function (field) {
+                newschema.fields[field].name = field;
+                newschema.fields[field].schema = newschema.prefix;
+                newschema.fields[field].model = 'Field';
+                self.fields[newschema.prefix + '_' + field] = newschema.fields[field];
+                self.indexes[field] = newschema.fields[field];
+                self.indexes[field].field = newschema.prefix  + '_' + field;
+            });
+            if (newschema.static_relevance_bumps) {
+                extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
+            }
+            if (newschema.templates) {
+                newschema.templates.forEach(function (template) {
+                    self.templates[template] = { name: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
+                });
+            }
+            extend(self.facets, newschema.facets);
+        } catch (e) { self.errors.push(e); }
+    }
+    try {
+        self.queryparser = new QueryParser(self);
+    } catch (e) { self.errors.push(e); }
+    try {
+        self.graphstore = new GraphStore(self);
+    } catch (e) { self.errors.push(e); }
+    try {
+        self.datastore = new DataStore(self);
+    } catch (e) { self.errors.push(e); }
+    try {
+        self.cache = new Cache(self);
+    } catch (e) { self.errors.push(e); }
+    try {
+        self.esclient = new ESClient(self);
+    } catch (e) { self.errors.push(e); }
+    try {
+        self.querybuilder = new QueryBuilder(self);
+    } catch (e) { self.errors.push(e); }
     try {
         self.renderer = new Renderer(self);
-    } catch (e) {
-        self.errors = self.errors || [ ];
-        self.errors.push(e);
-    }
-    if (typeof config !== 'undefined') {
-        extend(self, config);
-        if (typeof self.fields.data === 'undefined') {
-            self.schemas.unshift('common');
-        }
-        var which;
-        while ((which = self.schemas.shift())) {
-            var newschema = { };
-            try {
-                newschema = require('bn-schema-' + which);
-                Object.keys(newschema.fields).forEach(function (field) {
-                    newschema.fields[field].name = field;
-                    newschema.fields[field].schema = newschema.prefix;
-                    newschema.fields[field].config = true;
-                    newschema.fields[field].model = 'Field';
-                    self.fields[newschema.prefix + '_' + field] = newschema.fields[field];
-                    self.indexes[field] = newschema.fields[field];
-                    self.indexes[field].field = newschema.prefix  + '_' + field;
-                });
-                if (newschema.static_relevance_bumps) {
-                    extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
-                }
-                console.log(newschema.templates);
-                if (newschema.templates) {
-                    newschema.templates.forEach(function (template) {
-                        self.renderer.register(template, fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }));
-                    });
-                }
-                extend(self.facets, newschema.facets);
-            } catch (e) {
-                self.errors = self.errors || [ ];
-                self.errors.push(e);
+    } catch (e) { self.errors.push(e); }
+
+    try {
+        self.datastore.get('Template', '*', function (err, results) {
+            for (var idx in results) {
+                self.templates[idx] = results;
             }
-        }
-        try {
-            self.queryparser = new QueryParser(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.graphstore = new GraphStore(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.datastore = new DataStore(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.cache = new Cache(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.esclient = new ESClient(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        try {
-            self.querybuilder = new QueryBuilder(self);
-        } catch (e) {
-            self.errors = self.errors || [ ];
-            self.errors.push(e);
-        }
-        if (self.errors) {
-            console.log("Errors loading environment: \n" + self.errors.join(' *'));
-        }
-    }
+            for (var template in self.templates) {
+                self.renderer.register(template, self.templates[template].data);
+            }
+        });
+    } catch (e) { self.errors.push(e); }
+
     self.load = Environment.load;
     self.set = Environment.set;
     self.merge = function(newconf) {
         extend(true, self, newconf);
     };
+
+    if (self.errors.length > 0) {
+        self.errorlog.write("Errors loading environment: \n" + self.errors.join("\n *") + "\n");
+    }
     return self;
 }
 
