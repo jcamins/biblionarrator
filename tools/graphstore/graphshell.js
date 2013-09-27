@@ -1,12 +1,5 @@
-var argv = require('optimist')
-    .usage('Usage: $0 -c [config]')
-    .argv;
-
-if (typeof argv.c !== 'undefined') {
-    var environment = require('../../src/lib/environment').load(argv.c);
-} else {
-    var environment = require('../../src/lib/environment');
-}
+var options = require('../src/lib/cmd'),
+    environment = require('../../src/lib/environment');
 
 var graphstore = environment.graphstore,
     g = graphstore.g,

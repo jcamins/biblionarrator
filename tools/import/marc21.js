@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-var JSONImporter = require('bn-importers/lib/json'),
+var options = require('../../src/lib/cmd'),
+    JSONImporter = require('bn-importers/lib/json'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
@@ -8,7 +9,7 @@ var JSONImporter = require('bn-importers/lib/json'),
 graphstore.autocommit = false;
 
 var importer = new JSONImporter({
-    files: [ process.argv[2] ]
+    files: [ options.argv[0] ]
 });
 
 var linkcount = 0;

@@ -1,17 +1,12 @@
 #!/usr/bin/env node
-var argv = require('optimist')
-    .usage('Usage: $0 -p [port] -c [config]')
-    .argv;
 
-if (typeof argv.c !== 'undefined') {
-    var environment = require('../src/lib/environment').load(argv.c);
-}
-argv.c = argv.c || 'defaults';
-var server = require('../src/server');
-var port = argv.p || 3000;
+var options = require('../src/lib/cmd'),
+    server = require('../src/server');
 
+var port = options.port || 3000;
+var config = options.config || 'defaults';
 server.listen(port);
-console.log('Listening on port ' + port + ' using configuration from ' + argv.c);
+console.log('Listening on port ' + port + ' using configuration from ' + config);
 
 process.on('SIGINT', function () {
     process.exit();
