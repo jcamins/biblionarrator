@@ -5,8 +5,8 @@
             .remove();
         d3.select("#visualization span")
             .remove();
-        d3.select("#nodekey ul li").remove();
-        d3.select("#edgekey ul li").remove();
+        d3.select("#nodekey ul").remove();
+        d3.select("#edgekey ul").remove();
 
         d3.json(url, function (error, data) {
             if (typeof data === 'undefined' || typeof data.records === 'undefined' || data.records.length === 0) {
