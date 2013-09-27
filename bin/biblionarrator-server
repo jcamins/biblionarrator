@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 var options = require('../src/lib/cmd'),
+    environment = require('../src/lib/environment'),
     server = require('../src/server');
 
-var port = options.port || 3000;
+var port = options.port || environment.port || 3000;
 var config = options.config || 'defaults';
 server.listen(port);
 console.log('Listening on port ' + port + ' using configuration from ' + config);
