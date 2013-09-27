@@ -23,45 +23,52 @@ exports.view = function(req, res) {
     var query = new Query(prepareQuery(req), 'qp');
     var offset = parseInt(req.query.offset, 10) || 0;
     var perpage = parseInt(req.query.perpage, 10) || 20;
+    var map = (req.query.format === 'map');
+    var searchcb, facetcb;
     
     var accept = req.accepts([ 'html', 'json' ]);
     Q.all([sharedview()]).then(function(data) {
         data.url = req.url.replace(/&?layout=[^&]*/, '');
         data.view = 'results';
         data.query = query;
-        searchengine.search({ query: query, offset: offset, perpage: perpage }, function (list) {
-            var layout = 'list/interface';
-            if (typeof req.query.layout !== 'undefined' && req.query.layout === 'none') {
-                data.layout = false;
-                layout = 'partials/results';
-            }
-            extend(data, list);
-            if (data.count > data.offset + data.records.length) {
-                data.more = true;
-            }
-            if (req.query.format === 'map') {
+        if (map) {
+            searchcb = function (list) {
                 req.query.records = [ ];
-                data.records.forEach(function (rec) {
+                list.records.forEach(function (rec) {
                     req.query.records.push(rec.id);
                 });
-                return exports.map(req, res);
-            }
-            if (accept === 'html') {
-                res.render(layout, data, function(err, html) {
-                    if (err) {
-                        res.send(404, err);
-                    } else {
-                        res.send(html);
-                    }
-                });
-            } else {
-                res.json(list);
-            }
-            // Preseed next page
-            //searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
-        }, function (data) {
-            socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
-        });
+                exports.map(req, res);
+            };
+            facetcb = function (data) {
+                socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
+            };
+        } else {
+            searchcb = function (list) {
+                var layout = 'list/interface';
+                if (typeof req.query.layout !== 'undefined' && req.query.layout === 'none') {
+                    data.layout = false;
+                    layout = 'partials/results';
+                }
+                extend(data, list);
+                if (data.count > data.offset + data.records.length) {
+                    data.more = true;
+                }
+                if (accept === 'html') {
+                    res.render(layout, data, function(err, html) {
+                        if (err) {
+                            res.send(404, err);
+                        } else {
+                            res.send(html);
+                        }
+                    });
+                } else {
+                    res.json(list);
+                }
+                // Preseed next page
+                searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+            };
+        }
+        searchengine.search({ query: query, offset: offset, perpage: perpage }, searchcb, facetcb);
     }, function (err) { res.send(404, err); });
 };
 
