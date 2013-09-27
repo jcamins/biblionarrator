@@ -1,7 +1,7 @@
 "use strict";
 var redis = require('redis');
 
-function Cache() {
+function Cache(config) {
     var self = this;
     var client = redis.createClient();
 
@@ -10,7 +10,7 @@ function Cache() {
     });
 
     this.get = function (key, callback) {
-        client.get(key, function (err, value) {
+        client.get(self.namespace + key, function (err, value) {
             value = JSON.parse(value);
             if (typeof callback === 'function') {
                 callback(err, value);
@@ -19,6 +19,10 @@ function Cache() {
     };
 
     this.mget = function (keys, callback) {
+        var nkeys = [ ];
+        keys.forEach(function (item) {
+            nkeys.push(self.namespace + item);
+        });
         client.mget(keys, function (err, values) {
             for (var ii = 0; ii < values.length; ii++) {
                 values[ii] = JSON.parse(values[ii]);
@@ -31,9 +35,9 @@ function Cache() {
 
     this.set = function (key, value, expiration, callback) {
         value = JSON.stringify(value);
-        client.set(key, value, function (err, reply) {
+        client.set(self.namespace + key, value, function (err, reply) {
             if (expiration > 0) {
-                client.expire(key, expiration);
+                client.expire(self.namespace + key, expiration);
             }
             if (typeof callback === 'function') {
                 callback(err, reply);
@@ -45,6 +49,13 @@ function Cache() {
     this.del = function (key, callback) {
     };
     /*jshint unused:true */
+
+    config.cacheconf = config.cacheconf || { };
+    if (typeof config.cacheconf.namespace === 'string') {
+        self.namespace = config.cacheconf.namespace + '|';
+    } else {
+        self.namespace = '';
+    }
 
     return self;
 }
