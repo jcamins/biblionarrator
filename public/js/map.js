@@ -9,7 +9,7 @@
         d3.select("#edgekey ul li").remove();
 
         d3.json(url, function (error, data) {
-            if (typeof data.records === 'undefined' || data.records.length === 0) {
+            if (typeof data === 'undefined' || typeof data.records === 'undefined' || data.records.length === 0) {
                 d3.select('#visualization').append('span').text('Nothing to visualize');
                 setTimeout(function () {
                     document.querySelector('#visualization-container').style.display = 'none';
