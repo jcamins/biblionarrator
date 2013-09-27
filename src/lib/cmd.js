@@ -3,7 +3,7 @@ var argv = require('optimist')
     .argv;
 
 if (typeof argv.c !== 'undefined') {
-    var environment = require('../src/lib/environment').load(argv.c);
+    var environment = require('./environment').load(argv.c);
 }
 var options = {
     config: argv.c || 'defaults',
