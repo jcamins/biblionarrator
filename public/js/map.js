@@ -78,7 +78,7 @@
                 .on("mouseout", mouseout);
         
             node.append("circle")
-                .attr("r", function (d) { return radiusscale(d.weight); })
+                .attr("r", function (d) { return radiusscale(d.weight || 0); })
                 .style("stroke-width", "0.5px")
                 .style("stroke", "black")
                 .style("fill", function (d) { return nodecolors(d.recordclass); });
