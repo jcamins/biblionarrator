@@ -420,31 +420,10 @@ footer {
                 display: none;
             }
 
-            &.explore-links {
+            &.explore-links, &.mark-landmark {
                 padding: 0;
-
-                .explore-icon {
-                    background-image: url('/img/map.svg');
-                    width: 24px;
-                    height: 33px;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    display: block;
-                    float: right;
-
-                }
-            }
-
-            &.mark-landmark {
-                padding: 0;
-
-                .landmark-icon {
-                    background-image: url('/img/mapmarker.svg');
-                    width: 24px;
-                    height: 33px;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    display: block;
+                
+                button {
                     float: right;
                 }
 
@@ -1391,4 +1370,21 @@ a.selected {
             box-shadow:     inset 0 -1px 0 rgba(0,0,0,0.3);
         }
     }
+}
+
+.explore-icon {
+    background-image: url('/img/map.svg');
+    width: 24px;
+    height: 33px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.landmark-icon {
+    background-image: url('/img/mapmarker.svg');
+    width: 24px;
+    height: 33px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
 }

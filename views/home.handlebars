@@ -4,8 +4,9 @@
             <div class="row-fluid">
                 <div class="span6">
                     <h2>Welcome to Biblionarrator</h2>
-                    <p>Biblionarrator turns traditional assumptions about cataloging
-                    on their heads and makes catalogs (and cataloging) fun again.</p>
+                    <p>Your library has adopted Biblionarrator, a revolutionary new type of
+                    catalogue that enables new methods of discovery and understanding in your
+                    library's collection.</p>
                     <p><a href="/about" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
                 </div>
                 <div class="span6">
@@ -14,7 +15,7 @@
                         {{#unless user}}
                         <li><a href="/auth/login">Log in</a></li>
                         {{/unless}}
-                        <li><a href="/search">Search catalog</a></li>
+                        <li><a href="/search">Search catalogue</a></li>
                         {{#if user.permission.edit_record}}
                         <li><a href="/record/new">Create new record</a></li>
                         {{/if}}

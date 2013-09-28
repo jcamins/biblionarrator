@@ -63,7 +63,7 @@ exports.init = function(app) {
     /* Home */
     app.get('/', home);
     app.get('/about', about);
-    app.get('/help', about);
+    app.get('/help', help);
     app.get('/admin', auth.can('edit', 'admin'), admin);
 };
 
