@@ -50,8 +50,8 @@
                 .attr("height", height);
         
             var force = d3.layout.force()
-                .charge(-800)
-                .distance(60)
+                .charge(-400)
+                .distance(30)
                 .size([width, height])
                 .nodes(data.records)
                 .links(data.edges)
@@ -69,13 +69,15 @@
         
             var node = svg.selectAll(".map-node")
                 .data(data.records)
-                .enter().append("g")
-                .attr("class", "node")
-                .style("stroke-opacity", opacity)
-                .style("fill-opacity", opacity)
-                .call(drag)
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout);
+                .enter().append('a')
+                .attr('xlink:href', function (d) { return '/record/' + d._id })
+                .append("g")
+                    .attr("class", "node")
+                    .style("stroke-opacity", opacity)
+                    .style("fill-opacity", opacity)
+                    .call(drag)
+                    .on("mouseover", mouseover)
+                    .on("mouseout", mouseout);
         
             node.append("circle")
                 .attr("r", function (d) { return radiusscale(d.weight || 0); })
