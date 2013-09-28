@@ -1,5 +1,6 @@
 "use strict";
-var sharedview = require('../lib/sharedview'),
+var util = require('util'),
+    sharedview = require('../lib/sharedview'),
     models = require('../models'),
     Query = models.Query,
     socketserver = require('../lib/socketserver'),
@@ -7,10 +8,22 @@ var sharedview = require('../lib/sharedview'),
     searchengine = require('../lib/searchengine'),
     extend = require('extend');
 var offload = require('bngraphworker'),
-    cache = require('../lib/environment').cache;
+    environment = require('../lib/environment'),
+    cache = environment.cache;
 
 function prepareQuery(req) {
-    var querystring = req.query.q || '';
+    var q = req.query.q;
+    var querystring = '';
+    if (util.isArray(q)) {
+        var q = req.query.q;
+        for (var ii = 0; ii < q.length; ii+=2) {
+            if (q[ii] && q[ii+1]) {
+                querystring += ' ' + q[ii] + q[ii+1];
+            }
+        }
+    } else if (q) {
+        querystring = q;
+    }
     if (typeof req.query.facet === 'string') {
         querystring = querystring + ' ' + req.query.facet;
     } else if (typeof req.query.facet !== 'undefined') {
@@ -20,7 +33,11 @@ function prepareQuery(req) {
 }
 
 exports.view = function(req, res) {
-    var query = new Query(prepareQuery(req), 'qp');
+    try {
+        var query = new Query(prepareQuery(req), 'qp');
+    } catch (e) {
+        environment.errorlog.write('Error parsing query: ' + e + '\n');
+    }
     var offset = parseInt(req.query.offset, 10) || 0;
     var perpage = parseInt(req.query.perpage, 10) || 20;
     var map = (req.query.format === 'map');
@@ -31,7 +48,10 @@ exports.view = function(req, res) {
         data.url = req.url.replace(/&?layout=[^&]*/, '');
         data.view = 'results';
         data.query = query;
-        if (map) {
+        if (!query || !Object.keys(query).length) {
+            data.fields = environment.fields;
+            return res.render('search', data);
+        } else if (map) {
             searchcb = function (list) {
                 req.query.records = [ ];
                 list.records.forEach(function (rec) {

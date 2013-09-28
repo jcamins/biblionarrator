@@ -6,10 +6,12 @@ var models,
 function Query(string, syntax) {
     var self = this;
 
-    self.ast = queryparser.parse(syntax, string);
-    self.original = string;
-    self.syntax = syntax;
-    extend(self, queryparser.decompose(self.ast));
+    if (string) {
+        self.ast = queryparser.parse(syntax, string);
+        self.original = string;
+        self.syntax = syntax;
+        extend(self, queryparser.decompose(self.ast));
+    }
     return self;
 }
 

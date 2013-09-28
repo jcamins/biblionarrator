@@ -1,0 +1,54 @@
+<div id="content" class="container-fluid">
+    <div class="row-fluid">
+        <div class="span10 pull-right">
+            <fieldset>
+                <legend>Search catalog</legend>
+                <form class="form-horizontal" method="get" action="/search">
+                    <div class="control-group">
+                        <select name="q">
+                            <option value="keyword:">Keyword</option>
+                            {{#each fields}}
+                                {{#if label}}
+                                <option value="{{@key}}:">{{label}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                        <div class="input-prepend">
+                            <span class="add-on">contains</span>
+                            <input type="text" name="q" id="q1"></input>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <select name="q">
+                            <option value="keyword:">Keyword</option>
+                            {{#each fields}}
+                                {{#if label}}
+                                <option value="{{@key}}:">{{label}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                        <div class="input-prepend">
+                            <span class="add-on">contains</span>
+                            <input type="text" name="q" id="q2"></input>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <select name="q">
+                            <option value="keyword:">Keyword</option>
+                            {{#each fields}}
+                                {{#if label}}
+                                <option value="{{@key}}:">{{label}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                        <div class="input-prepend">
+                            <span class="add-on">contains</span>
+                            <input type="text" name="q" id="q3"></input>
+                        </div>
+                    </div>
+                    <button type="submit">Search</button>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>

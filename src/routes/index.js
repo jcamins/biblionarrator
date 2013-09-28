@@ -75,6 +75,10 @@ function about(req, res) {
     res.render('about');
 }
 
+function help(req, res) {
+    res.render('help');
+}
+
 function admin(req, res) {
     res.render('admin');
 }
