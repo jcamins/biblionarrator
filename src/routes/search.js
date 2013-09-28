@@ -39,9 +39,6 @@ exports.view = function(req, res) {
                 });
                 exports.map(req, res);
             };
-            facetcb = function (data) {
-                socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
-            };
         } else {
             searchcb = function (list) {
                 var layout = 'list/interface';
@@ -66,6 +63,9 @@ exports.view = function(req, res) {
                 }
                 // Preseed next page
                 searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+            };
+            facetcb = function (data) {
+                socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
             };
         }
         searchengine.search({ query: query, offset: offset, perpage: perpage }, searchcb, facetcb);
