@@ -1,13 +1,15 @@
-Version 0.03 - unreleased
--------------------------
+Version 0.1.0 - released 2013/09/28
+-----------------------------------
 
 *Features*:
 
-+ Uploading images for records
++ ElasticSearch and Titan/graph database integration
++ Visualizations
++ Based on node.js
 
 
-Version 0.02 - released 2013/04/21
--------------------------
+Version 0.0.2 - released 2013/04/21
+-----------------------------------
 
 *Features*:
 
@@ -19,8 +21,8 @@ Version 0.02 - released 2013/04/21
 + Record templates
 
 
-Version 0.01 - released 2013/04/04
-----------------------------------
+Version 0.0.1 - released 2013/04/04
+-----------------------------------
 
 Initial release.
 
