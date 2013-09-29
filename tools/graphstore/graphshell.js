@@ -1,4 +1,4 @@
-var options = require('../src/lib/cmd'),
+var options = require('../../src/lib/cmd'),
     environment = require('../../src/lib/environment');
 
 var graphstore = environment.graphstore,
