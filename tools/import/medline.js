@@ -5,6 +5,7 @@ var options = require('../../src/lib/cmd'),
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
+var inspect = require('eyes').inspector({maxLength: false});
 
 graphstore.autocommit = false;
 
@@ -18,7 +19,9 @@ var importer = new XMLImporter({
         'Author',
         'Chemical',
         'MeshHeading',
-        'QualifierName'
+        'QualifierName',
+        'OtherAbstract',
+        'OtherId'
     ],
     recordElement: 'MedlineCitation'
 });
@@ -26,8 +29,18 @@ var importer = new XMLImporter({
 importer.on('record', function (record, mypromise) {
     mainrecordcount++;
     recordcount++;
+    var otherids = { };
+    if (record.Article.OtherID) {
+        record.Article.OtherID.forEach(function (el) {
+            otherids[el.$.Source] = otherids[el.$.Source] || [ ];
+            otherids[el.$.Source].push(el.$text);
+        });
+        record.Article.OtherID = otherids;
+    }
     var rec = new Record({ format: 'medline', data: record });
     rec.save();
+    inspect(rec);
+    graphstore.db.commitSync();
     var links = rec.getLinks();
     links.forEach(function (link) {
         var target = linklookup[link.key];
