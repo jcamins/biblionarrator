@@ -44,13 +44,25 @@ MARCField.prototype.string = function (subfields, sep) {
     if (typeof sep !== 'string') {
         sep = ' ';
     }
-    var string = '';
-    var usesubf = { };
-    subfields.split('').forEach(function (index) {
-        usesubf[index] = true;
-    });
+    if (typeof this.subfields === 'undefined') {
+        var range = subfields.split('-');
+        if (range.length) {
+            range[0] = parseInt(range[0], 10) || 0;
+            if (range[1]) {
+                range[1] = parseInt(range[1], 10) || this.value.length;
+                range[1]++;
+            } else {
+                range[1] = range[0] + 1;
+            }
+            return this.value.substring(range[0], range[1]);
+        }
+    } else {
+        var string = '';
+        var usesubf = { };
+        subfields.split('').forEach(function (index) {
+            usesubf[index] = true;
+        });
 
-    if (typeof this.subfields !== 'undefined') {
         for (var ii = 0; ii < this.subfields.length; ii++) {
             if (usesubf[Object.keys(this.subfields[ii])[0]]) {
                 string = string + this.subfields[ii][Object.keys(this.subfields[ii])[0]] + sep;
