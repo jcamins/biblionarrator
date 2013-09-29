@@ -21,7 +21,7 @@ Handlebars.registerHelper('subffirst', function (field, subfields) {
 });
 
 Handlebars.registerHelper('field', function (field, options) {
-    var ii, string;
+    var ii, string, index = 0;
     if (typeof field === 'undefined' || typeof options === 'undefined') {
         return '';
     } else if (typeof field === 'string') {
@@ -29,6 +29,7 @@ Handlebars.registerHelper('field', function (field, options) {
         var re = new RegExp('^' + field);
         for (ii = 0; ii < this.fields.length; ii++) {
             if (this.fields[ii].tag.match(re)) {
+                this.fields[ii].index = index++;
                 string = string + options.fn(this.fields[ii]);
             }
         }
@@ -36,9 +37,11 @@ Handlebars.registerHelper('field', function (field, options) {
     } else if (util.isArray(field)) {
         string = '';
         for (ii = 0; ii < field.length; ii++) {
+            field[ii].index = index++;
             string = string + options.fn(field[ii]);
         }
     } else {
+        field.index = index;
         return options.fn(field);
     }
 });
