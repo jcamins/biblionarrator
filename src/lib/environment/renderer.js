@@ -46,6 +46,26 @@ Handlebars.registerHelper('field', function (field, options) {
     }
 });
 
+Handlebars.registerHelper('ifhasfield', function (field, options) {
+    var hasfield = false;
+    if (typeof field === 'string') {
+        var re = new RegExp('^' + field);
+        for (ii = 0; ii < this.fields.length; ii++) {
+            if (this.fields[ii].tag.match(re)) {
+                hasfield = true;
+                break;
+            }
+        }
+    } else if (field) {
+        hasfield = true;
+    }
+    if (hasfield) {
+        return options.fn(this);
+    } else {
+        return options.fnElse(this);
+    }
+});
+
 Handlebars.registerHelper('marc', function (record, options) {
     var marcrec = new MARCRecord (record);
     return options.fn(marcrec);
