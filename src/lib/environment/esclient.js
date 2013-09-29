@@ -55,7 +55,7 @@ function ESClient(config) {
                 if (maxvorder) {
                     static_relevance = static_relevance + "*((doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1)";
                 }
-            } else {
+            } else if (maxvorder > 0) {
                 static_relevance = "(doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1";
             }
             if (static_relevance.length > 0) {
