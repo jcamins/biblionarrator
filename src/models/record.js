@@ -52,16 +52,20 @@ function Record(data) {
      * @param {Record|string} target Record object or ID of record to link to
      */
     this.link = function (type, target) {
-        if (typeof target === 'undefined' || target === null || target === '' || !target.id || !this.id) {
+        try {
+            if (typeof target === 'undefined' || target === null || target === '') {
+                return;
+            }
+            var sv = g.v(this.id).iterator().nextSync();
+            var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
+            graphstore.db.addEdgeSync(null, sv, tv, type);
+            sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
+            tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
+            if (graphstore.autocommit) {
+                graphstore.db.commitSync();
+            }
+        } catch (e) {
             return;
-        }
-        var sv = g.v(this.id).iterator().nextSync();
-        var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
-        graphstore.db.addEdgeSync(null, sv, tv, type);
-        sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
-        tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
-        if (graphstore.autocommit) {
-            graphstore.db.commitSync();
         }
     };
 
