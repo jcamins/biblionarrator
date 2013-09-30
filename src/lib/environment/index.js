@@ -161,7 +161,7 @@ function Environment(config) {
 }
 
 Environment.load = function loadConfig(file) {
-    module.exports = new Environment(require(file));
+    module.exports = new Environment(require(resolveRoot(file)));
     return module.exports;
 };
 
@@ -180,7 +180,7 @@ if (typeof process.env['BN_CONFIG'] !== 'undefined') {
     Environment.set(JSON.parse(process.env['BN_CONFIG']));
 } else {
     try {
-        Environment.load('../../../config/config');
+        Environment.load('config/config');
     } catch (e) {
         if (e.code === 'MODULE_NOT_FOUND') {
             Environment.set(defaultconfig);
