@@ -62,7 +62,9 @@ module.exports.indexes = function(recorddata) {
         });
     }
     for (var idx in indexes) {
-        indexes[idx] = indexes[idx].trim();
+        if (typeof indexes[idx] === 'string') {
+            indexes[idx] = indexes[idx].trim();
+        }
     }
     return indexes;
 };
