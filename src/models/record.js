@@ -52,7 +52,7 @@ function Record(data) {
      * @param {Record|string} target Record object or ID of record to link to
      */
     this.link = function (type, target) {
-        if (typeof target === 'undefined' || target === null || target === '') {
+        if (typeof target === 'undefined' || target === null || target === '' || !target.id || !this.id) {
             return;
         }
         var sv = g.v(this.id).iterator().nextSync();
