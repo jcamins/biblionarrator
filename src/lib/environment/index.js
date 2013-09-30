@@ -112,24 +112,27 @@ function Environment(config) {
             extend(self.facets, newschema.facets);
         } catch (e) { self.errors.push(e); }
     }
-    try {
-        self.queryparser = new QueryParser(self);
-    } catch (e) { self.errors.push(e); }
-    try {
-        self.graphstore = new GraphStore(self);
-    } catch (e) { self.errors.push(e); }
-    try {
-        self.datastore = new DataStore(self);
-    } catch (e) { self.errors.push(e); }
-    try {
-        self.cache = new Cache(self);
-    } catch (e) { self.errors.push(e); }
-    try {
-        self.esclient = new ESClient(self);
-    } catch (e) { self.errors.push(e); }
-    try {
-        self.querybuilder = new QueryBuilder(self);
-    } catch (e) { self.errors.push(e); }
+    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder;
+    Object.defineProperties(self, {
+        "queryparser": {
+            "get": function () { return _queryparser = _queryparser || new QueryParser(self); }
+        },
+        "graphstore": {
+            "get": function () { return _graphstore = _graphstore || new GraphStore(self); }
+        },
+        "datastore": {
+            "get": function () { return _datastore = _datastore || new DataStore(self); }
+        },
+        "cache": {
+            "get": function () { return _cache = _cache || new Cache(self); }
+        },
+        "esclient": {
+            "get": function () { return _esclient = _esclient || new ESClient(self); }
+        },
+        "querybuilder": {
+            "get": function () { return _querybuilder = _querybuilder || new QueryBuilder(self); }
+        }
+    });
     try {
         self.renderer = new Renderer(self);
     } catch (e) { self.errors.push(e); }
