@@ -100,20 +100,13 @@ function optimizeTree(tree, query, supports, environment) {
             }
             break;
         case 'edge':
-            op = op || 'out';
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('out', tree[1], tree[2]));
+            break;
         case 'inverseedge':
-            op = op || 'in';
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('in', tree[1], tree[2]));
+            break;
         case 'biedge':
-            op = op || 'both';
-            var pipeop = { };
-            pipeop[op] = [ tree[1] ];
-            query.pipeline = query.pipeline.concat([
-                { as: [ 'trunk' + query.nextlabel ] },
-                pipeop,
-                { has: [ 'key', analyzeValue(tree[2]) ] },
-                { back: [ 'trunk' + query.nextlabel ] }
-            ]);
-            query.nextlabel++;
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('both', tree[1], tree[2]));
             break;
         default:
             // TODO: Implement dbcallbacks
@@ -121,11 +114,33 @@ function optimizeTree(tree, query, supports, environment) {
             break;
         }
         break;
+    case 'FLOAT':
+        var floatquery = new PartialPlan();
+        floatquery.nextlabel = query.nextlabel;
+        optimizeTree(tree[1], floatquery, supports, environment);
+        query.nextlabel = floatquery.nextlabel;
+        query.vertexq = floatquery.vertexq.concat(query.vertexq);
+        query.textq = floatquery.textq.concat(query.textq);
+        query.pipeline = floatquery.pipeline;
+        optimizeTree(tree[2], query, supports, environment);
+        break;
     default:
         query.unoptimizable = true;
     }
     /*jshint +W086*/
     return query;
+}
+
+function buildEdgeQuery(type, label, value) {
+    var enterop = { }, exitop = { }, expandop = { };
+    var exit = { 'in': 'out', 'out': 'in' };
+    if (type === 'both') {
+        return [ ];
+    }
+    enterop[type + 'E'] = [ label ];
+    exitop[exit[type] + 'V'] = [ ];
+    expandop[exit[type]] = [ ];
+    return [ enterop, { filter: [ "{it.marker == '" + analyzeValue(value) + "'}" ] }, exitop, expandop ];
 }
 
 function analyzeESValue(tree, index) {

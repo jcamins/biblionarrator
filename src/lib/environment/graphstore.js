@@ -66,6 +66,7 @@ function connect(config, engine, g) {
         for (var name in config.indexes) {
             var index = config.indexes[name];
             var backends;
+            var propertyclass = Type.Vertex.class;
             try {
                 switch (index.type) {
                     case 'edge':
@@ -75,6 +76,8 @@ function connect(config, engine, g) {
                             index.id = db.makeTypeSync().nameSync(name).makeEdgeLabelSync().getIdSync();
                         }
                         break;
+                    case 'edgeproperty':
+                        propertyclass = Type.Edge.class;
                     case 'property':
                         if (index.system) {
                             backends = [ 'standard', 'search' ];
@@ -83,7 +86,7 @@ function connect(config, engine, g) {
                         }
                         var type = db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class);
                         backends.forEach(function (backend) {
-                            type = type.indexedSync(backend, Type.Vertex.class);
+                            type = type.indexedSync(backend, propertyclass);
                         });
                         if (index.unique && !index.multivalue) {
                             type = type.uniqueSync(Direction.BOTH, UniqCon.LOCK);
@@ -91,7 +94,6 @@ function connect(config, engine, g) {
                             type = type.uniqueSync(Direction.IN);
                         } else if (!index.multivalue) {
                             type = type.uniqueSync(Direction.OUT);
-                            // Multi-valued keys are not actually a thing, API not withstanding.
                         }
                         index.id = type.makePropertyKeySync().getIdSync();
                         break;

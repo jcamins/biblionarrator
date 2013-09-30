@@ -14,18 +14,22 @@ var models,
  *
  */
 function Record(data) {
+    var self = this;
     this.model = 'record';
 
     this.render = function() {
-        if (typeof this.data === 'undefined' || this.data === null || this.data === '') {
+        if (typeof this.data === 'undefined' || this.data === null || this.data === '' || typeof formatters[this.format] === 'undefined') {
             return '<article><header></header><section></section></article>';
         }
         if (typeof this.data === 'string') {
             this.data = JSON.parse(this.data);
         }
-        if (typeof formatters[this.format] === 'undefined') {
-            return '';
-        } else if (typeof formatters[this.format].render === 'function') {
+        Object.defineProperties(this.data, {
+            "id": {
+                "get": function () { return self._id; }
+            }
+        });
+        if (typeof formatters[this.format].render === 'function') {
             return formatters[this.format].render(this.data);
         } else {
             return environment.renderer.render(this.template || this.format, { record: this.data });
@@ -51,14 +55,25 @@ function Record(data) {
      * @param {string} type type of link to create
      * @param {Record|string} target Record object or ID of record to link to
      */
-    this.link = function (type, target) {
+    this.link = function (type, target, properties) {
         try {
             if (typeof target === 'undefined' || target === null || target === '') {
                 return;
             }
             var sv = g.v(this.id).iterator().nextSync();
             var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
-            graphstore.db.addEdgeSync(null, sv, tv, type);
+            var edge = graphstore.db.addEdgeSync(null, sv, tv, type);
+            if (typeof properties === 'object' && properties !== null) {
+                for (var prop in properties) {
+                    if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
+                        if (typeof properties[prop] === 'object') {
+                            edge.setPropertySync(prop, JSON.stringify(properties[prop]));
+                        } else {
+                            edge.setPropertySync(prop, properties[prop]);
+                        }
+                    }
+                }
+            }
             sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
             tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
             if (graphstore.autocommit) {

@@ -34,7 +34,7 @@ function prepareQuery(req) {
 
 exports.view = function(req, res) {
     try {
-        var query = new Query(prepareQuery(req), 'qp');
+        var query = new Query(prepareQuery(req), 'qp', req.query.anchor);
     } catch (e) {
         environment.errorlog.write('Error parsing query: ' + e + '\n');
     }
@@ -82,7 +82,9 @@ exports.view = function(req, res) {
                     res.json(list);
                 }
                 // Preseed next page
-                searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+                if (data.more) {
+                    searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
+                }
             };
             facetcb = function (data) {
                 socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);

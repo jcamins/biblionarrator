@@ -1,5 +1,6 @@
 var Handlebars = require('handlebars'),
     MARCRecord = require('../marcrecord'),
+    extend = require('extend'),
     util = require('util');
 
 Handlebars.registerHelper('subfordered', function (field, subfields, sep) {
@@ -29,16 +30,18 @@ Handlebars.registerHelper('field', function (field, options) {
         var re = new RegExp('^' + field);
         for (ii = 0; ii < this.fields.length; ii++) {
             if (this.fields[ii].tag.match(re)) {
-                this.fields[ii].index = index++;
-                string = string + options.fn(this.fields[ii]);
+                var field = { index: index++, record: this };
+                extend(true, field, this.fields[ii]);
+                string = string + options.fn(field);
             }
         }
         return string;
     } else if (util.isArray(field)) {
         string = '';
         for (ii = 0; ii < field.length; ii++) {
-            field[ii].index = index++;
-            string = string + options.fn(field[ii]);
+            var field = { index: index++, record: this };
+            extend(true, field, this.fields[ii]);
+            string = string + options.fn(field);
         }
     } else {
         field.index = index;
@@ -46,7 +49,17 @@ Handlebars.registerHelper('field', function (field, options) {
     }
 });
 
-Handlebars.registerHelper('ifhasfield', function (field, options) {
+Handlebars.registerHelper('ifsubf', function (subfields, options) {
+    var field = this;
+    var wanted = subfields.split('');
+    if (wanted.some(function (code) { return field.subfields.some(function(subf) { return typeof subf[code] !== 'undefined'; }); })) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+});
+
+Handlebars.registerHelper('iffield', function (field, options) {
     var hasfield = false;
     if (typeof field === 'string') {
         var re = new RegExp('^' + field);

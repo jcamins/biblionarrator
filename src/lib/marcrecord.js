@@ -3,6 +3,7 @@ var util = require('util');
 function MARCRecord(record) {
     this.fields = [ ];
     var ii;
+    this.id = record.id;
     if (typeof record.fields !== 'undefined') {
         for (ii = 0; ii < record.fields.length; ii++) {
             var f = Object.keys(record.fields[ii])[0];

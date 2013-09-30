@@ -34,7 +34,7 @@ importer.on('record', function (record, mypromise) {
         }
         if (typeof target !== 'undefined') {
             linklookup[link.key] = linklookup[link.key] || target.id;
-            rec.link(link.link, target);
+            rec.link(link.label, target, link.properties);
             linkcount++;
         }
     });
