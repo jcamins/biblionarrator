@@ -62,7 +62,7 @@ Handlebars.registerHelper('ifhasfield', function (field, options) {
     if (hasfield) {
         return options.fn(this);
     } else {
-        return options.fnElse(this);
+        return options.inverse(this);
     }
 });
 
