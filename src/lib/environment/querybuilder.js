@@ -100,13 +100,13 @@ function optimizeTree(tree, query, supports, environment) {
             }
             break;
         case 'edge':
-            query.pipeline = query.pipeline.concat(buildEdgeQuery('out', tree[1], tree[2]));
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('out', tree[1], tree[2], tree[0] === 'FACET'));
             break;
         case 'inverseedge':
-            query.pipeline = query.pipeline.concat(buildEdgeQuery('in', tree[1], tree[2]));
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('in', tree[1], tree[2], tree[0] === 'FACET'));
             break;
         case 'biedge':
-            query.pipeline = query.pipeline.concat(buildEdgeQuery('both', tree[1], tree[2]));
+            query.pipeline = query.pipeline.concat(buildEdgeQuery('both', tree[1], tree[2], tree[0] === 'FACET'));
             break;
         default:
             // TODO: Implement dbcallbacks
@@ -131,7 +131,7 @@ function optimizeTree(tree, query, supports, environment) {
     return query;
 }
 
-function buildEdgeQuery(type, label, value) {
+function buildEdgeQuery(type, label, value, facet) {
     var enterop = { }, exitop = { }, expandop = { };
     var exit = { 'in': 'out', 'out': 'in' };
     if (type === 'both') {
@@ -140,7 +140,11 @@ function buildEdgeQuery(type, label, value) {
     enterop[type + 'E'] = [ label ];
     exitop[exit[type] + 'V'] = [ ];
     expandop[exit[type]] = [ ];
-    return [ enterop, { filter: [ "{it.marker == '" + analyzeValue(value) + "'}" ] }, exitop, expandop ];
+    if (facet) {
+        return [ { as: [ 'facet_' + label + value ] }, enterop, { filter: [ "{it.target == '" + analyzeValue(value) + "'}" ] }, { back: [ 'facet_' + label + value ] } ];
+    } else {
+        return [ enterop, { filter: [ "{it.marker == '" + analyzeValue(value) + "'}" ] }, exitop, expandop ];
+    }
 }
 
 function analyzeESValue(tree, index) {

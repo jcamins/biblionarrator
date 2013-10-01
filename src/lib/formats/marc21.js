@@ -95,9 +95,10 @@ module.exports.links = function(recorddata) {
                         format: 'bnjson',
                         recordclass: def.type
                     }};
+                    link.properties = { target: key };
                     if (def.marker) {
-                        link.properties = { marker: record.fields[ii].string(def.subfields) };
-                    }
+                        link.properties.marker = record.fields[ii].string(def.subfields);
+                    } 
                     links.push(link);
                     generated[def.label + '^' + key] = true;
                 }
