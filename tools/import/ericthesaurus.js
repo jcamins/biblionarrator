@@ -42,7 +42,7 @@ importer.on('record', function (term, mypromise) {
             });
         });
     }
-    rec = new Record({ format: 'ericthesaurus', data: rec});
+    rec = new Record({ format: 'ericthesaurus', data: rec, recordclass: rec.Attributes.RecType[0] === 'Main' ? 'term' : 'synonym' });
     rec.save();
     var links = rec.getLinks();
     links.forEach(function (link) {

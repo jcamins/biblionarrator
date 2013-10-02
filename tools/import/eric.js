@@ -87,7 +87,7 @@ importer.on('record', function (record, mypromise) {
         });
         rec.metadata.dc_subject = subjects;
     }
-    rec = new Record({ format: 'eric', data: rec });
+    rec = new Record({ format: 'eric', data: rec, recordclass: 'biblio' });
     rec.save();
     var links = rec.getLinks();
     links.forEach(function (link) {
