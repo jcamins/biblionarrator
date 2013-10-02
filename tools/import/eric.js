@@ -27,8 +27,6 @@ var importer = new XMLImporter({
 });
 
 importer.on('record', function (record, mypromise) {
-    mainrecordcount++;
-    recordcount++;
     var rec = { metadata: { } };
     var newkey, key;
     for (key in record.metadata) {
