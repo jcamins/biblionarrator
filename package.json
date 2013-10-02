@@ -52,7 +52,6 @@
     "bcrypt": "~0.7.7",
     "password-generator": "~0.2.1",
     "grunt-jsdoc": "~0.4.1",
-    "browserify": "~2.32.4",
     "grunt-browserify": "~1.2.4"
   },
   "devDependencies": {
