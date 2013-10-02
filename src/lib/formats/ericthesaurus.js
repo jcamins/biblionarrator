@@ -1,56 +1,6 @@
-module.exports.render = function(recorddata) {
-    var ii;
-    var rendered = '<article><header><span class="eric_term">' + recorddata.Name + '</span>';
-    if (recorddata.scope) {
-        rendered = rendered + '<span class="eric_scope">' + recorddata.Attributes.ScopeNote + '</span>';
-    }
-    rendered = rendered + '</header>';
-    if (recorddata.Relationships.NT) {
-        rendered = rendered + '<section><em>Narrower terms:</em><ul>';
-        recorddata.Relationships.NT.forEach(function (narrower) {
-            rendered = rendered + '<li><span class="eric_narrower">' + narrower + '</span></li>';
-        });
-        rendered = rendered + '</ul></section>';
-    }
-    if (recorddata.Relationships.BT) {
-        rendered = rendered + '<section><em>Broader terms:</em><ul>';
-        recorddata.Relationships.BT.forEach(function (broader) {
-            rendered = rendered + '<li><span class="eric_broader">' + broader + '</span></li>';
-        });
-        rendered = rendered + '</ul></section>';
-    }
-    if (recorddata.Relationships.RT) {
-        rendered = rendered + '<section><em>Related terms:</em><ul>';
-        recorddata.Relationships.RT.forEach(function (related) {
-            rendered = rendered + '<li><span class="eric_related">' + related + '</span></li>';
-        });
-        rendered = rendered + '</ul></section>';
-    }
-    if (recorddata.Relationships.U) {
-        rendered = rendered + '<section><em>Instead of this term, use:</em><ul>';
-        recorddata.Relationships.U.forEach(function (preferred) {
-            rendered = rendered + '<li><span class="eric_preferred">' + preferred + '</span></li>';
-        });
-        rendered = rendered + '</ul></section>';
-    }
-    if (recorddata.Relationships.UF) {
-        rendered = rendered + '<section><em>Synonyms:</em><ul>';
-        recorddata.Relationships.UF.forEach(function (synonym) {
-            rendered = rendered + '<li><span class="eric_synonyms">' + synonym + '</span></li>';
-        });
-        rendered = rendered + '</ul></section>';
-    }
-    rendered = rendered + '</article>';
-    return rendered;
-};
 
 module.exports.snippet = function(recorddata) {
-    var rendered = '<article><header><span class="eric_term">' + recorddata.name + '</span>';
-    if (recorddata.scope) {
-        rendered = rendered + '<span class="eric_scope">' + recorddata.scope + '</span>';
-    }
-    rendered = rendered + '</header></article>';
-    return rendered;
+    return recorddata;
 };
 
 function stringify (object) {
