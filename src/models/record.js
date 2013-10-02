@@ -55,14 +55,19 @@ function Record(data) {
      * @param {string} type type of link to create
      * @param {Record|string} target Record object or ID of record to link to
      */
-    this.link = function (type, target, properties) {
+    this.link = function (type, target, properties, reverse) {
         try {
             if (typeof target === 'undefined' || target === null || target === '') {
                 return;
             }
             var sv = g.v(this.id).iterator().nextSync();
             var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
-            var edge = graphstore.db.addEdgeSync(null, sv, tv, type);
+            var edge;
+            if (reverse) {
+                edge = graphstore.db.addEdgeSync(null, tv, sv, type);
+            } else {
+                edge = graphstore.db.addEdgeSync(null, sv, tv, type);
+            }
             if (typeof properties === 'object' && properties !== null) {
                 for (var prop in properties) {
                     if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
@@ -94,8 +99,15 @@ function Record(data) {
 
     this.initialize(data);
 
-    if (typeof formatters[this.format] !== 'undefined') {
+    if (typeof this.data === 'string') {
+        this.data = JSON.parse(this.data);
+    }
+
+    if (typeof formatters[this.format] !== 'undefined' && !this.no_index) {
         extend(this, formatters[this.format].indexes(this.data));
+    }
+    if (typeof this.no_index !== 'undefined') {
+        delete this.no_index;
     }
 
     return this;

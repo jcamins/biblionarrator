@@ -1,37 +1,15 @@
-var XMLImporter = require('bn-importers/lib/xml'),
+var options = require('../../src/lib/cmd'),
+    XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
     RecordType = models.RecordType;
+var inspect = require('eyes').inspector({maxLength: false});
 
 graphstore.autocommit = false;
 
-var recs = { };
-
-var recordtypes = { };
-
-recordtypes['ericterm'] = RecordType.findOne({ key: 'Term' });
-recordtypes['ericsynonym'] = RecordType.findOne({key: 'Synonym' });
-
-if (typeof recordtypes['ericterm'] === 'undefined' ) {
-    recordtypes['ericterm'] =  new RecordType({
-        key: 'Term',
-        data: '{"article":{"children":[{"header":{"children":["Term"]}},{"section":{"children":["Terms established for use in the ERIC thesaurus."]}}]}}',
-        format: 'bnjson'
-    });
-    recordtypes['ericterm'].save();
-}
-if (typeof recordtypes['ericsynonym'] === 'undefined' ) {
-    recordtypes['ericsynonym'] = new RecordType({
-        key: 'Synonym',
-        data: '{"article":{"children":[{"header":{"children":["Synonym"]}},{"section":{"children":["Terms that are not used in ERIC."]}}]}}',
-        format: 'bnjson'
-    });
-    recordtypes['ericsynonym'].save();
-}
-
 var importer = new XMLImporter({
-    files: [ process.argv[2] ],
+    files: [ options.argv[0] ],
     collect: [
         'Attribute',
         'Relationship',
@@ -40,104 +18,68 @@ var importer = new XMLImporter({
     recordElement: 'Term'
 });
 
-var linksleft = 0;
-var totallinks = 0;
+var linklookup = { }
+var linksleft = { };
+var mainrecordcount = 0, recordcount = 0, linkcount = 0;
 
 importer.on('record', function (term, mypromise) {
-    var rec = { name: term.Name };
-    var recordtype;
-    var jj;
-    for (jj in term.Attributes.Attribute) {
-        if (term.Attributes.Attribute[jj]['$'].name === 'ScopeNote') {
-            if (term.Attributes.Attribute[jj]['$text']) {
-                rec.scope = term.Attributes.Attribute[jj]['$text'];
-            }
-        } else if (term.Attributes.Attribute[jj]['$'].name === 'RecType') {
-            if (term.Attributes.Attribute[jj]['$text'] === 'Main') {
-                recordtype = 'ericterm';
-            } else if (term.Attributes.Attribute[jj]['$text'] === 'Synonym') {
-                recordtype = 'ericsynonym';
-            }
+    var rec = { Name: term.Name, Attributes: { }, Relationships: { } };
+    term.Attributes.Attribute.forEach(function (el) {
+        if (el.$text) {
+            rec.Attributes[el.$.name] = rec.Attributes[el.$.name] || [ ];
+            rec.Attributes[el.$.name].push(el.$text);
         }
+    });
+    if (term.Relationships && term.Relationships.Relationship) {
+        term.Relationships.Relationship.forEach(function (el) {
+            rec.Relationships[el.$.type] = rec.Relationships[el.$.type] || [ ];
+            el.Is.forEach(function (is) {
+                if (typeof is === 'object' && is !== null) {
+                    rec.Relationships[el.$.type].push(is.$text);
+                } else if (typeof is === 'string' && is.length > 0) {
+                    rec.Relationships[el.$.type].push(is);
+                }
+            });
+        });
     }
-    for (jj in term.Relationships.Relationship) {
-        if (term.Relationships.Relationship[jj]['$'].type === 'UF') {
-            rec.synonyms = term.Relationships.Relationship[jj].Is;
-        } else if (term.Relationships.Relationship[jj]['$'].type === 'BT') {
-            rec.broader = term.Relationships.Relationship[jj].Is;
-        } else if (term.Relationships.Relationship[jj]['$'].type === 'NT') {
-            rec.narrower = term.Relationships.Relationship[jj].Is;
-        } else if (term.Relationships.Relationship[jj]['$'].type === 'RT') {
-            rec.related = term.Relationships.Relationship[jj].Is;
-        } else if (term.Relationships.Relationship[jj]['$'].type === 'U') {
-            rec.preferred = term.Relationships.Relationship[jj].Is;
-        }
-        linksleft += term.Relationships.Relationship[jj].Is.length;
-    }
-    totallinks += linksleft;
     rec = new Record({ format: 'ericthesaurus', data: rec});
     rec.save();
-    rec.linksleft = linksleft;
-    recordtype = recordtype || 'ericterm';
-    rec.link('recordtype', recordtypes[recordtype]);
-    recs[rec.key] = rec;
-    handleLinks(rec.key);
-    mypromise.resolve(rec);
-});
-importer.on('filefinish', function() {
-    Object.keys(recs).forEach(handleLinks);
+    var links = rec.getLinks();
+    links.forEach(function (link) {
+        var target = linklookup[link.key];
+        if (typeof target === 'undefined') {
+            target = Record.findOne({ key: link.key });
+        }
+        if (typeof target === 'undefined' && link.label !== 'related') {
+            linksleft[link.key] = linksleft[link.key] || [ ];
+            link.source = rec.id;
+            linksleft[link.key].push(link);
+        } else if (target) {
+            linklookup[link.key] = linklookup[link.key] || target.id;
+            rec.link(link.label, target, link.properties);
+            linkcount++;
+        }
+    });
+    if (linksleft[rec.key]) {
+        linksleft[rec.key].forEach(function (link) {
+            rec.link(link.label, link.source, link.properties, true);
+            linkcount++;
+        });
+        delete linksleft[rec.key];
+    }
+    linklookup[rec.key] = rec.id;
+    mainrecordcount++;
+    recordcount++;
+    mypromise.resolve();
 });
 
 importer.on('commit', function (promise) {
-    graphstore.db.commit(function () {
-        promise.resolve(true);
-    });
+    graphstore.db.commitSync();
+    promise.resolve();
 });
 
 importer.on('done', function() {
+    console.log(mainrecordcount + '/' + recordcount + '/' + linkcount);
     process.exit();
 });
 
-function handleLinks(rec) {
-    if (typeof recs[rec] === 'undefined') {
-        return;
-    }
-    var ref;
-    for (ref in recs[rec].data.broader) {
-        ref = recs[rec].data.broader[ref];
-        if (recs[ref]) {
-            recs[rec].link('broader', recs[ref]);
-            recs[rec].linksleft--;
-            if (--recs[ref].linksleft <= 0) {
-                delete recs[ref];
-            }
-        }
-    }
-    var idx;
-    for (ref in recs[rec].data.related) {
-        ref = recs[rec].data.related[ref];
-        if (recs[ref]) {
-            recs[rec].link('related', recs[ref]);
-            recs[rec].linksleft--;
-            if ((idx = recs[ref].data.related.indexOf(rec)) !== -1) {
-                recs[ref].data.related.splice(idx, 1);
-            }
-            if (--recs[ref].linksleft <= 0) {
-                delete recs[ref];
-            }
-        }
-    }
-    for (ref in recs[rec].data.preferred) {
-        ref = recs[rec].data.preferred[ref];
-        if (recs[ref]) {
-            recs[rec].link('preferred', recs[ref]);
-            recs[rec].linksleft--;
-            if (--recs[ref].linksleft <= 0) {
-                delete recs[ref];
-            }
-        }
-    }
-    if (recs[rec].linksleft <= 0) {
-        delete recs[rec];
-    }
-}
