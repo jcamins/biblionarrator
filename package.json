@@ -52,7 +52,9 @@
     "bcrypt": "~0.7.7",
     "password-generator": "~0.2.1",
     "grunt-jsdoc": "~0.4.1",
-    "grunt-browserify": "~1.2.4"
+    "grunt-browserify": "~1.2.4",
+    "browserify": "~2.33.1",
+    "brfs": "0.0.8"
   },
   "devDependencies": {
     "chai": "1.7.x",
