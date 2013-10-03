@@ -26,7 +26,23 @@ function initializeList() {
         window.location.href = updateQueryStringParameter(document.URL, 'perpage', $(this).find(':selected').val());
     });
     $('.remove-facet').click(function(ev) {
-        window.location.href = document.URL.replace($(this).attr('data-facet'), '');
+        var self = this;
+        var parts = document.URL.split(/[?&]/);
+        var url = parts[0];
+        var facetidx = 0;
+        parts.slice(1).forEach(function (part, index) {
+            if (part.substring(0, 5) === 'facet') {
+                if (facetidx === parseInt($(self).attr('data-index'), 10)) {
+                    part = '';
+                } else {
+                    facetidx++
+                }
+            }
+            if (part.length > 0) {
+                url += (index > 0 ? '&' : '?') + part;
+            }
+        });
+        window.location.href = url;
         ev.preventDefault();
     });
     $('.add-bookmark').click(function() {

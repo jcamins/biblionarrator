@@ -8,7 +8,7 @@
     <div class="span10 facets">
         <span class="facet-label">Limits</span>
             {{#each query.facets}}
-                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="Remove {{label}} facet" class="remove-facet" data-facet="{{link}}" href="#">x</a></sub></span>
+                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="Remove {{label}} facet" class="remove-facet" data-index="{{@index}}" href="#">x</a></sub></span>
             {{/each}}
         </span>
     </div>
