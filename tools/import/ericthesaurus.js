@@ -9,7 +9,7 @@ var inspect = require('eyes').inspector({maxLength: false});
 graphstore.autocommit = false;
 
 var importer = new XMLImporter({
-    files: [ options.argv[0] ],
+    files: options.argv,
     collect: [
         'Attribute',
         'Relationship',
@@ -42,7 +42,7 @@ importer.on('record', function (term, mypromise) {
             });
         });
     }
-    rec = new Record({ format: 'ericthesaurus', data: rec, recordclass: rec.Attributes.RecType[0] === 'Main' ? 'term' : 'synonym' });
+    rec = new Record({ format: 'ericthesaurus', data: rec, recordclass: (rec.Attributes.RecType && rec.Attributes.RecType[0] === 'Main' ? 'term' : 'synonym') });
     rec.save();
     var links = rec.getLinks();
     links.forEach(function (link) {

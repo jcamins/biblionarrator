@@ -15,7 +15,7 @@ var mainrecordcount = 0;
 var linklookup = { };
 
 var importer = new XMLImporter({
-    files: [ options.argv[0] ],
+    files: options.argv,
     collect: [
         'dc:creator',
         'dc:subject',
@@ -114,6 +114,10 @@ importer.on('record', function (record, mypromise) {
 importer.on('commit', function (promise) {
     graphstore.db.commitSync();
     promise.resolve();
+});
+
+importer.on('filefinish', function () {
+    console.log(mainrecordcount + '/' + recordcount + '/' + linkcount);
 });
 
 importer.on('done', function () {
