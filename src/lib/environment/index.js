@@ -77,7 +77,7 @@ function Environment(config) {
         if (config.logs.error && config.logs.error !== '-') {
             self.errorlog = fs.createWriteStream(resolveRoot(config.logs.error), { flags: 'a' });
         }
-    } catch (e) { console.log(e); }
+    } catch (e) { }
     try {
         if (config.logs.access && config.logs.access !== '-') {
             self.accesslog = fs.createWriteStream(resolveRoot(config.logs.access), { flags: 'a' });

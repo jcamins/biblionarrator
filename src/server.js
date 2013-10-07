@@ -28,7 +28,7 @@ app.use('/views', express.static(path.normalize(__dirname + '/../views')));
 app.use(express.cookieParser());
 app.use(express.session({ 
     store: new RedisStore({
-        client: environment.datastore.client()
+//        client: environment.datastore.client()
     }),
     secret: 'biblionarrator'
 }));
