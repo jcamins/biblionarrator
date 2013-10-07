@@ -9,7 +9,6 @@ var environment = require('./lib/environment'),
     auth = require('./lib/auth');
 
 var app = express();
-var RedisStore = require('connect-redis')(express);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -26,12 +25,24 @@ app.use(express.methodOverride());
 app.use(express.static(path.normalize(__dirname + '/../public')));
 app.use('/views', express.static(path.normalize(__dirname + '/../views')));
 app.use(express.cookieParser());
-app.use(express.session({ 
-    store: new RedisStore({
-//        client: environment.datastore.client()
-    }),
-    secret: 'biblionarrator'
-}));
+if (environment.sessionconf.backend === 'mongo') {
+    var MongoStore = require('connect-mongo')(express);
+    app.use(express.session({ 
+        store: new MongoStore({
+            db: environment.sessionconf.namespace || 'biblionarrator'
+//            client: environment.datastore.client()
+        }),
+        secret: 'biblionarrator'
+    }));
+} else {
+    var RedisStore = require('connect-redis')(express);
+    app.use(express.session({ 
+        store: new RedisStore({
+//            client: environment.datastore.client()
+        }),
+        secret: 'biblionarrator'
+    }));
+}
 app.use(flash());
 auth.initialize(app);
 app.use(function(req, res, next) {

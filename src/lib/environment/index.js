@@ -62,6 +62,7 @@ function Environment(config) {
     extend(true, self, {
         cacheconf: { backend: 'redis' },
         dataconf: { backend: 'redis' },
+        sessionconf: { backend: 'redis' },
         fields: { },
         indexes: { },
         facets: { },
