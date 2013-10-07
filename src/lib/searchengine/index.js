@@ -6,7 +6,7 @@ module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);
     var facetskey = encodeURIComponent('facets^' + options.query.canonical);
     cache.mget([recordskey, facetskey], function (cacheerror, cacheresults) {
-        if (cacheerror || cacheresults[0] === null) {
+        if (cacheerror || !cacheresults[0]) {
             graph.search(options, function (results) {
                 var records = results.records;
                 for (var ii in records) {
@@ -27,7 +27,7 @@ module.exports.search = function (options, recordcb, facetcb) {
         } else if (typeof recordcb === 'function') {
             recordcb(cacheresults[0]);
         }
-        if (cacheerror || cacheresults[1] === null) {
+        if (cacheerror || !cacheresults[1]) {
             graph.facet(options, function (results) {
                 if (typeof facetcb === 'function') {
                     facetcb(results);
