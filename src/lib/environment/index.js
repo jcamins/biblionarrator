@@ -6,8 +6,6 @@ process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resol
 
 var QueryParser = require('queryparser'),
     GraphStore = require('./graphstore'),
-    DataStore = require('./datastore'),
-    Cache = require('./cache'),
     ESClient = require('./esclient'),
     QueryBuilder = require('./querybuilder'),
     Renderer = require('./renderer');
@@ -62,6 +60,8 @@ function Environment(config) {
 
     config = config || { };
     extend(true, self, {
+        cacheconf: { backend: 'redis' },
+        dataconf: { backend: 'redis' },
         fields: { },
         indexes: { },
         facets: { },
@@ -112,6 +112,8 @@ function Environment(config) {
             extend(self.facets, newschema.facets);
         } catch (e) { self.errors.push(e); }
     }
+    var DataStore = require('./datastore/' + self.dataconf.backend),
+        Cache = require('./cache/' + self.cacheconf.backend);
     var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder;
     Object.defineProperties(self, {
         "queryparser": {
@@ -184,6 +186,9 @@ if (typeof process.env['BN_CONFIG'] !== 'undefined') {
     } catch (e) {
         if (e.code === 'MODULE_NOT_FOUND') {
             Environment.set(defaultconfig);
+        } else {
+            console.log(e.stack);
+            process.exit();
         }
     }
 }

@@ -19,6 +19,12 @@
         "ericthesaurus",
         "eric"
     ],
+    "cacheconf": {
+        "backend": "redis"
+    },
+    "dataconf": {
+        "backend": "redis"
+    },
     "graphconf": {
         "engine": "titan",
         "titan": {
