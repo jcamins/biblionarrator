@@ -97,6 +97,7 @@ function initializeList() {
     });
 
     $('body').on('click', 'a[data-href]', null, function (ev) {
+        ev.preventDefault();
         var parts = [ $(this).attr('data-href') ];
         $(this).parents('[data-href]').each(function () {
             parts.push($(this).attr('data-href'));
@@ -109,7 +110,7 @@ function initializeList() {
             }
             href = href + parts[ii];
         }
-        $(this).attr('href', href);
+        window.location.href = href;
     });
 
     $('body').on('click', '[data-target="pane"]', null, function (ev) {
