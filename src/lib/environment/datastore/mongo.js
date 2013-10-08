@@ -7,6 +7,10 @@ function DataStore(config) {
     var database;
     var connectPromise = Q.defer();
 
+    this.wait = function (callback) {
+        connectPromise.promise.done(callback);
+    };
+
     this.database = function () {
         return database;
     };
@@ -60,10 +64,10 @@ function DataStore(config) {
         self.namespace = 'biblionarrator';
     }
 
-    MongoClient.connect('mongodb://' + (config.dataconf.hostname || '127.0.0.1') + '/' + self.namespace, function (err, db) {
+    MongoClient.connect('mongodb://' + (config.dataconf.hostname || '127.0.0.1') + '/' + self.namespace, { auto_reconnect: true, readPreference: 'nearest' }, function (err, db) {
         if (err) connectPromise.reject(err);
         database = db;
-        connectPromise.resolve(true);
+        connectPromise.resolve(database);
     });
 
     return self;
