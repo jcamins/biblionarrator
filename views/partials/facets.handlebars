@@ -1,7 +1,7 @@
 <!--<ul class="nav nav-pills nav-stacked facet-list">
     <li class="active"><a href="" data-toggle="tab">All ({{data.count}})</a></li>
     {{#each data.mainfacet.options}}
-        <li><a href="#" data-href="&facet={{this.type}}[%22{{this.link}}%22]" data-toggle="tab">{{this.label}} ({{this.count}})</a></li>
+        <li><a href="#" data-href="&facet={{link}}" data-toggle="tab">{{label}} ({{count}})</a></li>
     {{/each}}
 </ul>-->
 {{#each data.facets}}
@@ -13,7 +13,7 @@
     <ul class="facet-options show-all">
     {{/if}}
     {{#each options}}
-        <li><a href="#" data-href="&facet={{type}}[%22{{link}}%22]" data-target="pane">{{label}} <span class="facet-count">({{count}})</span></a></li>
+        <li><a href="#" data-href="&facet={{link}}" data-target="pane">{{label}} <span class="facet-count">({{count}})</span></a></li>
     {{/each}}
     {{#if more}}
         <li class="show-more"><a href="#">{{more}} more options</a></li>
