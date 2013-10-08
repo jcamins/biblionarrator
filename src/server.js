@@ -29,7 +29,8 @@ if (environment.sessionconf.backend === 'mongo') {
     var MongoStore = require('connect-mongo')(express);
     app.use(express.session({ 
         store: new MongoStore({
-            db: environment.sessionconf.namespace || 'biblionarrator'
+            db: environment.sessionconf.namespace || 'biblionarrator',
+            host: environment.sessionconf.hostname || '127.0.0.1'
 //            client: environment.datastore.client()
         }),
         secret: 'biblionarrator'
