@@ -71,13 +71,7 @@ exports.view = function(req, res) {
                     data.more = true;
                 }
                 if (accept === 'html') {
-                    res.render(layout, data, function(err, html) {
-                        if (err) {
-                            res.send(404, err);
-                        } else {
-                            res.send(html);
-                        }
-                    });
+                    res.render(layout, data);
                 } else {
                     res.json(list);
                 }

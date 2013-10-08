@@ -6,19 +6,21 @@ exports.get = function(req, res) {
         suffix: '.md',
         processor: function(data) {
             var marked = require('marked');
+            res.type('html');
             res.send(marked(data));
         }
     }, {
         name: 'text',
         suffix: '',
         processor: function(data) {
-            res.setHeader('Content-Type', 'text/plain');
+            res.type('text/plain');
             res.send(data);
         }
     }, {
         name: 'html',
         suffix: '.html',
         processor: function(data) {
+            res.type('html');
             res.send(data);
         }
     }, {

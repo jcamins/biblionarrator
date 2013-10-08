@@ -9,8 +9,6 @@ exports.linkselect = function(req, res) {
     res.render('link-select', {
         id: req.params.record_id,
         layout: false
-    }, function(err, html) {
-        res.send(html);
     });
 };
 
@@ -43,13 +41,7 @@ exports.view = function(req, res) {
                 }
                 data.recordtypes = RecordType.findAll();
                 data.record.rendered = data.record.render();
-                res.render('record/interface', data, function(err, html) {
-                    if (err) {
-                        res.send(404, err);
-                    } else {
-                        res.send(html);
-                    }
-                });
+                res.render('record/interface', data);
             });
         }, function(errs) {
             res.send(404, errs);
