@@ -30,7 +30,7 @@ if (environment.sessionconf.backend === 'mongo') {
     app.use(express.session({ 
         store: new MongoStore({
             host: environment.sessionconf.hostname || '127.0.0.1',
-            db: environment.datastore.db ? environment.datastore.database() : 'sessions'
+            db: (environment.datastore.database && environment.datastore.database()) ? environment.datastore.database() : 'sessions'
         }),
         secret: 'biblionarrator'
     }));
