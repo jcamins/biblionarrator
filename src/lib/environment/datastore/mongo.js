@@ -7,6 +7,10 @@ function DataStore(config) {
     var database;
     var connectPromise = Q.defer();
 
+    this.database = function () {
+        return database;
+    };
+
     this.get = function (model, key, callback) {
         connectPromise.promise.done(function () {
             if (key === '*') {
