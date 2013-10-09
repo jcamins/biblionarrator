@@ -11,7 +11,7 @@ module.exports.get = function(req, res) {
             res.json(map);
         });
     }
-}
+};
 
 module.exports.save = function(req, res) {
     var template = req.body;

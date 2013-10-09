@@ -53,7 +53,6 @@ function PartialPlan(options) {
 }
 
 function optimizeTree(tree, query, supports, environment) {
-    var op;
     /*jshint -W086*/ /* No 'break' between cases */
     switch (tree[0]) {
     case 'AND':

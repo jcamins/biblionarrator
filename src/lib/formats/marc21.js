@@ -1,12 +1,10 @@
-var fs = require('fs'),
-    MARCRecord = require('../marcrecord'),
+var MARCRecord = require('../marcrecord'),
     environment;
 if (typeof window === 'undefined') {
     environment = require('../environment');
 } else {
     environment = window.environment;
 }
-var inspect = require('eyes').inspector({maxLength: false});
 
 module.exports.snippet = function(recorddata) {
     return recorddata;

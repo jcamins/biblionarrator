@@ -77,7 +77,11 @@ function Cache(config) {
         database.collection('cache', function (err, collection) {
             cache = collection;
             collection.ensureIndex({ "expire": 1}, { expireAfterSeconds: 0 }, function (err) {
-                connectPromise.resolve(true);
+                if (err) {
+                    connectPromise.reject(err);
+                } else {
+                    connectPromise.resolve(true);
+                }
             });
         });
     });

@@ -15,7 +15,6 @@ function prepareQuery(req) {
     var q = req.query.q;
     var querystring = '';
     if (util.isArray(q)) {
-        var q = req.query.q;
         for (var ii = 0; ii < q.length; ii+=2) {
             if (q[ii] && q[ii+1]) {
                 querystring += ' ' + q[ii] + q[ii+1];

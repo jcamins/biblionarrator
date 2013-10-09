@@ -35,7 +35,7 @@ function initializeList() {
                 if (facetidx === parseInt($(self).attr('data-index'), 10)) {
                     part = '';
                 } else {
-                    facetidx++
+                    facetidx++;
                 }
             }
             if (part.length > 0) {

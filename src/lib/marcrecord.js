@@ -69,8 +69,8 @@ MARCField.prototype.string = function (subfields, sep) {
                 string = string + this.subfields[ii][Object.keys(this.subfields[ii])[0]] + sep;
             }
         }
+        return string.substring(0, string.length - sep.length);
     }
-    return string.substring(0, string.length - sep.length);
 };
 
 MARCField.prototype.ordered = function (subfields, sep) {

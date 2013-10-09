@@ -1,5 +1,4 @@
-var fs = require('fs'),
-    environment;
+var environment;
 if (typeof window === 'undefined') {
     environment = require('../environment');
 } else {
@@ -29,12 +28,12 @@ module.exports.indexes = function(recorddata) {
     return indexes;
 };
 
+/*jshint unused:false */ /* Not yet implemented */
 module.exports.links = function(recorddata) {
     var links = [ ];
     return links;
 };
 
-/*jshint unused:false */ /* Not yet implemented */
 module.exports.decompile = function(htmldom) {
 };
 /*jshint unused:true */

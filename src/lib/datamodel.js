@@ -28,7 +28,6 @@ DataModel.findOne = function (Model, key, callback) {
 DataModel.all = function (Model, callback) {
     datastore.get(Model.name, '*', function (err, results) {
         var map = {};
-        var list = [];
         for (var idx in results) {
             map[idx] = new Model(results[idx]);
         }

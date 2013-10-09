@@ -10,6 +10,7 @@ var environment = require('./lib/environment'),
     auth = require('./lib/auth');
 
 var app = express();
+var httpserver;
 
 function initializeApp() {
     // all environments
@@ -72,7 +73,6 @@ function initializeApp() {
 
     exports.app = app;
 
-    var httpserver;
 }
 
 function listen(port) {

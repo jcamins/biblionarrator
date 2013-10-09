@@ -68,6 +68,7 @@ function connect(config, engine, g) {
             var backends;
             var propertyclass = Type.Vertex.class;
             try {
+                /*jshint -W086*/
                 switch (index.type) {
                     case 'edge':
                         if (index.unidirected) {
@@ -103,6 +104,7 @@ function connect(config, engine, g) {
                             .uniqueSync(Direction.OUT).makePropertyKeySync().getIdSync();
                         break;
                 }
+                /*jshint +W086*/
             } catch (e) {
                 var type = db.getTypeSync(name);
                 if (type !== null) {

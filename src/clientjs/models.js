@@ -32,7 +32,7 @@ function Record(data) {
         }
         return new Record({
             id: this.id,
-            data: formatters[this.format].snippet(this.data),
+            data: formatters[this.format].snippet(this.data)
         });
     };
 

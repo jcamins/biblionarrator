@@ -70,7 +70,7 @@
             var node = svg.selectAll(".map-node")
                 .data(data.records)
                 .enter().append('a')
-                .attr('xlink:href', function (d) { return '/record/' + d._id })
+                .attr('xlink:href', function (d) { return '/record/' + d._id; })
                 .append("g")
                     .attr("class", "node")
                     .style("stroke-opacity", opacity)
