@@ -93,24 +93,36 @@ function Environment(config) {
     while ((which = self.schemas.shift())) {
         var newschema = { };
         try {
-            newschema = require('bn-schema-' + which);
-            Object.keys(newschema.fields).forEach(function (field) {
-                newschema.fields[field].name = field;
-                newschema.fields[field].schema = newschema.prefix;
-                newschema.fields[field].model = 'Field';
-                self.fields[newschema.prefix + '_' + field] = newschema.fields[field];
-                self.indexes[field] = newschema.fields[field];
-                self.indexes[field].field = newschema.prefix  + '_' + field;
-            });
-            if (newschema.static_relevance_bumps) {
-                extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
-            }
-            if (newschema.templates) {
-                newschema.templates.forEach(function (template) {
-                    self.templates[template] = { id: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
+            if (which === 'self') {
+                Object.keys(self.fields).forEach(function (field) {
+                    self.indexes[self.fields[field].name] = self.fields[field];
+                    self.indexes[self.fields[field].name].field = field;
                 });
+                Object.keys(self.templates).forEach(function (template) {
+                    if (typeof self.templates[template] !== 'object') {
+                        self.templates[template] = { id: template, data: fs.readFileSync(resolveRoot(self.templates[template]), { encoding: 'utf8' }), model: 'Template' };
+                    }
+                });
+            } else {
+                newschema = require('bn-schema-' + which);
+                Object.keys(newschema.fields).forEach(function (field) {
+                    newschema.fields[field].name = field;
+                    newschema.fields[field].schema = newschema.prefix;
+                    newschema.fields[field].model = 'Field';
+                    self.fields[newschema.prefix + '_' + field] = newschema.fields[field];
+                    self.indexes[field] = newschema.fields[field];
+                    self.indexes[field].field = newschema.prefix  + '_' + field;
+                });
+                if (newschema.static_relevance_bumps) {
+                    extend(true, self.static_relevance_bumps, newschema.static_relevance_bumps);
+                }
+                if (newschema.templates) {
+                    newschema.templates.forEach(function (template) {
+                        self.templates[template] = { id: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
+                    });
+                }
+                extend(self.facets, newschema.facets);
             }
-            extend(self.facets, newschema.facets);
         } catch (e) { self.errors.push(e); }
     }
     var DataStore = require('./datastore/' + self.dataconf.backend),
