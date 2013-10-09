@@ -2,7 +2,9 @@ var optimist = require('optimist');
 
 module.exports = function (usage, options) {
     usage = usage || '';
-    optimist = optimist.usage(usage + "\nUsage: $0");
+    if (usage.indexOf("\n") === -1) {
+        optimist = optimist.usage(usage + "\nUsage: $0");
+    }
     optimist = optimist.options({
         help: {
             alias: 'h',
