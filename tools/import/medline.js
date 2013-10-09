@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var options = require('../../src/lib/cmd'),
+var options = require('../src/lib/cmd')("Load MEDLINE records"),
     XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
@@ -14,7 +14,7 @@ var recordcount = 0;
 var mainrecordcount = 0;
 
 var importer = new XMLImporter({
-    files: [ options.argv[0] ],
+    files: options._,
     collect: [
         'Author',
         'Chemical',

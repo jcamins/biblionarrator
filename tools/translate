@@ -1,4 +1,6 @@
-var options = require('../../src/lib/cmd'),
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+var options = require('../../src/lib/cmd')("Manage Biblionarrator translations"),
     environment = require('../../src/lib/environment');
 
 var fs = require('fs'),

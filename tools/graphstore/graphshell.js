@@ -1,4 +1,4 @@
-var options = require('../../src/lib/cmd'),
+var options = require('../../src/lib/cmd')("Start Gremlin repl connected to Biblionarrator database"),
     environment = require('../../src/lib/environment');
 
 var graphstore = environment.graphstore,

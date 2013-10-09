@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var util = require('util'),
-    options = require('../../src/lib/cmd'),
+    options = require('../../src/lib/cmd')("Load ERIC bibliographic records"),
     XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
@@ -15,7 +15,7 @@ var mainrecordcount = 0;
 var linklookup = { };
 
 var importer = new XMLImporter({
-    files: options.argv,
+    files: options._,
     collect: [
         'dc:creator',
         'dc:subject',

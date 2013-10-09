@@ -1,4 +1,4 @@
-var options = require('../../src/lib/cmd'),
+var options = require('../../src/lib/cmd')("Load ERIC thesaurus records"),
     XMLImporter = require('bn-importers/lib/xml'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
@@ -9,7 +9,7 @@ var inspect = require('eyes').inspector({maxLength: false});
 graphstore.autocommit = false;
 
 var importer = new XMLImporter({
-    files: options.argv,
+    files: options._,
     collect: [
         'Attribute',
         'Relationship',

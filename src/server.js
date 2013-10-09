@@ -86,7 +86,7 @@ exports.listen = function (port) {
     if (typeof environment.datastore.wait === 'function') {
         environment.datastore.wait(function () {
             initializeApp();
-            listen();
+            listen(port);
         });
     } else {
         initializeApp();

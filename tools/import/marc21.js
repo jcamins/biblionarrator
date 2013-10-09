@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var options = require('../../src/lib/cmd'),
+var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records"),
     JSONImporter = require('bn-importers/lib/json'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
@@ -9,7 +9,7 @@ var options = require('../../src/lib/cmd'),
 graphstore.autocommit = false;
 
 var importer = new JSONImporter({
-    files: [ options.argv[0] ]
+    files: options._
 });
 
 var linkcount = 0;

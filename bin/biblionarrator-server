@@ -1,6 +1,13 @@
 #!/usr/bin/env node
+// vim: set filetype=javascript:
 
-var options = require('../src/lib/cmd'),
+var options = require('../src/lib/cmd')("Start Biblionarrator server", {
+    'port': {
+        alias: 'p',
+        default: 3000,
+        describe: 'Port to listen on'
+        }
+    }),
     environment = require('../src/lib/environment'),
     server = require('../src/server');
 
