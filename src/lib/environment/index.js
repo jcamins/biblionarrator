@@ -8,7 +8,8 @@ var QueryParser = require('queryparser'),
     GraphStore = require('./graphstore'),
     ESClient = require('./esclient'),
     QueryBuilder = require('./querybuilder'),
-    Renderer = require('./renderer');
+    Renderer = require('./renderer'),
+    i18next = require('i18next');
 
 var defaultconfig = {
     "operators": {
@@ -128,6 +129,7 @@ function Environment(config) {
     var DataStore = require('./datastore/' + self.dataconf.backend),
         Cache = require('./cache/' + self.cacheconf.backend);
     var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder;
+    /*jshint -W093*/
     Object.defineProperties(self, {
         "queryparser": {
             "get": function () { return _queryparser = _queryparser || new QueryParser(self); }
@@ -146,8 +148,12 @@ function Environment(config) {
         },
         "querybuilder": {
             "get": function () { return _querybuilder = _querybuilder || new QueryBuilder(self); }
+        },
+        "i18next": {
+            "get": function () { return i18next; }
         }
     });
+    /*jshint +W093*/
     try {
         self.renderer = new Renderer(self);
     } catch (e) { self.errors.push(e); }

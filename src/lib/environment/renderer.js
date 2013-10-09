@@ -1,8 +1,9 @@
 var Handlebars = require('handlebars'),
     MARCRecord = require('../marcrecord'),
     extend = require('extend'),
-    util = require('util'),
-    i18next = require('i18next');
+    util = require('util');
+
+var i18next;
 
 Handlebars.registerHelper('t', function(i18n_key) {
     var result = i18next.t(i18n_key);
@@ -48,7 +49,7 @@ Handlebars.registerHelper('field', function (field, options) {
         var re = new RegExp('^' + field);
         for (ii = 0; ii < this.fields.length; ii++) {
             if (this.fields[ii].tag.match(re)) {
-                var field = { index: index++, record: this };
+                field = { index: index++, record: this };
                 extend(true, field, this.fields[ii]);
                 string = string + options.fn(field);
             }
@@ -57,7 +58,7 @@ Handlebars.registerHelper('field', function (field, options) {
     } else if (util.isArray(field)) {
         string = '';
         for (ii = 0; ii < field.length; ii++) {
-            var field = { index: index++, record: this };
+            field = { index: index++, record: this };
             extend(true, field, this.fields[ii]);
             string = string + options.fn(field);
         }
@@ -125,7 +126,10 @@ function Renderer(config) {
     this.render = function (name, data) {
         return templates[name](data);
     };
+
+    i18next = config.i18next;
+
     return this;
-};
+}
 
 module.exports = Renderer;
