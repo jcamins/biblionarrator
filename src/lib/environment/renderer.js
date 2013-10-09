@@ -1,7 +1,25 @@
 var Handlebars = require('handlebars'),
     MARCRecord = require('../marcrecord'),
     extend = require('extend'),
-    util = require('util');
+    util = require('util'),
+    i18next = require('i18next');
+
+Handlebars.registerHelper('t', function(i18n_key) {
+    var result = i18next.t(i18n_key);
+
+    return new Handlebars.SafeString(result);
+});
+
+Handlebars.registerHelper('tr', function(key, options) { 
+    var opts = i18next.functions.extend(options.hash, this);
+    if (options.fn) opts.defaultValue = options.fn(this);
+
+    var result = i18next.t(key, opts);
+
+    return new Handlebars.SafeString(result);
+});
+
+
 
 Handlebars.registerHelper('subfordered', function (field, subfields, sep) {
     if (typeof field !== 'undefined' && field !== null) {

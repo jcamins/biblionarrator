@@ -3,6 +3,7 @@ var environment = require('./lib/environment'),
     socketserver = require('./lib/socketserver'),
     handlebars = require('express-hbs'),
     flash = require('connect-flash'),
+    i18next = require('i18next'),
     http = require('http'),
     routes = require('./routes'),
     path = require('path'),
@@ -51,6 +52,14 @@ function initializeApp() {
         });
         next();
     });
+    i18next.init({
+        ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common'},
+        resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json'),
+        saveMissing: true,
+        debug: true,
+        sendMissingTo: 'fallback'
+    });
+    app.use(i18next.handle);
     app.use(app.router);
     //params.extend(app);
 
