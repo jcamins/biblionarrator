@@ -35,6 +35,8 @@ function registerBlockHelper(name) {
     });
 }
 
+var languages = options.argv || [ 'en' ];
+
 ['if', 'contentFor', 'each', 'field', 'ifsubf', 'iffield'].forEach(registerBlockHelper);
 var files = [ ];
 readdirp({ root: path.resolve(__dirname, '../../views'), fileFilter: '*.handlebars' }, function (err, res) {
@@ -51,12 +53,21 @@ readdirp({ root: path.resolve(__dirname, '../../views'), fileFilter: '*.handleba
         try {
             environment.renderer.render(file, { });
         } catch (e) {
+            if (e.name !== 'RangeError') {
+                console.log("Caught and ignored error: " + e);
+            }
         }
     });
-    var locale = { };
-    var newlocale = { };
+    var namespaces = { };
     for (var key in keys) {
-        var parts = key.split(/\./);
+        var namespace = 'common';
+        var parts = key.split(/:/);
+        if (parts.length > 1) {
+            namespace = parts[0];
+            parts = parts[1].split(/\./);
+        } else {
+            parts = key.split(/\./);
+        }
         var value = keys[key].replace(/\s+/g, ' ');
         var part;
         while ((part = parts.pop())) {
@@ -64,14 +75,31 @@ readdirp({ root: path.resolve(__dirname, '../../views'), fileFilter: '*.handleba
             temp[part] = value;
             value = temp;
         }
-        extend(true, newlocale, value);
+        namespaces[namespace] = namespaces[namespace] || { };
+        extend(true, namespaces[namespace], value);
     }
-    try {
-        var data = fs.readFileSync(path.resolve(__dirname, '../../locales', 'en', 'ns.common.json'), { encoding: 'utf8' });
-        locale = JSON.parse(data);
-    } catch (e) {
-    }
-    extend(true, newlocale, locale);
-    fs.writeFileSync(path.resolve(__dirname, '../../locales', 'en', 'ns.common.json'), JSON.stringify(newlocale, null, 4));
+    languages.forEach(function (language) {
+        try {
+            fs.mkdirSync(path.resolve(__dirname, '../../locales', language));
+        } catch (e) {
+            if (e.message.indexOf('EEXIST') === -1) {
+                console.log("Caught and ignored error: " + e);
+            }
+        }
+        for (namespace in namespaces) {
+            var newlocale = { };
+            extend(true, newlocale, namespaces[namespace]);
+            try {
+                var data = fs.readFileSync(path.resolve(__dirname, '../../locales', language, 'ns.' + namespace + '.json'), { encoding: 'utf8' });
+                locale = JSON.parse(data);
+            } catch (e) {
+                if (e.message.indexOf('ENOENT') === -1) {
+                    console.log("Caught and ignored error: " + e);
+                }
+            }
+            extend(true, newlocale, locale);
+            fs.writeFileSync(path.resolve(__dirname, '../../locales', language, 'ns.' + namespace + '.json'), JSON.stringify(newlocale, null, 4));
+        }
+    });
     process.exit();
 });
