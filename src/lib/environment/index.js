@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
-    extend = require('extend');
+    extend = require('extend'),
+    Q = require('q');
 
 process.env['GREMLIN_JAVA_OPTIONS'] = '-Dlog4j.configuration=file:' + path.resolve(__dirname, '../../../config/log4j.properties') + ' -Dlogback.configurationFile=' + path.resolve(__dirname, '../../../config/logback.xml');
 
@@ -64,6 +65,7 @@ function Environment(config) {
         cacheconf: { backend: 'redis' },
         dataconf: { backend: 'redis' },
         sessionconf: { backend: 'redis' },
+        i18nextconf: { backend: 'local' },
         fields: { },
         indexes: { },
         facets: { },
@@ -128,7 +130,8 @@ function Environment(config) {
     }
     var DataStore = require('./datastore/' + self.dataconf.backend),
         Cache = require('./cache/' + self.cacheconf.backend);
-    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder;
+    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder,
+        i18npromise = Q.defer();
     /*jshint -W093*/
     Object.defineProperties(self, {
         "queryparser": {
@@ -150,7 +153,43 @@ function Environment(config) {
             "get": function () { return _querybuilder = _querybuilder || new QueryBuilder(self); }
         },
         "i18next": {
-            "get": function () { return i18next; }
+            "get": function () { 
+                if (self.i18nextconf.backend === 'mongo') {
+                    var i18nextMongoSync = require('i18next.mongoDb');
+
+                    i18next.wait = function (callback) {
+                        if (callback) {
+                            i18npromise.promise.done(callback);
+                        } else {
+                            return i18npromise.promise;
+                        }
+                    };
+                    i18nextMongoSync.connect({
+                        host: self.dataconf.hostname,
+                        port: 27017,
+                        dbName: self.dataconf.namespace,
+                        resCollectionName: "i18next", 
+                        /*username: "usr",
+                        password: "pwd",
+                        options: {
+                          auto_reconnect: true, // default true
+                          ssl: false // default false
+                        }*/
+                    }, function() {
+                        i18next.backend(i18nextMongoSync);
+                        i18next.init({
+                            ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common' }
+                        });
+                        i18npromise.resolve(true);
+                    });
+                } else if (self.i18nextconf.backend === 'local') {
+                    i18next.init({
+                        ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common'},
+                        resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json')
+                    });
+                }
+                return i18next;
+            }
         }
     });
     /*jshint +W093*/

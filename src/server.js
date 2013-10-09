@@ -1,9 +1,10 @@
-var environment = require('./lib/environment'),
+var Q = require('q'),
+    environment = require('./lib/environment'),
     express = require('express'),
     socketserver = require('./lib/socketserver'),
     handlebars = require('express-hbs'),
     flash = require('connect-flash'),
-    i18next = require('i18next'),
+    i18next = environment.i18next,
     http = require('http'),
     routes = require('./routes'),
     path = require('path'),
@@ -53,13 +54,6 @@ function initializeApp() {
         });
         next();
     });
-    i18next.init({
-        ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common'},
-        resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json'),
-        saveMissing: true,
-        debug: true,
-        sendMissingTo: 'fallback'
-    });
     app.use(i18next.handle);
     app.use(app.router);
     //params.extend(app);
@@ -83,8 +77,11 @@ function listen(port) {
 }
 
 exports.listen = function (port) {
-    if (typeof environment.datastore.wait === 'function') {
-        environment.datastore.wait(function () {
+    var semaphores = [ ];
+    if (typeof environment.datastore.wait === 'function') semaphores.push(environment.datastore.wait());
+    if (typeof environment.i18next.wait === 'function') semaphores.push(environment.i18next.wait());
+    if (semaphores.length > 0) {
+        Q.all(semaphores).then(function () {
             initializeApp();
             listen(port);
         });

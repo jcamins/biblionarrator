@@ -8,7 +8,11 @@ function DataStore(config) {
     var connectPromise = Q.defer();
 
     this.wait = function (callback) {
-        connectPromise.promise.done(callback);
+        if (callback) {
+            connectPromise.promise.done(callback);
+        } else {
+            return connectPromise.promise;
+        }
     };
 
     this.database = function () {
