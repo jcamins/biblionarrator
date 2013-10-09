@@ -41,18 +41,18 @@
                         <ul class="nav pull-left">
                             {{#if user.permission.edit_record}}
                             <li class="dropdown">
-                                <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">New <b class="caret"></b></a>
+                                <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">{{#tr 'action.new'}}New{{/tr}} <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="/record/new" id="new-blank" class="new-record">Blank record</a></li>
+                                    <li><a href="/record/new" id="new-blank" class="new-record">{{#tr 'action.blankrecord'}}Blank record{{/tr}}</a></li>
                                     <li class="divider"></li>
-                                    <li><span>Templates</span></li>
+                                    <li><span>{{#tr 'labels.templates'}}Templates{{/tr}}</span></li>
                                     {{#templates}}
                                         <li><a href="/record/new/template/{{id}}" id="new-template-{{id}}" class="new-record">{{name}}</a></li>
                                     {{/templates}}
                                 </ul>
                             </li>
                             {{/if}}
-                            <li class=""><a class="caret-before" href="/search">Search</a></li>
+                            <li class=""><a class="caret-before" href="/search">{{#tr 'action.search'}}Search{{/tr}}</a></li>
                             <!--<li class="hidden-phone dropdown">
                                 <a href="#" class="dropdown-toggle caret-after" data-toggle="dropdown"><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -61,7 +61,7 @@
                             </li>-->
                             <li class="divider-vertical"></li>
                             <li class="visible-desktop visible-tablet"><form class="navbar-search" action="/search" method="get" accept-charset="UTF-8">
-                                <input type="text" class="search-query" name="q" placeholder="Quick search" value="{{query.original}}"></input><button class="search-button" type="submit"><i class="icon-search icon-white"></i></button>
+                                <input type="text" class="search-query" name="q" placeholder="{{#tr 'label.quicksearch'}}Quick search{{/tr}}" value="{{query.original}}"></input><button class="search-button" type="submit"><i class="icon-search icon-white"></i></button>
                             </form></li>
                         </ul>
                         <ul class="nav pull-right">
@@ -76,16 +76,16 @@
                                 <ul class="dropdown-menu">
                                     {{#if user}}
                                         <li><span>{{user.email}}</span></li>
-                                        <li><a href="/user/settings">Settings</a></li>
-                                        <li><a href="/user/templates">My templates</a></li>
+                                        <li><a href="/user/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
+                                        <li><a href="/user/templates">{{#tr 'label.mytemplates'}}My templates{{/tr}}</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="/auth/logout">Sign out</a></li>
+                                        <li><a href="/auth/logout">{{#tr 'action.signout'}}Sign out{{/tr}}</a></li>
                                     {{else}}
                                         <form id="navbarLogin" action="/auth/login" method="post" accept-charset="UTF-8">
-                                            <input id="navbarLoginUser" type="text" name="username" placeholder="Username"></input>
-                                            <input id="navbarLoginPassword" type="password" name="password" placeholder="Password"></input>
+                                            <input id="navbarLoginUser" type="text" name="username" placeholder="{{#tr 'label.username'}}Username{{/tr}}"></input>
+                                            <input id="navbarLoginPassword" type="password" name="password" placeholder="{{#tr 'label.password'}}Password{{/tr}}"></input>
                                             <input type="hidden" name="redirect" value="{{url}}"></input>
-                                            <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">Sign in</button>
+                                            <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">{{#tr 'action.signin'}}Sign in{{/tr}}</button>
                                         </form>
                                     {{/if}}
                                 </ul>
@@ -95,25 +95,25 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {{#if user.permission.edit_admin}}
-                                    <li><a href="/admin">Home</a></li>
+                                    <li><a href="/admin">{{#tr 'label.administration'}}Administration{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_field}}
-                                    <li><a href="/admin/fields">Fields</a></li>
+                                    <li><a href="/admin/fields">{{#tr 'label.fields'}}Fields{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_user}}
-                                    <li><a href="/admin/user">Users</a></li>
+                                    <li><a href="/admin/user">{{#tr 'label.users'}}Users{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_collection}}
-                                    <li><a href="/admin/collection">Collections</a></li>
+                                    <li><a href="/admin/collection">{{#tr 'label.collections'}}Collections{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_recordtypes}}
-                                    <li><a href="/admin/recordtype">Record types</a></li>
+                                    <li><a href="/admin/recordtype">{{#tr 'label.recordtypes'}}Record types{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_settings}}
-                                    <li><a href="/admin/settings">Settings</a></li>
+                                    <li><a href="/admin/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_templates}}
-                                    <li><a href="/admin/templates">Templates</a></li>
+                                    <li><a href="/admin/templates">{{#tr 'label.templates'}}Templates{{/tr}}</a></li>
                                     {{/if}}
                                 </ul>
                             </li>
@@ -122,7 +122,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
-                                    <li><a href="/about">About</a></li>
+                                    <li><a href="/about">{{#tr 'label.about'}}About{{/tr}}</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -136,21 +136,20 @@
         <!--<nav class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
             <ul class="nav">
-                <li><a class="show-bookmarks" href="#">Bookmarks
+                <li><a class="show-bookmarks" href="#">{{#tr 'label.bookmarks'}}Bookmarks{{/tr}}
                     <span class="bookmark-count">{{bookmarks.length}}</span></a></li>
-
-                <li><a href="/user">
-                <! --@if (Auth::guest())
-                    Log in
-                @else
-                    User settings
-                @endif-- >
-                </a></li>
-                {{#if user.permission.edit_admin}}
-                <li><a href="/admin">System administration</a></li>
+                {{#if user}}
+                    <li><a href="/user/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
+                {{else}}
+                    <li><a href="/auth/login">{{#tr 'action.login'}}Log in{{/tr}}</a></li>
                 {{/if}}
-                <li><span>{{user.email}}</span></li>
-                <li><a href="/help">Help</a></li>
+                {{#if user.permission.edit_admin}}
+                    <li><a href="/admin">{{#tr 'label.administration'}}Administration{{/tr}}</a></li>
+                {{/if}}
+                {{#if user}}
+                    <li><span>{{user.email}}</span></li>
+                {{/if}}
+                <li><a href="/help">{{#tr 'label.help'}}Help{{/tr}}</a></li>
             </ul>
             </div>
         </nav>-->
@@ -164,8 +163,8 @@
             <div id="confirmBody" class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="confirmCancel" class="btn" data-dismiss="modal" aria-hidden="true">No</button>
-                <button id="confirmOK" class="btn btn-primary btn-ok">Yes</button>
+                <button id="confirmCancel" class="btn" data-dismiss="modal" aria-hidden="true">{{#tr 'label.no'}}No{{/tr}}</button>
+                <button id="confirmOK" class="btn btn-primary btn-ok">{{#tr 'label.yes'}}Yes{{/tr}}</button>
             </div>
         </div>
         {{{block 'modals'}}}

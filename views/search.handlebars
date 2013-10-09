@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <div class="span10 pull-right">
             <fieldset>
-                <legend>Search catalog</legend>
+                <legend>{{#tr 'action.searchcatalogue'}}Search catalogue{{/tr}}</legend>
                 <form class="form-horizontal" method="get" action="/search">
                     <div class="control-group">
                         <select name="q">
@@ -14,7 +14,7 @@
                             {{/each}}
                         </select>
                         <div class="input-prepend">
-                            <span class="add-on">contains</span>
+                            <span class="add-on">{{#tr 'label.contains'}}contains{{/tr}}</span>
                             <input type="text" name="q" id="q1"></input>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                             {{/each}}
                         </select>
                         <div class="input-prepend">
-                            <span class="add-on">contains</span>
+                            <span class="add-on">{{#tr 'label.contains'}}contains{{/tr}}</span>
                             <input type="text" name="q" id="q2"></input>
                         </div>
                     </div>
@@ -42,11 +42,11 @@
                             {{/each}}
                         </select>
                         <div class="input-prepend">
-                            <span class="add-on">contains</span>
+                            <span class="add-on">{{#tr 'label.contains'}}contains{{/tr}}</span>
                             <input type="text" name="q" id="q3"></input>
                         </div>
                     </div>
-                    <button class="btn btn-inverse" type="submit"><i class="icon-search icon-white"></i> Search</button>
+                    <button class="btn btn-inverse" type="submit"><i class="icon-search icon-white"></i> {{#tr 'action.search'}}Search{{/tr}}</button>
                 </form>
             </fieldset>
         </div>

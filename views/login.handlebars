@@ -3,7 +3,7 @@
         <div class="span10 pull-right">
             <div class="row-fluid">
                 <div class="span6">
-                    <h2>Sign in</h2>
+                    <h2>{{#tr 'action.signin'}}Sign in{{/tr}}</h2>
                     {{#if error}}
                     <div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>{{error}}</div>
                     {{/if}}
@@ -12,15 +12,15 @@
                     </form>
                     <form action="/auth/login" method="post">
                         <div class="control-group">
-                            <input type="text" id="login-username" name="username" placeholder="User name"></input>
+                            <input type="text" id="login-username" name="username" placeholder="{{#tr 'label.username'}}User name{{/tr}}"></input>
                         </div>
                         <div class="control-group">
-                            <input type="password" id="login-password" name="password" placeholder="Password"></input>
+                            <input type="password" id="login-password" name="password" placeholder="{{#tr 'label.password'}}Password{{/tr}}"></input>
                         </div>
                         <input type="hidden" name="redirect" value="{{redirect}}"></input>
-                        <button class="btn btn-small btn-primary" type="submit">Sign in with password</button>
+                        <button class="btn btn-small btn-primary" type="submit">{{#tr 'action.passwordsignin'}}Sign in with password{{/tr}}</button>
                         <div class="persona-div">
-                        <a href="#" class="persona-button" id="browserid"><span>Sign in with your email</span></a>
+                        <a href="#" class="persona-button" id="browserid"><span>{{#tr 'action.emailsignin'}}Sign in with your email{{/tr}}</span></a>
                         </div>
                     </form>
 
