@@ -7,7 +7,7 @@
             <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">
                 {{{rendered}}}
             </div>
-            <button title="Show whole record" class="preview tray btn btn-link">
+            <button title="{{#tr 'action.showwholerecord'}}Show whole record{{/tr}}" class="preview tray btn btn-link">
                 <i class="chevrons-left"></i>
                 <div><i class="tray-bar"></i></div>
                 <i class="chevrons-right"></i>
@@ -16,8 +16,8 @@
             </div>
         </td>
         <td class="recordPane">
-            <button title="Explore this record's knowledge trail" class="explore-links btn btn-link"><i class="explore-icon"></i></button>
-            <button title="Mark landmark" class="mark-landmark btn btn-link"><i class="landmark-icon"></i></button>
+            <button title="{{#tr 'action.exploreknowledgetrail'}}Explore this record's knowledge trail{{/tr}}" class="explore-links btn btn-link"><i class="explore-icon"></i></button>
+            <button title="{{#tr 'action.marklandmark'}}Mark landmark{{/tr}}" class="mark-landmark btn btn-link"><i class="landmark-icon"></i></button>
         </td>
     </tr>
 {{/each}}

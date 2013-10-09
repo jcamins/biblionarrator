@@ -13,27 +13,28 @@
                     <noscript>
                         <div class="alert alert-error">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            The record editor does not work without Javascript. Please enable Javascript and reload the page.
+                            {{#tr 'message.editornojs'}}The record editor does not work without Javascript. Please enable Javascript and reload the page.{{/tr}}
                         </div>
                     </noscript>
                     <div itemscope id="recordContainer" class="recordtype_{{record.record_type}}">
                         {{{record.rendered}}}
                     </div>
-                    <div><button id="add-section" class="btn btn-link">Add section</button></div>
+                    <div><button id="add-section" class="btn btn-link">{{#tr 'label.addsection'}}Add section{{/tr}}</button></div>
                     <div id="alerts"></div>
                     <div class="instructions">
-                        <span class="instruction-label">Hint:</span>
-                        Use the first ("Citation") box for basic citation information that
-                        should show up directly in the search results. Use the other
-                        ("Expansion") boxes to enter additional information, grouping into
-                        paragraphs as you see fit. To tag text using the keyboard, use the
-                        shortcut Ctrl-J. To untag text, use the shortcut Ctrl-K.
+                        <span class="instruction-label">{{#tr 'label.hint'}}Hint:{{/tr}}</span>
+                        {{#tr 'help:editor.hint'}}Use the first ("Citation") box for basic
+                        citation information that should show up directly in the search
+                        results. Use the other ("Expansion") boxes to enter additional
+                        information, grouping into paragraphs as you see fit. To tag text
+                        using the keyboard, use the shortcut Ctrl-J. To untag text, use
+                        the shortcut Ctrl-K.{{/tr}}
                     </div>
                 </div>
                 <div class="span6">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#imagesPane" data-toggle="tab">Images</a></li>
-                        <li><a href="#linksPane" data-toggle="tab">Links</a></li>
+                        <li class="active"><a href="#imagesPane" data-toggle="tab">{{#tr 'label.images'}}Images{{/tr}}</a></li>
+                        <li><a href="#linksPane" data-toggle="tab">{{#tr 'label.links'}}Links{{/tr}}</a></li>
                     </ul>
                     <div id="imagesPane" class="active image-gallery tab-pane">
                         <ul class="image-gallery-thumbnails thumbnails">
@@ -51,7 +52,7 @@
             <div id="sidebarAffix">
                 <div id="table-of-contents">
                     <div id="toc-header">
-                        Table of Contents
+                        {{#tr 'label.tableofcontents'}}Table of Contents{{/tr}}
                     </div>
                     <div id="fieldsTOC"></div>
                 </div>
@@ -68,14 +69,14 @@
     <div id="save-template-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="save-template-label" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="save-template-label">Save as template</h3>
+            <h3 id="save-template-label">{{#tr 'label.saveastemplate'}}Save as template{{/tr}}</h3>
         </div>
         <div class="modal-body">
-            <label>Template name <input type="text" id="template-name"></input></label>
+            <label>{{#tr 'label.templatename'}}Template name{{/tr}} <input type="text" id="template-name"></input></label>
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal">Cancel</button>
-            <button id="save-template-ok" class="btn btn-primary" data-dismiss="modal">Save</button>
+            <button class="btn" data-dismiss="modal">{{#tr 'label.cancel'}}Cancel{{/tr}}</button>
+            <button id="save-template-ok" class="btn btn-primary" data-dismiss="modal">{{#tr 'label.save'}}Save{{/tr}}</button>
         </div>
     </div>
     <div id="link-select" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="link-select-label" aria-hidden="true">
@@ -83,19 +84,19 @@
     <div class="modal hide" id="upload-image-modal">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h3>Upload image</h3>
+            <h3>{{#tr 'label.upload'}}Upload image{{/tr}}</h3>
         </div>
         <div class="modal-body">
             <form method="POST" action="{{url}}/media" id="upload-image-modal-form" enctype="multipart/form-data">
-                <label for="image">Image</label>
-                <input type="file" placeholder="Choose an image to upload" name="media" id="image-image" />
-                <label for="description">Description</label>
-                <textarea placeholder="Describe your image in a few sentences" name="description" id="image-description" class="span5"></textarea>
+                <label for="image">{{#tr 'label.image'}}Image{{/tr}}</label>
+                <input type="file" placeholder="{{#tr 'label.chooseimage'}}Choose an image to upload{{/tr}}" name="media" id="image-image" />
+                <label for="description">{{#tr 'label.description'}}Description{{/tr}}</label>
+                <textarea placeholder="{{#tr 'label.describeimage'}}Describe your image in a few sentences{{/tr}}" name="description" id="image-description" class="span5"></textarea>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal">Cancel</button>
-            <button id="upload-image-ok" class="btn btn-primary" data-dismiss="modal">Upload</button>
+            <button class="btn" data-dismiss="modal">{{#tr 'label.cancel'}}Cancel{{/tr}}</button>
+            <button id="upload-image-ok" class="btn btn-primary" data-dismiss="modal">{{#tr 'label.upload'}}Upload{{/tr}}</button>
         </div>
     </div>
 {{/contentFor}}
@@ -139,8 +140,8 @@
 
         $('.new-record').click(function () {
             if ($('body').hasClass('unsaved-changes')) {
-                $('#confirmLabel').text("Confirm new record");
-                $('#confirmBody').text("Are you sure you want to create a new record?");
+                $('#confirmLabel').text("{{#tr 'label.confirmnew'}}Confirm new record{{/tr}}");
+                $('#confirmBody').text("{{#tr 'message.confirmnew'}}Are you sure you want to create a new record?{{/tr}}");
                 $('#confirmOK').attr('data-callback', $(this).attr('id'));
                 $('#confirm').modal('show');
             } else {
