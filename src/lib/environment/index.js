@@ -130,8 +130,8 @@ function Environment(config) {
     }
     var DataStore = require('./datastore/' + self.dataconf.backend),
         Cache = require('./cache/' + self.cacheconf.backend);
-    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder,
-        i18npromise = Q.defer();
+    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder, _i18next,
+        i18npromise;
     /*jshint -W093*/
     Object.defineProperties(self, {
         "queryparser": {
@@ -154,41 +154,44 @@ function Environment(config) {
         },
         "i18next": {
             "get": function () { 
-                if (self.i18nextconf.backend === 'mongo') {
-                    var i18nextMongoSync = require('i18next.mongoDb');
+                if (!_i18next) {
+                    if (self.i18nextconf.backend === 'mongo') {
+                        i18npromise = Q.defer();
+                        var i18nextMongoSync = require('i18next.mongoDb');
 
-                    i18next.wait = function (callback) {
-                        if (callback) {
-                            i18npromise.promise.done(callback);
-                        } else {
-                            return i18npromise.promise;
-                        }
-                    };
-                    i18nextMongoSync.connect({
-                        host: self.dataconf.hostname,
-                        port: 27017,
-                        dbName: self.dataconf.namespace,
-                        resCollectionName: "i18next", 
-                        /*username: "usr",
-                        password: "pwd",
-                        options: {
-                          auto_reconnect: true, // default true
-                          ssl: false // default false
-                        }*/
-                    }, function() {
-                        i18next.backend(i18nextMongoSync);
-                        i18next.init({
-                            ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common' }
+                        i18next.wait = function (callback) {
+                            if (callback) {
+                                i18npromise.promise.done(callback);
+                            } else {
+                                return i18npromise.promise;
+                            }
+                        };
+                        i18nextMongoSync.connect({
+                            host: self.dataconf.hostname,
+                            port: 27017,
+                            dbName: self.dataconf.namespace,
+                            resCollectionName: "i18next", 
+                            /*username: "usr",
+                            password: "pwd",
+                            options: {
+                              auto_reconnect: true, // default true
+                              ssl: false // default false
+                            }*/
+                        }, function() {
+                            i18next.backend(i18nextMongoSync);
+                            i18next.init({
+                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' }
+                            });
+                            i18npromise.resolve(true);
                         });
-                        i18npromise.resolve(true);
-                    });
-                } else if (self.i18nextconf.backend === 'local') {
-                    i18next.init({
-                        ns: { namespaces: ['ns.common', 'ns.help'], defaultNs: 'ns.common'},
-                        resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json')
-                    });
+                    } else if (self.i18nextconf.backend === 'local') {
+                        i18next.init({
+                            ns: { namespaces: ['common', 'help'], defaultNs: 'common'},
+                            resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json')
+                        });
+                    }
                 }
-                return i18next;
+                return _i18next = _i18next || i18next;
             }
         }
     });

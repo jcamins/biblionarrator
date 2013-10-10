@@ -34,7 +34,11 @@ function DataStore(config) {
             } else {
                 database.collection(model).findOne({ _id: key }, function (err, rec) {
                     if (rec) {
-                        callback(err, JSON.parse(rec.value));
+                        if (rec.value) {
+                            callback(err, JSON.parse(rec.value));
+                        } else {
+                            callback(err, rec);
+                        }
                     } else {
                         callback(err, null);
                     }
@@ -45,9 +49,15 @@ function DataStore(config) {
         });
     }; 
 
-    this.set = function (model, key, object, callback) {
+    this.set = function (model, key, object, callback, raw) {
         connectPromise.promise.done(function () {
-            database.collection(model).save({ _id: key, value: JSON.stringify(object) }, function (err, result) {
+            var obj;
+            if (raw) {
+                obj = object;
+            } else {
+                obj = { _id: key, value: JSON.stringify(object) };
+            }
+            database.collection(model).save(obj, function (err, result) {
                 if (typeof callback === 'function') callback(err, result);
             });
         });

@@ -75,7 +75,7 @@ exports.init = function(app) {
     i18next.serveWebTranslate(app, {
         i18nextWTOptions: {
             languages: ['de-DE', 'en-US',  'dev'],
-            namespaces: ['ns.common', 'ns.help'],
+            namespaces: ['common', 'help'],
             resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
             resChangePath: 'locales/change/__lng__/__ns__',
             resRemovePath: 'locales/remove/__lng__/__ns__',

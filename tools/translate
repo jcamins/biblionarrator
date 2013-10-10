@@ -10,6 +10,16 @@ var options = require('../src/lib/cmd')("Manage Biblionarrator translations\nUsa
             alias: 'p',
             boolean: true,
             describe: 'Prune strings that are no longer used'
+        },
+        load: {
+            alias: 'l',
+            boolean: true,
+            describe: 'Load translations from locale files into database'
+        },
+        merge: {
+            alias: 'm',
+            boolean: true,
+            describe: 'Merge translations from locale files into database'
         }
     }),
     environment = require('../src/lib/environment');
@@ -17,7 +27,8 @@ var options = require('../src/lib/cmd')("Manage Biblionarrator translations\nUsa
 var fs = require('fs'),
     path = require('path'),
     readdirp = require('readdirp'),
-    extend = require('extend');
+    extend = require('extend'),
+    Q = require('q');
 
 var keys = { };
 
@@ -44,79 +55,122 @@ function registerBlockHelper(name) {
 }
 
 var languages = options._ || [ 'en' ];
-
 ['if', 'contentFor', 'each', 'field', 'ifsubf', 'iffield'].forEach(registerBlockHelper);
-var files = [ ];
-readdirp({ root: path.resolve(__dirname, '../views'), fileFilter: '*.handlebars' }, function (err, res) {
-    res.files.forEach(function (file) {
-        files.push(file.name);
-        var data = fs.readFileSync(file.fullPath, { encoding: 'utf8' });
-            
-        if (file.parentDir.indexOf('partials') > -1) {
-            environment.renderer.registerPartial(file.path.replace('.handlebars', '').replace('partials/', ''), data);
-        }
-        environment.renderer.register(file.name, data);
+
+if ((options.merge || options.load) && typeof environment.datastore.wait === 'function') {
+    environment.datastore.wait(function () {
+        processTemplates();
     });
-    files.forEach(function (file) {
-        try {
-            environment.renderer.render(file, { });
-        } catch (e) {
-            if (e.name !== 'RangeError') {
-                console.log("Caught and ignored error: " + e);
+} else {
+    processTemplates();
+}
+
+function processTemplates() {
+    var promises = [ ];
+    var files = [ ];
+    readdirp({ root: path.resolve(__dirname, '../views'), fileFilter: '*.handlebars' }, function (err, res) {
+        res.files.forEach(function (file) {
+            files.push(file.name);
+            var data = fs.readFileSync(file.fullPath, { encoding: 'utf8' });
+                
+            if (file.parentDir.indexOf('partials') > -1) {
+                environment.renderer.registerPartial(file.path.replace('.handlebars', '').replace('partials/', ''), data);
             }
-        }
-    });
-    var namespaces = { };
-    for (var key in keys) {
-        var namespace = 'common';
-        var parts = key.split(/:/);
-        if (parts.length > 1) {
-            namespace = parts[0];
-            parts = parts[1].split(/\./);
-        } else {
-            parts = key.split(/\./);
-        }
-        var value = keys[key].replace(/\s+/g, ' ');
-        var part;
-        while ((part = parts.pop())) {
-            var temp = { };
-            temp[part] = value;
-            value = temp;
-        }
-        namespaces[namespace] = namespaces[namespace] || { };
-        extend(true, namespaces[namespace], value);
-    }
-    languages.forEach(function (language) {
-        try {
-            fs.mkdirSync(path.resolve(__dirname, '../locales', language));
-        } catch (e) {
-            if (e.message.indexOf('EEXIST') === -1) {
-                console.log("Caught and ignored error: " + e);
-            }
-        }
-        for (namespace in namespaces) {
-            var newlocale = { };
-            var locale = { };
-            extend(true, newlocale, namespaces[namespace]);
+            environment.renderer.register(file.name, data);
+        });
+        files.forEach(function (file) {
             try {
-                var data = fs.readFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), { encoding: 'utf8' });
-                locale = JSON.parse(data);
+                environment.renderer.render(file, { });
             } catch (e) {
-                if (e.message.indexOf('ENOENT') === -1) {
+                if (e.name !== 'RangeError') {
                     console.log("Caught and ignored error: " + e);
                 }
             }
-            if (options.prune) {
-                locale = recursePrune(locale, newlocale);
+        });
+        var namespaces = { };
+        for (var key in keys) {
+            var namespace = 'common';
+            var parts = key.split(/:/);
+            if (parts.length > 1) {
+                namespace = parts[0];
+                parts = parts[1].split(/\./);
+            } else {
+                parts = key.split(/\./);
             }
-            if (!options.rewrite) {
-                extend(true, newlocale, locale);
+            var value = keys[key].replace(/\s+/g, ' ');
+            var part;
+            while ((part = parts.pop())) {
+                var temp = { };
+                temp[part] = value;
+                value = temp;
             }
-            fs.writeFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), JSON.stringify(newlocale, null, 4));
+            namespaces[namespace] = namespaces[namespace] || { };
+            extend(true, namespaces[namespace], value);
         }
+        languages.forEach(function (language) {
+            try {
+                fs.mkdirSync(path.resolve(__dirname, '../locales', language));
+            } catch (e) {
+                if (e.message.indexOf('EEXIST') === -1) {
+                    console.log("Caught and ignored error: " + e);
+                }
+            }
+            for (namespace in namespaces) {
+                var newlocale = { };
+                var locale = { };
+                extend(true, newlocale, namespaces[namespace]);
+                try {
+                    var data = fs.readFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), { encoding: 'utf8' });
+                    locale = JSON.parse(data);
+                } catch (e) {
+                    if (e.message.indexOf('ENOENT') === -1) {
+                        console.log("Caught and ignored error: " + e);
+                    }
+                }
+                if (options.prune) {
+                    locale = recursePrune(locale, newlocale);
+                }
+                if (!options.rewrite) {
+                    extend(true, newlocale, locale);
+                }
+                fs.writeFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), JSON.stringify(newlocale, null, 4));
+                var newPromise = Q.defer();
+                if (options.merge) {
+                    mergeFromDatastore(namespace, language, newlocale, newPromise);
+                    promises.push(newPromise.promise);
+                } else if (options.load) {
+                    writeToDatastore(namespace, language, newlocale, newPromise);
+                    promises.push(newPromise.promise);
+                }
+            }
+        });
+        Q.all(promises).done(function () {
+            process.exit();
+        });
     });
-    process.exit();
-});
+}
+
+function mergeFromDatastore(namespace, language, newlocale, promise) {
+    environment.datastore.get('i18next', namespace + '_' + language, function (err, locale) {
+        if (options.prune) {
+            locale = recursePrune(locale, newlocale);
+        }
+        extend(true, newlocale, locale);
+        writeToDatastore(namespace, language, newlocale, promise);
+    });
+}
+
+function writeToDatastore(namespace, language, locale, promise) {
+    environment.datastore.set('i18next', namespace + '_' + language, {
+        _id: namespace + '_' + language,
+        resources: locale,
+        lng: language,
+        namespace: namespace
+    }, function (err, res) {
+        console.log('Wrote ' + language + ' for ' + namespace + ' to datastore');
+        promise.resolve(res);
+    }, true);
+}
 
 function recursePrune(object, basis) {
     for (var key in object) {
