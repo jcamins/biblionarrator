@@ -20,6 +20,11 @@ var options = require('../src/lib/cmd')("Manage Biblionarrator translations\nUsa
             alias: 'm',
             boolean: true,
             describe: 'Merge translations from locale files into database'
+        },
+        quiet: {
+            alias: 'q',
+            boolean: true,
+            describe: 'Do not display diagnostic information'
         }
     }),
     environment = require('../src/lib/environment');
@@ -55,6 +60,7 @@ function registerBlockHelper(name) {
 }
 
 var languages = options._ || [ 'en' ];
+languages.push('dev');
 ['if', 'contentFor', 'each', 'field', 'ifsubf', 'iffield'].forEach(registerBlockHelper);
 
 if ((options.merge || options.load) && typeof environment.datastore.wait === 'function') {
@@ -120,26 +126,27 @@ function processTemplates() {
                 var locale = { };
                 extend(true, newlocale, namespaces[namespace]);
                 try {
-                    var data = fs.readFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), { encoding: 'utf8' });
+                    var data = fs.readFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), { encoding: 'utf8' });
                     locale = JSON.parse(data);
+                    if (options.prune) {
+                        locale = recursePrune(locale, newlocale);
+                    }
                 } catch (e) {
                     if (e.message.indexOf('ENOENT') === -1) {
                         console.log("Caught and ignored error: " + e);
                     }
                 }
-                if (options.prune) {
-                    locale = recursePrune(locale, newlocale);
-                }
-                if (!options.rewrite) {
+                if (!options.rewrite || language === 'dev') {
                     extend(true, newlocale, locale);
                 }
-                fs.writeFileSync(path.resolve(__dirname, '../locales', language, 'ns.' + namespace + '.json'), JSON.stringify(newlocale, null, 4));
+                fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), JSON.stringify(newlocale, null, 4));
+                if (!options.quiet) console.log('+Locale ' + language + '/' + namespace);
                 var newPromise = Q.defer();
-                if (options.merge) {
-                    mergeFromDatastore(namespace, language, newlocale, newPromise);
-                    promises.push(newPromise.promise);
-                } else if (options.load) {
+                if (options.load || language === 'dev') {
                     writeToDatastore(namespace, language, newlocale, newPromise);
+                    promises.push(newPromise.promise);
+                } else if (options.merge) {
+                    mergeFromDatastore(namespace, language, newlocale, newPromise);
                     promises.push(newPromise.promise);
                 }
             }
@@ -167,7 +174,7 @@ function writeToDatastore(namespace, language, locale, promise) {
         lng: language,
         namespace: namespace
     }, function (err, res) {
-        console.log('Wrote ' + language + ' for ' + namespace + ' to datastore');
+        if (!options.quiet) console.log('+Datastore ' + language + '/' + namespace);
         promise.resolve(res);
     }, true);
 }
