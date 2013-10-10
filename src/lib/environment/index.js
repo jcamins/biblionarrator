@@ -180,7 +180,8 @@ function Environment(config) {
                         }, function() {
                             i18next.backend(i18nextMongoSync);
                             i18next.init({
-                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' }
+                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' },
+                                debug: true
                             });
                             i18npromise.resolve(true);
                         });

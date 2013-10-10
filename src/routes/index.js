@@ -1,4 +1,5 @@
-var i18next = require('i18next'),
+var environment = require('../lib/environment'),
+    i18next = environment.i18next,
     assets = require('./assets'),
     bookmarks = require('./bookmarks'),
     doc = require('./doc'),
@@ -68,13 +69,15 @@ exports.init = function(app) {
     app.get('/admin', auth.can('edit', 'admin'), admin);
 
     i18next.registerAppHelper(app)
+        .serveChangeKeyRoute(app)
+        .serveRemoveKeyRoute(app)
         .serveClientScript(app)
         .serveDynamicResources(app)
         .serveMissingKeyRoute(app);
 
     i18next.serveWebTranslate(app, {
         i18nextWTOptions: {
-            languages: ['de-DE', 'en-US',  'dev'],
+            languages: environment.languages || ['en', 'dev'],
             namespaces: ['common', 'help'],
             resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
             resChangePath: 'locales/change/__lng__/__ns__',
