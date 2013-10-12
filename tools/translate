@@ -82,6 +82,13 @@ if ((options.merge || options.load) && typeof environment.datastore.wait === 'fu
 function processTemplates() {
     var promises = [ ];
     var files = [ ];
+    try {
+        fs.mkdirSync(path.resolve(__dirname, '../locales'));
+    } catch (e) {
+        if (e.message.indexOf('EEXIST') === -1) {
+            console.log("Caught and ignored error: " + e);
+        }
+    }
     readdirp({ root: path.resolve(__dirname, '..'), fileFilter: '*.handlebars' }, function (err, res) {
         res.files.forEach(function (file) {
             if (file.path.indexOf('node_modules') === 0) return;
