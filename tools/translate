@@ -48,25 +48,28 @@ environment.renderer.registerHelper('t', function(i18n_key) {
 });
 
 environment.renderer.registerHelper('tr', function(i18n_key, options) {
-    keys[i18n_key] = options.fn ? options.fn({ }) : '';
-    return '';
-});
-
-environment.renderer.registerHelper('block', function () {
+    keys[i18n_key] = options.fn ? options.fn({ record: { } }) : '';
     return '';
 });
 
 function registerBlockHelper(name) {
     environment.renderer.registerHelper(name, function (input, options) {
-        if (options.fn) options.fn({ });
-        if (options.inverse) options.inverse({ });
+        if (options.fn) options.fn({ record: { } });
+        if (options.inverse) options.inverse({ record: { } });
+        return '';
+    });
+}
+
+function registerHelper(name) {
+    environment.renderer.registerHelper(name, function (input, options) {
         return '';
     });
 }
 
 var languages = options._ || [ 'en' ];
 languages.push('dev');
-['if', 'contentFor', 'each', 'field', 'ifsubf', 'iffield'].forEach(registerBlockHelper);
+['block', 'if', 'contentFor', 'each', 'field', 'ifsubf', 'iffield'].forEach(registerBlockHelper);
+['subfstring', 'subffirst'].forEach(registerHelper);
 
 if ((options.merge || options.load) && typeof environment.datastore.wait === 'function') {
     environment.datastore.wait(function () {
@@ -79,22 +82,23 @@ if ((options.merge || options.load) && typeof environment.datastore.wait === 'fu
 function processTemplates() {
     var promises = [ ];
     var files = [ ];
-    readdirp({ root: path.resolve(__dirname, '../views'), fileFilter: '*.handlebars' }, function (err, res) {
+    readdirp({ root: path.resolve(__dirname, '..'), fileFilter: '*.handlebars' }, function (err, res) {
         res.files.forEach(function (file) {
+            if (file.path.indexOf('node_modules') === 0) return;
             files.push(file.name);
             var data = fs.readFileSync(file.fullPath, { encoding: 'utf8' });
                 
             if (file.parentDir.indexOf('partials') > -1) {
-                environment.renderer.registerPartial(file.path.replace('.handlebars', '').replace('partials/', ''), data);
+                environment.renderer.registerPartial(file.path.replace('.handlebars', '').replace('views/partials/', ''), data);
             }
             environment.renderer.register(file.name, data);
         });
         files.forEach(function (file) {
             try {
-                environment.renderer.render(file, { });
+                environment.renderer.render(file, { record: { } });
             } catch (e) {
                 if (e.name !== 'RangeError') {
-                    console.log("Caught and ignored error: " + e);
+                    console.log("Caught and ignored error in " + file + ": " + e);
                 }
             }
         });
