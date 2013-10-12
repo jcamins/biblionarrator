@@ -76,6 +76,7 @@ exports.init = function(app) {
         .serveMissingKeyRoute(app);
 
     i18next.serveWebTranslate(app, {
+        path: '/translate',
         i18nextWTOptions: {
             languages: environment.languages || ['en', 'dev'],
             namespaces: ['common', 'help'],
