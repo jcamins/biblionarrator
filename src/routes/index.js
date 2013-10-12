@@ -69,8 +69,8 @@ exports.init = function(app) {
     app.get('/admin', auth.can('edit', 'admin'), admin);
 
     i18next.registerAppHelper(app)
-        .serveChangeKeyRoute(app)
-        .serveRemoveKeyRoute(app)
+        .serveChangeKeyRoute(app, auth.can('edit', 'translation'))
+        .serveRemoveKeyRoute(app, auth.can('edit', 'translation'))
         .serveClientScript(app)
         .serveDynamicResources(app)
         .serveMissingKeyRoute(app);
@@ -84,7 +84,8 @@ exports.init = function(app) {
             resRemovePath: 'locales/remove/__lng__/__ns__',
             fallbackLng: "dev",
             dynamicLoad: true
-        }
+        },
+        authenticated: auth.can('edit', 'translation')
     });
 };
 

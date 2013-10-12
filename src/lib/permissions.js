@@ -7,5 +7,6 @@ module.exports = {
     'edit_user': 'edit users',
     'view_collection': 'view collections',
     'edit_collection': 'edit collections',
-    'edit_admin': 'administer system'
+    'edit_admin': 'administer system',
+    'edit_translation': 'edit translations'
 };

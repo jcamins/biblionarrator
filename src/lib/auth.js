@@ -69,7 +69,11 @@ function can(action, object) {
         acls[key] = function (req, res, next) {
             if (typeof req.user !== 'undefined' && req.user.permission[key]) {
                 req.flash('loginredirect');
-                next();
+                if (typeof next === 'function') {
+                    next();
+                } else {
+                    return true;
+                }
             } else {
                 req.flash('error', 'NOTPERMITTED:' + key);
                 req.flash('loginredirect', req.url);
