@@ -365,22 +365,28 @@ module.exports = function(grunt) {
         if (typeof permissions === 'string') {
             permissions = permissions.split(',');
         }
-        if (permissions[0] === '*') {
-            permissions = '*';
-        }
         var generated;
         if (password === '') {
             generated = true;
             password = pwgen(16);
         }
         data.users = data.users || { };
-        data.users[email] = { '_password': bcrypt.hashSync(password, 10), 'email': email, 'name': name, 'permissions': permissions };
+        data.users[email] = { '_password': bcrypt.hashSync(password, 10), 'email': email, 'name': name };
+        if (permissions[0] === '*') {
+            data.users[email].permissions = '*';
+        } else {
+            data.users[email].permission = { };
+            permissions.forEach(function (perm) {
+                data.users[email].permission[perm] = true;
+            });
+        }
         fs.writeFileSync(__dirname + '/config/config.json', JSON.stringify(data, null, 4));
         if (generated) {
             console.log("The user " + email + " has been created with the following automatically-generated password: " + password);
         }
     });
 
+    grunt.registerTask('user', [ 'prompt:user', 'createUser' ]);
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ]);
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
