@@ -25,6 +25,11 @@ var options = require('../src/lib/cmd')("Manage Biblionarrator translations\nUsa
             alias: 'q',
             boolean: true,
             describe: 'Do not display diagnostic information'
+        },
+        export: {
+            alias: 'x',
+            boolean: true,
+            describe: 'Export languages from database'
         }
     }),
     environment = require('../src/lib/environment');
@@ -136,17 +141,20 @@ function processTemplates() {
                         console.log("Caught and ignored error: " + e);
                     }
                 }
-                if (!options.rewrite || language === 'dev') {
+                if (!options.rewrite && language !== 'dev') {
                     extend(true, newlocale, locale);
                 }
                 fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), JSON.stringify(newlocale, null, 4));
                 if (!options.quiet) console.log('+Locale ' + language + '/' + namespace);
                 var newPromise = Q.defer();
-                if (options.load || language === 'dev') {
+                if (options.merge && language !== 'dev') {
+                    mergeFromDatastore(namespace, language, newlocale, newPromise);
+                    promises.push(newPromise.promise);
+                } else if (options.load || (options.merge && language === 'dev')) {
                     writeToDatastore(namespace, language, newlocale, newPromise);
                     promises.push(newPromise.promise);
-                } else if (options.merge) {
-                    mergeFromDatastore(namespace, language, newlocale, newPromise);
+                } else if (options.export && language !== 'dev') {
+                    exportFromDatastore(namespace, language, newlocale, newPromise);
                     promises.push(newPromise.promise);
                 }
             }
@@ -157,12 +165,28 @@ function processTemplates() {
     });
 }
 
+function exportFromDatastore(namespace, language, newlocale, promise) {
+    environment.datastore.get('i18next', namespace + '_' + language, function (err, locale) {
+        if (locale) {
+            if (options.prune) {
+                locale = recursePrune(locale.resources, newlocale);
+            }
+            extend(true, newlocale, locale.resources);
+        }
+        fs.writeFile(path.resolve(__dirname, '../locales', language, namespace + '.json'), JSON.stringify(newlocale, null, 4), function (err) {
+            promise.resolve(err);
+        });
+    });
+}
+
 function mergeFromDatastore(namespace, language, newlocale, promise) {
     environment.datastore.get('i18next', namespace + '_' + language, function (err, locale) {
-        if (options.prune) {
-            locale = recursePrune(locale, newlocale);
+        if (locale) {
+            if (options.prune) {
+                locale = recursePrune(locale.resources, newlocale);
+            }
+            extend(true, newlocale, locale.resources);
         }
-        extend(true, newlocale, locale);
         writeToDatastore(namespace, language, newlocale, promise);
     });
 }
