@@ -191,7 +191,8 @@ function Environment(config) {
                     } else if (self.i18nextconf.backend === 'local') {
                         i18next.init({
                             ns: { namespaces: ['common', 'help'], defaultNs: 'common'},
-                            resSetPath: path.resolve(__dirname, '..', 'locales/__lng__/new.__ns__.json')
+                            resSetPath: resolveRoot('locales/__lng__/__ns__.json'),
+                            resGetPath: resolveRoot('locales/__lng__/__ns__.json')
                         });
                     }
                 }
