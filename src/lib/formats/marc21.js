@@ -27,6 +27,7 @@ function stringify (object) {
 var field2index = [
     { re: new RegExp('008'), index: 'year', subfields: '07-10', datatype: 'Integer' },
     { re: new RegExp('033'), index: 'adate', subfields: 'a' },
+    { re: new RegExp('072'), index: 'subjectclass', subfields: 'x' },
     { re: new RegExp('[17](00|10|11)'), index: 'author', subfields: 'abcdfghijklmnopqrstu' },
     { re: new RegExp('24.'), index: 'title', subfields: 'abcdfghijklmnopqrstuvwxyz' },
     { re: new RegExp('245'), index: 'titleproper', subfields: 'a' },
@@ -69,6 +70,7 @@ module.exports.indexes = function(recorddata) {
 
 var field2link = [
     { re: new RegExp('008'), label: 'year_e', subfields: '07-10', type: 'authstub' },
+    { re: new RegExp('072'), label: 'subjectclass_e', subfields: 'x', type: 'authstub', marker: true },
     { re: new RegExp('[17](00|10|11)'), label: 'author_e', subfields: 'abcdfghijklmnopqrstu', type: 'authstub', marker: true },
     { re: new RegExp('(440|830)'), label: 'series_e', subfields: 'a', type: 'authstub', marker: true },
     { re: new RegExp('6..'), label: 'subject_e', subfields: 'abcdfghijklmnopqrstuvwxyz', type: 'authstub', marker: true },
