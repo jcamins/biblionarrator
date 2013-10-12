@@ -45,7 +45,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="/record/new" id="new-blank" class="new-record">{{#tr 'action.blankrecord'}}Blank record{{/tr}}</a></li>
                                     <li class="divider"></li>
-                                    <li><span>{{#tr 'labels.templates'}}Templates{{/tr}}</span></li>
+                                    <li><span>{{#tr 'label.templates'}}Templates{{/tr}}</span></li>
                                     {{#templates}}
                                         <li><a href="/record/new/template/{{id}}" id="new-template-{{id}}" class="new-record">{{name}}</a></li>
                                     {{/templates}}
@@ -121,7 +121,8 @@
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">Show help</input></label></li>
+                                    <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">{{#tr 'label.showhelp'}}Show help{{/tr}}</input></label></li>
+                                    <li><a href="/help">{{#tr 'label.help'}}Help{{/tr}}</a></li>
                                     <li><a href="/about">{{#tr 'label.about'}}About{{/tr}}</a></li>
                                 </ul>
                             </li>
