@@ -24,28 +24,20 @@ function stringify (object) {
     return string;
 }
 
-var field2index = [
-    { re: new RegExp('008'), index: 'year', subfields: '07-10', datatype: 'Integer' },
-    { re: new RegExp('033'), index: 'adate', subfields: 'a' },
-    { re: new RegExp('072'), index: 'subjectclass', subfields: 'x' },
-    { re: new RegExp('[17](00|10|11)'), index: 'author', subfields: 'abcdfghijklmnopqrstu' },
-    { re: new RegExp('24.'), index: 'title', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('245'), index: 'titleproper', subfields: 'a' },
-    { re: new RegExp('245'), index: 'titleremainder', subfields: 'bcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('246'), index: 'titlevariant', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('250'), index: 'edition', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('260'), index: 'place', subfields: 'a' },
-    { re: new RegExp('260'), index: 'publisher', subfields: 'b' },
-    { re: new RegExp('(4[49]0|830)'), index: 'series', subfields: 'abcdefghijklmnopqrstuvwxyz' },
-    { re: new RegExp('5..'), index: 'note', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('6..'), index: 'subject', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-    { re: new RegExp('773'), index: 'host', subfields: 'abcdfghijklmnopqrstuvwxyz' },
-];
-
-module.exports.indexes = function(recorddata) {
+module.exports.indexes = function(recorddata, recordclass) {
     var indexes = { keyword: stringify(recorddata) };
     var record = new MARCRecord(recorddata);
     var val;
+    console.log(environment.formats);
+    if (!environment.formats || !environment.formats.marc || !environment.formats.marc[recordclass] || !environment.formats.marc[recordclass].indexes) {
+        return indexes;
+    }
+    var field2index = environment.formats.marc[recordclass].indexes;
+    if (!field2index[0].re) {
+        field2index.forEach(function (index) {
+            index.re = new RegExp(index.tag);
+        });
+    }
     for (var ii = 0; ii < record.fields.length; ii++) {
         field2index.forEach(function (def) {
             if (record.fields[ii].tag.match(def.re)) {
@@ -68,19 +60,19 @@ module.exports.indexes = function(recorddata) {
     return indexes;
 };
 
-var field2link = [
-    { re: new RegExp('008'), label: 'year_e', subfields: '07-10', type: 'authstub' },
-    { re: new RegExp('072'), label: 'subjectclass_e', subfields: 'x', type: 'authstub', marker: true },
-    { re: new RegExp('[17](00|10|11)'), label: 'author_e', subfields: 'abcdfghijklmnopqrstu', type: 'authstub', marker: true },
-    { re: new RegExp('(440|830)'), label: 'series_e', subfields: 'a', type: 'authstub', marker: true },
-    { re: new RegExp('6..'), label: 'subject_e', subfields: 'abcdfghijklmnopqrstuvwxyz', type: 'authstub', marker: true },
-    { re: new RegExp('6(00|10|11)'), label: 'subject_e', subfields: 'abcdfghijklmnopqrstuw', type: 'authstub', marker: true },
-];
-
 var cleanre = new RegExp('[.,:/; \t]+$');
 
-module.exports.links = function(recorddata) {
+module.exports.links = function(recorddata, recordclass) {
     var links = [ ];
+    if (!environment.formats || !environment.formats.marc || !environment.formats.marc[recordclass] || !environment.formats.marc[recordclass].links) {
+        return links;
+    }
+    var field2link = environment.formats.marc[recordclass].links;
+    if (!field2link[0].re) {
+        field2link.forEach(function (link) {
+            link.re = new RegExp(link.tag);
+        });
+    }
     var record = new MARCRecord(recorddata);
     var generated = { };
     for (var ii = 0; ii < record.fields.length; ii++) {

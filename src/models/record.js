@@ -30,7 +30,7 @@ function Record(data) {
             }
         });
         if (typeof formatters[this.format].render === 'function') {
-            return formatters[this.format].render(this.data);
+            return formatters[this.format].render(this.data, this.recordclass);
         } else {
             return environment.renderer.render(this.template || this.format, { record: this.data });
         }
@@ -46,7 +46,7 @@ function Record(data) {
         }
         return new Record({
             id: this.id,
-            data: formatters[this.format].snippet(this.data),
+            data: formatters[this.format].snippet(this.data, this.recordclass),
         });
     };
 
@@ -93,7 +93,7 @@ function Record(data) {
         if (typeof formatters[this.format] === 'undefined') {
             return [];
         } else {
-            return formatters[this.format].links(this.data);
+            return formatters[this.format].links(this.data, this.recordclass);
         }
     };
 
@@ -104,7 +104,7 @@ function Record(data) {
     }
 
     if (typeof formatters[this.format] !== 'undefined' && !this.no_index) {
-        extend(this, formatters[this.format].indexes(this.data));
+        extend(this, formatters[this.format].indexes(this.data, this.recordclass));
     }
     if (typeof this.no_index !== 'undefined') {
         delete this.no_index;

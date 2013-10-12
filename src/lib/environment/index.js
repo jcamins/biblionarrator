@@ -70,6 +70,7 @@ function Environment(config) {
         indexes: { },
         facets: { },
         static_relevance_bumps: { },
+        formats: { },
         schemas: [ ],
         logs: { },
         templates: { },
@@ -123,6 +124,9 @@ function Environment(config) {
                     newschema.templates.forEach(function (template) {
                         self.templates[template] = { id: template, data: fs.readFileSync(newschema.directory + '/templates/' + template + '.handlebars', { encoding: 'utf8' }), model: 'Template' };
                     });
+                }
+                if (newschema.formats) {
+                    extend(true, self.formats, newschema.formats);
                 }
                 extend(self.facets, newschema.facets);
             }
@@ -180,8 +184,7 @@ function Environment(config) {
                         }, function() {
                             i18next.backend(i18nextMongoSync);
                             i18next.init({
-                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' },
-                                debug: true
+                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' }
                             });
                             i18npromise.resolve(true);
                         });
