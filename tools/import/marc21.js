@@ -1,5 +1,13 @@
 #!/usr/bin/env node
-var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records"),
+var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", {
+        'overwrite': {
+            alias: 'o',
+            default: true,
+            boolean: true,
+            describe: 'Overwrite matching records'
+        }
+    }),
+    environment = require('../../src/lib/environment'),
     JSONImporter = require('bn-importers/lib/json'),
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
@@ -19,7 +27,28 @@ var mainrecordcount = 0;
 var linklookup = { };
 
 importer.on('record', function (record, mypromise) {
-    var rec = new Record({ format: 'marc21', data: record, recordclass: 'biblio' });
+    var rec;
+    var recordclass;
+    if (record.leader.charAt(6) === 'z') {
+        recordclass = 'auth';
+    } else if (record.leader.charAt(6) === 'w') {
+        recordclass = 'classification';
+    } else if (record.leader.charAt(6) === 'q') {
+        recordclass = 'communityinfo';
+    } else if (record.leader.charAt(6).match('[uvxy]')) {
+        recordclass = 'holdings';
+    } else {
+        recordclass = 'biblio';
+    }
+    mainrecordcount++;
+    rec = new Record({ format: 'marc21', data: record, recordclass: recordclass });
+    if (environment.formats.marc[recordclass].key) {
+        var oldrec = Record.findOne({ 'key': rec.key });
+        if (oldrec && !options.overwrite) {
+            mypromise.resolve();
+            return;
+        }
+    }
     rec.save();
     var links = rec.getLinks();
     links.forEach(function (link) {
@@ -38,7 +67,6 @@ importer.on('record', function (record, mypromise) {
             linkcount++;
         }
     });
-    mainrecordcount++;
     recordcount++;
     mypromise.resolve();
 });

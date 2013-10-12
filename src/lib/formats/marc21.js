@@ -28,7 +28,6 @@ module.exports.indexes = function(recorddata, recordclass) {
     var indexes = { keyword: stringify(recorddata) };
     var record = new MARCRecord(recorddata);
     var val;
-    console.log(environment.formats);
     if (!environment.formats || !environment.formats.marc || !environment.formats.marc[recordclass] || !environment.formats.marc[recordclass].indexes) {
         return indexes;
     }
