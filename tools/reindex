@@ -6,8 +6,8 @@ var options = require('../src/lib/cmd')("Reindex Biblionarrator", {
             alias: 'o',
             describe: 'Offset'
         },
-        length: {
-            alias: 'l',
+        number: {
+            alias: 'n',
             describe: 'Number of records to reindex'
         },
         simulate: {
@@ -30,8 +30,8 @@ graphstore.autocommit = false;
 
 var offset = options.offset || 0;
 var end;
-if (options.length) {
-    end = offset + options.length - 1;
+if (options.number && !isNaN(Number(options.number))) {
+    end = offset + options.number - 1;
 } else {
     end = -1;
 }
