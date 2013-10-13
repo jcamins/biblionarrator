@@ -151,29 +151,20 @@ module.exports = function(grunt) {
                             message: 'Which database do you want to use?',
                             default: 'titan',
                             choices: [
-                                'titan',
-                                'orient',
-                                'tinker'
+                                { name: 'Titan (recommended, best results)', value: 'titan' },
+                                { name: 'OrientDB (no full-text)', value: 'orient' },
+                                { name: 'TinkerGraph (in-memory only)', value: 'tinker' }
                             ]
                         },
                         /* Titan-specific configuration */
                         {
-                            config: 'biblionarrator.keyspace',
-                            type: 'input',
-                            message: 'What name do you want to use for your Titan keyspace/table?',
-                            default: 'biblionarrator',
-                            when: function (answers) {
-                                return answers['biblionarrator.currentdb'] === 'titan';
-                            }
-                        },
-                        {
                             config: 'biblionarrator.searchbackend',
                             type: 'list',
                             message: 'What search backend do you want to use with Titan??',
-                            default: 'esembedded',
-                            choices: [ { name: 'Embedded ElasticSearch', value: 'esembedded' },
-                                { name: 'Remote ElasticSearch', value: 'esremote' },
-                                { name: 'Lucene', value: 'lucene' }
+                            default: 'esremote',
+                            choices: [ 
+                                { name: 'Remote ElasticSearch (better results, requires external setup)', value: 'esremote' },
+                                { name: 'Lucene (easier to configure)', value: 'lucene' }
                             ],
                             when: function (answers) {
                                 return answers['biblionarrator.currentdb'] === 'titan';
@@ -218,6 +209,22 @@ module.exports = function(grunt) {
                                 'eric',
                                 'ericthesaurus',
                                 'isbd'
+                            ]
+                        },
+                        {
+                            config: 'biblionarrator.namespace',
+                            type: 'input',
+                            message: 'What do you want to use for your namespace (must be unique for each Biblionarrator instance)?',
+                            default: 'biblionarrator'
+                        },
+                        {
+                            config: 'biblionarrator.backend',
+                            type: 'list',
+                            message: 'Which backend do you want to use for your cache, datastore, and sessionstore?',
+                            default: 'mongo',
+                            choices: [
+                                { name: 'MongoDB (recommended, clusterable)', value: 'mongo' },
+                                { name: 'Redis (simpler, single-node)', value: 'redis' }
                             ]
                         }
                     ]
@@ -285,7 +292,7 @@ module.exports = function(grunt) {
                         data.graphconf.engine = grunt.config('biblionarrator.currentdb');
                         switch (data.default) {
                         case 'titan':
-                            data.graphconf.titan['storage.keyspace'] = grunt.config('biblionarrator.keyspace');
+                            data.graphconf.titan['storage.index.search.index-name'] = data.graphconf.titan['storage.keyspace'] = grunt.config('biblionarrator.namespace');
                             switch (grunt.config('biblionarrator.searchbackend')) {
                             case 'esembedded':
                                 data.graphconf.titan['storage.index.search.backend'] = 'elasticsearch';
@@ -314,6 +321,8 @@ module.exports = function(grunt) {
                             break;
                         }
                         data.schemas = grunt.config('biblionarrator.schemas');
+                        data.cacheconf.backend = data.dataconf.backend = data.sessionconf.backend = grunt.config('biblionarrator.backend');
+                        data.cacheconf.namespace = data.dataconf.namespace = data.sessionconf.namespace = grunt.config('biblionarrator.namespace');
                         fs.writeSync(fd, JSON.stringify(data, null, 4));
                         done();
                     }
