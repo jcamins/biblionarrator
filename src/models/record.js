@@ -61,7 +61,7 @@ function Record(data) {
                 return;
             }
             var sv = g.v(this.id).iterator().nextSync();
-            var tv = g.v(typeof target === 'string' ? target : target.id).iterator().nextSync();
+            var tv = g.v(typeof target === 'string' || typeof target === 'number' ? target : target.id).iterator().nextSync();
             var edge;
             if (reverse) {
                 edge = graphstore.db.addEdgeSync(null, tv, sv, type);
