@@ -60,6 +60,7 @@ while (more) {
                 delete rec[key];
             }
         }
+        rec.v().outE().remove();
         rec.vorder = rec.v().inE().count();
         rec.mergeIndexes();
         rec.save();
