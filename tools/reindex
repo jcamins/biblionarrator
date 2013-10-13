@@ -35,26 +35,19 @@ if (options.length) {
 } else {
     end = -1;
 }
-var commit = Number(options.commit) || 1000;
 var ii = 0;
-var iterator = g.V().order().range(offset, end).iterator();
-var v, rec, id, more = true;
+var iter = g.V().order().range(offset, end).iterator();
 var linklookup = { };
+var linkcount = 0;
 
-while (more) {
+handleNextRecord(iter, ii);
+
+function handleNextRecord(iterator, count) {
+    var id;
     try {
-        v = iterator.nextSync();
-        if (ii % commit === 0 && ii > 0) {
-            if (options.simulate) {
-                console.log('Finished ' + ii);
-                graphstore.getDB().rollbackSync();
-            } else {
-                console.log('Committing after ' + ii);
-                graphstore.getDB().commitSync();
-            }
-        }
+        var v = iterator.nextSync();
         id = v.getIdSync();
-        rec = Record.findOne({ id: id });
+        var rec = Record.findOne({ id: id });
         for (var key in rec) {
             if (rec.hasOwnProperty(key) && typeof rec[key] !== 'function' && key !== 'id' && key !== 'format' && key !== 'data' && key !== 'recordclass') {
                 delete rec[key];
@@ -66,6 +59,7 @@ while (more) {
         rec.save();
         var links = rec.getLinks();
         links.forEach(function (link) {
+            linkcount++;
             var target = linklookup[link.key];
             if (typeof target === 'undefined') {
                 target = Record.findOne({ key: link.key });
@@ -79,18 +73,32 @@ while (more) {
                 rec.link(link.label, target, link.properties);
             }
         });
-        ii++;
+        count++
+        if (count % options.commit === 0 && count > 0) {
+            commit(count);
+            setTimeout(function () {
+                handleNextRecord(iterator, count);
+            }, 10);
+        } else {
+            handleNextRecord(iterator, count);
+        }
     } catch (e) {
         if (e.message.indexOf('NoSuchElementException') === -1) {
             console.log('Ran into error on record ' + id + ': ' + e.message);
             console.log(e.stack);
         } else {
-            break;
+            commit(count);
+            console.log('Reindexed ' + count + ' records with ' + linkcount + ' links');
+            process.exit();
         }
     }
 }
-if (!options.simulate) {
-    graphstore.getDB().commitSync();
+
+function commit(count) {
+    console.log('Finished ' + count);
+    if (options.simulate) {
+        graphstore.getDB().rollbackSync();
+    } else {
+        graphstore.getDB().commitSync();
+    }
 }
-console.log('Reindexed ' + ii + ' records');
-process.exit();
