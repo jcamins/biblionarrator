@@ -32,7 +32,7 @@ function Record(data) {
         if (typeof formatters[this.format].render === 'function') {
             return formatters[this.format].render(this.data, this.recordclass);
         } else {
-            return environment.renderer.render(this.template || this.format, { record: this.data });
+            return environment.renderer.render(this.template || (this.format + '_' + this.recordclass), { record: this.data });
         }
     };
 
