@@ -1,0 +1,95 @@
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+"use strict";
+var options = require('../src/lib/cmd')("Reindex Biblionarrator", {
+        offset: {
+            alias: 'o',
+            describe: 'Offset'
+        },
+        length: {
+            alias: 'l',
+            describe: 'Number of records to reindex'
+        },
+        simulate: {
+            alias: 's',
+            boolean: true,
+            describe: 'Simulate the reindex, and do not commit the transaction'
+        },
+        commit: {
+            default: 1000,
+            describe: 'Number of records per transaction'
+        }
+    });
+var models = require('../src/models'),
+    Record = models.Record,
+    environment = require('../src/lib/environment'),
+    graphstore = environment.graphstore,
+    g = graphstore.g;
+
+graphstore.autocommit = false;
+
+var offset = options.offset || 0;
+var end;
+if (options.length) {
+    end = offset + options.length - 1;
+} else {
+    end = -1;
+}
+var commit = Number(options.commit) || 1000;
+var ii = 0;
+var iterator = g.V().order().range(offset, end).iterator();
+var v, rec, id, more = true;
+var linklookup = { };
+
+while (more) {
+    try {
+        v = iterator.nextSync();
+        if (ii % commit === 0 && ii > 0) {
+            if (options.simulate) {
+                console.log('Finished ' + ii);
+                graphstore.getDB().rollbackSync();
+            } else {
+                console.log('Committing after ' + ii);
+                graphstore.getDB().commitSync();
+            }
+        }
+        id = v.getIdSync();
+        rec = Record.findOne({ id: id });
+        for (var key in rec) {
+            if (rec.hasOwnProperty(key) && typeof rec[key] !== 'function' && key !== 'id' && key !== 'format' && key !== 'data' && key !== 'recordclass') {
+                delete rec[key];
+            }
+        }
+        rec.vorder = rec.v().inE().count();
+        rec.mergeIndexes();
+        rec.save();
+        var links = rec.getLinks();
+        links.forEach(function (link) {
+            var target = linklookup[link.key];
+            if (typeof target === 'undefined') {
+                target = Record.findOne({ key: link.key });
+            }
+            if (typeof target === 'undefined' && typeof link.vivify === 'object') {
+                target = new Record(link.vivify);
+                target.save();
+            }
+            if (typeof target !== 'undefined') {
+                linklookup[link.key] = linklookup[link.key] || target.id;
+                rec.link(link.label, target, link.properties);
+            }
+        });
+        ii++;
+    } catch (e) {
+        if (e.message.indexOf('NoSuchElementException') === -1) {
+            console.log('Ran into error on record ' + id + ': ' + e.message);
+            console.log(e.stack);
+        } else {
+            break;
+        }
+    }
+}
+if (!options.simulate) {
+    graphstore.getDB().commitSync();
+}
+console.log('Reindexed ' + ii + ' records');
+process.exit();

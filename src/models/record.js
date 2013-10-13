@@ -97,15 +97,20 @@ function Record(data) {
         }
     };
 
+    this.mergeIndexes = function () {
+        if (typeof formatters[this.format] !== 'undefined') {
+            extend(this, formatters[this.format].indexes(this.data, this.recordclass));
+        }
+    };
+
     this.initialize(data);
 
     if (typeof this.data === 'string') {
         this.data = JSON.parse(this.data);
     }
 
-    if (typeof formatters[this.format] !== 'undefined' && !this.no_index) {
-        extend(this, formatters[this.format].indexes(this.data, this.recordclass));
-    }
+    this.mergeIndexes();
+
     if (typeof this.no_index !== 'undefined') {
         delete this.no_index;
     }

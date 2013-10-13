@@ -119,7 +119,9 @@ module.exports.indexes = function(recorddata) {
 };
 
 /*jshint unused:false */ /* Not yet implemented */
-module.exports.links = function(recorddata) {};
+module.exports.links = function(recorddata) {
+    return [ ];
+};
 /*jshnit unused: true */
 
 module.exports.decompile = function(htmldom) {
