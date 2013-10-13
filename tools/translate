@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // vim: set filetype=javascript:
+"use strict";
 var options = require('../src/lib/cmd')("Manage Biblionarrator translations\nUsage: $0 [locales]", {
         rewrite: {
             alias: 'r',
