@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+"use strict";
+var options = require('../src/lib/cmd')("Import Biblionarrator graph", {
+        graphfile: {
+            alias: [ 'file', 'f' ],
+            describe: 'File name for graph export',
+            default: 'graph'
+        },
+        graphson: {
+            alias: [ 'json', 'j' ],
+            boolean: true,
+            describe: 'Export GraphSON'
+        },
+        gml: {
+            boolean: true,
+            describe: 'Export GML (Graph Modelling Language)'
+        },
+        graphml: {
+            boolean: true,
+            describe: 'Export GraphML'
+        }
+    }),
+    environment = require('../src/lib/environment'),
+    graphstore = environment.graphstore,
+    fs = require('fs'),
+    Q = require('q'),
+    archiver = require('archiver');
+
+var promises = [ ];
+
+if (options.graphfile) {
+    var GraphReader, extension, graphpromise = Q.defer();
+    if (options.graphml) {
+        GraphReader = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.graphml.GraphMLReader');
+        extension = 'xml';
+    } else if (options.gml) {
+        GraphReader = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.gml.GMLReader');
+        extension = 'gml';
+    } else {
+        GraphReader = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.graphson.GraphSONReader');
+        extension = 'json';
+    }
+    if (options.graphfile.indexOf('.') === -1) {
+        options.graphfile += '.' + extension;
+    }
+
+    promises.push(graphpromise.promise);
+    try {
+        GraphReader.inputGraphSync(graphstore.db, options.graphfile);
+        graphpromise.resolve(options.graphfile);
+    } catch (e) {
+        graphpromise.reject(e)
+    };
+}
+
+Q.all(promises).then(function () {
+    process.exit();
+});

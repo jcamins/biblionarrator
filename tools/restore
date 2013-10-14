@@ -1,0 +1,27 @@
+#!/bin/bash
+
+root="`dirname "$0"`/..";
+instance="$1";
+archive="$2";
+directory=`mktemp -d -t bn`;
+
+die() {
+    echo "$@" 1>&2
+    exit 1
+}
+
+if [[ "$archive" == *"zip" ]]; then
+    unzip -d "$directory" "$archive"
+else
+    tar zxvf "$archive" -C "$directory"
+fi
+
+[ -a "$root/config/$instance.json" ] && die "Configuration file config/$instance.json already exists"
+
+cp "$directory/config.json" "$root/config/$instance.json"
+
+[ -a "$directory/graph.json" ] && `dirname "$0"`/loadgraph -c "$root/config/$instance.json" -f "$directory/graph.json"
+[ -a "$directory/graph.xml" ] && `dirname "$0"`/loadgraph -c "$root/config/$instance.json" -f "$directory/graph.xml" --graphml
+[ -a "$directory/graph.gml" ] && `dirname "$0"`/loadgraph -c "$root/config/$instance.json" -f "$directory/graph.gml" --gml
+
+rm -R "$directory"
