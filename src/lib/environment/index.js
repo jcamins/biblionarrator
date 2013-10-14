@@ -57,7 +57,7 @@ function resolveRoot(file) {
     return path.resolve(__dirname, '../../..', file);
 }
 
-function Environment(config) {
+function Environment(config, filename) {
     var self = this;
 
     config = config || { };
@@ -198,6 +198,11 @@ function Environment(config) {
                 }
                 return _i18next = _i18next || i18next;
             }
+        },
+        "filename": {
+            "get": function () { 
+                return filename;
+            }
         }
     });
     /*jshint +W093*/
@@ -229,7 +234,7 @@ function Environment(config) {
 }
 
 Environment.load = function loadConfig(file) {
-    module.exports = new Environment(require(resolveRoot(file)));
+    module.exports = new Environment(require(resolveRoot(file)), resolveRoot(file));
     return module.exports;
 };
 

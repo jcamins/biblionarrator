@@ -1,0 +1,184 @@
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+"use strict";
+var options = require('../src/lib/cmd')("Export Biblionarrator data", {
+        graphfile: {
+            alias: 'f',
+            describe: 'File name for graph export',
+            default: 'graph'
+        },
+        graphson: {
+            alias: [ 'json', 'j' ],
+            boolean: true,
+            describe: 'Export GraphSON'
+        },
+        gml: {
+            boolean: true,
+            describe: 'Export GML (Graph Modelling Language)'
+        },
+        graphml: {
+            boolean: true,
+            describe: 'Export GraphML'
+        },
+        directory: {
+            default: '/tmp/backup',
+            describe: 'Directory to export to'
+        },
+        datastore: {
+            boolean: true,
+            describe: 'Export datastore'
+        },
+        graph: {
+            boolean: true,
+            default: true,
+            describe: 'Export graphstore'
+        },
+        zip: {
+            boolean: true,
+            describe: 'Create ZIP archive of backup'
+        },
+        gzip: {
+            boolean: true,
+            describe: 'Create tar.gz archive of backup'
+        },
+        archive: {
+            describe: 'File name for archive'
+        }
+    }),
+    environment = require('../src/lib/environment'),
+    graphstore = environment.graphstore,
+    fs = require('fs'),
+    Q = require('q'),
+    archiver = require('archiver');
+
+var promises = [ ];
+
+if (options.directory) {
+    try {
+        fs.mkdirSync(options.directory);
+    } catch (e) {
+        if (e.message.indexOf('EEXIST') === -1) {
+            throw(e);
+        }
+    }
+    options.graphfile = options.directory + '/' + options.graphfile;
+}
+
+if (options.graph) {
+    var GraphWriter, extension, graphpromise = Q.defer();
+    if (options.graphml) {
+        GraphWriter = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.graphml.GraphMLWriter');
+        extension = 'xml';
+    } else if (options.gml) {
+        GraphWriter = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.gml.GMLWriter');
+        extension = 'gml';
+    } else {
+        GraphWriter = graphstore.g.java.import('com.tinkerpop.blueprints.util.io.graphson.GraphSONWriter');
+        extension = 'json';
+    }
+    if (options.graphfile.indexOf('.') === -1) {
+        options.graphfile += '.' + extension;
+    }
+
+    promises.push(graphpromise.promise);
+
+    GraphWriter.outputGraph(graphstore.db, options.graphfile, function (err) {
+        if (err) {
+            graphpromise.reject(err);
+        } else {
+            graphpromise.resolve(options.graphfile);
+        }
+    });
+}
+
+if (options.datastore) {
+    var models = require('../src/models');
+
+    var fieldpromise = Q.defer();
+    promises.push(fieldpromise.promise);
+    models.Field.all(function (err, fields) {
+        if (err) {
+            fieldpromise.reject(err);
+        } else {
+            saveFile(options.directory + '/fields.json', JSON.stringify(fields), fieldpromise);
+        }
+    });
+}
+
+if (options.environment && environment.filename) {
+    var configpromise = Q.defer();
+    promises.push(configpromise.promise);
+    var conffile = environment.filename;
+    if (conffile.indexOf('.json') === -1) conffile += '.json';
+    copyFile(conffile, options.directory + '/config.json', configpromise);
+}
+
+Q.all(promises).then(function (files) {
+    if (options.zip || options.gzip) {
+        var archive, extension, archivepromise = Q.defer();
+        if (options.zip) {
+            archive = archiver('zip');
+            extension = '.zip';
+        } else if (options.gzip) {
+            archive = archiver('tar');
+            extension = '.tar.gz';
+        }
+        var today = new Date();
+        if (!options.archive) options.archive = options.directory + '/biblionarrator_' + today.getFullYear() + (today.getMonth() + 1) + today.getDate() + extension;
+        var output = fs.createWriteStream(options.archive);
+        if (options.gzip) {
+            var zlib = require('zlib'),
+                gzipper = zlib.createGzip();
+            archive.pipe(gzipper).pipe(output);
+        } else {
+            archive.pipe(output);
+        }
+        files.forEach(function (file) {
+            var name = file.replace(options.directory + '/', '');
+            archive.append(fs.createReadStream(file), { name: name });
+        });
+        archive.finalize(function (err, bytes) {
+            if (err) {
+                archivepromise.reject(err);
+            }
+        });
+        output.on('err', function (err) {
+            archivepromise.reject(err);
+        })
+        output.on('close', function () {
+            files.forEach(function (file) {
+                fs.unlink(file);
+            });
+            archivepromise.resolve(true);
+        });
+        return archivepromise.promise;
+    }
+}).done(function () {
+    process.exit();
+});
+
+function copyFile(source, target, promise) {
+    var rd = fs.createReadStream(source);
+    rd.on("error", function(err) {
+        promise.reject(err);
+    });
+    var wr = fs.createWriteStream(target);
+    wr.on("error", function(err) {
+        promise.reject(err);
+    });
+    wr.on("close", function(ex) {
+        promise.resolve(target);
+    });
+    rd.pipe(wr);
+}
+
+function saveFile(target, data, promise) {
+    fs.writeFile(target, data, function (err) {
+        if (err) {
+            promise.reject(err);
+        } else {
+            promise.resolve(target);
+        }
+    });
+}
+
