@@ -86,6 +86,12 @@ module.exports.links = function(recorddata, recordclass) {
                         format: 'bnjson',
                         recordclass: def.type
                     }};
+                    if (def.match) {
+                        link.match = { };
+                        for (var idx in def.match) {
+                            link.match[idx] = record.fields[ii].string(def.match[idx]);
+                        }
+                    }
                     link.properties = { target: key };
                     if (def.marker) {
                         link.properties.marker = record.fields[ii].string(def.subfields);

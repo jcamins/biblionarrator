@@ -5,6 +5,13 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
             default: true,
             boolean: true,
             describe: 'Overwrite matching records'
+        },
+        'reject': {
+            default: 'import.rej',
+            describe: 'File name in which to store rejected records'
+        },
+        'recordclass': {
+            describe: 'Record class to use for records (overrides LDR/06)'
         }
     }),
     environment = require('../../src/lib/environment'),
@@ -12,7 +19,7 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
-    RecordType = models.RecordType;
+    fs = require('fs');
 
 graphstore.autocommit = false;
 
@@ -23,22 +30,27 @@ var importer = new JSONImporter({
 var linkcount = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
+var rejects = [ ];
 
 var linklookup = { };
 
 importer.on('record', function (record, mypromise) {
     var rec;
     var recordclass;
-    if (record.leader.charAt(6) === 'z') {
-        recordclass = 'auth';
-    } else if (record.leader.charAt(6) === 'w') {
-        recordclass = 'classification';
-    } else if (record.leader.charAt(6) === 'q') {
-        recordclass = 'communityinfo';
-    } else if (record.leader.charAt(6).match('[uvxy]')) {
-        recordclass = 'holdings';
+    if (options.recordclass) {
+        recordclass = options.recordclass;
     } else {
-        recordclass = 'biblio';
+        if (record.leader.charAt(6) === 'z') {
+            recordclass = 'auth';
+        } else if (record.leader.charAt(6) === 'w') {
+            recordclass = 'classification';
+        } else if (record.leader.charAt(6) === 'q') {
+            recordclass = 'communityinfo';
+        } else if (record.leader.charAt(6).match('[uvxy]')) {
+            recordclass = 'holdings';
+        } else {
+            recordclass = 'biblio';
+        }
     }
     mainrecordcount++;
     rec = new Record({ format: 'marc21', data: record, recordclass: recordclass });
@@ -49,25 +61,33 @@ importer.on('record', function (record, mypromise) {
             return;
         }
     }
-    rec.save();
-    var links = rec.getLinks();
-    links.forEach(function (link) {
-        var target = linklookup[link.key];
-        if (typeof target === 'undefined') {
-            target = Record.findOne({ key: link.key });
-        }
-        if (typeof target === 'undefined' && typeof link.vivify === 'object') {
-            target = new Record(link.vivify);
-            target.save();
-            recordcount++;
-        }
-        if (typeof target !== 'undefined') {
-            linklookup[link.key] = linklookup[link.key] || target.id;
-            rec.link(link.label, target, link.properties);
-            linkcount++;
-        }
-    });
-    recordcount++;
+    try {
+        rec.save();
+        var links = rec.getLinks();
+        links.forEach(function (link) {
+            var target = linklookup[link.key];
+            if (typeof target === 'undefined' && link.match) {
+                target = Record.findOne(link.match);
+            }
+            if (typeof target === 'undefined') {
+                target = Record.findOne({ key: link.key });
+            }
+            if (typeof target === 'undefined' && typeof link.vivify === 'object') {
+                target = new Record(link.vivify);
+                target.save();
+                recordcount++;
+            }
+            if (typeof target !== 'undefined') {
+                linklookup[link.key] = linklookup[link.key] || target.id;
+                rec.link(link.label, target, link.properties);
+                linkcount++;
+            }
+        });
+        recordcount++;
+    } catch (e) {
+        console.log(e, e.stack);
+        rejects.push(JSON.stringify(record));
+    }
     mypromise.resolve();
 });
 
@@ -78,5 +98,8 @@ importer.on('commit', function (promise) {
 
 importer.on('done', function () {
     console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links');
+    if (rejects.length > 0) {
+        fs.writeFileSync(options.reject, rejects.join('\n'));
+    }
     process.exit();
 });

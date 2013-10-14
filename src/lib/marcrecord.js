@@ -46,8 +46,8 @@ MARCField.prototype.string = function (subfields, sep) {
         sep = ' ';
     }
     if (typeof this.subfields === 'undefined') {
-        var range = subfields.split('-');
-        if (range.length) {
+        if (subfields) {
+            var range = subfields.split('-');
             range[0] = parseInt(range[0], 10) || 0;
             if (range[1]) {
                 range[1] = parseInt(range[1], 10) || this.value.length;
@@ -56,6 +56,8 @@ MARCField.prototype.string = function (subfields, sep) {
                 range[1] = range[0] + 1;
             }
             return this.value.substring(range[0], range[1]);
+        } else {
+            return this.value;
         }
     } else {
         var string = '';
