@@ -86,6 +86,7 @@ module.exports.links = function(recorddata, recordclass) {
                         format: 'bnjson',
                         recordclass: def.type
                     }};
+                    if (def.noindex) link.vivify.no_index = true;
                     if (def.match) {
                         link.match = { };
                         for (var idx in def.match) {

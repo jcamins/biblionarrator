@@ -65,7 +65,8 @@ importer.on('record', function (record, mypromise) {
         rec.save();
         var links = rec.getLinks();
         links.forEach(function (link) {
-            var target = linklookup[link.key];
+            var target = (link.match ? linklookup[JSON.stringify(link.match)] : undefined)
+                         || linklookup[link.key];
             if (typeof target === 'undefined' && link.match) {
                 target = Record.findOne(link.match);
             }
@@ -79,6 +80,9 @@ importer.on('record', function (record, mypromise) {
             }
             if (typeof target !== 'undefined') {
                 linklookup[link.key] = linklookup[link.key] || target.id;
+                if (link.match) {
+                    linklookup[JSON.stringify(link.match)] = linklookup[link.key];
+                }
                 rec.link(link.label, target, link.properties);
                 linkcount++;
             }

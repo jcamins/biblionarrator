@@ -85,6 +85,7 @@ function Record(data) {
                 graphstore.db.commitSync();
             }
         } catch (e) {
+            console.log(e, e.stack);
             return;
         }
     };
@@ -109,7 +110,7 @@ function Record(data) {
         this.data = JSON.parse(this.data);
     }
 
-    this.mergeIndexes();
+    if (!this.no_index) this.mergeIndexes();
 
     if (typeof this.no_index !== 'undefined') {
         delete this.no_index;
