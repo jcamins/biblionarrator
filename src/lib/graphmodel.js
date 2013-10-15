@@ -76,7 +76,7 @@ GraphModel.prototype.initialize = function (data) {
 };
 
 GraphModel.prototype.save = function () {
-    var v;
+    var v, created = false;
     try {
         v = this.v().iterator().nextSync();
         if (v === null) {
@@ -84,20 +84,30 @@ GraphModel.prototype.save = function () {
         }
         this.vorder = parseInt(this.v().both().count(), 10);
     } catch (e) {
+        created = true;
         v = graphstore.db.addVertexSync(null);
         this.vorder = 0;
     }
     if (typeof this.deleted === 'undefined') {
         this.deleted = 0;
     }
-    for (var prop in this) {
-        if (prop !== 'id' && this.hasOwnProperty(prop) && typeof this[prop] !== 'function' && typeof this[prop] !== 'undefined') {
-            if (typeof this[prop] === 'object') {
-                v.setPropertySync(prop, JSON.stringify(this[prop]));
-            } else {
-                v.setPropertySync(prop, this[prop]);
+    try { 
+        for (var prop in this) {
+            if (prop !== 'id' && this.hasOwnProperty(prop) && typeof this[prop] !== 'function' && typeof this[prop] !== 'undefined') {
+                if (typeof this[prop] === 'object') {
+                    v.setPropertySync(prop, JSON.stringify(this[prop]));
+                } else {
+                    v.setPropertySync(prop, this[prop]);
+                }
             }
         }
+    } catch (e) {
+        if (graphstore.autocommit) {
+            graphstore.db.rollbackSync();
+        } else if (created === false) {
+            graphstore.db.removeVertexSync(v);
+        }
+        throw (e);
     }
     if (graphstore.autocommit) {
         graphstore.db.commitSync();
