@@ -31,8 +31,15 @@ function Record(data) {
         });
         if (typeof formatters[this.format].render === 'function') {
             return formatters[this.format].render(this.data, this.recordclass);
+
+        } else if (this.template && environment.renderer.registered(this.template)) {
+            return environment.renderer.render(this.template, { record: this.data });
+        } else if (environment.renderer.registered(this.format + '_' + this.recordclass)) {
+            return environment.renderer.render(this.format + '_' + this.recordclass, { record: this.data });
+        } else if (environment.renderer.registered(this.format)) {
+            return environment.renderer.render(this.format, { record: this.data });
         } else {
-            return environment.renderer.render(this.template || (this.format + '_' + this.recordclass), { record: this.data });
+            return '<article><header></header><section></section></article>';
         }
     };
 
