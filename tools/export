@@ -43,14 +43,12 @@ var options = require('../src/lib/cmd')("Export Biblionarrator data", {
         },
         archive: {
             describe: 'File name for archive'
-        },
-        heapsize: {
-            describe: 'Heap size'
         }
     }),
-    os = require('os'),
-    heapsize = options.heapsize || ((os.totalmem() / 1048576) + 'm');
-process.env['GREMLIN_JAVA_OPTIONS'] = process.env['GREMLIN_JAVA_OPTIONS'] + ' -Xmx' + heapsize;
+    os = require('os');
+if (!options.heap) {
+    process.env['GREMLIN_JAVA_OPTIONS'] = process.env['GREMLIN_JAVA_OPTIONS'] + ' -Xmx' + (os.totalmem() / 1048576) + 'm';
+}
 var environment = require('../src/lib/environment'),
     graphstore = environment.graphstore,
     fs = require('fs'),

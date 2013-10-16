@@ -15,6 +15,9 @@ module.exports = function (usage, options) {
             alias: 'c',
             string: true,
             describe: 'Configuration file to use'
+        },
+        heap: {
+            describe: 'Java heap size'
         }
     });
     if (options) {
@@ -27,10 +30,15 @@ module.exports = function (usage, options) {
         optimist.showHelp();
         process.exit();
     }
+    /*jshint unused:true */
     if (typeof argv.config !== 'undefined') {
-        /*jshint unused:true */
         var environment = require('./environment').load(argv.c);
-        /*jshint unused:false */
+    } else {
+        var environment = require('./environment');
+    }
+    /*jshint unused:false */
+    if (options.heap) {
+        process.env['GREMLIN_JAVA_OPTIONS'] = process.env['GREMLIN_JAVA_OPTIONS'] + ' -Xmx' + options.heap;
     }
     return argv;
 };
