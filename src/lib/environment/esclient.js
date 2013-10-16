@@ -7,8 +7,9 @@ function ESClient(config) {
 
     if (config.graphconf.engine === 'titan' && config.graphconf.titan["storage.index.search.backend"] === "elasticsearch") {
         self.inuse = true;
+        self.hosts = config.graphconf.titan["storage.index.search.hostname"].split(',');
         client = new ElasticSearchClient({
-            host: config.graphconf.titan["storage.index.search.hostname"],
+            host: self.hosts[0],
             port: 9200,
             secure: false
         });
