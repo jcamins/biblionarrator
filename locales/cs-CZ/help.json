@@ -1,0 +1,66 @@
+{
+    "label": {
+        "wordprocessor": "Textový editor",
+        "traddatabase": "Tradiční databáze",
+        "standards": "Dodržující standardy",
+        "powerfulopac": "Úžasný on-line katalog",
+        "ils": "Knihovní systém",
+        "forpaper": "Navržen pro fyzické materiály"
+    },
+    "about": {
+        "whatitis": "Co je Biblionarrator:",
+        "whatitisnot": "Co Biblionarrator není:",
+        "assumptions": [
+            "Biblionarrator převrací tradiční předsudky o katalogizaci na hlavu a dělá z katalogizování zábavu. Tento nástroj je pro bibliofily i bibliografy a nabízí nečekanou flexibilitu a neuvěřitelnou sílu při plnění toho nejdůležitějšího úkolu - bibliografickém popisu."
+        ],
+        "forpaper": [
+            "Biblionarrator Vám umožní dát si nohy nahoru a jen sledovat jak je Váš tištěný katalog vytvářen pomocí vestavěných exportních funkcí.."
+        ],
+        "ils": [
+            "Narozdíl od tradičních knihovních systémů je Biblionarrator navržen podle potřeb uživatelů a nikoliv podle technologických možností a omezení."
+        ],
+        "powerfulopac": [
+            "Biblionarrator poskytuje veškeré vyhledávací možnosti těch nejpokročilejších databází."
+        ],
+        "standards": [
+            "Biblionarrator je postaven na technologiích standardu  HTML5 a &#8220;sémantického webu&#8221;. To umožňuje zpřístupnit Váš katalog naprosto každému, dokonce i Googlu."
+        ],
+        "traddatabase": [
+            "Narozdíl od tradičních databází Vás Biblionarrator neomezuje v tom, jak mají být data zapsána. Můžete zapisovat informace v jakémkoliv pořadí a formátu."
+        ],
+        "wordprocessor": [
+            "Narozdíl od textového editoru mají v Biblionarratoru veškerá zapsaná data význam. A dokonce i počítač jim může rozumět."
+        ]
+    },
+    "caption": {
+        "kinghenry": [
+            "Iluminace Krále Jindřicha II. na smrtelné posteli v iniciále v knize \"Black Book of the Exchequer\" (Černá kniha státní kasy) ze 13. století. Obrázek převzat z <a href=\"http://www.flickr.com/photos/nationalarchives/3009780609/\">Národní archivu Velké Británie</a>."
+        ]
+    },
+    "editor": {
+        "hint": [
+            "Pro základní citaci použijte pole \"Citace\". Tato citace se objeví přímo ve výsledcích vyhledávání. Pro vložení dalších informací použijte pole \"Rozšíření\". Pro vložení tagu použijte klávesovou zkratku Ctr+-J, pro odstranění tagu Ctrl+K."
+        ]
+    },
+    "help": {
+        "knowledgetrails": [
+            "Kliknutím na ikonu <i class=\"explore-icon\"></i> můžete využít Biblionarrator ke sledování &#8220;znalostní stopy&#8221; k souvisejícím knihám, lidem, článkům a tématům. To vám umožní získat náhled na témata, kterých se dokument dotýká."
+        ],
+        "specialheading": "Čím je Biblionarrator originální?",
+        "visualizationsurprise": [
+            "Nejpřekvapivější funkcí Biblionarratoru jsou zcela jistě vizualizace."
+        ],
+        "landmarks": [
+            "Pokud při svém výzkumu objevíte knihy nebo články, které pro Vás budou důležité, můžete využít možností Biblionarratoru a označit si je jako tzv. &#8220;orientační body&#8221; a tím umožnit systému doporučovat Vám příbuzné materiály. Dokument si označíte jako orientační bod kliknutím na ikonu <i class=\"landmark-icon\"></i>."
+        ],
+        "specialsearch": [
+            "Jak je možné očekávat, Biblionarrator nabízí bohaté možnosti <a href=\"/search\">vyhledávání</a> a také pole pro rychlé vyhledávání přímo v menu v horní části obrazovky. Narozdíl od jiných katalogizačních systémů však nabízí Biblionarrator také propracované nástroje pro porozumění výsledkům vyhledávání a pro identifikaci dokumentů vyhovujících nejlépe Vašim potřebám."
+        ],
+        "visualizelandmarks": [
+            "Pokud máte vytvořené orientační body, kliknutím na tlačítko &#8220;Vizualizovat orientační body&#8221; získáte mapu Vašich orientačních bodů a záznamů, které s nimi souvisí a mohly by Vám také přinést užitek."
+        ],
+        "visualizesearch": [
+            "Použitím tlačítka &#8220;Vizualizovat vyhledávání&#8221; ve spodní části stránky s výsledky vyhledávání, můžete snadno vizualizovat ty dokumenty, které by pro Vás mohly být nejpřínosnější."
+        ]
+    }
+}
