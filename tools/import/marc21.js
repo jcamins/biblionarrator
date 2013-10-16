@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", {
-        'overwrite': {
+        'match': {
+            alias: 'm',
+            describe: 'Criterion for matching (index:field)'
+        },
+        'overlay': {
             alias: 'o',
             default: true,
             boolean: true,
-            describe: 'Overwrite matching records'
+            describe: 'Overlay matching records'
+        },
+        'skip': {
+            boolean: true,
+            describe: 'Skip matching records'
         },
         'reject': {
             default: 'import.rej',
@@ -19,7 +27,10 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
     graphstore = require('../../src/lib/environment').graphstore,
     models = require('../../src/models'),
     Record = models.Record,
+    MARCRecord = require('../../src/lib/marcrecord'),
+    util = require('util'),
     fs = require('fs');
+var inspect = require('eyes').inspector({maxLength: false});
 
 graphstore.autocommit = false;
 
@@ -53,13 +64,31 @@ importer.on('record', function (record, mypromise) {
         }
     }
     mainrecordcount++;
-    rec = new Record({ format: 'marc21', data: record, recordclass: recordclass });
-    if (environment.formats.marc[recordclass].key) {
-        var oldrec = Record.findOne({ 'key': rec.key });
-        if (oldrec && !options.overwrite) {
-            mypromise.resolve();
-            return;
+    if (options.match) {
+        var matchre = /^([^:]*):(...)(.*)?$/;
+        var parts = matchre.exec(options.match);
+        var marc = new MARCRecord(record);
+        var matchpoint = { };
+        var matchrec = function (field) {
+            matchpoint[parts[1]] = field.string(parts[3]);
+            return Record.findOne(matchpoint);
+        };
+        if (util.isArray(marc['f' + parts[2]])) {
+            for (var ii = 0; ii < marc['f' + parts[2]].length; ii++) {
+                if ( (rec = matchrec(marc['f' + parts[2]][ii])) ) break;
+            }
+        } else if (marc['f' + parts[2]]) {
+            rec = matchrec(marc['f' + parts[2]]);
         }
+    }
+    if (!rec) {
+        rec = new Record({ format: 'marc21', data: record, recordclass: recordclass });
+    } else if (options.overlay) {
+        rec.format = 'marc21';
+        rec.data = record;
+    } else {
+        mypromise.resolve();
+        return;
     }
     try {
         rec.save();
