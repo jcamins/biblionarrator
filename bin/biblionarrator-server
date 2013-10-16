@@ -4,7 +4,6 @@
 var options = require('../src/lib/cmd')("Start Biblionarrator server", {
     'port': {
         alias: 'p',
-        default: 3000,
         describe: 'Port to listen on'
         }
     }),
