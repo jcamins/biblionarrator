@@ -1,7 +1,7 @@
 {{#each records}}
     <tr class="resultRow" data-id="{{id}}">
         <td class="result-number">
-            <a class="record-number-link" href="/record/{{id}}" id="result{{number}}">{{number}}<br>view record</a>
+            <a class="record-number-link" href="/record/{{id}}" id="result{{number}}">{{number}}<br>{{#tr 'action.viewrecord'}}view record{{/tr}}</a>
         </td>
         <td class="result-content">
             <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">

@@ -1,6 +1,7 @@
 var models = require('../../models'),
     graph = require('./graph'),
-    cache = require('../environment').cache;
+    environment = require('../environment'),
+    cache = environment.cache;
 
 module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);
@@ -29,6 +30,11 @@ module.exports.search = function (options, recordcb, facetcb) {
         }
         if (cacheerror || !cacheresults[1]) {
             graph.facet(options, function (results) {
+                for (var idx in results.facets) {
+                    console.log(results.facets[idx].label);
+                    results.facets[idx].label = environment.i18next.t('config:facet.' + results.facets[idx].label, { defaultValue: results.facets[idx].label });
+                    console.log(results.facets[idx].label);
+                }
                 if (typeof facetcb === 'function') {
                     facetcb(results);
                 }

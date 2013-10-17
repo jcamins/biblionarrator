@@ -184,13 +184,13 @@ function Environment(config, filename) {
                         }, function() {
                             i18next.backend(i18nextMongoSync);
                             i18next.init({
-                                ns: { namespaces: ['common', 'help'], defaultNs: 'common' }
+                                ns: { namespaces: ['common', 'help', 'config'], defaultNs: 'common' }
                             });
                             i18npromise.resolve(true);
                         });
                     } else if (self.i18nextconf.backend === 'local') {
                         i18next.init({
-                            ns: { namespaces: ['common', 'help'], defaultNs: 'common'},
+                            ns: { namespaces: ['common', 'help', 'config'], defaultNs: 'common'},
                             resSetPath: resolveRoot('locales/__lng__/__ns__.json'),
                             resGetPath: resolveRoot('locales/__lng__/__ns__.json')
                         });
