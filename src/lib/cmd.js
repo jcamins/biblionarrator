@@ -37,8 +37,8 @@ module.exports = function (usage, options) {
         var environment = require('./environment');
     }
     /*jshint unused:false */
-    if (options.heap) {
-        process.env['GREMLIN_JAVA_OPTIONS'] = process.env['GREMLIN_JAVA_OPTIONS'] + ' -Xmx' + options.heap;
+    if (argv.heap) {
+        process.env['GREMLIN_JAVA_OPTIONS'] = process.env['GREMLIN_JAVA_OPTIONS'] + ' -Xmx' + argv.heap;
     }
     return argv;
 };
