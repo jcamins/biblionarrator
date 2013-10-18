@@ -133,6 +133,9 @@ function initializeList() {
             $(a).attr('data-offset', offset + 20);
             window.renderer.render(data, 'resultstable', function (newrows) {
                 $('#showmore').before(newrows);
+                if (data.count <= data.offset + data.perpage) {
+                    $('#showmore').hide();
+                }
                 History.pushState({ 'event' : 'search' }, 'Search', $(a).attr('href') + '&perpage=' + (offset + 20) + '#result' + (offset + 1));
             });
         });
