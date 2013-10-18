@@ -1,10 +1,4 @@
 {
-    "home": {
-        "introduction": "Biblionarrator je služba typu discovery vyvíjená společností C & P. Biblionarrator je ve fázi betatestování, proto je možné očekávat časté změny a vylepšení funkcí.S dotazy se můžete obracet na <a href=\"mailto:biblionarrator@cpbibliography.com\">biblionarrator@cpbibliography.com</a> (v angličtině).",
-        "commontasks": "Společné úkoly",
-        "learnmore": "Dozvědět se více &raquo;",
-        "welcome": "Vítejte v Biblionarratoru"
-    },
     "action": {
         "administer": "Administrace",
         "blankrecord": "Prázdný záznam",
@@ -20,8 +14,15 @@
         "showwholerecord": "Zobrazit úplný záznam",
         "signin": "Přihlásit",
         "signout": "Odhlásit",
+        "viewrecord": "view record",
         "visualizelandmarks": "Vizualizovat orientační body",
         "visualizesearch": "Vizualizovat vyhledávání"
+    },
+    "home": {
+        "commontasks": "Společné úkoly",
+        "introduction": "Biblionarrator je služba typu discovery vyvíjená společností C & P. Biblionarrator je ve fázi betatestování, proto je možné očekávat časté změny a vylepšení funkcí.S dotazy se můžete obracet na <a href=\"mailto:biblionarrator@cpbibliography.com\">biblionarrator@cpbibliography.com</a> (v angličtině).",
+        "learnmore": "Dozvědět se více &raquo;",
+        "welcome": "Vítejte v Biblionarratoru"
     },
     "label": {
         "about": "O Biblionarratoru",
@@ -72,9 +73,11 @@
         "record": "Záznam",
         "recordtype": "Typ záznamu",
         "recordtypes": "Typy záznamu",
+        "relatedlinks": "Related links:",
         "reload": "Obnovit",
         "save": "Uložit",
         "saveastemplate": "Uložit jako šablonu",
+        "seealso": "See also:",
         "settings": "Nastavení",
         "showhelp": "Zobrazit nápovědu",
         "showtags": "Zobrazit tagy",
@@ -86,13 +89,14 @@
         "templatename": "Název šablony",
         "templates": "Šablony",
         "translatedtitle": "Přeložený název:",
+        "untag": "Zrušit tag",
         "upload": "Nahrát obrázek",
+        "usedfor": "Used for:",
         "username": "Uživatelské jméno",
         "users": "Uživatelé",
         "versionhistory": "Historie verzí",
         "visualizations": "Vizualizace",
-        "yes": "Ano",
-        "untag": "Zrušit tag"
+        "yes": "Ano"
     },
     "message": {
         "confirmdelete": "Opravdu chcete provést odstranění?",

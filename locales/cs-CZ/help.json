@@ -1,15 +1,5 @@
 {
-    "label": {
-        "wordprocessor": "Textový editor",
-        "traddatabase": "Tradiční databáze",
-        "standards": "Dodržující standardy",
-        "powerfulopac": "Úžasný on-line katalog",
-        "ils": "Knihovní systém",
-        "forpaper": "Navržen pro fyzické materiály"
-    },
     "about": {
-        "whatitis": "Co je Biblionarrator:",
-        "whatitisnot": "Co Biblionarrator není:",
         "assumptions": [
             "Biblionarrator převrací tradiční předsudky o katalogizaci na hlavu a dělá z katalogizování zábavu. Tento nástroj je pro bibliofily i bibliografy a nabízí nečekanou flexibilitu a neuvěřitelnou sílu při plnění toho nejdůležitějšího úkolu - bibliografickém popisu."
         ],
@@ -28,6 +18,8 @@
         "traddatabase": [
             "Narozdíl od tradičních databází Vás Biblionarrator neomezuje v tom, jak mají být data zapsána. Můžete zapisovat informace v jakémkoliv pořadí a formátu."
         ],
+        "whatitis": "Co je Biblionarrator:",
+        "whatitisnot": "Co Biblionarrator není:",
         "wordprocessor": [
             "Narozdíl od textového editoru mají v Biblionarratoru veškerá zapsaná data význam. A dokonce i počítač jim může rozumět."
         ]
@@ -46,15 +38,15 @@
         "knowledgetrails": [
             "Kliknutím na ikonu <i class=\"explore-icon\"></i> můžete využít Biblionarrator ke sledování &#8220;znalostní stopy&#8221; k souvisejícím knihám, lidem, článkům a tématům. To vám umožní získat náhled na témata, kterých se dokument dotýká."
         ],
-        "specialheading": "Čím je Biblionarrator originální?",
-        "visualizationsurprise": [
-            "Nejpřekvapivější funkcí Biblionarratoru jsou zcela jistě vizualizace."
-        ],
         "landmarks": [
             "Pokud při svém výzkumu objevíte knihy nebo články, které pro Vás budou důležité, můžete využít možností Biblionarratoru a označit si je jako tzv. &#8220;orientační body&#8221; a tím umožnit systému doporučovat Vám příbuzné materiály. Dokument si označíte jako orientační bod kliknutím na ikonu <i class=\"landmark-icon\"></i>."
         ],
+        "specialheading": "Čím je Biblionarrator originální?",
         "specialsearch": [
             "Jak je možné očekávat, Biblionarrator nabízí bohaté možnosti <a href=\"/search\">vyhledávání</a> a také pole pro rychlé vyhledávání přímo v menu v horní části obrazovky. Narozdíl od jiných katalogizačních systémů však nabízí Biblionarrator také propracované nástroje pro porozumění výsledkům vyhledávání a pro identifikaci dokumentů vyhovujících nejlépe Vašim potřebám."
+        ],
+        "visualizationsurprise": [
+            "Nejpřekvapivější funkcí Biblionarratoru jsou zcela jistě vizualizace."
         ],
         "visualizelandmarks": [
             "Pokud máte vytvořené orientační body, kliknutím na tlačítko &#8220;Vizualizovat orientační body&#8221; získáte mapu Vašich orientačních bodů a záznamů, které s nimi souvisí a mohly by Vám také přinést užitek."
@@ -62,5 +54,13 @@
         "visualizesearch": [
             "Použitím tlačítka &#8220;Vizualizovat vyhledávání&#8221; ve spodní části stránky s výsledky vyhledávání, můžete snadno vizualizovat ty dokumenty, které by pro Vás mohly být nejpřínosnější."
         ]
+    },
+    "label": {
+        "forpaper": "Navržen pro fyzické materiály",
+        "ils": "Knihovní systém",
+        "powerfulopac": "Úžasný on-line katalog",
+        "standards": "Dodržující standardy",
+        "traddatabase": "Tradiční databáze",
+        "wordprocessor": "Textový editor"
     }
 }
