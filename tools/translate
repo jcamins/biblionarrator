@@ -132,7 +132,6 @@ function processTemplates() {
             } else {
                 parts = key.split(/\./);
             }
-            console.log(key);
             var value = keys[key].replace(/\s+/g, ' ');
             var part;
             while ((part = parts.pop())) {
