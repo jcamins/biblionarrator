@@ -60,7 +60,8 @@
     "i18next": "~1.7.1",
     "readdirp": "~0.3.1",
     "i18next.mongoDb": "~1.6.0",
-    "archiver": "~0.4.10"
+    "archiver": "~0.4.10",
+    "canonical-json": "0.0.3"
   },
   "devDependencies": {
     "chai": "1.7.x",

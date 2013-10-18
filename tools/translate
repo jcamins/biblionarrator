@@ -39,7 +39,8 @@ var fs = require('fs'),
     path = require('path'),
     readdirp = require('readdirp'),
     extend = require('extend'),
-    Q = require('q');
+    Q = require('q'),
+    canonicalize = require('canonical-json');
 
 var keys = { };
 
@@ -90,6 +91,16 @@ function processTemplates() {
             console.log("Caught and ignored error: " + e);
         }
     }
+    for (var idx in environment.facets) {
+        keys['config:facet.' + environment.facets[idx].facetlabel] = environment.facets[idx].facetlabel;
+    }
+    for (var idx in environment.facets) {
+        keys['config:relationship.' + environment.facets[idx].inlabel] = environment.facets[idx].inlabel;
+        keys['config:relationship.' + environment.facets[idx].outlabel] = environment.facets[idx].outlabel;
+    }
+    for (var idx in environment.fields) {
+        keys['config:field.' + environment.fields[idx].label] = environment.fields[idx].label;
+    }
     readdirp({ root: path.resolve(__dirname, '..'), fileFilter: '*.handlebars' }, function (err, res) {
         res.files.forEach(function (file) {
             if (file.path.indexOf('node_modules') === 0) return;
@@ -112,6 +123,7 @@ function processTemplates() {
         });
         var namespaces = { };
         for (var key in keys) {
+            if (typeof keys[key] === 'undefined') continue;
             var namespace = 'common';
             var parts = key.split(/:/);
             if (parts.length > 1) {
@@ -120,6 +132,7 @@ function processTemplates() {
             } else {
                 parts = key.split(/\./);
             }
+            console.log(key);
             var value = keys[key].replace(/\s+/g, ' ');
             var part;
             while ((part = parts.pop())) {
@@ -156,7 +169,7 @@ function processTemplates() {
                 if (!options.rewrite && language !== 'dev') {
                     extend(true, newlocale, locale);
                 }
-                fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), JSON.stringify(newlocale, null, 4));
+                fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), canonicalize(newlocale, null, 4));
                 if (!options.quiet) console.log('+Locale ' + language + '/' + namespace);
                 var newPromise = Q.defer();
                 if (options.merge && language !== 'dev') {
@@ -185,7 +198,7 @@ function exportFromDatastore(namespace, language, newlocale, promise) {
             }
             extend(true, newlocale, locale.resources);
         }
-        fs.writeFile(path.resolve(__dirname, '../locales', language, namespace + '.json'), JSON.stringify(newlocale, null, 4), function (err) {
+        fs.writeFile(path.resolve(__dirname, '../locales', language, namespace + '.json'), canonicalize(newlocale, null, 4), function (err) {
             promise.resolve(err);
         });
     });
