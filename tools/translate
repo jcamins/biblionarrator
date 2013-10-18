@@ -45,7 +45,7 @@ var fs = require('fs'),
 var keys = { };
 
 environment.renderer.registerHelper('t', function(i18n_key) {
-    keys[i18n_key] = '';
+    if (typeof i18n_key === 'string') keys[i18n_key] = '';
     return '';
 });
 

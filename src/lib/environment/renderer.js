@@ -5,8 +5,8 @@ var Handlebars = require('handlebars'),
 
 var i18next;
 
-Handlebars.registerHelper('t', function(i18n_key) {
-    var result = i18next.t(i18n_key);
+Handlebars.registerHelper('t', function(i18n_key, options) {
+    var result = i18next.t(i18n_key, options.hash);
 
     return new Handlebars.SafeString(result);
 });
