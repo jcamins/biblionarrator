@@ -67,6 +67,7 @@ exports.init = function(app) {
     app.get('/about', about);
     app.get('/help', help);
     app.get('/admin', auth.can('edit', 'admin'), admin);
+    app.get('/lang/:locale', lang);
 
     i18next.registerAppHelper(app)
         .serveChangeKeyRoute(app, auth.can('edit', 'translation'))
@@ -104,4 +105,9 @@ function help(req, res) {
 
 function admin(req, res) {
     res.render('admin');
+}
+
+function lang(req, res) {
+    environment.i18next.persistCookie(req, res, req.params.locale);
+    res.redirect(req.query.url || req.app.locals.lasturl[0] || '/');
 }
