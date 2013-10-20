@@ -15,7 +15,7 @@ process.stdout.write('         (o o)' + '\n');
 process.stdout.write('-----oOOo-(_)-oOOo-----' + '\n');
 
 var r = repl.start({
-  prompt: "gremlin> ",
+  prompt: "biblionarrator> ",
   input: process.stdin,
   output: process.stdout,
   terminal: true,
