@@ -1,5 +1,8 @@
-var options = require('../../src/lib/cmd')("Start Gremlin repl connected to Biblionarrator database"),
-    environment = require('../../src/lib/environment');
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+"use strict";
+var options = require('../src/lib/cmd')("Start Gremlin repl connected to Biblionarrator database"),
+    environment = require('../src/lib/environment');
 
 var graphstore = environment.graphstore,
     g = graphstore.g,
@@ -30,6 +33,9 @@ function outFunc(it){
       for (var i = 0, l = arr.sizeSync(); i < l; i++) {
           process.stdout.write('==>'+arr.getSync(i)+'\n');
       }
+  } else if (typeof it === 'object' && typeof it.toStringSync === 'undefined') {
+      process.stdout.write('==>'+it.name+' =\n');
+      inspect(it);
   } else {
       process.stdout.write('==>'+it+'\n');
   }
@@ -40,6 +46,7 @@ r.context.g = g;
 r.context.graphstore = graphstore;
 r.context.inspect = inspect;
 r.context.Text = g.java.import('com.thinkaurelius.titan.core.attribute.Text');
+r.context.environment = environment;
 
 r.on('exit', function () {
   console.log('Good-bye from Gremlin!');
