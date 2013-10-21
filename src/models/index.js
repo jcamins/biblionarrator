@@ -1,6 +1,5 @@
 "use strict";
 exports.Field = require('./field');
-exports.Link = require('./link');
 exports.Query = require('./query');
 exports.Record = require('./record');
 exports.RecordList = require('./recordlist');
@@ -9,7 +8,6 @@ exports.User = require('./user');
 exports.Template = require('./template');
 
 exports.Field.init(exports);
-exports.Link.init(exports);
 exports.Query.init(exports);
 exports.Record.init(exports);
 exports.RecordList.init(exports);
