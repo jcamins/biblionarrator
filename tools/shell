@@ -33,7 +33,7 @@ function outFunc(it){
       for (var i = 0, l = arr.sizeSync(); i < l; i++) {
           process.stdout.write('==>'+arr.getSync(i)+'\n');
       }
-  } else if (typeof it === 'object' && typeof it.toStringSync === 'undefined') {
+  } else if (it && typeof it === 'object' && typeof it.toStringSync === 'undefined') {
       process.stdout.write('==>\n');
       inspect(it);
   } else {

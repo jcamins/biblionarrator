@@ -97,6 +97,14 @@ function Record(data) {
         }
     };
 
+    this.addMedia = function (hash, description, targetpath) {
+        this.media[hash] = { description: description, path: targetpath };
+    };
+
+    this.delMedia = function (hash) {
+        delete this.media[hash];
+    };
+
     this.getLinks = function () {
         if (typeof formatters[this.format] === 'undefined') {
             return [];
@@ -115,6 +123,11 @@ function Record(data) {
 
     if (typeof this.data === 'string') {
         this.data = JSON.parse(this.data);
+    }
+
+    this.media = this.media || { };
+    if (typeof this.media === 'string') {
+        this.media = JSON.parse(this.media);
     }
 
     if (!this.no_index) this.mergeIndexes();

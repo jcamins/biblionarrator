@@ -52,7 +52,7 @@ exports.init = function(app) {
 
     /* Media */
     app.post('/record/:record_id/media', media.upload);
-    app.del('/record/:record_id/media/:media_id', media.del);
+    app.del('/record/:record_id/media/:hash', media.del);
 
     /* Search */
     app.get('/search', search.view);

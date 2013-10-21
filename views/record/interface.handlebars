@@ -38,9 +38,9 @@
                     </ul>
                     <div id="imagesPane" class="active image-gallery tab-pane">
                         <ul class="image-gallery-thumbnails thumbnails">
-                            {{#record.media}}
-                                <li data-id="{{id}}"><a class="thumbnail" href="{{location}}" data-id="{{id}}"><img src="{{location}}" title="{{description}}"/></a></li>
-                            {{/record.media}}
+                            {{#each record.media}}
+                                <li data-id="{{@key}}"><a class="thumbnail" href="{{path}}" data-id="{{@key}}"><img src="{{path}}" title="{{description}}"/></a></li>
+                            {{/each}}
                         </ul>
                     </div>
                     <!--@include('components.linkpane')-->
@@ -87,7 +87,7 @@
             <h3>{{#tr 'label.upload'}}Upload image{{/tr}}</h3>
         </div>
         <div class="modal-body">
-            <form method="POST" action="{{url}}/media" id="upload-image-modal-form" enctype="multipart/form-data">
+            <form method="POST" action="/record/{{record.id}}/media" id="upload-image-modal-form" enctype="multipart/form-data">
                 <label for="image">{{#tr 'label.image'}}Image{{/tr}}</label>
                 <input type="file" placeholder="{{#tr 'label.chooseimage'}}Choose an image to upload{{/tr}}" name="media" id="image-image" />
                 <label for="description">{{#tr 'label.description'}}Description{{/tr}}</label>
