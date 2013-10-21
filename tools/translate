@@ -121,7 +121,7 @@ function processTemplates() {
                 }
             }
         });
-        var namespaces = { };
+        var namespaces = { language: { } };
         for (var key in keys) {
             if (typeof keys[key] === 'undefined') continue;
             var namespace = 'common';
@@ -165,10 +165,12 @@ function processTemplates() {
                         console.log("Caught and ignored error: " + e);
                     }
                 }
-                if (!options.rewrite && language !== 'dev') {
+                if ((!options.rewrite && language !== 'dev') || namespace === 'language') {
                     extend(true, newlocale, locale);
                 }
-                fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), canonicalize(newlocale, null, 4));
+                if (namespace !== 'language') {
+                    fs.writeFileSync(path.resolve(__dirname, '../locales', language, namespace + '.json'), canonicalize(newlocale, null, 4));
+                }
                 if (!options.quiet) console.log('+Locale ' + language + '/' + namespace);
                 var newPromise = Q.defer();
                 if (options.merge && language !== 'dev') {
