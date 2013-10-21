@@ -34,7 +34,7 @@ function outFunc(it){
           process.stdout.write('==>'+arr.getSync(i)+'\n');
       }
   } else if (typeof it === 'object' && typeof it.toStringSync === 'undefined') {
-      process.stdout.write('==>'+it.name+' =\n');
+      process.stdout.write('==>\n');
       inspect(it);
   } else {
       process.stdout.write('==>'+it+'\n');
