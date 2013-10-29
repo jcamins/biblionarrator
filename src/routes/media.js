@@ -1,17 +1,10 @@
 var environment = require('../lib/environment'),
-    crypto = require('crypto'),
-    path = require('path'),
-    fs = require('fs'),
-    qfs = require('q-io/fs'),
     models = require('../models'),
     Record = models.Record;
 
 exports.upload = function(req, res) {
-    var shasum = crypto.createHash('sha1');
-    shasum.update(req.params.record_id.toString(), 'utf8');
-    var tmppath = req.files.media.path;
     var filename = req.files.media.hash + req.files.media.path.substring(req.files.media.path.lastIndexOf('.'));
-    environment.mediastore.save(req.params.record_id, filename, { type: req.files.media.type }, tmppath, function (err) {
+    environment.mediastore.save(req.params.record_id, filename, { type: req.files.media.type }, req.files.media.path, function (err) {
         if (err) {
             res.json({
                 'error': err

@@ -1,11 +1,9 @@
 "use strict";
-var crypto = require('crypto'),
-    path = require('path'),
+var path = require('path'),
     fs = require('fs'),
     mv = require('mv');
 
 function MediaStore(config) {
-    var self = this;
     var base = path.resolve(config.mediaconf.path);
 
     this.get = function (recordid, name, callback) {
@@ -18,6 +16,10 @@ function MediaStore(config) {
 
     this.save = function (recordid, name, metadata, tmppath, callback) {
         mv(tmppath, base + '/' + recordid + '/' + name, { mkdirp: true }, callback);
+    };
+
+    this.del = function (recordid, name, callback) {
+        fs.unlink(base + '/' + recordid + '/' + name, callback);
     };
 }
 
