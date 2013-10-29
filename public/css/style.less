@@ -384,6 +384,32 @@ footer {
             &.open {
                 margin-top: 1em;
                 .flip;
+
+                .collapse-label {
+                    display: inline-block;
+                    .flip;
+                }
+
+                .expand-label {
+                    display: none;
+                }
+            }
+
+            .collapse-label, .expand-label {
+                background: #eee;
+                padding: 2px 8px;
+                border: 1px #eee solid;
+                border-radius: 4px;
+                color: #522;
+                margin-top: -3px;
+            }
+
+            .collapse-label {
+                display: none;
+            }
+
+            .expand-label {
+                display: inline-block;
             }
 
             i.chevrons-left {
@@ -398,6 +424,7 @@ footer {
                 i.tray-bar {
                     background-image:url('/img/triplebars.svg');
                     height: 14px;
+                    line-height: 14px;
                     margin: 0 10px;
                     background-size: contain;
                     display: block;
