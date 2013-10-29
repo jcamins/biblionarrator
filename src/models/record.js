@@ -101,8 +101,8 @@ function Record(data) {
         this.media[hash] = { description: description, type: type, filename: filename };
     };
 
-    this.delMedia = function (hash) {
-        delete this.media[hash];
+    this.delMedia = function (filename) {
+        delete this.media[filename];
     };
 
     this.getLinks = function () {

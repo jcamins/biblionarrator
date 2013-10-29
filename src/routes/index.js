@@ -47,12 +47,12 @@ exports.init = function(app) {
     app.get('/record/:record_id/link/:link_type/:target_id', record.linkadd);
     app.get('/record/:record_id', record.view);
     app.get('/record/:record_id/snippet', record.snippet);
-    app.post('/record/:record_id', record.save);
-    app.post('/record/new', record.save);
+    app.post('/record/:record_id', auth.can('edit', 'record'), record.save);
+    app.post('/record/new', auth.can('edit', 'record'), record.save);
 
     /* Media */
-    app.post('/record/:record_id/media', media.upload);
-    app.del('/record/:record_id/media/:hash', media.del);
+    app.post('/record/:record_id/media', auth.can('edit', 'record'), media.upload);
+    app.del('/record/:record_id/media/:filename', auth.can('edit', 'record'), media.del);
     app.get('/media/:record_id/:filename', media.get);
 
     /* Search */

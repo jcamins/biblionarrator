@@ -76,13 +76,16 @@ GraphModel.prototype.initialize = function (data) {
 };
 
 GraphModel.prototype.save = function () {
-    var v, created = false;
+    var v, created = false, oldprops = { };
     try {
         v = this.v().iterator().nextSync();
         if (v === null) {
             throw('invalid id');
         }
         this.vorder = parseInt(this.v().both().count(), 10);
+        v.getPropertyKeysSync().toArraySync().forEach(function (prop) {
+            if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
+        });
     } catch (e) {
         created = true;
         v = graphstore.db.addVertexSync(null);
@@ -99,7 +102,11 @@ GraphModel.prototype.save = function () {
                 } else {
                     v.setPropertySync(prop, this[prop]);
                 }
+                if (oldprops[prop]) delete oldprops[prop];
             }
+        }
+        for (prop in oldprops) {
+            v.removePropertySync(prop);
         }
     } catch (e) {
         if (graphstore.autocommit) {

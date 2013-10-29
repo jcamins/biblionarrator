@@ -4,7 +4,7 @@ var environment = require('../lib/environment'),
 
 exports.upload = function(req, res) {
     var filename = req.files.media.hash + req.files.media.path.substring(req.files.media.path.lastIndexOf('.'));
-    environment.mediastore.save(req.params.record_id, filename, { type: req.files.media.type }, req.files.media.path, function (err) {
+    environment.mediastore.save(req.params.record_id, filename, { content_type: req.files.media.type }, req.files.media.path, function (err) {
         if (err) {
             res.json({
                 'error': err
@@ -27,9 +27,11 @@ exports.get = function(req, res) {
 
 exports.del = function(req, res) {
     var rec = Record.findOne({ id: req.params.record_id });
-    rec.delMedia(req.params.hash);
+    rec.delMedia(req.params.filename);
     rec.save();
-    res.json({
-        id: req.params.hash
+    environment.mediastore.del(req.params.record_id, req.params.filename, function () {
+        res.json({
+            id: req.params.filename
+        });
     });
 };

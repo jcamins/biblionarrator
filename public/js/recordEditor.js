@@ -98,7 +98,8 @@ function initializeEditor() {
     $('.image-gallery').each(function () {
         var gallery = this;
         $(this).find('.image-gallery-thumbnails').on('click', 'a', null, function () {
-            var id = $(this).attr('data-id');
+            var filename = $(this).attr('data-id');
+            var id = filename.replace('.', '_');
             $(gallery).find('.image-gallery-large').prepend('<a id="delete-image' + id + '" class="delete-image" href="#">&times;</a>');
             $(gallery).find('.delete-image').click(function () {
                 $('#confirmLabel').text('Delete image confirmation');
@@ -109,10 +110,10 @@ function initializeEditor() {
             $(gallery).find('.delete-image').on('confirmed', function () {
                 $.ajax({
                     type: "DELETE",
-                    url: "/record/" + document.record.id + "/media/" + id,
+                    url: "/record/" + document.record.id + "/media/" + filename,
                     dataType: "json"
                 }).done(function(msg) {
-                    $('li[data-id="' + id + '"]').remove();
+                    $('li[data-id="' + filename + '"]').remove();
                     $('.image-gallery-large').remove();
                 });
             });
