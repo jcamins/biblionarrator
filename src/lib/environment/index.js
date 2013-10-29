@@ -66,6 +66,7 @@ function Environment(config, filename) {
         dataconf: { backend: 'redis' },
         sessionconf: { backend: 'redis' },
         i18nextconf: { backend: 'local' },
+        mediaconf: { backend: 'file' },
         fields: { },
         indexes: { },
         facets: { },
@@ -133,9 +134,10 @@ function Environment(config, filename) {
         } catch (e) { self.errors.push(e); }
     }
     var DataStore = require('./datastore/' + self.dataconf.backend),
+        MediaStore = require('./mediastore/' + self.mediaconf.backend),
         Cache = require('./cache/' + self.cacheconf.backend);
-    var _queryparser, _graphstore, _datastore, _cache, _esclient, _querybuilder, _i18next,
-        i18npromise;
+    var _queryparser, _graphstore, _datastore, _cache, _mediastore, _esclient,
+        _querybuilder, _i18next, i18npromise;
     /*jshint -W093*/
     Object.defineProperties(self, {
         "queryparser": {
@@ -149,6 +151,9 @@ function Environment(config, filename) {
         },
         "cache": {
             "get": function () { return _cache = _cache || new Cache(self); }
+        },
+        "mediastore": {
+            "get": function () { return _mediastore = _mediastore || new MediaStore(self); }
         },
         "esclient": {
             "get": function () { return _esclient = _esclient || new ESClient(self); }

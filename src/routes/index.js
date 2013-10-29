@@ -53,6 +53,7 @@ exports.init = function(app) {
     /* Media */
     app.post('/record/:record_id/media', media.upload);
     app.del('/record/:record_id/media/:hash', media.del);
+    app.get('/media/:record_id/:filename', media.get);
 
     /* Search */
     app.get('/search', search.view);

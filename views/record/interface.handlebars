@@ -39,7 +39,7 @@
                     <div id="imagesPane" class="active image-gallery tab-pane">
                         <ul class="image-gallery-thumbnails thumbnails">
                             {{#each record.media}}
-                                <li data-id="{{@key}}"><a class="thumbnail" href="{{path}}" data-id="{{@key}}"><img src="{{path}}" title="{{description}}"/></a></li>
+                                <li data-id="{{@key}}"><a class="thumbnail" href="/media/{{recordid}}/{{filename}}" data-id="{{@key}}"><img src="/media/{{recordid}}/{{filename}}" title="{{description}}"/></a></li>
                             {{/each}}
                         </ul>
                     </div>

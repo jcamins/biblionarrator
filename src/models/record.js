@@ -97,8 +97,8 @@ function Record(data) {
         }
     };
 
-    this.addMedia = function (hash, description, targetpath) {
-        this.media[hash] = { description: description, path: targetpath };
+    this.addMedia = function (hash, description, type, filename) {
+        this.media[hash] = { description: description, type: type, filename: filename };
     };
 
     this.delMedia = function (hash) {
@@ -128,6 +128,11 @@ function Record(data) {
     this.media = this.media || { };
     if (typeof this.media === 'string') {
         this.media = JSON.parse(this.media);
+    }
+    for (var media in this.media) {
+        Object.defineProperties(this.media[media], {
+            "recordid": { "get": function () { return self.id; } }
+        });
     }
 
     if (!this.no_index) this.mergeIndexes();
