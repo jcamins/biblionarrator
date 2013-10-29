@@ -7,6 +7,13 @@
             <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">
                 {{{rendered}}}
             </div>
+            <div class="image-gallery">
+                <ul class="image-gallery-thumbnails thumbnails">
+                    {{#each media}}
+                        <li data-id="{{@key}}"><a class="thumbnail" href="/media/{{recordid}}/{{@key}}" data-id="{{@key}}"><img src="/media/{{recordid}}/{{@key}}" title="{{description}}"/></a></li>
+                    {{/each}}
+                </ul>
+            </div>
             <button title="{{#tr 'action.showwholerecord'}}Show whole record{{/tr}}" class="preview tray btn btn-link">
                 <i class="chevrons-left"></i>
                 <div><i class="tray-bar"><span class="expand-label">{{#tr 'label.moreellipsis'}}More...{{/tr}}</span><span class="collapse-label">{{#tr 'label.lessellipsis'}}Less...{{/tr}}</span></i></div>
