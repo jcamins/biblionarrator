@@ -31,10 +31,11 @@ module.exports = function (usage, options) {
         process.exit();
     }
     /*jshint unused:true */
+    var environment;
     if (typeof argv.config !== 'undefined') {
-        var environment = require('./environment').load(argv.c);
+        environment = require('./environment').load(argv.c);
     } else {
-        var environment = require('./environment');
+        environment = require('./environment');
     }
     /*jshint unused:false */
     if (argv.heap) {
