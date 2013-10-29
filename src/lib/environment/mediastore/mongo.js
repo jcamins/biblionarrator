@@ -18,7 +18,14 @@ function MediaStore(config) {
     this.send = function (recordid, name, res) {
         connectPromise.promise.done(function () {
             var gs = new GridStore(database, recordid + '/' + name, 'r');
-            gs.pipe(res);
+            gs.open(function (err, gs) {
+                if (err) {
+                    res.send(404);
+                } else {
+                    var stream = gs.stream(true);
+                    gs.pipe(res);
+                }
+            });
         });
     };
 
