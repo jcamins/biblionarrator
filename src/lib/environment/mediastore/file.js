@@ -6,24 +6,18 @@ var crypto = require('crypto'),
 
 function MediaStore(config) {
     var self = this;
-    var base = path.resolve(__dirname, '../../../../', 'public/uploads');
-
-    try {
-        fs.mkdirSync(base);
-    } catch (e) {
-    }
+    var base = path.resolve(config.mediaconf.path);
 
     this.get = function (recordid, name, callback) {
-        var shasum = crypto.createHash('sha1');
-        shasum.update(recordid.toString(), 'utf8');
-        fs.readFile(base + '/' + shasum.digest('hex') + '/' + name, callback);
+        fs.readFile(base + '/' + recordid + '/' + name, callback);
+    };
+
+    this.send = function (recordid, name, res) {
+        res.sendfile(base + '/' + recordid + '/' + name);
     };
 
     this.save = function (recordid, name, metadata, tmppath, callback) {
-        var shasum = crypto.createHash('sha1');
-        shasum.update(recordid.toString(), 'utf8');
-        var dir = shasum.digest('hex');
-        mv(tmppath, base + '/' + dir + '/' + name, { mkdirp: true }, callback);
+        mv(tmppath, base + '/' + recordid + '/' + name, { mkdirp: true }, callback);
     };
 }
 

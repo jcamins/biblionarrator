@@ -66,7 +66,7 @@ function Environment(config, filename) {
         dataconf: { backend: 'redis' },
         sessionconf: { backend: 'redis' },
         i18nextconf: { backend: 'local' },
-        mediaconf: { backend: 'file' },
+        mediaconf: { backend: 'file', path: resolveRoot('uploads') },
         fields: { },
         indexes: { },
         facets: { },
