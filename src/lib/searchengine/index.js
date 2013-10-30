@@ -26,7 +26,7 @@ module.exports.search = function (options, recordcb, facetcb) {
                 cache.set(recordskey, reclist, 600);
             });
         } else if (typeof recordcb === 'function') {
-            recordcb(cacheresults[0]);
+            recordcb(new models.RecordList(cacheresults[0]));
         }
         if (cacheerror || !cacheresults[1]) {
             graph.facet(options, function (results) {
