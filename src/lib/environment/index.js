@@ -62,6 +62,7 @@ function Environment(config, filename) {
 
     config = config || { };
     extend(true, self, {
+        backendconf: { redis: { }, mongo: { } },
         cacheconf: { backend: 'redis' },
         dataconf: { backend: 'redis' },
         sessionconf: { backend: 'redis' },
@@ -91,6 +92,16 @@ function Environment(config, filename) {
     } catch (e) { }
 
     extend(self, config);
+
+    var _backends = { };
+    self.backend = function(engine) {
+        if (typeof _backends[engine] === 'undefined') {
+            var Backend = require('bn-backend-' + engine);
+            _backends[engine] = new Backend(self);
+        }
+        return _backends[engine];
+    };
+
     if (typeof self.fields.data === 'undefined') {
         self.schemas.unshift('common');
     }

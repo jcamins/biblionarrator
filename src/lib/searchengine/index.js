@@ -7,7 +7,7 @@ module.exports.search = function (options, recordcb, facetcb) {
     var recordskey = encodeURIComponent('records^' + options.offset + '^' + options.perpage + '^' + options.query.canonical);
     var facetskey = encodeURIComponent('facets^' + options.query.canonical);
     cache.mget([recordskey, facetskey], function (cacheerror, cacheresults) {
-        if (cacheerror || !cacheresults[0]) {
+        if (cacheerror || !cacheresults[recordskey]) {
             graph.search(options, function (results) {
                 var records = results.records;
                 for (var ii in records) {
@@ -26,9 +26,9 @@ module.exports.search = function (options, recordcb, facetcb) {
                 cache.set(recordskey, reclist, 600);
             });
         } else if (typeof recordcb === 'function') {
-            recordcb(new models.RecordList(cacheresults[0]));
+            recordcb(new models.RecordList(cacheresults[recordskey]));
         }
-        if (cacheerror || !cacheresults[1]) {
+        if (cacheerror || !cacheresults[facetskey]) {
             graph.facet(options, function (results) {
                 for (var idx in results.facets) {
                     results.facets[idx].label = environment.i18next.t('config:facet.' + results.facets[idx].label, { defaultValue: results.facets[idx].label });
@@ -39,7 +39,7 @@ module.exports.search = function (options, recordcb, facetcb) {
                 cache.set(facetskey, results, 600);
             });
         } else if (typeof facetcb === 'function') {
-            facetcb(cacheresults[1]);
+            facetcb(cacheresults[facetskey]);
         }
     });
 };
