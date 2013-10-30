@@ -59,6 +59,7 @@ exports.view = function(req, res) {
                 exports.map(req, res);
             };
         } else {
+            var serial = Q.defer();
             searchcb = function (list) {
                 var layout = 'list/interface';
                 if (typeof req.query.layout !== 'undefined' && req.query.layout === 'none') {
@@ -78,9 +79,12 @@ exports.view = function(req, res) {
                 if (data.more) {
                     searchengine.search({ query: query, offset: offset + perpage, perpage: perpage });
                 }
+                serial.resolve(true);
             };
             facetcb = function (data) {
-                socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
+                serial.promise.done(function () {
+                    socketserver.announcePublication(encodeURIComponent('facets^' + query.canonical), data);
+                });
             };
         }
         searchengine.search({ query: query, offset: offset, perpage: perpage }, searchcb, facetcb);
