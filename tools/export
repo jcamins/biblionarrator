@@ -26,7 +26,7 @@ var options = require('../src/lib/cmd')("Export Biblionarrator data", {
         },
         datastore: {
             boolean: true,
-            describe: 'Export datastore'
+            describe: 'Export datastore (etc.)'
         },
         graph: {
             boolean: true,
@@ -43,6 +43,10 @@ var options = require('../src/lib/cmd')("Export Biblionarrator data", {
         },
         archive: {
             describe: 'File name for archive'
+        },
+        keep: {
+            alias: 'k',
+            describe: 'Keep intermediate files'
         }
     }),
     os = require('os');
@@ -90,18 +94,11 @@ if (options.graph) {
     graphpromise.resolve(options.graphfile);
 }
 
-if (options.datastore) {
-    var models = require('../src/models');
-
-    var fieldpromise = Q.defer();
-    promises.push(fieldpromise.promise);
-    models.Field.all(function (err, fields) {
-        if (err) {
-            fieldpromise.reject(err);
-        } else {
-            saveFile(options.directory + '/fields.json', JSON.stringify(fields), fieldpromise);
-        }
-    });
+if (options.datastore && (environment.dataconf.backend === 'mongo' || environment.cacheconf.backend === 'mongo' || environment.mediaconf.backend === 'mongo')) {
+    var datastorepromise = Q.defer();
+    var dsstream = fs.createWriteStream(options.directory + '/datastore.json');
+    environment.backend('mongo').dump(dsstream, datastorepromise);
+    promises.push(datastorepromise.promise);
 }
 
 if (options.environment && environment.filename) {
@@ -145,9 +142,11 @@ Q.all(promises).then(function (files) {
             archivepromise.reject(err);
         })
         output.on('close', function () {
-            files.forEach(function (file) {
-                fs.unlink(file);
-            });
+            if (!options.keep) {
+                files.forEach(function (file) {
+                    fs.unlink(file);
+                });
+            }
             archivepromise.resolve(true);
         });
         return archivepromise.promise;
