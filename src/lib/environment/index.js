@@ -144,9 +144,9 @@ function Environment(config, filename) {
             }
         } catch (e) { self.errors.push(e); }
     }
-    var DataStore = require('./datastore/' + self.dataconf.backend),
+    var DataStore = require('./datastore'),
         MediaStore = require('./mediastore/' + self.mediaconf.backend),
-        Cache = require('./cache/' + self.cacheconf.backend);
+        Cache = require('./cache');
     var _queryparser, _graphstore, _datastore, _cache, _mediastore, _esclient,
         _querybuilder, _i18next, i18npromise;
     /*jshint -W093*/
