@@ -1,6 +1,6 @@
 "use strict";
 var worker = require('child_process').fork(__dirname + '/child'),
-    environment = require('../../lib/environment'),
+    environment = require('../lib/environment'),
     uuid = require('node-uuid');
 
 worker.send({ setEnv: JSON.stringify(environment,

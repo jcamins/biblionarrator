@@ -1,4 +1,4 @@
-var environment = require('../../../lib/environment'),
+var environment = require('../../lib/environment'),
     graphstore = environment.graphstore,
     g = graphstore.g,
     linktypes = environment.facets;

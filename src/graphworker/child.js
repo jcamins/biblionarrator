@@ -1,5 +1,5 @@
 /*jshint unused:true */ /* We need this in order to get environment's message handler */
-var environment = require('../../lib/environment');
+var environment = require('../lib/environment');
 /*jshint unused:false */
 var handlers = {
     setEnv: function () {

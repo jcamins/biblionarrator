@@ -1,5 +1,5 @@
 "use strict";
-var environment = require('../../../lib/environment'),
+var environment = require('../../lib/environment'),
     graphstore = environment.graphstore,
     g = graphstore.g,
     Text = g.java.import('com.thinkaurelius.titan.core.attribute.Text'),

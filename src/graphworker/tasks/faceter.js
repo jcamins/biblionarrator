@@ -1,5 +1,5 @@
 "use strict";
-var environment = require('../../../lib/environment'),
+var environment = require('../../lib/environment'),
     search = require('../lib/search'),
     graphstore = environment.graphstore,
     g = graphstore.g,
