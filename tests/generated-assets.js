@@ -1,15 +1,23 @@
 var expect = require('chai').expect,
     request = require('superagent').agent(),
     PrettyCSS = require('PrettyCSS'),
-    testhost = require('../src/server').testhost();
+    Q = require('q'),
+    connect = Q.defer(),
+    environment = require('./lib/environment').default;
+
+require('../src/server').harness(function (url) {
+    connect.resolve(url);
+});
 
 
 describe('fields.css', function() {
     var res;
     before(function (done) {
-        request.get(testhost + '/css/fields.css').end(function(r) {
-            res = r;
-            done();
+        connect.promise.done(function (testhost) {
+            request.get(testhost + '/css/fields.css').end(function(r) {
+                res = r;
+                done();
+            });
         });
     });
     it('has text/css content-type', function() {
