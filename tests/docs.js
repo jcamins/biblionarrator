@@ -1,16 +1,23 @@
 var expect = require('chai').expect,
     request = require('superagent').agent(),
     fs = require('fs'),
+    Q = require('q'),
     marked = require('marked'),
-    testhost = require('../src/server').testhost();
+    connect = Q.defer(),
+    environment = require('./lib/environment').default;
 
+require('../src/server').harness(function (url) {
+    connect.resolve(url);
+});
 
 describe('install markdown document', function() {
     var res;
     before(function (done) {
-        request.get(testhost + '/doc/install').end(function(r) {
-            res = r;
-            done();
+        connect.promise.done(function (testhost) {
+            request.get(testhost + '/doc/install').end(function(r) {
+                res = r;
+                done();
+            });
         });
     });
     it('has content-type text/html', function() {
@@ -27,9 +34,11 @@ describe('install markdown document', function() {
 describe('upgrades text document', function() {
     var res;
     before(function (done) {
-        request.get(testhost + '/doc/upgrades').end(function(r) {
-            res = r;
-            done();
+        connect.promise.done(function (testhost) {
+            request.get(testhost + '/doc/upgrades').end(function(r) {
+                res = r;
+                done();
+            });
         });
     });
     it('has content-type text/plain', function() {
@@ -46,9 +55,11 @@ describe('upgrades text document', function() {
 describe('licensing html document', function() {
     var res;
     before(function (done) {
-        request.get(testhost + '/doc/licensing').end(function(r) {
-            res = r;
-            done();
+        connect.promise.done(function (testhost) {
+            request.get(testhost + '/doc/licensing').end(function(r) {
+                res = r;
+                done();
+            });
         });
     });
     it('has content-type text/html', function() {

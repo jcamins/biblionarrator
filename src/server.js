@@ -37,7 +37,7 @@ function initializeApp() {
             }),
             secret: 'biblionarrator'
         }));
-    } else {
+    } else if (environment.sessionconf.backend === 'redis') {
         var RedisStore = require('connect-redis')(express);
         app.use(express.session({ 
             store: new RedisStore({
@@ -45,6 +45,8 @@ function initializeApp() {
             }),
             secret: 'biblionarrator'
         }));
+    } else {
+        app.use(express.session({ secret: 'biblionarrator' }));
     }
     app.use(flash());
     auth.initialize(app);
@@ -72,33 +74,35 @@ function initializeApp() {
 
 }
 
-function listen(port) {
-    port = port || 3000;
+function listen(port, callback) {
+    if (typeof port !== 'number') port = 3000;
     httpserver = http.createServer(app);
     socketserver.configure(httpserver);
     httpserver.listen(port);
+    if (typeof callback === 'function') {
+        httpserver.on('listening', callback);
+    }
 }
 
-exports.listen = function (port) {
+function start(port, callback) {
     var semaphores = [ ];
     if (typeof environment.datastore.wait === 'function') semaphores.push(environment.datastore.wait());
     if (typeof environment.i18next.wait === 'function') semaphores.push(environment.i18next.wait());
     if (semaphores.length > 0) {
         Q.all(semaphores).then(function () {
             initializeApp();
-            listen(port);
+            listen(port, callback);
         });
     } else {
         initializeApp();
-        listen(port);
+        listen(port, callback);
     }
 };
 
-exports.testhost = function() {
-    return 'http://127.0.0.1:' + harness().address().port;
-};
+exports.listen = start;
 
-var harness = function() {
-    httpserver = httpserver || app.listen(0);
-    return httpserver;
+exports.harness = function(callback) {
+    start(0, function () {
+        callback('http://127.0.0.1:' + httpserver.address().port);
+    });
 };
