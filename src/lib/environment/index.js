@@ -145,7 +145,7 @@ function Environment(config, filename) {
         } catch (e) { self.errors.push(e); }
     }
     var DataStore = require('./datastore'),
-        MediaStore = require('./mediastore/' + self.mediaconf.backend),
+        MediaStore = require('./mediastore'),
         Cache = require('./cache');
     var _queryparser, _graphstore, _datastore, _cache, _mediastore, _esclient,
         _querybuilder, _i18next, i18npromise;
