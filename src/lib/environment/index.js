@@ -251,11 +251,13 @@ function Environment(config, filename) {
 
 Environment.load = function loadConfig(file) {
     module.exports = new Environment(require(resolveRoot(file)), resolveRoot(file));
+    module.exports.object = Environment;
     return module.exports;
 };
 
 Environment.set = function setConfig(config) {
     module.exports = new Environment(config);
+    module.exports.object = Environment;
     return module.exports;
 };
 

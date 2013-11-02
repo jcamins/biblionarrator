@@ -2,6 +2,7 @@
 
 function DataStore(config) {
     var backend = config.backend(config.dataconf.backend);
+    this.connect = backend.connect;
     this.wait = backend.wait;
     this.client = backend.client;
     this.data = backend.data;
