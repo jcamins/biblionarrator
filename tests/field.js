@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-    environment = require('./lib/environment'),
+    environment = require('./lib/environment').default,
     models = require('../src/models'),
     Field = models.Field,
     datastore = environment.datastore;
