@@ -1,0 +1,73 @@
+{
+    "operators": {
+        "AND": "&&",
+        "OR": "\\|\\|",
+        "FLOAT_START": "\\{\\{",
+        "FLOAT_END": "\\}\\}",
+        "GS": "\\(",
+        "GE": "\\)",
+        "REQ": "\\+",
+        "DIS": "-",
+        "MOD": "#",
+        "NOT": "!",
+        "FACET_START": "\\[",
+        "FACET_END": "\\]",
+        "FILTER_START": "(range)<",
+        "FILTER_END": ">"
+    },
+    "backendconf": {
+        "mongo": {
+            "namespace": "testns"
+        },
+        "redis": {
+            "namespace": "testns"
+        }
+    },
+    "schemas": [
+        "self",
+        "isbd"
+    ],
+    "cacheconf": {
+        "backend": "inproc"
+    },
+    "dataconf": {
+        "backend": "inproc"
+    },
+    "mediaconf": {
+        "backend": "file"
+    },
+    "sessionconf": {
+        "namespace": "testns",
+        "backend": "mongo"
+    },
+    "i18nextconf": {
+        "namespace": "testns",
+        "backend": "local"
+    },
+    "graphconf": {
+        "engine": "titan",
+        "titan": {
+            "storage.backend": "cassandra",
+            "storage.hostname": "127.0.0.1",
+            "storage.keyspace": "bn_testns",
+            "storage.index.search.backend": "elasticsearch",
+            "storage.index.search.client-only": true,
+            "storage.index.search.hostname": "127.0.0.1",
+            "storage.index.search.index-name": "bn_testns"
+        }
+    },
+    "users": {
+        "systemuser": {
+            "_password": "$2a$10$LgfZe0NPA0K.H6DFCJWtX.u25QDmBDNMdnEoyUMpsQmcdJUkW9bGK",
+            "email": "systemuser",
+            "permissions": "*"
+        }
+    },
+    "domain": "http://localhost:3000/",
+    "logs": {
+    },
+    "languages": [
+        "en"
+    ]
+}
+
