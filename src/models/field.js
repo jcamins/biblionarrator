@@ -6,6 +6,7 @@ var models,
 module.exports = Field;
 
 function Field (data) {
+    if (data === null) return null;
     var self = this;
     self.model = 'Field';
     extend(self, data);
@@ -30,14 +31,13 @@ DataModel.extend(Field);
 Field.findOne = function (key, callback) {
     DataModel.findOne(Field, key, function (err, model) {
         var field = environment.fields[key];
-        if ((err || model === null) && typeof field === 'undefined') {
+        if ((err || typeof model === 'undefined' || model === null) && (typeof field === 'undefined' || field === null)) {
             callback(err, null);
+        } else {
+            field = field || { };
+            if (typeof model !== 'undefined' && model !== null) extend(true, field, model);
+            callback(err, new Field(field));
         }
-        field = field || { };
-        if (model !== null) {
-            extend(true, field, model);
-        }
-        callback(err, new Field(field));
     });
 };
 

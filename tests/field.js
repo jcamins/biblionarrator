@@ -1,8 +1,7 @@
 var expect = require('chai').expect,
-    config = require('./lib/config'),
+    environment = require('./lib/environment'),
     models = require('../src/models'),
     Field = models.Field,
-    environment = require('../src/lib/environment'),
     datastore = environment.datastore;
 
 describe('Field model', function () {
@@ -30,6 +29,12 @@ describe('Field model', function () {
         field = new Field({ schema: 'testschema', name: 'testfield', css: 'font-weight: bold;' });
         field.save();
         Field.findOne('testschema_testfield', function (err, results) {
+            for (var idx in field) {
+                if (typeof field[idx] === 'function') delete field[idx];
+            }
+            for (idx in results) {
+                if (typeof results[idx] === 'function') delete results[idx];
+            }
             expect(results).to.deep.equal(field);
             done();
         });
