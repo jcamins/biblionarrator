@@ -1,6 +1,6 @@
 var expect = require('chai').expect,
     config = require('./lib/config'),
-    environment = require('../src/lib/environment');
+    environment = require('./lib/environment').default;
 var graphstore = environment.graphstore,
     g = graphstore.g,
     models = require('../src/models'),
