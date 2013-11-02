@@ -97,7 +97,7 @@ function start(port, callback) {
         initializeApp();
         listen(port, callback);
     }
-};
+}
 
 exports.listen = start;
 
