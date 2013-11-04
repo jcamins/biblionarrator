@@ -120,7 +120,7 @@ Q.all(promises).then(function (files) {
             extension = '.tar.gz';
         }
         var today = new Date();
-        if (!options.archive) options.archive = options.directory + '/biblionarrator_' + today.getFullYear() + (today.getMonth() + 1) + today.getDate() + extension;
+        if (!options.archive) options.archive = options.directory + '/biblionarrator_' + today.getFullYear() + (today.getMonth() + 1) + String('00' + today.getDate()).slice(-2) + extension;
         var output = fs.createWriteStream(options.archive);
         if (options.gzip) {
             var zlib = require('zlib'),

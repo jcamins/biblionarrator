@@ -20,6 +20,10 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
         },
         'recordclass': {
             describe: 'Record class to use for records (overrides LDR/06)'
+        },
+        'commit': {
+            default: 1000,
+            describe: 'Number of records to process between commits'
         }
     }),
     environment = require('../../src/lib/environment'),
@@ -35,7 +39,8 @@ var inspect = require('eyes').inspector({maxLength: false});
 graphstore.autocommit = false;
 
 var importer = new JSONImporter({
-    files: options._
+    files: options._,
+    commit: options.commit
 });
 
 var linkcount = 0;
@@ -119,9 +124,9 @@ importer.on('record', function (record, mypromise) {
         recordcount++;
     } catch (e) {
         console.log(e, e.stack);
-        rejects.push(JSON.stringify(record));
+        mypromise.reject(record);
     }
-    mypromise.resolve();
+    mypromise.resolve(record);
 });
 
 importer.on('commit', function (promise) {
@@ -129,7 +134,7 @@ importer.on('commit', function (promise) {
     promise.resolve(true);
 });
 
-importer.on('done', function () {
+importer.on('done', function (rejects) {
     console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links');
     if (rejects.length > 0) {
         fs.writeFileSync(options.reject, rejects.join('\n'));

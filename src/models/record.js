@@ -92,7 +92,7 @@ function Record(data) {
                 graphstore.db.commitSync();
             }
         } catch (e) {
-            console.log(e, e.stack);
+            console.log("Error creating link", e, e.stack);
             return;
         }
     };
