@@ -72,9 +72,9 @@ function connect(config, engine, g) {
                 switch (index.type) {
                     case 'edge':
                         if (index.unidirected) {
-                            index.id = db.makeTypeSync().nameSync(name).unidirectedSync().makeEdgeLabelSync().getIdSync();
+                            index.id = db.makeLabelSync(name).unidirectedSync().makeSync().getIdSync();
                         } else {
-                            index.id = db.makeTypeSync().nameSync(name).makeEdgeLabelSync().getIdSync();
+                            index.id = db.makeLabelSync(name).makeSync().getIdSync();
                         }
                         break;
                     case 'edgeproperty':
@@ -85,23 +85,25 @@ function connect(config, engine, g) {
                         } else {
                             backends = [ 'standard' ];
                         }
-                        var type = db.makeTypeSync().nameSync(name).dataTypeSync(Type[index.datatype].class);
+                        var type = db.makeKeySync(name).dataTypeSync(Type[index.datatype].class);
                         backends.forEach(function (backend) {
                             type = type.indexedSync(backend, propertyclass);
                         });
                         if (index.unique && !index.multivalue) {
-                            type = type.uniqueSync(Direction.BOTH, UniqCon.LOCK);
+                            type = type.singleSync().uniqueSync();
                         } else if (index.unique) {
-                            type = type.uniqueSync(Direction.IN);
+                            type = type.uniqueSync();
                         } else if (!index.multivalue) {
-                            type = type.uniqueSync(Direction.OUT);
+                            type = type.singleSync();
+                        } else {
+                            type = type.listSync();
                         }
-                        index.id = type.makePropertyKeySync().getIdSync();
+                        index.id = type.makeSync().getIdSync();
                         break;
                     case 'text':
-                        index.id = db.makeTypeSync().nameSync(name).dataTypeSync(Type.String.class)
+                        index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
                             .indexedSync("search", Type.Vertex.class)
-                            .uniqueSync(Direction.OUT).makePropertyKeySync().getIdSync();
+                            .singleSync().makeSync().getIdSync();
                         break;
                 }
                 /*jshint +W086*/
