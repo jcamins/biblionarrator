@@ -4,6 +4,9 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
             alias: 'm',
             describe: 'Criterion for matching (index:field)'
         },
+        'map': {
+            describe: 'Remap a field using the CSV file. Specified as 500$a:file.csv'
+        },
         'overlay': {
             alias: 'o',
             default: true,
@@ -33,15 +36,38 @@ var options = require('../../src/lib/cmd')("Load MARC21 bibliographic records", 
     Record = models.Record,
     MARCRecord = require('../../src/lib/marcrecord'),
     util = require('util'),
-    fs = require('fs');
+    fs = require('fs'),
+    Q = require('q');
 var inspect = require('eyes').inspector({maxLength: false});
 
 graphstore.autocommit = false;
 
 var importer = new JSONImporter({
     files: options._,
-    commit: options.commit
+    commit: options.commit,
+    pause: (options.map ? true : false)
 });
+
+var maps = { };
+
+if (options.map) {
+    var csv = require('csv');
+    var mappromises = [ ];
+    if (util.isArray(options.map)) {
+        options.map.forEach(function (map) {
+            var prom = Q.defer();
+            addMap(map, prom);
+            mappromises.push(prom.promise);
+        });
+    } else {
+        var prom = Q.defer();
+        addMap(options.map, prom);
+        mappromises.push(prom.promise);
+    }
+    Q.all(mappromises).done(function () {
+        importer.start();
+    });
+}
 
 var linkcount = 0;
 var recordcount = 0;
@@ -84,6 +110,20 @@ importer.on('record', function (record, mypromise) {
             }
         } else if (marc['f' + parts[2]]) {
             rec = matchrec(marc['f' + parts[2]]);
+        }
+    }
+    if (options.map) {
+        var tag, subf;
+        for (var ii = 0; ii < record.fields.length; ii++) {
+            tag = Object.keys(record.fields[ii])[0];
+            if (typeof maps[tag] !== 'undefined') {
+                for (var jj = 0; jj < record.fields[ii][tag].subfields.length; jj++) {
+                    subf = Object.keys(record.fields[ii][tag].subfields[jj])[0];
+                    if (typeof maps[tag][subf] !== 'undefined' && typeof maps[tag][subf][record.fields[ii][tag].subfields[jj][subf]] !== 'undefined') {
+                        record.fields[ii][tag].subfields[jj][subf] = maps[tag][subf][record.fields[ii][tag].subfields[jj][subf]];
+                    }
+                }
+            }
         }
     }
     if (!rec) {
@@ -141,3 +181,17 @@ importer.on('done', function (rejects) {
     }
     process.exit();
 });
+
+function addMap(map, promise) {
+    var map = map.match(/^([0-9]{3})(.):(.*)$/);
+    maps[map[1]] = maps[map[1]] || { };
+    maps[map[1]][map[2]] = maps[map[1]][map[2]] || { };
+    csv().from.path(map[3]).to.array(function (rows) {
+        rows.forEach(function (row, index) {
+            if (index > 0) {
+                maps[map[1]][map[2]][row[0]] = row[1];
+            }
+        });
+        promise.resolve(true);
+    });
+}
