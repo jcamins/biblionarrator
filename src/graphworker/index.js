@@ -1,26 +1,10 @@
 "use strict";
-var worker = require('child_process').fork(__dirname + '/child'),
+var child_process = require('child_process'),
+    worker = initWorker(),
     environment = require('../lib/environment'),
     uuid = require('node-uuid');
 
-worker.send({ setEnv: JSON.stringify(environment,
-    function (key, value) {
-        if (key === 'errorlog' || key === 'accesslog' || key === 'graphstore' || key === 'datastore' || key === 'cache' || key === 'esclient') {
-            return undefined;
-        }
-        return value;
-    })
-});
-
 var handlers = { };
-
-worker.on('message', function (message) {
-    if (handlers[message.id]) {
-        var handler = handlers[message.id];
-        delete handlers[message.id];
-        handler(message);
-    }
-});
 
 module.exports = function (type, data, callback) {
     var id = uuid.v1();
@@ -34,3 +18,28 @@ module.exports = function (type, data, callback) {
 process.on('exit', function () {
     worker.kill();
 });
+
+function initWorker() {
+    var child = child_process.fork(__dirname + '/child');
+    setImmediate(function () {
+        child.send({ setEnv: JSON.stringify(environment,
+            function (key, value) {
+                if (key === 'errorlog' || key === 'accesslog' || key === 'graphstore' || key === 'datastore' || key === 'cache' || key === 'esclient') {
+                    return undefined;
+                }
+                return value;
+            })
+        });
+    });
+    child.on('message', function (message) {
+        if (handlers[message.id]) {
+            var handler = handlers[message.id];
+            delete handlers[message.id];
+            handler(message);
+        }
+    });
+    child.on('exit', function () {
+        worker = initWorker();
+    });
+    return child;
+}

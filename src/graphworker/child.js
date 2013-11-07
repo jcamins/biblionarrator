@@ -1,3 +1,4 @@
+"use strict";
 /*jshint unused:true */ /* We need this in order to get environment's message handler */
 var environment = require('../lib/environment');
 /*jshint unused:false */
@@ -13,7 +14,6 @@ var handlers = {
 };
 
 process.on('message', function (message) {
-    var handled = false;
     for (var handler in handlers) {
         if (message[handler]) {
             handlers[handler](message[handler], function (result) {
