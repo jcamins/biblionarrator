@@ -52,9 +52,7 @@ function connect(config, engine, g) {
         //Get a reference to Titan specific Enum
         var BaseConfiguration = g.java.import('org.apache.commons.configuration.BaseConfiguration');
         var TitanFactory = g.java.import('com.thinkaurelius.titan.core.TitanFactory');
-        var Direction = g.Direction,
-            Type = g.ClassTypes;
-        var UniqCon = g.java.import("com.thinkaurelius.titan.core.TypeMaker$UniquenessConsistency");
+        var Type = g.ClassTypes;
         var LongEncoding = g.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding');
 
         var gconf = new BaseConfiguration();
