@@ -50,7 +50,6 @@
     "optimist": "~0.6.0",
     "elasticsearchclient": "~0.5.3",
     "bcrypt": "~0.7.7",
-    "password-generator": "~0.2.1",
     "grunt-jsdoc": "~0.4.1",
     "grunt-browserify": "~1.2.4",
     "browserify": "~2.33.1",
@@ -66,6 +65,7 @@
     "bn-backend-mongo": "https://github.com/biblionarrator/bn-backend-mongo/tarball/master",
     "bn-backend-redis": "https://github.com/biblionarrator/bn-backend-redis/tarball/master",
     "bn-backend-inproc": "https://github.com/biblionarrator/bn-backend-inproc/tarball/master",
+    "grunt-configure-biblionarrator": "https://github.com/biblionarrator/grunt-configure-biblionarrator/tarball/master",
     "csv": "~0.3.6"
   },
   "devDependencies": {
