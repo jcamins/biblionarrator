@@ -15,17 +15,19 @@
         "FILTER_START": "(range)<",
         "FILTER_END": ">"
     },
-    "schemas": [
-        "ericthesaurus",
-        "eric"
-    ],
+    "backendconf": {
+        "mongo": {
+            "namespace": "biblionarrator"
+        },
+        "redis": {
+            "namespace": "biblionarrator"
+        }
+    },
     "cacheconf": {
-        "backend": "mongo",
-        "namespace": "biblionarrator"
+        "backend": "mongo"
     },
     "dataconf": {
-        "backend": "mongo",
-        "namespace": "biblionarrator"
+        "backend": "mongo"
     },
     "sessionconf": {
         "backend": "mongo",

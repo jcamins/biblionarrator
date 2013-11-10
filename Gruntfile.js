@@ -142,94 +142,6 @@ module.exports = function(grunt) {
             }
         },
         prompt: {
-            instance: {
-                options: {
-                    questions: [
-                        {
-                            config: 'biblionarrator.currentdb',
-                            type: 'list',
-                            message: 'Which database do you want to use?',
-                            default: 'titan',
-                            choices: [
-                                { name: 'Titan (recommended, best results)', value: 'titan' },
-                                { name: 'OrientDB (no full-text)', value: 'orient' },
-                                { name: 'TinkerGraph (in-memory only)', value: 'tinker' }
-                            ]
-                        },
-                        /* Titan-specific configuration */
-                        {
-                            config: 'biblionarrator.searchbackend',
-                            type: 'list',
-                            message: 'What search backend do you want to use with Titan??',
-                            default: 'esremote',
-                            choices: [ 
-                                { name: 'Remote ElasticSearch (better results, requires external setup)', value: 'esremote' },
-                                { name: 'Lucene (easier to configure)', value: 'lucene' }
-                            ],
-                            when: function (answers) {
-                                return answers['biblionarrator.currentdb'] === 'titan';
-                            }
-                        },
-                        /* Orient/Tinkergraph-specific configuration */
-                        {
-                            config: 'biblionarrator.dbpath',
-                            type: 'input',
-                            message: 'Where do you want to put the database?',
-                            default: '/var/lib/biblionarrator',
-                            when: function (answers) {
-                                return answers['biblionarrator.currentdb'] === 'orient' || answers['biblionarrator.currentdb'] === 'tinker';
-                            }
-                        },
-                        /* Orient-specific configuration */
-                        {
-                            config: 'biblionarrator.dbuser',
-                            type: 'input',
-                            message: 'What is the username for your Orient database?',
-                            default: 'admin',
-                            when: function (answers) {
-                                return answers['biblionarrator.currentdb'] === 'orient';
-                            }
-                        },
-                        {
-                            config: 'biblionarrator.dbpass',
-                            type: 'input',
-                            message: 'What is the password for your Orient database?',
-                            default: 'admin',
-                            when: function (answers) {
-                                return answers['biblionarrator.currentdb'] === 'orient';
-                            }
-                        },
-                        /* General configuration */
-                        {
-                            config: 'biblionarrator.schemas',
-                            type: 'checkbox',
-                            message: 'Which schemas would you like to pre-configure?',
-                            default: [ ],
-                            choices: [
-                                'eric',
-                                'ericthesaurus',
-                                'isbd'
-                            ]
-                        },
-                        {
-                            config: 'biblionarrator.namespace',
-                            type: 'input',
-                            message: 'What do you want to use for your namespace (must be unique for each Biblionarrator instance)?',
-                            default: 'biblionarrator'
-                        },
-                        {
-                            config: 'biblionarrator.backend',
-                            type: 'list',
-                            message: 'Which backend do you want to use for your cache, datastore, and sessionstore?',
-                            default: 'mongo',
-                            choices: [
-                                { name: 'MongoDB (recommended, clusterable)', value: 'mongo' },
-                                { name: 'Redis (simpler, single-node)', value: 'redis' }
-                            ]
-                        }
-                    ]
-                }
-            },
             user: {
                 options: {
                     questions: [
@@ -281,54 +193,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        'file-creator': {
-            options: {
-                openFlags: 'w'
-            },
-            instance: {
-                files: {
-                    'config/config.json': function (fs, fd, done) {
-                        var data = JSON.parse(fs.readFileSync(__dirname + '/config/config.json.dist'));
-                        data.graphconf.engine = grunt.config('biblionarrator.currentdb');
-                        switch (data.default) {
-                        case 'titan':
-                            data.graphconf.titan['storage.index.search.index-name'] = data.graphconf.titan['storage.keyspace'] = grunt.config('biblionarrator.namespace');
-                            switch (grunt.config('biblionarrator.searchbackend')) {
-                            case 'esembedded':
-                                data.graphconf.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.graphconf.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
-                                data.graphconf.titan['storage.index.search.client-only'] = false;
-                                data.graphconf.titan['storage.index.search.local-mode'] = true;
-                                break;
-                            case 'esremote':
-                                data.graphconf.titan['storage.index.search.backend'] = 'elasticsearch';
-                                data.graphconf.titan['storage.index.search.client-only'] = true;
-                                data.graphconf.titan['storage.index.search.hostname'] = '127.0.0.1';
-                                break;
-                            case 'lucene':
-                                data.graphconf.titan['storage.index.search.backend'] = 'lucene';
-                                data.graphconf.titan['storage.index.search.directory'] = grunt.config('biblionarrator.ftsdir');
-                                break;
-                            }
-                            break;
-                        case 'orient':
-                            data.graphconf.orient.path = 'local:' + grunt.config('biblionarrator.dbpath');
-                            data.graphconf.orient.username = grunt.config('biblionarrator.dbuser');
-                            data.graphconf.orient.password = grunt.config('biblionarrator.dbpass');
-                            break;
-                        case 'tinker':
-                            data.graphconf.tinker.path = grunt.config('biblionarrator.dbpath');
-                            break;
-                        }
-                        data.schemas = grunt.config('biblionarrator.schemas');
-                        data.cacheconf.backend = data.dataconf.backend = data.sessionconf.backend = grunt.config('biblionarrator.backend');
-                        data.cacheconf.namespace = data.dataconf.namespace = data.sessionconf.namespace = grunt.config('biblionarrator.namespace');
-                        fs.writeSync(fd, JSON.stringify(data, null, 4));
-                        done();
-                    }
-                }
-            }
-        }
     });
 
     grunt.loadNpmTasks('grunt-browserify');
@@ -340,7 +204,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-prompt');
-    grunt.loadNpmTasks('grunt-file-creator');
+    grunt.loadNpmTasks('grunt-configure-biblionarrator');
 
     grunt.registerTask('passwd', 'Generate system user password', function() {
         var fs = require('fs'),
@@ -402,4 +266,5 @@ module.exports = function(grunt) {
     grunt.registerTask('release', [ 'default', 'compress' ]);
     grunt.registerTask('install', [ 'prompt:instance', 'file-creator', 'passwd' ]);
     grunt.registerTask('genuser', [ 'prompt:user', 'createUser' ]);
+    grunt.registerTask('config', [ 'configure_biblionarrator' ]);
 };
