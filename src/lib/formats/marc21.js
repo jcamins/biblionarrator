@@ -110,3 +110,54 @@ module.exports.links = function(recorddata, recordclass) {
 module.exports.decompile = function(htmldom) {
 };
 /*jshint unused:true */
+
+module.exports.import = function (record, options, maps, matcher) {
+    var recordclass, ii;
+    if (options.recordclass) {
+        recordclass = options.recordclass;
+    } else {
+        if (record.leader.charAt(6) === 'z') {
+            recordclass = 'auth';
+        } else if (record.leader.charAt(6) === 'w') {
+            recordclass = 'classification';
+        } else if (record.leader.charAt(6) === 'q') {
+            recordclass = 'communityinfo';
+        } else if (record.leader.charAt(6).match('[uvxy]')) {
+            recordclass = 'holdings';
+        } else {
+            recordclass = 'biblio';
+        }
+    }
+    if (options.match) {
+        var matchre = /^([^:]*):(...)(.*)?$/;
+        var parts = matchre.exec(options.match);
+        var marc = new MARCRecord(record);
+        var matchpoint = { };
+        var matchrec = function (field) {
+            matchpoint[parts[1]] = field.string(parts[3]);
+            return matcher(matchpoint);
+        };
+        if (util.isArray(marc['f' + parts[2]])) {
+            for (ii = 0; ii < marc['f' + parts[2]].length; ii++) {
+                if ( (rec = matchrec(marc['f' + parts[2]][ii])) ) break;
+            }
+        } else if (marc['f' + parts[2]]) {
+            rec = matchrec(marc['f' + parts[2]]);
+        }
+    }
+    if (options.map) {
+        var tag, subf;
+        for (ii = 0; ii < record.fields.length; ii++) {
+            tag = Object.keys(record.fields[ii])[0];
+            if (typeof maps[tag] !== 'undefined') {
+                for (var jj = 0; jj < record.fields[ii][tag].subfields.length; jj++) {
+                    subf = Object.keys(record.fields[ii][tag].subfields[jj])[0];
+                    if (typeof maps[tag][subf] !== 'undefined' && typeof maps[tag][subf][record.fields[ii][tag].subfields[jj][subf]] !== 'undefined') {
+                        record.fields[ii][tag].subfields[jj][subf] = maps[tag][subf][record.fields[ii][tag].subfields[jj][subf]];
+                    }
+                }
+            }
+        }
+    }
+    return { format: 'marc21', data: record, recordclass: recordclass };
+};
