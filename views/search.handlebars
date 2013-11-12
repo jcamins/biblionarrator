@@ -8,9 +8,9 @@
                         <select name="q">
                             <option value="keyword:">Keyword</option>
                             {{#each fields}}
-                                {{#if label}}
-                                <option value="{{@key}}:">{{label}}</option>
-                                {{/if}}
+                                {{#if advanced}}{{#if label}}
+                                <option value="{{name}}:">{{label}}</option>
+                                {{/if}}{{/if}}
                             {{/each}}
                         </select>
                         <div class="input-prepend">
@@ -22,9 +22,9 @@
                         <select name="q">
                             <option value="keyword:">Keyword</option>
                             {{#each fields}}
-                                {{#if label}}
-                                <option value="{{@key}}:">{{label}}</option>
-                                {{/if}}
+                                {{#if advanced}}{{#if label}}
+                                <option value="{{name}}:">{{label}}</option>
+                                {{/if}}{{/if}}
                             {{/each}}
                         </select>
                         <div class="input-prepend">
@@ -36,9 +36,9 @@
                         <select name="q">
                             <option value="keyword:">Keyword</option>
                             {{#each fields}}
-                                {{#if label}}
-                                <option value="{{@key}}:">{{label}}</option>
-                                {{/if}}
+                                {{#if advanced}}{{#if label}}
+                                <option value="{{name}}:">{{label}}</option>
+                                {{/if}}{{/if}}
                             {{/each}}
                         </select>
                         <div class="input-prepend">
