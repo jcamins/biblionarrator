@@ -1,4 +1,4 @@
-var MARCRecord = require('../marcrecord'),
+var MARCRecord = require('marcrecord'),
     environment;
 if (typeof window === 'undefined') {
     environment = require('../environment');

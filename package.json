@@ -66,7 +66,8 @@
     "bn-backend-redis": "https://github.com/biblionarrator/bn-backend-redis/tarball/master",
     "bn-backend-inproc": "https://github.com/biblionarrator/bn-backend-inproc/tarball/master",
     "grunt-configure-biblionarrator": "https://github.com/biblionarrator/grunt-configure-biblionarrator/tarball/master",
-    "csv": "~0.3.6"
+    "csv": "~0.3.6",
+    "marcrecord": "https://github.com/biblionarrator/marcrecord/tarball/master"
   },
   "devDependencies": {
     "chai": "1.7.x",

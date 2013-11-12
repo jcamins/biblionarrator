@@ -1,5 +1,5 @@
 var Handlebars = require('handlebars'),
-    MARCRecord = require('../marcrecord'),
+    MARCRecord = require('marcrecord'),
     extend = require('extend'),
     util = require('util');
 
