@@ -22,7 +22,6 @@ module.exports.indexes = function(recorddata) {
     return indexes;
 };
 
-/*jshint unused:false */ /* Not yet implemented */
 module.exports.links = function(recorddata) {
     var links = [];
     if (recorddata.Relationships.BT) {
@@ -47,6 +46,39 @@ function relationshipLink(term, recordtype, relationship) {
     return { key: term, label: relationship, properties: { target: term, marker: term } };
 }
 
+/*jshint unused:false */ /* Not yet implemented */
 module.exports.decompile = function(htmldom) {
 };
 /*jshint unused:true */
+
+module.exports.import = function (term, options, maps, matcher) {
+    var rec = { Name: term.Name, Attributes: { }, Relationships: { } };
+    term.Attributes.Attribute.forEach(function (el) {
+        if (el.$text) {
+            rec.Attributes[el.$.name] = rec.Attributes[el.$.name] || [ ];
+            rec.Attributes[el.$.name].push(el.$text);
+        }
+    });
+    if (term.Relationships && term.Relationships.Relationship) {
+        term.Relationships.Relationship.forEach(function (el) {
+            rec.Relationships[el.$.type] = rec.Relationships[el.$.type] || [ ];
+            el.Is.forEach(function (is) {
+                if (typeof is === 'object' && is !== null) {
+                    rec.Relationships[el.$.type].push(is.$text);
+                } else if (typeof is === 'string' && is.length > 0) {
+                    rec.Relationships[el.$.type].push(is);
+                }
+            });
+        });
+    }
+    return { format: 'ericthesaurus', data: rec, recordclass: (rec.Attributes.RecType && rec.Attributes.RecType[0] === 'Main' ? 'term' : 'synonym') };
+};
+
+module.exports.importoptions = {
+    collect: [
+        'Attribute',
+        'Relationship',
+        'Is'
+    ],
+    recordElement: 'Term'
+};

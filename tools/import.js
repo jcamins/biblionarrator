@@ -14,6 +14,11 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
             describe: 'Import XML data',
             boolean: true
         },
+        'lookup': {
+            alias: 'l',
+            describe: 'Use a lookup table and create links retrospectively',
+            boolean: true
+        },
         'match': {
             alias: 'm',
             describe: 'Criterion for matching (index:field)'
@@ -52,6 +57,7 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
     util = require('util'),
     fs = require('fs'),
     Q = require('q'),
+    extend = require('extend'),
     handler = require('../src/lib/formats/' + options.format);
 var inspect = require('eyes').inspector({maxLength: false});
 
@@ -98,7 +104,7 @@ var recordcount = 0;
 var mainrecordcount = 0;
 var rejects = [ ];
 
-var linklookup = { };
+var lookup = { }, linksleft = { };
 
 importer.on('record', function (record, mypromise) {
     mainrecordcount++;
@@ -110,7 +116,7 @@ importer.on('record', function (record, mypromise) {
     if (!rec) {
         rec = new Record(record);
     } else if (options.overlay) {
-        rec.format = 'marc21';
+        rec.format = options.format;
         rec.data = record.data;
     } else {
         mypromise.resolve();
@@ -118,10 +124,11 @@ importer.on('record', function (record, mypromise) {
     }
     try {
         rec.save();
+        if (typeof rec.key !== 'undefined') lookup[rec.key] = rec.id;
         var links = rec.getLinks();
         links.forEach(function (link) {
-            var target = (link.match ? linklookup[JSON.stringify(link.match)] : undefined)
-                         || linklookup[link.key];
+            var target = (link.match ? lookup[JSON.stringify(link.match)] : undefined)
+                         || lookup[link.key];
             if (typeof target === 'undefined' && link.match) {
                 target = Record.findOne(link.match);
             }
@@ -134,14 +141,28 @@ importer.on('record', function (record, mypromise) {
                 recordcount++;
             }
             if (typeof target !== 'undefined') {
-                linklookup[link.key] = linklookup[link.key] || target.id;
+                lookup[link.key] = lookup[link.key] || target.id;
                 if (link.match) {
-                    linklookup[JSON.stringify(link.match)] = linklookup[link.key];
+                    lookup[JSON.stringify(link.match)] = lookup[link.key];
                 }
                 rec.link(link.label, target, link.properties);
                 linkcount++;
+            } else if (options.lookup) {
+                linksleft[link.key] = linksleft[link.key] || [ ];
+                link.source = rec.id;
+                linksleft[link.key].push(link);
             }
         });
+        if (options.lookup && typeof rec.key !== 'undefined') {
+            if (linksleft[rec.key]) {
+                linksleft[rec.key].forEach(function (link) {
+                    rec.link(link.label, link.source, link.properties, true);
+                    linkcount++;
+                });
+                delete linksleft[rec.key];
+            }
+            lookup[rec.key] = rec.id;
+        }
         recordcount++;
     } catch (e) {
         console.log(e, e.stack);
@@ -157,7 +178,7 @@ importer.on('commit', function (promise) {
 
 importer.on('done', function (rejects) {
     console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links');
-    if (rejects.length > 0) {
+    if (typeof rejects !== 'undefined' && rejects.length > 0) {
         fs.writeFileSync(options.reject, rejects.join('\n'));
     }
     process.exit();
