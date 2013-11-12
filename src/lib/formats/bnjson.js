@@ -127,3 +127,11 @@ module.exports.links = function(recorddata) {
 module.exports.decompile = function(htmldom) {
     return dom2raw(htmldom);
 };
+
+module.exports.import = function (record, options, maps, matcher) {
+    return { format: 'bnjson', data: record };
+};
+
+module.exports.importoptions = {
+    importer: 'json'
+};
