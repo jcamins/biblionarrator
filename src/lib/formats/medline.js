@@ -52,13 +52,15 @@ module.exports.import = function (record, options, maps, matcher) {
 
 module.exports.importoptions = {
     importer: 'xml',
-    collect: [
-        'Author',
-        'Chemical',
-        'MeshHeading',
-        'QualifierName',
-        'OtherAbstract',
-        'OtherId'
-    ],
-    recordElement: 'MedlineCitation'
+    xml: {
+        collect: [
+            'Author',
+            'Chemical',
+            'MeshHeading',
+            'QualifierName',
+            'OtherAbstract',
+            'OtherId'
+        ],
+        recordElement: 'MedlineCitation'
+    }
 };

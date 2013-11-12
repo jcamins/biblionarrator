@@ -161,3 +161,7 @@ module.exports.import = function (record, options, maps, matcher) {
     }
     return { format: 'marc21', data: record, recordclass: recordclass };
 };
+
+module.exports.importoptions = {
+    importer: 'json'
+};

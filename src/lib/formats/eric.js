@@ -164,12 +164,15 @@ module.exports.import = function (record, options, maps, matcher) {
 };
 
 module.exports.importoptions = {
-    collect: [
-        'dc:creator',
-        'dc:subject',
-        'dc:type',
-        'dc:identifier',
-        'dcterms:educationLevel'
-    ],
-    recordElement: 'record'
+    importer: 'xml',
+    xml: {
+        collect: [
+            'dc:creator',
+            'dc:subject',
+            'dc:type',
+            'dc:identifier',
+            'dcterms:educationLevel'
+        ],
+        recordElement: 'record'
+    }
 };

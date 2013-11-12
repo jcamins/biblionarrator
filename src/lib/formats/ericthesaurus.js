@@ -75,10 +75,13 @@ module.exports.import = function (term, options, maps, matcher) {
 };
 
 module.exports.importoptions = {
-    collect: [
-        'Attribute',
-        'Relationship',
-        'Is'
-    ],
-    recordElement: 'Term'
+    importer: 'xml',
+    xml: {
+        collect: [
+            'Attribute',
+            'Relationship',
+            'Is'
+        ],
+        recordElement: 'Term'
+    }
 };

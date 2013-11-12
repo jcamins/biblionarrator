@@ -4,15 +4,9 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
             alias: 'f',
             describe: 'Data format to import'
         },
-        'json': {
-            alias: 'j',
-            describe: 'Import JSON data',
-            boolean: true
-        },
-        'xml': {
-            alias: 'x',
-            describe: 'Import XML data',
-            boolean: true
+        'importer': {
+            alias: 'i',
+            describe: 'Select the importer (json or xml) to use'
         },
         'lookup': {
             alias: 'l',
@@ -70,11 +64,13 @@ var importer,
         pause: (options.map ? true : false)
     };
 if (typeof handler.importoptions !== 'undefined') {
-    extend(true, importopts, handler.importoptions);
+    importer = options.importer || handler.importoptions.importer;
+    handler.importoptions[importer] = handler.importoptions[importer] || { };
+    extend(true, importopts, handler.importoptions[importer]);
 }
-if (options.xml) {
+if (importer === 'xml') {
     importer = new XMLImporter(importopts);
-} else {
+} else if (importer === 'json') {
     importer = new JSONImporter(importopts);
 }
 
