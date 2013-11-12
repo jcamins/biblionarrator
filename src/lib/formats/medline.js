@@ -38,3 +38,27 @@ module.exports.decompile = function(htmldom) {
 };
 /*jshint unused:true */
 
+module.exports.import = function (record, options, maps, matcher) {
+    var otherids = { };
+    if (record.Article.OtherID) {
+        record.Article.OtherID.forEach(function (el) {
+            otherids[el.$.Source] = otherids[el.$.Source] || [ ];
+            otherids[el.$.Source].push(el.$text);
+        });
+        record.Article.OtherID = otherids;
+    }
+    return { format: 'medline', data: record };
+};
+
+module.exports.importoptions = {
+    importer: 'xml',
+    collect: [
+        'Author',
+        'Chemical',
+        'MeshHeading',
+        'QualifierName',
+        'OtherAbstract',
+        'OtherId'
+    ],
+    recordElement: 'MedlineCitation'
+};
