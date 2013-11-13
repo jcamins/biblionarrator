@@ -80,7 +80,7 @@ function listen(port, callback) {
     socketserver.configure(httpserver);
     httpserver.listen(port);
     httpserver.on('listening', function () {
-        console.log('Listening on port ' + port + ' using configuration from ' + config);
+        console.log('Listening on port ' + port + ' using configuration from ' + environment.filename);
         if (typeof callback === 'function') {
             callback();
         }
