@@ -63,9 +63,7 @@ function optimizeTree(tree, query, supports, environment) {
         var notplan = optimizeTree(tree[1], new PartialPlan(), supports, environment);
         query.unoptimizable = query.unoptimizable || notplan.unoptimizable;
         if (notplan.length === notplan.textq.length) {
-            notplan.textq.forEach(function (textq) {
-                query.textq.push({ not: textq });
-            });
+            query.textq.push('-(' + notplan.textq.join(' ') + ')');
         } else if (notplan.length === notplan.pipeline.length) {
             query.pipeline = query.pipeline.concat(
                 [ { as: 'trunk' + notplan.nextlabel } ],
@@ -147,13 +145,11 @@ function buildEdgeQuery(type, label, value, facet) {
 }
 
 function analyzeESValue(tree, index) {
-    var textValue = { "match" : { } };
     if (tree[0] === 'PHRASE') {
-        textValue.match[index] = { query: tree[1], type: 'phrase' };
+        return index + ':"' + tree[1] + '"';
     } else {
-        textValue.match[index] = { query: tree.slice(1).join(' ') };
+        return index + ':' + tree[1];
     }
-    return textValue;
 }
 
 function analyzeContainsValue(tree) {
@@ -173,13 +169,6 @@ function analyzeValue(tree) {
 }
 
 function prepareESQuery(plan) {
-    var query = { should: [ ], must_not: [ ] };
-    for (var ii = 0; ii < plan.textq.length; ii++) {
-        if (plan.textq[ii].not) {
-            query.must_not.push(plan.textq[ii].not);
-        } else {
-            query.should.push(plan.textq[ii]);
-        }
-    }
-    return { query: { bool: query }, size: 5000 };
+    var query = plan.textq.join(' ');
+    return { query: { query_string: { query: query } }, size: 5000 };
 }
