@@ -57,8 +57,8 @@ function handleOptimizedQuery(query, plan, callback) {
         if (typeof plan.esquery.fields === 'undefined') {
             plan.esquery.fields = environment.esclient.fields;
         }
-        if (environment.esclient.rescore) {
-            plan.esquery.rescore = environment.esclient.rescore;
+        if (environment.esclient.boost) {
+            plan.esquery.query.query_string.query = plan.esquery.query.query_string.query + ' AND ' + environment.esclient.boost;
         }
         environment.esclient.search(environment.esclient.indexname, 'vertex', plan.esquery, function (err, data) {
             var records = [ ];

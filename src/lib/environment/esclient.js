@@ -34,34 +34,23 @@ function ESClient(config) {
             if (typeof err === 'undefined') {
                 data = JSON.parse(data);
             }
-            var maxvorder;
+            var meanvorder = Math.round(data.facets.vorder.mean);
+            var halfmeanvorder = Math.round(data.facets.vorder.mean / 2);
             var static_relevance = '';
             if (typeof data.facets !== 'undefined') {
-                maxvorder = data.facets.vorder.max;
+                static_relevance = config.indexes['vorder'].id + ':>' + meanvorder + '^2 OR ' + config.indexes['vorder'].id + ':[' + halfmeanvorder + ' TO ' + meanvorder + ']';
             }
             if (Object.keys(config.static_relevance_bumps).length > 0) {
-                var bumpcount = 0;
                 for (var field in config.static_relevance_bumps) {
-                    static_relevance = static_relevance + "lu" + bumpcount + "=" + makeMVELMap(config.static_relevance_bumps[field]) + ";v" + bumpcount + "=doc['" + config.indexes[field].id + "'].value;";
-                    bumpcount++;
-                }
-                static_relevance = static_relevance + "(((";
-                for (var ii = 0; ii < bumpcount; ii++) {
-                    if (ii > 0) {
-                        static_relevance = static_relevance + '+';
+                    var fieldquery = '';
+                    for (var val in config.static_relevance_bumps[field]) {
+                        fieldquery = fieldquery + ' ' + config.indexes[field].id + ':' + val + '^' + config.static_relevance_bumps[field][val];
                     }
-                    static_relevance = static_relevance + 'lu' + ii + '[v' + ii + '] or 0';
+                    static_relevance = static_relevance + fieldquery;
                 }
-                static_relevance = static_relevance + ")/" + bumpcount + "f)+1)";
-                if (maxvorder) {
-                    static_relevance = static_relevance + "*((doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1)";
-                }
-            } else if (maxvorder > 0) {
-                static_relevance = "(doc['" + config.indexes['vorder'].id + "'].value/" + maxvorder + "f)+1";
             }
             if (static_relevance.length > 0) {
-                self.rescore = { window_size: 500, query: { rescore_query: { custom_score: { query: { match_all: { } } } }, rescore_query_weight: 1.5 } };
-                self.rescore.query.rescore_query.custom_score.script = static_relevance;
+                self.boost = '(' + static_relevance + ')';
             }
         });
     }
@@ -70,14 +59,3 @@ function ESClient(config) {
 }
 
 module.exports = ESClient;
-
-function makeMVELMap(object) {
-    var map = '';
-    for (var key in object) {
-        if (map.length > 0) {
-            map = map + ',';
-        }
-        map = map + "'" + key + "':" + object[key];
-    }
-    return '[' + map + ']';
-}

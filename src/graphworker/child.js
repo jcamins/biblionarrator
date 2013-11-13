@@ -1,7 +1,6 @@
 "use strict";
 /*jshint unused:true */ /* We need this in order to get environment's message handler */
 var environment = require('../lib/environment');
-/*jshint unused:false */
 var handlers = {
     setEnv: function () {
         require("fs").readdirSync(__dirname + '/tasks').forEach(function(file) {
@@ -10,8 +9,10 @@ var handlers = {
                 handlers[handler.message] = handler;
             }
         });
+        var esclient = environment.esclient;
     }
 };
+/*jshint unused:false */
 
 process.on('message', function (message) {
     for (var handler in handlers) {
