@@ -13,7 +13,6 @@ var options = require('../src/lib/cmd')("Start Biblionarrator server", {
 var port = options.port || environment.port || 3000;
 var config = options.config || 'defaults';
 server.listen(port);
-console.log('Listening on port ' + port + ' using configuration from ' + config);
 
 process.on('SIGINT', function () {
     process.exit();

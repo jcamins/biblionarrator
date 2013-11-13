@@ -79,24 +79,22 @@ function listen(port, callback) {
     httpserver = http.createServer(app);
     socketserver.configure(httpserver);
     httpserver.listen(port);
-    if (typeof callback === 'function') {
-        httpserver.on('listening', callback);
-    }
+    httpserver.on('listening', function () {
+        console.log('Listening on port ' + port + ' using configuration from ' + config);
+        if (typeof callback === 'function') {
+            callback();
+        }
+    });
 }
 
 function start(port, callback) {
     var semaphores = [ ];
     if (typeof environment.datastore.wait === 'function') semaphores.push(environment.datastore.wait());
     if (typeof environment.i18next.wait === 'function') semaphores.push(environment.i18next.wait());
-    if (semaphores.length > 0) {
-        Q.all(semaphores).then(function () {
-            initializeApp();
-            listen(port, callback);
-        });
-    } else {
+    Q.all(semaphores).timeout(30000, 'Failed to initialize connections in 30 seconds').then(function () {
         initializeApp();
         listen(port, callback);
-    }
+    }).catch(function (err) { console.log('Unable to start server: ' + err); process.exit(); });
 }
 
 exports.listen = start;
