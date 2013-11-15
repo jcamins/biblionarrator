@@ -85,7 +85,11 @@ function connect(config, engine, g) {
                         }
                         var type = db.makeKeySync(name).dataTypeSync(Type[index.datatype].class);
                         backends.forEach(function (backend) {
-                            type = type.indexedSync(backend, propertyclass);
+                            if (config.graphconf[engine].version === '0.4.1') {
+                                type = type.indexedSync(backend, propertyclass, g.java.newArray('com.thinkaurelius.titan.core.Parameter', []));
+                            } else {
+                                type = type.indexedSync(backend, propertyclass);
+                            }
                         });
                         if (index.unique && !index.multivalue) {
                             type = type.singleSync().uniqueSync();
@@ -99,9 +103,15 @@ function connect(config, engine, g) {
                         index.id = type.makeSync().getIdSync();
                         break;
                     case 'text':
-                        index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
-                            .indexedSync("search", Type.Vertex.class)
-                            .singleSync().makeSync().getIdSync();
+                        if (config.graphconf[engine].version === '0.4.1') {
+                            index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
+                                .indexedSync("search", Type.Vertex.class, g.java.newArray('com.thinkaurelius.titan.core.Parameter', []))
+                                .singleSync().makeSync().getIdSync();
+                        } else {
+                            index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
+                                .indexedSync("search", Type.Vertex.class)
+                                .singleSync().makeSync().getIdSync();
+                            }
                         break;
                 }
                 /*jshint +W086*/
