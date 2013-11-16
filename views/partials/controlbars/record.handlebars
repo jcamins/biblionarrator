@@ -13,7 +13,7 @@
             <a href="#" id="dropdown-save" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="#" class="save-record">{{#tr 'label.record'}}Record{{/tr}}</a></li>
-                <li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">{{#tr 'label.astemplate'}}As template{{/tr}}</a></li>
+                <!--<li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">{{#tr 'label.astemplate'}}As template{{/tr}}</a></li>-->
             </ul>
         </li>
         <li class="dropdown">
@@ -22,9 +22,9 @@
                 <li><a href="#" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmreload'}}Confirm reload{{/tr}}" data-confirm-body="{{#tr 'message.confirmreload'}}Are you certain you want to reload?{{/tr}}">{{#tr 'label.reload'}}Reload{{/tr}}</a></li>
                 <li class="divider"></li>
                 <li><a href="#" id="upload-image" data-toggle="modal" data-target="#upload-image-modal">{{#tr 'label.upload'}}Upload image{{/tr}}</a></li>
-                <li class="divider"></li>
+                <!--<li class="divider"></li>
                 <li><a target="_blank" href="{{url}}/snippet?format=htmlnolink" class="self-url" id="download-citations-html">{{#tr 'label.downloadcitation'}}Download citation (HTML){{/tr}}</a></li>
-                <li><a target="_blank" href="{{url}}?format=htmlnolink" class="self-url" id="download-full-html">{{#tr 'label.downloadrecord'}}Download full record (HTML){{/tr}}</a></li>
+                <li><a target="_blank" href="{{url}}?format=htmlnolink" class="self-url" id="download-full-html">{{#tr 'label.downloadrecord'}}Download full record (HTML){{/tr}}</a></li>-->
                 <li class="divider"></li>
                 <li><a href="{{url}}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmdelete'}}Confirm delete{{/tr}}" data-confirm-body="{{#tr 'message.confirmdelete'}}Are you certain you want to delete?{{/tr}}" class="self-url">{{#tr 'label.delete'}}Delete{{/tr}}</a></li>
             </ul>
@@ -39,13 +39,5 @@
             </ul>
         </li>
         <li><a href="#" id="untag">{{#tr 'label.untag'}}Untag{{/tr}}</a></li>
-        <li class="divider-vertical"></li>
-        <li data-toggle="dropdown-select">
-            <select id="recordtype-select" title="{{#tr 'label.recordtype'}}Record type{{/tr}}: ">
-                {{#recordtypes}}
-                    <option value="{{id}}">{{name}}</option>
-                {{/recordtypes}}
-            </select>
-        </li>
     </ul>
     {{/if}}
