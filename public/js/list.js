@@ -21,6 +21,9 @@ function initializeList() {
             });
         });
     });
+    $('body').on('click', '.show-more a', null, function() {
+        $(this).parents('ul').addClass('show-all');
+    });
     $('.remove-facet').click(function(ev) {
         var self = this;
         var parts = document.URL.split(/[?&]/);
