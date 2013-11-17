@@ -1,29 +1,25 @@
 var landmarks = [ ];
 
+function getRecordId(object) {
+    return $(object).parents('tr').attr('data-id')
+}
+
 function initializeList() {
-    $('body').on('click', '.preview', null, function() {
+    $('body').on('click', '.preview.open', null, function() {
         var button = this;
-        if ($(button).hasClass('open')) {
-            $(button).parents('td').find('section').each(function () {
-                $(this).slideUp('fast', function () {
-                    $(button).removeClass('open');
-                });
+        $(button).parents('td').find('section').each(function () {
+            $(this).slideUp('fast', function () {
+                $(button).removeClass('open');
             });
-        } else {
-            $(button).parents('td').find('section').each(function () {
-                $(this).slideDown('fast', function () {
-                    $(button).addClass('open');
-                });
+        });
+    });
+    $('body').on('click', '.preview:not(.open)', null, function() {
+        var button = this;
+        $(button).parents('td').find('section').each(function () {
+            $(this).slideDown('fast', function () {
+                $(button).addClass('open');
             });
-        }
-    });
-    $('#sortings').on('change', '#add-sort', null, function() {
-        if ($(this).find(':selected').val()) {
-            window.location.href = addQueryStringParameter(document.URL, 'sort[]', $(this).find(':selected').val());
-        }
-    });
-    $('#perpage').change(function () {
-        window.location.href = updateQueryStringParameter(document.URL, 'perpage', $(this).find(':selected').val());
+        });
     });
     $('.remove-facet').click(function(ev) {
         var self = this;
@@ -45,23 +41,20 @@ function initializeList() {
         window.location.href = url;
         ev.preventDefault();
     });
-    $('.add-bookmark').click(function() {
-        addBookmark($(this).parents('tr').attr('data-id'));
-        return false;
+    $('.add-bookmark').click(function(ev) {
+        addBookmark(getRecordId(this));
+        ev.preventDefault();
     });
     $('body').on('click', '.explore-links', null, function() {
-        var row = $(this).parents('tr');
-        window.bnpanes.load('/search?q=' + encodeURIComponent('{{linkbrowse:' + $(row).attr('data-id') + '}}'));
+        window.bnpanes.load('/search?q=' + encodeURIComponent('{{linkbrowse:' + getRecordId(this) + '}}'));
     });
     $('body').on('click', '.mark-landmark:not(.selected)', null, function () {
-        var row = $(this).parents('tr');
-        landmarks.push($(row).attr('data-id'));
+        landmarks.push(getRecordId(this));
         $(this).addClass('selected');
     });
     $('body').on('click', '.mark-landmark.selected', null, function () {
-        var row = $(this).parents('tr');
         for (var ii = 0; ii < landmarks.length; ii++) {
-            if (landmarks[ii] === $(row).attr('data-id')) {
+            if (landmarks[ii] === getRecordId(this)) {
                 landmarks.splice(ii, 1);
                 break;
             }
@@ -70,25 +63,21 @@ function initializeList() {
     });
 
     $('#visualize-landmarks').click(function () {
-        if ($(this).hasClass('active')) {
-            $('#visualization-container, .visualization-key').hide();
-            $(this).removeClass('active');
-        } else {
-            $('#visualization-container').show();
+        $('#visualization-container, .visualization-key').hide();
+        $('#visualize-search').parent().removeClass('active');
+        if (!$(this).parent().hasClass('active')) {
             window.bnvis.landmarks(landmarks);
-            $(this).addClass('active');
         }
+        $(this).parent().toggleClass('active')
     });
 
     $('#visualize-search').click(function () {
-        if ($(this).hasClass('active')) {
-            $('#visualization-container, .visualization-key').hide();
-            $(this).removeClass('active');
-        } else {
-            $('#visualization-container').show();
+        $('#visualization-container, .visualization-key').hide();
+        $('#visualize-landmarks').parent().removeClass('active');
+        if (!$(this).parent().hasClass('active')) {
             window.bnvis.searchmap(window.location.href);
-            $(this).addClass('active');
         }
+        $(this).parent().toggleClass('active')
     });
 
 

@@ -9,6 +9,7 @@
         d3.select("#edgekey ul").remove();
 
         d3.json(url, function (error, data) {
+            document.querySelector('#visualization-container').style.display = 'block';
             if (typeof data === 'undefined' || typeof data.records === 'undefined' || data.records.length === 0) {
                 d3.select('#visualization').append('span').text('Nothing to visualize');
                 setTimeout(function () {
