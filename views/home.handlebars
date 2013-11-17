@@ -3,27 +3,27 @@
         <div class="span10 pull-right">
             <div class="row-fluid">
                 <div class="span6">
-                    <h2>{{#tr "home.welcome" add="from helper"}}Welcome to Biblionarrator{{/tr}}</h2>
+                    <h2>{{#trhtml "home.welcome" add="from helper"}}Welcome to Biblionarrator{{/trhtml}}</h2>
                     <p>
-                    {{#tr "home.introduction"}}Biblionarrator is
+                    {{#trhtml "home.introduction"}}Biblionarrator is
                     a discovery layer under active development by C & P. Biblionarrator is
                     in beta testing, so users should expect frequent changes and
                     improvements. Any questions about the system can be directed to
-                    <a href="mailto:biblionarrator@cpbibliography.com">biblionarrator@cpbibliography.com</a>.{{/tr}}</p>
-                    <p><a href="/help" class="btn btn-primary btn-large">{{#tr "home.learnmore" add="from helper"}}Learn more &raquo;{{/tr}}</a></p>
+                    <a href="mailto:biblionarrator@cpbibliography.com">biblionarrator@cpbibliography.com</a>.{{/trhtml}}</p>
+                    <p><a href="/help" class="btn btn-primary btn-large">{{#trhtml "home.learnmore" add="from helper"}}Learn more &raquo;{{/trhtml}}</a></p>
                 </div>
                 <div class="span6">
-                    <h4>{{#tr "home.commontasks"}}Common tasks{{/tr}}</h4>
+                    <h4>{{#trhtml "home.commontasks"}}Common tasks{{/trhtml}}</h4>
                     <ul class="home-links">
                         {{#unless user}}
-                        <li><a href="/auth/login">{{#tr "action.login"}}Log in{{/tr}}</a></li>
+                        <li><a href="/auth/login">{{#trhtml "action.login"}}Log in{{/trhtml}}</a></li>
                         {{/unless}}
-                        <li><a href="/search">{{#tr "action.searchcatalogue"}}Search catalogue{{/tr}}</a></li>
+                        <li><a href="/search">{{#trhtml "action.searchcatalogue"}}Search catalogue{{/trhtml}}</a></li>
                         {{#if user.permission.edit_record}}
-                        <li><a href="/record/new">{{#tr "action.createnew"}}Create new record{{/tr}}</a></li>
+                        <li><a href="/record/new">{{#trhtml "action.createnew"}}Create new record{{/trhtml}}</a></li>
                         {{/if}}
                         {{#if user.permission.edit_admin}}
-                        <li><a href="/admin">{{#tr "action.administer"}}Administer system{{/tr}}</a></li>
+                        <li><a href="/admin">{{#trhtml "action.administer"}}Administer system{{/trhtml}}</a></li>
                         {{/if}}
                     </ul>
                 </div>

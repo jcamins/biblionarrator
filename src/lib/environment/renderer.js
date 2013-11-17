@@ -20,6 +20,20 @@ Handlebars.registerHelper('tr', function(key, options) {
     return new Handlebars.SafeString(result);
 });
 
+Handlebars.registerHelper('thtml', function(i18n_key, options) {
+    var result = i18next.t(i18n_key, options.hash);
+
+    return new Handlebars.SafeString('<span class="translate_t" data-t="' + i18n_key + '">' + result + '</span>');
+});
+
+Handlebars.registerHelper('trhtml', function(i18n_key, options) { 
+    var opts = i18next.functions.extend(options.hash, this);
+    if (options.fn) opts.defaultValue = options.fn(this);
+
+    var result = i18next.t(i18n_key, opts);
+
+    return new Handlebars.SafeString('<span class="translate_t" data-t="' + i18n_key + '">' + result + '</span>');
+});
 
 
 Handlebars.registerHelper('subfordered', function (field, subfields, sep) {

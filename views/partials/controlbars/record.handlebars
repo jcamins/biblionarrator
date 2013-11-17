@@ -1,43 +1,43 @@
 <ul id="controlbar-record" class="nav">
-    <li><a href="#" id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc">{{#tr 'label.tableofcontents'}}TOC{{/tr}}</a></li>
+    <li><a href="#" id="toggleTOC" data-target="#table-of-contents" data-toggle="cookie-view" data-cookie="show_toc">{{#trhtml 'label.tableofcontents'}}TOC{{/trhtml}}</a></li>
     {{#if user.permission.edit_record}}
-    <li><a href="#" id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor">{{#tr 'label.editor'}}Editor{{/tr}}</a></li>
+    <li><a href="#" id="toggleEditor" data-target="#editor-toolbar" data-toggle="cookie-view" data-cookie="show_editor">{{#trhtml 'label.editor'}}Editor{{/trhtml}}</a></li>
     {{/if}}
-    <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">{{#tr 'label.showtags'}}Show tags{{/tr}}</a></li>
+    <li><a href="#" id="toggle-tags" data-target="#recordContainer" data-toggle="cookie-view" data-cookie="show_tags" data-class="showtags">{{#trhtml 'label.showtags'}}Show tags{{/trhtml}}</a></li>
     <li class="divider-vertical"></li>
     </ul>
     {{#if user.permission.edit_record}}
     <ul id="editor-toolbar" class="nav">
-        <li class="save-button"><a href="#" class="save-record caret-before">{{#tr 'label.save'}}Save{{/tr}}</a></li>
+        <li class="save-button"><a href="#" class="save-record caret-before">{{#trhtml 'label.save'}}Save{{/trhtml}}</a></li>
         <li class="save-button dropdown">
             <a href="#" id="dropdown-save" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a href="#" class="save-record">{{#tr 'label.record'}}Record{{/tr}}</a></li>
-                <!--<li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">{{#tr 'label.astemplate'}}As template{{/tr}}</a></li>-->
+                <li><a href="#" class="save-record">{{#trhtml 'label.record'}}Record{{/trhtml}}</a></li>
+                <!--<li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">{{#trhtml 'label.astemplate'}}As template{{/trhtml}}</a></li>-->
             </ul>
         </li>
         <li class="dropdown">
-            <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">{{#tr 'label.options'}}Options{{/tr}} <b class="caret"></b></a>
+            <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">{{#trhtml 'label.options'}}Options{{/trhtml}} <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a href="#" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmreload'}}Confirm reload{{/tr}}" data-confirm-body="{{#tr 'message.confirmreload'}}Are you certain you want to reload?{{/tr}}">{{#tr 'label.reload'}}Reload{{/tr}}</a></li>
+                <li><a href="#" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmreload'}}Confirm reload{{/tr}}" data-confirm-body="{{#tr 'message.confirmreload'}}Are you certain you want to reload?{{/tr}}">{{#trhtml 'label.reload'}}Reload{{/trhtml}}</a></li>
                 <li class="divider"></li>
-                <li><a href="#" id="upload-image" data-toggle="modal" data-target="#upload-image-modal">{{#tr 'label.upload'}}Upload image{{/tr}}</a></li>
+                <li><a href="#" id="upload-image" data-toggle="modal" data-target="#upload-image-modal">{{#trhtml 'label.upload'}}Upload image{{/trhtml}}</a></li>
                 <!--<li class="divider"></li>
-                <li><a target="_blank" href="{{url}}/snippet?format=htmlnolink" class="self-url" id="download-citations-html">{{#tr 'label.downloadcitation'}}Download citation (HTML){{/tr}}</a></li>
-                <li><a target="_blank" href="{{url}}?format=htmlnolink" class="self-url" id="download-full-html">{{#tr 'label.downloadrecord'}}Download full record (HTML){{/tr}}</a></li>-->
+                <li><a target="_blank" href="{{url}}/snippet?format=htmlnolink" class="self-url" id="download-citations-html">{{#trhtml 'label.downloadcitation'}}Download citation (HTML){{/trhtml}}</a></li>
+                <li><a target="_blank" href="{{url}}?format=htmlnolink" class="self-url" id="download-full-html">{{#trhtml 'label.downloadrecord'}}Download full record (HTML){{/trhtml}}</a></li>-->
                 <li class="divider"></li>
-                <li><a href="{{url}}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmdelete'}}Confirm delete{{/tr}}" data-confirm-body="{{#tr 'message.confirmdelete'}}Are you certain you want to delete?{{/tr}}" class="self-url">{{#tr 'label.delete'}}Delete{{/tr}}</a></li>
+                <li><a href="{{url}}/delete" id="record-delete" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmdelete'}}Confirm delete{{/tr}}" data-confirm-body="{{#tr 'message.confirmdelete'}}Are you certain you want to delete?{{/tr}}" class="self-url">{{#trhtml 'label.delete'}}Delete{{/trhtml}}</a></li>
             </ul>
         </li>
         <li class="divider-vertical"></li>
         <li id="tag-select" class="dropdown">
-            <a href="#" id="tag" data-toggle="dropdown" class="dropdown-toggle">{{#tr 'label.tag'}}Tag{{/tr}} <b class="caret"></b></a>
+            <a href="#" id="tag" data-toggle="dropdown" class="dropdown-toggle">{{#trhtml 'label.tag'}}Tag{{/trhtml}} <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 {{#fields}}
                 <li><a href="#">{{label}}</a></li>
                 {{/fields}}
             </ul>
         </li>
-        <li><a href="#" id="untag">{{#tr 'label.untag'}}Untag{{/tr}}</a></li>
+        <li><a href="#" id="untag">{{#trhtml 'label.untag'}}Untag{{/trhtml}}</a></li>
     </ul>
     {{/if}}

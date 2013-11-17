@@ -3,7 +3,7 @@
         <div class="span10 pull-right">
             <div class="row-fluid">
                 <div class="span6">
-                    <h2>{{#tr 'action.signin'}}Sign in{{/tr}}</h2>
+                    <h2>{{#trhtml 'action.signin'}}Sign in{{/trhtml}}</h2>
                     {{#if error}}
                     <div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>{{error}}</div>
                     {{/if}}
@@ -18,9 +18,9 @@
                             <input type="password" id="login-password" name="password" placeholder="{{#tr 'label.password'}}Password{{/tr}}"></input>
                         </div>
                         <input type="hidden" name="redirect" value="{{redirect}}"></input>
-                        <button class="btn btn-small btn-primary" type="submit">{{#tr 'action.passwordsignin'}}Sign in with password{{/tr}}</button>
+                        <button class="btn btn-small btn-primary" type="submit">{{#trhtml 'action.passwordsignin'}}Sign in with password{{/trhtml}}</button>
                         <div class="persona-div">
-                        <a href="#" class="persona-button" id="browserid"><span>{{#tr 'action.emailsignin'}}Sign in with your email{{/tr}}</span></a>
+                        <a href="#" class="persona-button" id="browserid"><span>{{#trhtml 'action.emailsignin'}}Sign in with your email{{/trhtml}}</span></a>
                         </div>
                     </form>
 

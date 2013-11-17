@@ -6,9 +6,9 @@
 {{#if query.facets}}
 <div class="row-fluid">
     <div class="span10 facets">
-        <span class="facet-label">{{#tr 'label.limits'}}Limits{{/tr}}</span>
+        <span class="facet-label">{{#trhtml 'label.limits'}}Limits{{/trhtml}}</span>
             {{#each query.facets}}
-                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="{{#tr 'label.removefacet'}}Remove {{label}} facet{{/tr}}" class="remove-facet" data-index="{{@index}}" href="#">x</a></sub></span>
+                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="{{#trhtml 'label.removefacet'}}Remove {{label}} facet{{/trhtml}}" class="remove-facet" data-index="{{@index}}" href="#">x</a></sub></span>
             {{/each}}
         </span>
     </div>
@@ -17,15 +17,15 @@
 {{#if sortings}}
 <div class="row-fluid">
     <div class="span10 offset2">
-        <span class="sort-label">{{#tr 'label.sort'}}Sort{{/tr}}</span> &gt;
+        <span class="sort-label">{{#trhtml 'label.sort'}}Sort{{/trhtml}}</span> &gt;
         {{#with sortings}}
             {{#each used}}
-                <span class="sort-facet">{{label}} <sub><a title="{{#tr 'label.removesort'}}Remove {{label}} sort{{/tr}}" class="remove-sort">x</a></sub></span> &gt;
+                <span class="sort-facet">{{label}} <sub><a title="{{#trhtml 'label.removesort'}}Remove {{label}} sort{{/trhtml}}" class="remove-sort">x</a></sub></span> &gt;
             {{/each}}
             {{#if available}}
                 <span data-toggle="dropdown-select" class="button-dropdown white">
                     <select id="add-sort">
-                        <option data-placeholder="true">-- {{#tr 'label.addsort'}}add sort{{/tr}} --</option>
+                        <option data-placeholder="true">-- {{#trhtml 'label.addsort'}}add sort{{/trhtml}} --</option>
                         {{#each available}}
                             <option value="{{schema}}_{{field}}">{{label}}</option>
                         {{/each}}
@@ -43,7 +43,7 @@
         </div>
     {{else}}
         <div class="span2" data-template="facets" data-message="{{facetpub}}">
-            {{#tr 'label.loadingfacets'}}Loading facets{{/tr}}
+            {{#trhtml 'label.loadingfacets'}}Loading facets{{/trhtml}}
         </div>
     {{/if}}
     <div class="span10">
@@ -56,7 +56,7 @@
         {{#if more}}
             <tr id="showmore">
                 <td>&nbsp;</td>
-                <td><a data-offset="20" href="{{url}}">{{#tr 'label.showmore'}}Show more{{/tr}}</a></td>
+                <td><a data-offset="20" href="{{url}}">{{#trhtml 'label.showmore'}}Show more{{/trhtml}}</a></td>
             </tr>
         {{/if}}
         </tbody>

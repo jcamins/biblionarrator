@@ -1,7 +1,7 @@
 {{#each records}}
     <tr class="resultRow" data-id="{{id}}">
         <td class="result-number">
-            <a class="record-number-link" href="/record/{{id}}" id="result{{number}}">{{number}}<br>{{#tr 'action.viewrecord'}}view record{{/tr}}</a>
+            <a class="record-number-link" href="/record/{{id}}" id="result{{number}}">{{number}}<br>{{#trhtml 'action.viewrecord'}}view record{{/trhtml}}</a>
         </td>
         <td class="result-content">
             <div itemscope id="recordContainer_{{id}}" class="recordtype_Book recordContainer">
@@ -16,7 +16,7 @@
             </div>
             <button title="{{#tr 'action.showwholerecord'}}Show whole record{{/tr}}" class="preview tray btn btn-link">
                 <i class="chevrons-left"></i>
-                <div><i class="tray-bar"><span class="expand-label">{{#tr 'label.moreellipsis'}}More...{{/tr}}</span><span class="collapse-label">{{#tr 'label.lessellipsis'}}Less...{{/tr}}</span></i></div>
+                <div><i class="tray-bar"><span class="expand-label">{{#trhtml 'label.moreellipsis'}}More...{{/trhtml}}</span><span class="collapse-label">{{#trhtml 'label.lessellipsis'}}Less...{{/trhtml}}</span></i></div>
                 <i class="chevrons-right"></i>
             </button>
             <div class="resultToolbar">

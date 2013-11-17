@@ -41,9 +41,9 @@
                         <ul class="nav pull-left">
                             {{#if user.permission.edit_record}}
                             <li class="dropdown">
-                                <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">{{#tr 'action.new'}}New{{/tr}} <b class="caret"></b></a>
+                                <a href="#" id="dropdown-new" data-toggle="dropdown" class="dropdown-toggle">{{#trhtml 'action.new'}}New{{/trhtml}} <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="/record/new" id="new-blank" class="new-record">{{#tr 'action.blankrecord'}}Blank record{{/tr}}</a></li>
+                                    <li><a href="/record/new" id="new-blank" class="new-record">{{#trhtml 'action.blankrecord'}}Blank record{{/trhtml}}</a></li>
                                     <li class="divider"></li>
                                     <li><span>{{#tr 'label.templates'}}Templates{{/tr}}</span></li>
                                     {{#templates}}
@@ -52,7 +52,7 @@
                                 </ul>
                             </li>
                             {{/if}}
-                            <li class=""><a class="caret-before" href="/search">{{#tr 'action.search'}}Search{{/tr}}</a></li>
+                            <li class=""><a class="caret-before" href="/search">{{#trhtml 'action.search'}}Search{{/trhtml}}</a></li>
                             <!--<li class="hidden-phone dropdown">
                                 <a href="#" class="dropdown-toggle caret-after" data-toggle="dropdown"><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -76,16 +76,16 @@
                                 <ul class="dropdown-menu">
                                     {{#if user}}
                                         <li><span>{{user.email}}</span></li>
-                                        <li><a href="/user/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
-                                        <li><a href="/user/templates">{{#tr 'label.mytemplates'}}My templates{{/tr}}</a></li>
+                                        <li><a href="/user/settings">{{#trhtml 'label.settings'}}Settings{{/trhtml}}</a></li>
+                                        <li><a href="/user/templates">{{#trhtml 'label.mytemplates'}}My templates{{/trhtml}}</a></li>
                                         <li class="divider"></li>
-                                        <li><a href="/auth/logout">{{#tr 'action.signout'}}Sign out{{/tr}}</a></li>
+                                        <li><a href="/auth/logout">{{#trhtml 'action.signout'}}Sign out{{/trhtml}}</a></li>
                                     {{else}}
                                         <form id="navbarLogin" action="/auth/login" method="post" accept-charset="UTF-8">
                                             <input id="navbarLoginUser" type="text" name="username" placeholder="{{#tr 'label.username'}}Username{{/tr}}"></input>
                                             <input id="navbarLoginPassword" type="password" name="password" placeholder="{{#tr 'label.password'}}Password{{/tr}}"></input>
                                             <input type="hidden" name="redirect" value="{{url}}"></input>
-                                            <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">{{#tr 'action.signin'}}Sign in{{/tr}}</button>
+                                            <button id="navbarLoginSubmit" class="btn btn-primary btn-small" type="submit">{{#trhtml 'action.signin'}}Sign in{{/trhtml}}</button>
                                         </form>
                                     {{/if}}
                                 </ul>
@@ -95,25 +95,25 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {{#if user.permission.edit_admin}}
-                                    <li><a href="/admin">{{#tr 'label.administration'}}Administration{{/tr}}</a></li>
+                                    <li><a href="/admin">{{#trhtml 'label.administration'}}Administration{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_field}}
-                                    <li><a href="/admin/fields">{{#tr 'label.fields'}}Fields{{/tr}}</a></li>
+                                    <li><a href="/admin/fields">{{#trhtml 'label.fields'}}Fields{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_user}}
-                                    <li><a href="/admin/user">{{#tr 'label.users'}}Users{{/tr}}</a></li>
+                                    <li><a href="/admin/user">{{#trhtml 'label.users'}}Users{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_collection}}
-                                    <li><a href="/admin/collection">{{#tr 'label.collections'}}Collections{{/tr}}</a></li>
+                                    <li><a href="/admin/collection">{{#trhtml 'label.collections'}}Collections{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_recordtypes}}
-                                    <li><a href="/admin/recordtype">{{#tr 'label.recordtypes'}}Record types{{/tr}}</a></li>
+                                    <li><a href="/admin/recordtype">{{#trhtml 'label.recordtypes'}}Record types{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_settings}}
-                                    <li><a href="/admin/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
+                                    <li><a href="/admin/settings">{{#trhtml 'label.settings'}}Settings{{/trhtml}}</a></li>
                                     {{/if}}
                                     {{#if user.permission.edit_templates}}
-                                    <li><a href="/admin/templates">{{#tr 'label.templates'}}Templates{{/tr}}</a></li>
+                                    <li><a href="/admin/templates">{{#trhtml 'label.templates'}}Templates{{/trhtml}}</a></li>
                                     {{/if}}
                                 </ul>
                             </li>
@@ -122,7 +122,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><span>{{#tr 'label.changelanguage'}}Change language{{/tr}}</span></li>
+                                    <li><span>{{#trhtml 'label.changelanguage'}}Change language{{/trhtml}}</span></li>
                                 {{#each translations}}
                                     <li><a href="/lang/{{this}}">{{t this ns='language'}} ({{this}})</a></li>
                                 {{/each}}
@@ -132,9 +132,9 @@
                             <li class="dropdown visible-desktop">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">{{#tr 'label.showhelp'}}Show help{{/tr}}</input></label></li>
-                                    <li><a href="/help">{{#tr 'label.help'}}Help{{/tr}}</a></li>
-                                    <li><a href="/about">{{#tr 'label.about'}}About{{/tr}}</a></li>
+                                    <li><label class="checkbox"><input type="checkbox" id="show-help" checked="checked" data-toggle="cookie-view" data-default="enabled" data-cookie="show_help" data-class="show-help" data-target="body">{{#trhtml 'label.showhelp'}}Show help{{/trhtml}}</input></label></li>
+                                    <li><a href="/help">{{#trhtml 'label.help'}}Help{{/trhtml}}</a></li>
+                                    <li><a href="/about">{{#trhtml 'label.about'}}About{{/trhtml}}</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -148,20 +148,20 @@
         <!--<nav class="navbar navbar-fixed-bottom hidden-desktop">
             <div class="navbar-inner">
             <ul class="nav">
-                <li><a class="show-bookmarks" href="#">{{#tr 'label.bookmarks'}}Bookmarks{{/tr}}
+                <li><a class="show-bookmarks" href="#">{{#trhtml 'label.bookmarks'}}Bookmarks{{/trhtml}}
                     <span class="bookmark-count">{{bookmarks.length}}</span></a></li>
                 {{#if user}}
-                    <li><a href="/user/settings">{{#tr 'label.settings'}}Settings{{/tr}}</a></li>
+                    <li><a href="/user/settings">{{#trhtml 'label.settings'}}Settings{{/trhtml}}</a></li>
                 {{else}}
-                    <li><a href="/auth/login">{{#tr 'action.login'}}Log in{{/tr}}</a></li>
+                    <li><a href="/auth/login">{{#trhtml 'action.login'}}Log in{{/trhtml}}</a></li>
                 {{/if}}
                 {{#if user.permission.edit_admin}}
-                    <li><a href="/admin">{{#tr 'label.administration'}}Administration{{/tr}}</a></li>
+                    <li><a href="/admin">{{#trhtml 'label.administration'}}Administration{{/trhtml}}</a></li>
                 {{/if}}
                 {{#if user}}
                     <li><span>{{user.email}}</span></li>
                 {{/if}}
-                <li><a href="/help">{{#tr 'label.help'}}Help{{/tr}}</a></li>
+                <li><a href="/help">{{#trhtml 'label.help'}}Help{{/trhtml}}</a></li>
             </ul>
             </div>
         </nav>-->
@@ -175,8 +175,8 @@
             <div id="confirmBody" class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="confirmCancel" class="btn" data-dismiss="modal" aria-hidden="true">{{#tr 'label.no'}}No{{/tr}}</button>
-                <button id="confirmOK" class="btn btn-primary btn-ok">{{#tr 'label.yes'}}Yes{{/tr}}</button>
+                <button id="confirmCancel" class="btn" data-dismiss="modal" aria-hidden="true">{{#trhtml 'label.no'}}No{{/trhtml}}</button>
+                <button id="confirmOK" class="btn btn-primary btn-ok">{{#trhtml 'label.yes'}}Yes{{/trhtml}}</button>
             </div>
         </div>
         {{{block 'modals'}}}
