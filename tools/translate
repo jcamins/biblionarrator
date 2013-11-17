@@ -49,7 +49,17 @@ environment.renderer.registerHelper('t', function(i18n_key) {
     return '';
 });
 
+environment.renderer.registerHelper('thtml', function(i18n_key) {
+    if (typeof i18n_key === 'string') keys[i18n_key] = '';
+    return '';
+});
+
 environment.renderer.registerHelper('tr', function(i18n_key, options) {
+    keys[i18n_key] = options.fn ? options.fn({ record: { } }) : '';
+    return '';
+});
+
+environment.renderer.registerHelper('trhtml', function(i18n_key, options) {
     keys[i18n_key] = options.fn ? options.fn({ record: { } }) : '';
     return '';
 });
