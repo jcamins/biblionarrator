@@ -102,6 +102,47 @@ $(document).ready(function () {
     });
 
     openSocket();
+
+    $('#translateinterface').click(function (ev) {
+        $('#translateinterface').hide();
+        $('.savetranslation').show();
+        $('.translate_t').attr('contenteditable', true);
+    });
+    $('#savetranslation').click(function (ev) {
+        $('.savetranslation').hide();
+        $('#translateinterface').show();
+        var updates = { };
+        $('.translate_t.dirty').each(function () {
+            $(this).removeClass('dirty');
+            var namespace = 'common';
+            var parts = $(this).attr('data-t').split(/:/);
+            if (parts.length > 1) {
+                namespace = parts[0];
+                key = parts[1];
+            } else {
+                key = parts[0];
+            }
+            updates[namespace] = updates[namespace] || { };
+            updates[namespace][key] = $(this).html();
+        });
+        var nscount = 0;
+        for (var ns in updates) {
+            nscount++;
+            $.ajax({
+                type: "POST",
+                url: '/locales/change/' + i18n.detectLanguage() + '/' + ns,
+                data: updates[ns]
+            }).done(function () {
+            });
+        }
+    });
+    $('body').on('click', '.translate_t[contenteditable="true"]', null, function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    });
+    $('body').on('keydown', '.translate_t[contenteditable="true"]', null, function (ev) {
+        $(this).addClass('dirty');
+    });
 });
 
 function applyChrome() {

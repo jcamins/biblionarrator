@@ -115,6 +115,10 @@
                                     {{#if user.permission.edit_templates}}
                                     <li><a href="/admin/templates">{{#trhtml 'label.templates'}}Templates{{/trhtml}}</a></li>
                                     {{/if}}
+                                    {{#if user.permission.edit_translation}}
+                                    <li class="divider"></li>
+                                    <li><a id="translateinterface" href="#">{{#trhtml 'label.translateinterface'}}Translate interface{{/trhtml}}</a><a class="savetranslation" href="#"><button class="btn-link" id="savetranslation"><i class="icon-ok"></i></button>{{#trhtml 'label.savetranslation'}}Save translation{{/trhtml}}</a></li>
+                                    {{/if}}
                                 </ul>
                             </li>
                             {{/if}}
