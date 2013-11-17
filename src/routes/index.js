@@ -81,7 +81,7 @@ exports.init = function(app) {
         path: '/translate',
         i18nextWTOptions: {
             languages: environment.languages || ['en', 'dev'],
-            namespaces: ['common', 'help'],
+            namespaces: ['common', 'help', 'config', 'language'],
             resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
             resChangePath: 'locales/change/__lng__/__ns__',
             resRemovePath: 'locales/remove/__lng__/__ns__',

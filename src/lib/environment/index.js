@@ -77,6 +77,7 @@ function Environment(config, filename) {
         logs: { },
         templates: { },
         errors: [ ],
+        languages: [ 'en' ],
         errorlog: process.stderr,
         accesslog: process.stdout
     });
@@ -175,22 +176,23 @@ function Environment(config, filename) {
         "i18next": {
             "get": function () { 
                 if (!_i18next) {
+                    i18npromise = Q.defer();
+                    i18next.wait = function (callback) {
+                        if (callback) {
+                            i18npromise.promise.done(callback);
+                        } else {
+                            return i18npromise.promise;
+                        }
+                    };
                     if (self.i18nextconf.backend === 'mongo') {
-                        i18npromise = Q.defer();
                         var i18nextMongoSync = require('i18next.mongoDb');
 
-                        i18next.wait = function (callback) {
-                            if (callback) {
-                                i18npromise.promise.done(callback);
-                            } else {
-                                return i18npromise.promise;
-                            }
-                        };
                         i18nextMongoSync.connect({
-                            host: self.dataconf.hostname,
+                            host: self.backendconf.mongo.hostname,
                             port: 27017,
-                            dbName: self.dataconf.namespace,
+                            dbName: self.backendconf.mongo.namespace,
                             resCollectionName: "i18next", 
+                            sendMissing: true
                             /*username: "usr",
                             password: "pwd",
                             options: {
@@ -201,14 +203,17 @@ function Environment(config, filename) {
                             i18next.backend(i18nextMongoSync);
                             i18next.init({
                                 ns: { namespaces: ['common', 'help', 'config', 'language'], defaultNs: 'common' }
+                            }, function () {
+                                i18npromise.resolve(true);
                             });
-                            i18npromise.resolve(true);
                         });
                     } else if (self.i18nextconf.backend === 'local') {
                         i18next.init({
                             ns: { namespaces: ['common', 'help', 'config', 'language'], defaultNs: 'common'},
                             resSetPath: resolveRoot('locales/__lng__/__ns__.json'),
                             resGetPath: resolveRoot('locales/__lng__/__ns__.json')
+                        }, function () {
+                            i18npromise.resolve(true);
                         });
                     }
                 }

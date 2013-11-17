@@ -236,7 +236,7 @@ function writeToDatastore(namespace, language, locale, promise) {
     }, function (err, res) {
         if (!options.quiet) console.log('+Datastore ' + language + '/' + namespace);
         promise.resolve(res);
-    }, true);
+    }, { raw: true });
 }
 
 function recursePrune(object, basis) {
