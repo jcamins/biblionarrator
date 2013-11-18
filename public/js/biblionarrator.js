@@ -111,6 +111,7 @@ $(document).ready(function () {
     $('#savetranslation').click(function (ev) {
         $('.savetranslation').hide();
         $('#translateinterface').show();
+        $('.translate_t').removeAttr('contenteditable');
         var updates = { };
         $('.translate_t.dirty').each(function () {
             $(this).removeClass('dirty');
