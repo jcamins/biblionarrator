@@ -1,4 +1,9 @@
 "use strict";
+var dependencies = {
+    environment: require('../lib/environment'),
+    GraphModel: require('../lib/graphmodel'),
+    formatters: require('../lib/formats')
+};
 exports.Field = require('./field');
 exports.Media = require('./media');
 exports.Query = require('./query');
@@ -11,7 +16,7 @@ exports.Template = require('./template');
 exports.Field.init(exports);
 exports.Media.init(exports);
 exports.Query.init(exports);
-exports.Record.init(exports);
+exports.Record.init(exports, dependencies);
 exports.RecordList.init(exports);
 exports.RecordType.init(exports);
 exports.User.init(exports);

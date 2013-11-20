@@ -125,6 +125,47 @@ GraphModel.prototype.save = function () {
     return this;
 };
 
+/**
+ * Link the model to another model
+ * @param {string} type type of link to create
+ * @param {GraphModel|string} target GraphModel(-extending) object or ID of record to link to
+ */
+this.link = function (type, target, properties, reverse) {
+    try {
+        if (typeof target === 'undefined' || target === null || target === '') {
+            return;
+        }
+        var sv = g.v(this.id).iterator().nextSync();
+        var tv = g.v(typeof target === 'string' || typeof target === 'number' ? target : target.id).iterator().nextSync();
+        var edge;
+        if (reverse) {
+            edge = graphstore.db.addEdgeSync(null, tv, sv, type);
+        } else {
+            edge = graphstore.db.addEdgeSync(null, sv, tv, type);
+        }
+        if (typeof properties === 'object' && properties !== null) {
+            for (var prop in properties) {
+                if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
+                    if (typeof properties[prop] === 'object') {
+                        edge.setPropertySync(prop, JSON.stringify(properties[prop]));
+                    } else {
+                        edge.setPropertySync(prop, properties[prop]);
+                    }
+                }
+            }
+        }
+        sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
+        tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
+        if (graphstore.autocommit) {
+            graphstore.db.commitSync();
+        }
+    } catch (e) {
+        console.log("Error creating link", e, e.stack);
+        return;
+    }
+};
+
+
 /*jshint unused:false */ /* Not yet implemented */
 function aclMiddleeware(req, res, Model, action) {
     if (action === 'create') {

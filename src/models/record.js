@@ -1,11 +1,9 @@
 "use strict";
 var models,
-    extend = require('extend'),
-    environment = require('../lib/environment'),
-    graphstore = environment.graphstore,
-    g = graphstore.g,
-    GraphModel = require('../lib/graphmodel'),
-    formatters = require('../lib/formats');
+    environment,
+    GraphModel,
+    formatters,
+    extend = require('extend');
 
 /**
  * Represents a single record.
@@ -57,46 +55,6 @@ function Record(data) {
         });
     };
 
-    /**
-     * Link the record to another record
-     * @param {string} type type of link to create
-     * @param {Record|string} target Record object or ID of record to link to
-     */
-    this.link = function (type, target, properties, reverse) {
-        try {
-            if (typeof target === 'undefined' || target === null || target === '') {
-                return;
-            }
-            var sv = g.v(this.id).iterator().nextSync();
-            var tv = g.v(typeof target === 'string' || typeof target === 'number' ? target : target.id).iterator().nextSync();
-            var edge;
-            if (reverse) {
-                edge = graphstore.db.addEdgeSync(null, tv, sv, type);
-            } else {
-                edge = graphstore.db.addEdgeSync(null, sv, tv, type);
-            }
-            if (typeof properties === 'object' && properties !== null) {
-                for (var prop in properties) {
-                    if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
-                        if (typeof properties[prop] === 'object') {
-                            edge.setPropertySync(prop, JSON.stringify(properties[prop]));
-                        } else {
-                            edge.setPropertySync(prop, properties[prop]);
-                        }
-                    }
-                }
-            }
-            sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
-            tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
-            if (graphstore.autocommit) {
-                graphstore.db.commitSync();
-            }
-        } catch (e) {
-            console.log("Error creating link", e, e.stack);
-            return;
-        }
-    };
-
     this.addMedia = function (hash, description, type, filename) {
         this.media[hash] = { description: description, type: type, filename: filename };
     };
@@ -144,12 +102,19 @@ function Record(data) {
     return this;
 }
 
+Record.render = function (rec) {
+    var rec = new Record(rec);
+    return rec.render();
+};
+
 Record.model = 'record';
 
 module.exports = Record;
 
-GraphModel.extend(Record);
-
-Record.init = function(ref) {
+Record.init = function(ref, dependencies) {
     models = ref;
+    environment = dependencies.environmnent;
+    GraphModel = dependencies.GraphModel;
+    formatters = dependencies.formatters;
+    GraphModel.extend(Record);
 };
