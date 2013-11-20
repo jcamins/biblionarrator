@@ -8,6 +8,7 @@ var environment = require('../lib/environment'),
     media = require('./media'),
     search = require('./search'),
     template = require('./template'),
+    cataloging = require('./cataloging'),
     auth = require('../lib/auth');
 
 exports.init = function(app) {
@@ -69,6 +70,8 @@ exports.init = function(app) {
     app.get('/help', help);
     app.get('/admin', auth.can('edit', 'admin'), admin);
     app.get('/lang/:locale', lang);
+
+    app.get('/cataloging/suggest', cataloging.suggest);
 
     i18next.registerAppHelper(app)
         .serveChangeKeyRoute(app, auth.can('edit', 'translation'))

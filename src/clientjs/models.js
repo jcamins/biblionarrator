@@ -41,4 +41,9 @@ function Record(data) {
     return this;
 }
 
+Record.render = function (rec) {
+    var rec = new models.Record(rec);
+    return rec.render();
+};
+
 window.models = { Record: Record };

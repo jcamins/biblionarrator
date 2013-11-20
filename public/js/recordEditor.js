@@ -342,7 +342,55 @@ function consolidateStyles() {
 function initializeContentEditable() {
     if ($('#editor-toolbar').is(':visible')) {
         $('#add-section').show();
-        $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'true'); });
+        $('#recordContainer header,#recordContainer section').each(function() {
+            var editor = this;
+            this.setAttribute('contenteditable', 'true');
+            this.onkeydown = function (ev) {
+                if (ev.keyCode === 50) {
+                    ev.preventDefault();
+                    var sel = rangy.getSelection();
+                    var savedsel = rangy.saveSelection();
+                    var acid = 'editor-autocomplete-' + Math.floor((Math.random() * 10000) + 1);
+                    var autocomplete = sel.getRangeAt(0).createContextualFragment('<span id="' + acid + '" style="display: inline-block;"></span>');
+                    sel.getRangeAt(0).insertNode(autocomplete);
+                    autocomplete = document.getElementById(acid);
+                    var c = new Completely(autocomplete, {
+                        format: models.Record.render,
+                        hint: function (opt, token) {
+                            return opt.key;
+                        },
+                        match: function (opt, token) {
+                            return opt.key.toLowerCase().indexOf(token.toLowerCase()) === 0;
+                        },
+                        tokenentry: function (input) {
+                            var self = this;
+                            if (input === '@') {
+                                self.completed('@');
+                            } else {
+                                $.ajax({
+                                    type: "GET",
+                                    url: '/cataloging/suggest?q=' + input,
+                                    dataType: 'json'
+                                }).done(function(data) {
+                                    self.options = data.records;
+                                    self.update();
+                                });
+                            }
+                        },
+                        completed: function (opt) {
+                            $('#' + acid).replaceWith(opt.key);
+                            editor.focus();
+                            rangy.restoreSelection(savedsel);
+                        },
+                        canceled: function () {
+                            autocomplete.parentNode.removeChild(autocomplete);
+                            editor.focus();
+                            rangy.restoreSelection(savedsel);
+                        }
+                    });
+                }
+            };
+        });
     } else {
         $('#add-section').hide();
         $('#recordContainer header,#recordContainer section').each(function() { this.setAttribute('contenteditable', 'false'); });

@@ -54,6 +54,8 @@ function connect(config, engine, g) {
         var TitanFactory = g.java.import('com.thinkaurelius.titan.core.TitanFactory');
         var Type = g.ClassTypes;
         var LongEncoding = g.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding');
+        var Parameter = g.java.import('com.thinkaurelius.titan.core.Parameter');
+        var Mapping = g.java.import('com.thinkaurelius.titan.core.Mapping');
 
         var gconf = new BaseConfiguration();
         for (var property in config.graphconf[engine]) {
@@ -105,7 +107,7 @@ function connect(config, engine, g) {
                     case 'text':
                         if (config.graphconf[engine].version === '0.4.1') {
                             index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
-                                .indexedSync("search", Type.Vertex.class, g.java.newArray('com.thinkaurelius.titan.core.Parameter', []))
+                                .indexedSync("search", Type.Vertex.class, g.java.newArray('com.thinkaurelius.titan.core.Parameter', [/*Parameter.ofSync(Mapping.MAPPING_PREFIX, Mapping.STRING) */]))
                                 .singleSync().makeSync().getIdSync();
                         } else {
                             index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
