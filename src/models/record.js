@@ -113,7 +113,7 @@ module.exports = Record;
 
 Record.init = function(ref, dependencies) {
     models = ref;
-    environment = dependencies.environmnent;
+    environment = dependencies.environment;
     GraphModel = dependencies.GraphModel;
     formatters = dependencies.formatters;
     GraphModel.extend(Record);

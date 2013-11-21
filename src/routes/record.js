@@ -62,6 +62,7 @@ exports.save = function(req, res) {
         id: decodeURIComponent(req.params.record_id),
         data: req.body.data,
         recordtype_id: req.body.recordtype_id,
+        key: req.body.key,
         format: 'bnjson'
     });
     record.save();

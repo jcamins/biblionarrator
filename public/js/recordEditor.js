@@ -271,7 +271,8 @@ function saveRecord() {
         url: "/record/" + (typeof document.record.id !== 'undefined' ? encodeURIComponent(document.record.id) : 'new'),
         dataType: "json",
         data: { data: JSON.stringify(window.formatters[document.record.format].decompile($('#recordContainer article').get(0))),
-                recordtype_id: $('#recordtype-select').val()
+                recordtype_id: $('#recordtype-select').val(),
+                key: document.getElementById('record-key').value
               },
         error: ajaxSaveFailed
     }).done(function(msg) {
