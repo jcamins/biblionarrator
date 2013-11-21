@@ -1,10 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-bottom">
-    <div id="controlbar" class="navbar-inner">
-        <div class="container-fluid">
-            {{> 'controlbars/record'}}
-        </div>
-    </div>
-</nav>
+<div class="unsaved-watermark">{{#trhtml 'label.unsavedchanges'}}Unsaved changes{{/trhtml}}</div>
 <div id="content" class="container-fluid">
     <div class="row-fluid">
         <div class="span10 pull-right">
@@ -63,6 +57,13 @@
         </div>
     </div>
 </div>
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+    <div id="controlbar" class="navbar-inner">
+        <div class="container-fluid">
+            {{> 'controlbars/record'}}
+        </div>
+    </div>
+</nav>
 
 {{#contentFor 'styles'}}
     <link href="/css/fields.css" media="all" type="text/css" rel="stylesheet">

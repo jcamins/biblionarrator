@@ -941,6 +941,22 @@ a.selected {
     }
 }
 
+.unsaved-watermark {
+    top: 48px;
+    position: relative;
+    font-size: x-large;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    color: #e32343;
+    text-shadow: black -1px -1px 2px;
+    display: none;
+
+    .unsaved-changes & {
+        display: block;
+    }
+}
+
 /*** Navbar ***/
 
 @media (max-width: 480px) {
