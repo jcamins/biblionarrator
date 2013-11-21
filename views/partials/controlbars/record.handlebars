@@ -8,16 +8,17 @@
     </ul>
     {{#if user.permission.edit_record}}
     <ul id="editor-toolbar" class="nav">
-        <li class="save-button"><a href="#" class="save-record caret-before">{{#trhtml 'label.save'}}Save{{/trhtml}}</a></li>
-        <li class="save-button dropdown">
-            <a href="#" id="dropdown-save" data-toggle="dropdown" class="caret-after dropdown-toggle"><b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a href="#" class="save-record">{{#trhtml 'label.record'}}Record{{/trhtml}}</a></li>
-                <!--<li><a href="#" id="save-template" data-toggle="modal" data-target="#save-template-modal">{{#trhtml 'label.astemplate'}}As template{{/trhtml}}</a></li>-->
-            </ul>
+        <li class="save-button">
+            <div class="btn-group dropup">
+                <button class="btn btn-inverse save-record">{{#trhtml 'label.save'}}Save{{/trhtml}}</button>
+                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="save-record">{{#trhtml 'label.record'}}Record{{/trhtml}}</a></li>
+                </ul>
+            </div>
         </li>
         <li class="dropdown">
-            <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">{{#trhtml 'label.options'}}Options{{/trhtml}} <b class="caret"></b></a>
+            <a href="#" id="dropdown-options" data-toggle="dropdown" class="dropdown-toggle">{{#trhtml 'label.options'}}Options{{/trhtml}} <span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <li><a href="#" id="record-reload" class="self-url" data-toggle="confirm" data-confirm-label="{{#tr 'label.confirmreload'}}Confirm reload{{/tr}}" data-confirm-body="{{#tr 'message.confirmreload'}}Are you certain you want to reload?{{/tr}}">{{#trhtml 'label.reload'}}Reload{{/trhtml}}</a></li>
                 <li class="divider"></li>

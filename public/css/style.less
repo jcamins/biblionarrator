@@ -893,48 +893,63 @@ a.selected {
     background-color: #fff;
 }
 
+.nav .btn-inverse.dropdown-toggle .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+.nav .btn {
+    line-height: 16px;
+}
+
 /*** Controlbar ***/
 
-.controlbar {
+#controlbar {
+    .navbar-fixed-bottom > & {
+        margin-bottom: -6px;
+    }
+
     &.navbar-fixed-top {
         top: 41px;
         z-index: 1010;
     }
 
-    .controlbar-inner {
-        min-height: 30px;
-        
-        .nav {
-            & > li > a {
-                padding: 5px 10px;
-        
-                &.caret-before {
-                    padding-right: 2px;
-                }
-        
-                &.caret-after {
-                    padding-left: 2px;
-                }
+    .dropdown .caret {
+        float: right;
+        margin-left: 2px;
+    }
+
+    .nav {
+        & > li > a {
+            white-space: pre;
+            padding: 5px 10px;
+
+            &.caret-before {
+                padding-right: 2px;
+            }
+
+            &.caret-after {
+                padding-left: 2px;
             }
         }
-        
-        .divider-vertical {
-            height: 30px;
-        }
-        
-        li.save-button {
-        
-            .unsaved-changes & {
-                background: #04c;
-        
-                & > a {
-                    color: #fff;
-                    text-shadow: none;
-        
-                    .caret {
-                        border-top-color: #fff;
-                        border-bottom-color: #fff;
-                    }
+    }
+    
+    .divider-vertical {
+        height: 30px;
+    }
+    
+    li.save-button {
+    
+        .unsaved-changes & {
+    
+            & button {
+                background: #782363;
+                color: #fff;
+                text-shadow: none;
+    
+                .caret {
+                    border-top-color: #fff;
+                    border-bottom-color: #fff;
                 }
             }
         }
