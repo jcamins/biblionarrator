@@ -336,9 +336,12 @@ function updateFieldsTOCTree() {
 }
 
 function initializeTOC() {
+    if (typeof initializeTOCEditor === 'function') initializeTOCEditor();
     $('#fieldsTOC').jstree({
         "plugins" : [ "themes", "html_data", "types", "ui" ],
         "themes" : { "icons": false }
+    }).bind('loaded.jstree', function () {
+        $(this).jstree('open_all');
     });
     $('#fieldsTOC').bind('select_node.jstree', function (e, data) {
         $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });

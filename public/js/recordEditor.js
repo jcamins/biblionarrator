@@ -133,6 +133,44 @@ function initializeRangy() {
     }
 }
 
+function initializeTOCEditor() {
+    var tocautocompletes = [];
+    $('.tocvalue').each(function () {
+        tocautocompletes.push(new Completely(this, {
+            prefill: true,
+            format: models.Record.render,
+            hint: function (opt, token) {
+                return opt.key;
+            },
+            match: function (opt, token) {
+                return opt.key.toLowerCase().indexOf(token.toLowerCase()) === 0;
+            },
+            tokenentry: function (input) {
+                var self = this;
+                $.ajax({
+                    type: "GET",
+                    url: '/cataloging/suggest?q=' + input,
+                    dataType: 'json'
+                }).done(function(data) {
+                    self.options = data.records;
+                    self.update();
+                });
+                var control = this._controls.input;
+                var match = $(control).closest('[data-match]').attr('data-match');
+                $('#recordContainer span[data-match="' + match + '"], #recordContainer a[data-match="' + match + '"]').text(control.value);
+            },
+            onblur: function (ev) {
+                $('#recordContainer span, #recordContainer a').each(function () { $(this).removeClass('highlight'); });
+            }
+        }));
+    });
+    $('#fieldsTOC').bind('loaded.jstree', function () {
+        tocautocompletes.forEach(function (el) {
+            el.rehook();
+        });
+    });
+}
+
 function closeAndOpenTag () {
     closeTag();
     newTag();
