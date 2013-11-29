@@ -17,10 +17,10 @@ var dbcallbacks = {
 
 var operations = {
     'edge': function (pipeline, label, value) {
-        return pipeline.outE(label).filter("{it.marker == '" + value.replace("'", "\\'") + "'}").inV().in();
+        return pipeline.outE(label).filter("{it->it.marker == '" + value.replace("'", "\\'") + "'}").inV().in();
     },
     'inverseedge': function (pipeline, label, value) {
-        return pipeline.inE(label).filter("{it.marker == '" + value.replace("'", "\\'") + "'}").outV().out();
+        return pipeline.inE(label).filter("{it->it.marker == '" + value.replace("'", "\\'") + "'}").outV().out();
     },
     'biedge': function (pipeline, label, value) {
         return pipeline.both(label).has('key', value).back(2);
@@ -70,7 +70,7 @@ function handleOptimizedQuery(query, plan, callback) {
                     count = data.hits.total;
                     data.hits.hits.forEach(function (hit) {
                         var rec = { };
-                        rec._id = LongEncoding.decodeSync(hit._id);
+                        rec._id = LongEncoding.decodeSync(hit._id).longValue;
                         list.push(rec._id);
                         if (plan.esonly) {
                             for (var key in hit.fields) {
@@ -96,26 +96,13 @@ function handleOptimizedQuery(query, plan, callback) {
     }
 }
 
-function handleVQandPipeline(query, plan, list, callback) {
-    var pipe;
+function handlePipeline(query, plan, pipe, callback) {
     var op;
-    list = list || query.anchor;
-    if (list) {
-        pipe = g.v(list);
-        while ((op = plan.vertexquery.shift())) {
-            pipe = pipe.has.apply(pipe, op);
+    while ((op = plan.vertexquery.shift())) {
+        if (op[1] === 'contains' && op.length === 3) {
+            op[1] = Text.CONTAINS;
         }
-    } else {
-        if (plan.vertexquery.length > 0) {
-            pipe = graphstore.db.querySync();
-            while ((op = plan.vertexquery.shift())) {
-                if (op[1] === 'contains' && op.length === 3) {
-                    op[1] = Text.CONTAINS;
-                }
-                pipe = pipe.hasSync.apply(pipe, op);
-            }
-            pipe = g.start(pipe.verticesSync());
-        }
+        pipe = pipe.has.apply(pipe, op);
     }
     if (pipe) {
         while ((op = plan.pipeline.shift())) {
@@ -126,6 +113,17 @@ function handleVQandPipeline(query, plan, list, callback) {
         });
     } else {
         callback({ });
+    }
+}
+
+function handleVQandPipeline(query, plan, list, callback) {
+    list = list || query.anchor;
+    if (list) {
+        g.v(list, function (err, pipe) {
+            handlePipeline(query, plan, pipe, callback);
+        });
+    } else {
+        handlePipeline(query, plan, g.V(), callback);
     }
 }
 

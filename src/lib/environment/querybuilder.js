@@ -93,7 +93,7 @@ function optimizeTree(tree, query, supports, environment) {
                     query.vertexq.push([ tree[1], 'contains', value ]);
                 });
             } else {
-                query.pipeline.push({ filter: "{it.data?.count('" + analyzeValue(tree[2]).replace("'", "\\'") + "') >= 1}" });
+                query.pipeline.push({ filter: "{it->it.data?.count('" + analyzeValue(tree[2]).replace("'", "\\'") + "') >= 1}" });
             }
             break;
         case 'edge':
@@ -138,9 +138,9 @@ function buildEdgeQuery(type, label, value, facet) {
     exitop[exit[type] + 'V'] = [ ];
     expandop[exit[type]] = [ ];
     if (facet) {
-        return [ { as: [ 'facet_' + label + value ] }, enterop, { filter: [ "{it.target == '" + analyzeValue(value).replace("'", "\\'") + "'}" ] }, { back: [ 'facet_' + label + value ] } ];
+        return [ { as: [ 'facet_' + label + value ] }, enterop, { filter: [ "{it->it.target == '" + analyzeValue(value).replace("'", "\\'") + "'}" ] }, { back: [ 'facet_' + label + value ] } ];
     } else {
-        return [ enterop, { filter: [ "{it.marker == '" + analyzeValue(value).replace("'", "\\'") + "'}" ] }, exitop, expandop ];
+        return [ enterop, { filter: [ "{it->it.marker == '" + analyzeValue(value).replace("'", "\\'") + "'}" ] }, exitop, expandop ];
     }
 }
 

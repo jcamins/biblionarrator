@@ -1,32 +1,38 @@
 "use strict";
 var util = require('util'),
     extend = require('extend'),
-    graphstore = require('./environment').graphstore,
-    g = graphstore.g,
-    T = g.Tokens;
+    environment = require('./environment'),
+    graphstore = environment.graphstore,
+    T = graphstore.g.Tokens,
+    async = require('async');
 
 module.exports = GraphModel;
 
 function GraphModel () {
 }
 
-GraphModel.findOne = function findOne (Model, filter) {
-    return Model.findAll(filter)[0];
+GraphModel.findOne = function findOne (Model, filter, callback) {
+    return Model.findAll(filter, function (err, model) {
+        if (!model && !model[0]) return callback(err, null);
+        callback(err, model[0]);
+    });
 };
 
-GraphModel.findAll = function findAll (Model, filter) {
-    var all;
-    try {
-        if (filter.id) {
-            all = g.v(filter.id).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
-        } else {
-            filter.model = Model.model;
-            all = g.V(filter).has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON();
+GraphModel.findAll = function findAll (Model, filter, callback) {
+    if (filter.id) {
+        graphstore.g.v(filter.id).toJSON(function (err, all) {
+            callback(err, Model.fromJSON(all));
+        });
+    } else {
+        filter.model = Model.model;
+        var pipe = graphstore.g.V();
+        for (var key in filter) {
+            pipe = pipe.has(key, filter[key]);
         }
-    } catch (e) {
-        all = [ ];
+        pipe.has('deleted', filter.deleted ? T.eq : T.neq, 1).toJSON(function (err, all) {
+            callback(err, Model.fromJSON(all));
+        });
     }
-    return Model.fromJSON(all);
 };
 
 GraphModel.fromJSON = function (Model, all) {
@@ -41,28 +47,39 @@ GraphModel.fromJSON = function (Model, all) {
     }
 };
 
-GraphModel.prototype.v = function () {
+GraphModel.prototype.v = function (create, callback) {
     if (this.id) {
-        return g.v(this.id);
+        graphstore.g.getVertex(this.id, callback);
+    } else if (create) {
+        graphstore.g.addVertex(null, callback);
     } else {
-        throw('model not saved');
+        callback(undefined, undefined);
     }
 };
 
-GraphModel.prototype.suppress = function () {
-    var v = this.v().iterator().nextSync();
-    v.setPropertySync('deleted', 1);
-    if (graphstore.autocommit) {
-        graphstore.db.commitSync();
-    }
+GraphModel.prototype.suppress = function (callback) {
+    this.v(false, function (err, v) {
+        if (v) {
+            v.setPropertySync('deleted', 1);
+            if (graphstore.autocommit) {
+                graphstore.g.commit(callback);
+            }
+        }
+    });
 };
 
-GraphModel.prototype.destroy = function () {
-    var v = this.v().iterator().nextSync();
-    v.removeSync();
-    if (graphstore.autocommit) {
-        graphstore.db.commitSync();
-    }
+GraphModel.prototype.destroy = function (callback) {
+    this.v(false, function (err, v) {
+        if (v) {
+            v.remove(function (err, res) {
+                if (graphstore.autocommit && typeof err === 'undefined') {
+                    graphstore.commit(callback);
+                } else {
+                    calback(err, res);
+                }
+            });
+        }
+    });
 };
 
 GraphModel.prototype.initialize = function (data) {
@@ -75,54 +92,74 @@ GraphModel.prototype.initialize = function (data) {
     }
 };
 
-GraphModel.prototype.save = function () {
-    var v, created = false, oldprops = { };
-    try {
-        v = this.v().iterator().nextSync();
-        if (v === null) {
-            throw('invalid id');
+GraphModel.prototype.save = function (callback) {
+    var self = this;
+    this.v(true, function (err, v) {
+        if (v) {
+            var oldprops = { };
+            async.series({
+                    vorder: function (cb) {
+                        graphstore.g.start(v).both().count(cb);
+                    },
+                    props: function (cb) {
+                        v.getPropertyKeys(function (err, props) {
+                            if (props) {
+                                props.toArray(cb)
+                            } else {
+                                cb(null, []);
+                            }
+                        });
+                    }
+                },
+                function (err, results) {
+                    if (err || !results) return callback(err, self);
+                    var oldprops = { };
+                    self.vorder = parseInt(results.vorder, 10) || 0;
+                    results.props.forEach(function (prop) {
+                        if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
+                    });
+                    if (typeof self.deleted === 'undefined') {
+                        self.deleted = 0;
+                    }
+                    var oparray = [ ];
+                    for (var prop in self) {
+                        if (prop !== 'id' && self.hasOwnProperty(prop) && typeof self[prop] !== 'function' && typeof self[prop] !== 'undefined') {
+                            if (typeof self[prop] === 'object') {
+                                //oparray.push(function (cb) {
+                                    v.setPropertySync(prop, JSON.stringify(self[prop]));
+                                //    cb(undefined, undefined);
+                                //});
+                                //oparray.push(v.setProperty.bind(v, prop, JSON.stringify(self[prop])));
+                            } else {
+                                //oparray.push(function (cb) {
+                                    v.setPropertySync(prop, self[prop]);
+                                //    cb(undefined, undefined);
+                                //});
+                                //oparray.push(v.setProperty.bind(v, prop, self[prop]));
+                            }
+                            if (oldprops[prop]) delete oldprops[prop];
+                        }
+                    }
+                    for (prop in oldprops) {
+                        v.removePropertySync(prop);
+                        //oparray.push(v.removeProperty.bind(v, prop));
+                    }
+                    async.series(oparray, function (err, res) {
+                        self.id = v.getIdSync().longValue; // TODO: handle Orient, where ID changes after commit
+                        if (graphstore.autocommit) {
+                            graphstore.g.commit(function (err) {
+                                callback(err, self);
+                            });
+                        } else {
+                            callback(err, self);
+                        }
+                    });
+            });
+        } else {
+            callback(err, undefined);
         }
-        this.vorder = parseInt(this.v().both().count(), 10);
-        v.getPropertyKeysSync().toArraySync().forEach(function (prop) {
-            if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
-        });
-    } catch (e) {
-        created = true;
-        v = graphstore.db.addVertexSync(null);
-        this.vorder = 0;
-    }
-    if (typeof this.deleted === 'undefined') {
-        this.deleted = 0;
-    }
-    try { 
-        for (var prop in this) {
-            if (prop !== 'id' && this.hasOwnProperty(prop) && typeof this[prop] !== 'function' && typeof this[prop] !== 'undefined') {
-                if (typeof this[prop] === 'object') {
-                    v.setPropertySync(prop, JSON.stringify(this[prop]));
-                } else {
-                    v.setPropertySync(prop, this[prop]);
-                }
-                if (oldprops[prop]) delete oldprops[prop];
-            }
-        }
-        for (prop in oldprops) {
-            v.removePropertySync(prop);
-        }
-    } catch (e) {
-        if (graphstore.autocommit) {
-            graphstore.db.rollbackSync();
-        } else if (created === false) {
-            graphstore.db.removeVertexSync(v);
-        }
-        throw (e);
-    }
-    if (graphstore.autocommit) {
-        graphstore.db.commitSync();
-    }
-    this.id = v.toString();
-    this.id = this.id.replace(/^v\[#?/, '');
-    this.id = this.id.replace(/\]$/, '');
-    return this;
+    });
+    return self;
 };
 
 /**
@@ -130,39 +167,36 @@ GraphModel.prototype.save = function () {
  * @param {string} type type of link to create
  * @param {GraphModel|string} target GraphModel(-extending) object or ID of record to link to
  */
-this.link = function (type, target, properties, reverse) {
-    try {
-        if (typeof target === 'undefined' || target === null || target === '') {
-            return;
-        }
-        var sv = g.v(this.id).iterator().nextSync();
-        var tv = g.v(typeof target === 'string' || typeof target === 'number' ? target : target.id).iterator().nextSync();
-        var edge;
-        if (reverse) {
-            edge = graphstore.db.addEdgeSync(null, tv, sv, type);
-        } else {
-            edge = graphstore.db.addEdgeSync(null, sv, tv, type);
-        }
-        if (typeof properties === 'object' && properties !== null) {
-            for (var prop in properties) {
-                if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
-                    if (typeof properties[prop] === 'object') {
-                        edge.setPropertySync(prop, JSON.stringify(properties[prop]));
-                    } else {
-                        edge.setPropertySync(prop, properties[prop]);
+GraphModel.prototype.link = function (type, target, properties, reverse, callback) {
+    if (typeof target === 'undefined' || target === null || target === '') {
+        callback();
+    }
+    this.v(false, function (err, sv) {
+        if (target === null) return callback(new Error('Target not specified'), null);
+        graphstore.g.getVertex(typeof target === 'string' || typeof target === 'number' ? target : target.id, function (err, tv) {
+            if (err) return callback(err, null);
+            graphstore.g.addEdge(null, reverse ? tv : sv, reverse ? sv : tv, type, function (err, edge) {
+                if (typeof properties === 'object' && properties !== null) {
+                    for (var prop in properties) {
+                        if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
+                            if (typeof properties[prop] === 'object') {
+                                edge.setPropertySync(prop, JSON.stringify(properties[prop]));
+                            } else {
+                                edge.setPropertySync(prop, properties[prop]);
+                            }
+                        }
                     }
                 }
-            }
-        }
-        sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
-        tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
-        if (graphstore.autocommit) {
-            graphstore.db.commitSync();
-        }
-    } catch (e) {
-        console.log("Error creating link", e, e.stack);
-        return;
-    }
+                sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
+                tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
+                if (graphstore.autocommit) {
+                    graphstore.g.commit(callback);
+                } else {
+                    callback();
+                }
+            });
+        });
+    });
 };
 
 

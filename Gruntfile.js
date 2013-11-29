@@ -141,6 +141,11 @@ module.exports = function(grunt) {
                 src: [ './**' ]
             }
         },
+        exec: {
+            mvn: {
+                cmd: 'mvn install'
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-browserify');
@@ -152,9 +157,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-prompt');
+    grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-configure-biblionarrator');
 
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ]);
+    grunt.registerTask('install', [ 'exec:mvn', 'build' ]);
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
     grunt.registerTask('release', [ 'default', 'compress' ]);

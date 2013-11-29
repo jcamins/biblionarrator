@@ -19,19 +19,15 @@ module.exports = function (input, callback) {
             });
         } else if (results.pipe) {
             var records = [ ], count = 0;
-            try {
-                records = results.pipe.as('result').range(input.query.offset, input.query.offset + input.query.size).toJSON();
-                count = input.query.offset + records.length;
+            results.pipe.as('result').range(input.query.offset, input.query.offset + input.query.size).toJSON(function (err, records) {
                 if (records.length > input.query.size) {
                     records.pop();
                 }
-            } catch (e) {
-                // No records to convert to JSON
-            }
-            callback({
-                records: records,
-                count: count,
-                summary: 'Search: ' + input.query.canonical
+                callback({
+                    records: records,
+                    count: input.query.offset + records.length,
+                    summary: 'Search: ' + input.query.canonical
+                });
             });
         } else {
             callback({

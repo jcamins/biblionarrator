@@ -52,6 +52,7 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
     fs = require('fs'),
     Q = require('q'),
     extend = require('extend'),
+    async = require('async'),
     handler = require('../src/lib/formats/' + options.format);
 var inspect = require('eyes').inspector({maxLength: false});
 
@@ -99,12 +100,14 @@ var linkcount = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
 var rejects = [ ];
+var linkfuncs = [ ];
 
 var lookup = { }, linksleft = { };
 
 importer.on('record', function (record, mypromise) {
     mainrecordcount++;
     var rec;
+    var subpromises = [ ];
     var matcher = function (matchpoint) {
         return (rec = Record.findOne(matchpoint));
     };
@@ -118,58 +121,51 @@ importer.on('record', function (record, mypromise) {
         mypromise.resolve();
         return;
     }
-    try {
-        rec.save();
+    rec.save(function (err, rec) {
+        if (err) return mypromise.reject(record);
         if (typeof rec.key !== 'undefined') lookup[rec.key] = rec.id;
         var links = rec.getLinks();
         links.forEach(function (link) {
             var target = (link.match ? lookup[JSON.stringify(link.match)] : undefined)
-                         || lookup[link.key];
-            if (typeof target === 'undefined' && link.match) {
-                target = Record.findOne(link.match);
-            }
-            if (typeof target === 'undefined') {
-                target = Record.findOne({ key: link.key });
-            }
-            if (typeof target === 'undefined' && typeof link.vivify === 'object') {
-                target = new Record(link.vivify);
-                target.save();
-                recordcount++;
-            }
-            if (typeof target !== 'undefined') {
-                lookup[link.key] = lookup[link.key] || target.id;
-                if (link.match) {
-                    lookup[JSON.stringify(link.match)] = lookup[link.key];
-                }
-                rec.link(link.label, target, link.properties);
-                linkcount++;
-            } else if (options.lookup) {
-                linksleft[link.key] = linksleft[link.key] || [ ];
-                link.source = rec.id;
-                linksleft[link.key].push(link);
+                 || lookup[link.key];
+            if (target) {
+                var linkpromise = Q.defer();
+                subpromises.push(linkpromise.promise);
+                makeLink(rec, link, target, function () {
+                    linkpromise.resolve(true);
+                });
+            } else {
+                linkfuncs.push(doLink.bind(rec, link));
             }
         });
         if (options.lookup && typeof rec.key !== 'undefined') {
             if (linksleft[rec.key]) {
                 linksleft[rec.key].forEach(function (link) {
-                    rec.link(link.label, link.source, link.properties, true);
-                    linkcount++;
+                    var linkpromise = Q.defer();
+                    subpromises.push(linkpromise.promise);
+                    rec.link(link.label, link.source, link.properties, true, function (err, res) {
+                        linkpromise.resolve(true);
+                        linkcount++;
+                    });
                 });
                 delete linksleft[rec.key];
             }
             lookup[rec.key] = rec.id;
         }
         recordcount++;
-    } catch (e) {
-        console.log(e, e.stack);
-        mypromise.reject(record);
-    }
-    mypromise.resolve(record);
+        Q.all(subpromises).done(function () {
+            mypromise.resolve(record);
+        });
+    });
 });
 
 importer.on('commit', function (promise) {
-    graphstore.db.commitSync();
-    promise.resolve(true);
+    async.series(linkfuncs, function (err, res) {
+        linkfuncs = [ ];
+        graphstore.g.commit(function (err, res) {
+            promise.resolve(true);
+        });
+    });
 });
 
 importer.on('done', function (rejects) {
@@ -194,3 +190,57 @@ function addMap(map, promise) {
     });
 }
 
+function valid(object) {
+    return typeof object !== 'undefined' && object !== null;
+}
+
+function doLink(link, callback) {
+    var rec = this;
+    async.waterfall([
+        function (cb) {
+            Record.findOne(link.match || { '^': '^' }, cb);
+        }, 
+        function (target, cb) {
+            if (valid(target)) {
+                cb(target);
+            } else {
+                Record.findOne({ key: link.key }, cb);
+            }
+        },
+        function (target, cb) {
+            if (!valid(target) && typeof link.vivify === 'object') {
+                target = new Record(link.vivify);
+                target.save(function (err, target) {
+                    recordcount++;
+                    cb(err, target);
+                });
+            } else {
+                cb(null, target);
+            }
+        }
+    ], function (err, target) {
+        if (typeof target !== 'undefined' && target !== null) {
+            makeLink(rec, link, target, callback);
+        } else if (options.lookup) {
+            linksleft[link.key] = linksleft[link.key] || [ ];
+            link.source = rec.id;
+            linksleft[link.key].push(link);
+            callback();
+        } else {
+            callback();
+        }
+    });
+}
+
+function makeLink(rec, link, target, callback) {
+    lookup[link.key] = lookup[link.key] || target.id;
+    if (link.match) {
+        var matchkey = JSON.stringify(link.match);
+        lookup[matchkey] = lookup[matchkey] || lookup[link.key];
+    }
+    rec.link(link.label, target, link.properties, false, function (err, res) {
+        if (err) console.log(err);
+        linkcount++;
+        callback()
+    });
+}

@@ -34,11 +34,13 @@ function ESClient(config) {
             if (typeof err === 'undefined') {
                 data = JSON.parse(data);
             }
-            var meanvorder = Math.round(data.facets.vorder.mean);
-            var halfmeanvorder = Math.round(data.facets.vorder.mean / 2);
             var static_relevance = '';
             if (typeof data.facets !== 'undefined') {
+                var meanvorder = Math.round(data.facets.vorder.mean);
+                var halfmeanvorder = Math.round(data.facets.vorder.mean / 2);
                 static_relevance = config.indexes['vorder'].id + ':>' + meanvorder + '^2 OR ' + config.indexes['vorder'].id + ':[' + halfmeanvorder + ' TO ' + meanvorder + ']';
+            } else {
+                config.errorlog.write('Unable to get vorder facets!\n');
             }
             if (Object.keys(config.static_relevance_bumps).length > 0) {
                 for (var field in config.static_relevance_bumps) {
