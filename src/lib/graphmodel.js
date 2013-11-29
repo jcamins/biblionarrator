@@ -102,7 +102,7 @@ GraphModel.prototype.save = function (callback) {
                         graphstore.g.start(v).both().count(cb);
                     },
                     props: function (cb) {
-                        v.getPropertyKeys(function (err, props) {
+                        v.el.getPropertyKeys(function (err, props) {
                             if (props) {
                                 props.toArray(cb)
                             } else {
@@ -112,9 +112,9 @@ GraphModel.prototype.save = function (callback) {
                     }
                 },
                 function (err, results) {
-                    if (err || !results) return callback(err, self);
                     var oldprops = { };
                     self.vorder = parseInt(results.vorder, 10) || 0;
+                    results.props = results.props || [ ];
                     results.props.forEach(function (prop) {
                         if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
                     });
@@ -122,30 +122,18 @@ GraphModel.prototype.save = function (callback) {
                         self.deleted = 0;
                     }
                     var oparray = [ ];
+                    var props = { };
                     for (var prop in self) {
                         if (prop !== 'id' && self.hasOwnProperty(prop) && typeof self[prop] !== 'function' && typeof self[prop] !== 'undefined') {
-                            if (typeof self[prop] === 'object') {
-                                //oparray.push(function (cb) {
-                                    v.setPropertySync(prop, JSON.stringify(self[prop]));
-                                //    cb(undefined, undefined);
-                                //});
-                                //oparray.push(v.setProperty.bind(v, prop, JSON.stringify(self[prop])));
-                            } else {
-                                //oparray.push(function (cb) {
-                                    v.setPropertySync(prop, self[prop]);
-                                //    cb(undefined, undefined);
-                                //});
-                                //oparray.push(v.setProperty.bind(v, prop, self[prop]));
-                            }
+                            props[prop] = _isObject(self[prop]) ?  JSON.stringify(self[prop]) : self[prop];
                             if (oldprops[prop]) delete oldprops[prop];
                         }
                     }
-                    for (prop in oldprops) {
-                        v.removePropertySync(prop);
-                        //oparray.push(v.removeProperty.bind(v, prop));
-                    }
-                    async.series(oparray, function (err, res) {
-                        self.id = v.getIdSync().longValue; // TODO: handle Orient, where ID changes after commit
+                    async.parallel([
+                        v.setProperties.bind(v, props),
+                        v.removeProperties.bind(v, Object.keys(oldprops))
+                    ], function (err, res) {
+                        self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
                         if (graphstore.autocommit) {
                             graphstore.g.commit(function (err) {
                                 callback(err, self);
@@ -176,24 +164,25 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
         graphstore.g.getVertex(typeof target === 'string' || typeof target === 'number' ? target : target.id, function (err, tv) {
             if (err) return callback(err, null);
             graphstore.g.addEdge(null, reverse ? tv : sv, reverse ? sv : tv, type, function (err, edge) {
+                var props = { };
                 if (typeof properties === 'object' && properties !== null) {
                     for (var prop in properties) {
-                        if (properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
-                            if (typeof properties[prop] === 'object') {
-                                edge.setPropertySync(prop, JSON.stringify(properties[prop]));
-                            } else {
-                                edge.setPropertySync(prop, properties[prop]);
-                            }
+                        if (prop !== 'id' && properties.hasOwnProperty(prop) && typeof properties[prop] !== 'function' && typeof properties[prop] !== 'undefined') {
+                            props[prop] = _isObject(properties[prop]) ?  JSON.stringify(properties[prop]) : properties[prop];
                         }
                     }
                 }
-                sv.setPropertySync('vorder', sv.getPropertySync('vorder') + 1);
-                tv.setPropertySync('vorder', tv.getPropertySync('vorder') + 1);
-                if (graphstore.autocommit) {
-                    graphstore.g.commit(callback);
-                } else {
-                    callback();
-                }
+                async.parallel([
+                    sv.setProperty.bind(sv, 'vorder', sv.unwrap().getPropertySync('vorder') + 1),
+                    tv.setProperty.bind(tv, 'vorder', tv.unwrap().getPropertySync('vorder') + 1),
+                    edge.setProperties.bind(edge, props)
+                ], function (err, res) {
+                    if (graphstore.autocommit) {
+                        graphstore.g.commit(callback);
+                    } else {
+                        callback();
+                    }
+                });
             });
         });
     });
@@ -218,3 +207,6 @@ module.exports.extend = function (Model) {
     }
 };
 
+function _isObject(o) {
+    return typeof o === 'object';
+}
