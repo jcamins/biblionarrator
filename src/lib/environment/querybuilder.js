@@ -52,6 +52,13 @@ function PartialPlan(options) {
     return this;
 }
 
+var dbcallbacks = {
+    'linkbrowse': function (tree, query) {
+        var linkbrowse = [ { start: tree[2].slice(1) }, { both: [ ] }, { dedup: [ ] } ];
+        query.pipeline = linkbrowse.concat(query.pipeline);
+    }
+};
+
 function optimizeTree(tree, query, supports, environment) {
     /*jshint -W086*/ /* No 'break' between cases */
     switch (tree[0]) {
@@ -105,8 +112,10 @@ function optimizeTree(tree, query, supports, environment) {
         case 'biedge':
             query.pipeline = query.pipeline.concat(buildEdgeQuery('both', tree[1], tree[2], tree[0] === 'FACET'));
             break;
+        case 'dbcallback':
+            dbcallbacks[tree[1]](tree, query);
+            break;
         default:
-            // TODO: Implement dbcallbacks
             query.unoptimizable = true;
             break;
         }
@@ -120,6 +129,8 @@ function optimizeTree(tree, query, supports, environment) {
         query.textq = floatquery.textq.concat(query.textq);
         query.pipeline = floatquery.pipeline;
         optimizeTree(tree[2], query, supports, environment);
+        break;
+    case undefined:
         break;
     default:
         query.unoptimizable = true;

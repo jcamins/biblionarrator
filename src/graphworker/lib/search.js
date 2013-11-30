@@ -98,6 +98,12 @@ function handleOptimizedQuery(query, plan, callback) {
 
 function handlePipeline(query, plan, pipe, callback) {
     var op;
+    if (plan.pipeline.length > 0 && Object.keys(plan.pipeline[0])[0] === 'start') {
+        pipe = g.start.apply(g, plan.pipeline[0]['start']);
+        plan.pipeline.shift();
+    } else if (!pipe) {
+        pipe = g.V();
+    }
     while ((op = plan.vertexquery.shift())) {
         if (op[1] === 'contains' && op.length === 3) {
             op[1] = Text.CONTAINS;
@@ -123,7 +129,7 @@ function handleVQandPipeline(query, plan, list, callback) {
             handlePipeline(query, plan, pipe, callback);
         });
     } else {
-        handlePipeline(query, plan, g.V(), callback);
+        handlePipeline(query, plan, null, callback);
     }
 }
 

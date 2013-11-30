@@ -1,6 +1,23 @@
 "use strict";
 var path = require('path'),
+    util = require('util'),
     Gremlin = require('gremlin');
+
+Gremlin.GraphWrapper.prototype._start = Gremlin.GraphWrapper.prototype.start;
+Gremlin.GraphWrapper.prototype.start = function (ids) {
+    var txn = this._getTransaction();
+    var list = new this.ArrayList();
+    if (!util.isArray(ids)) ids = [ ids ];
+    if (typeof ids[0] === 'number' || typeof ids[0] === 'string') {
+        for (var ii = 0; ii < ids.length; ii++) {
+            list.addSync(txn.getVertexSync(ids[ii]));
+        }
+        return new this.gremlin.PipelineWrapper(this.gremlin, list.iteratorSync());
+    } else {
+        return this._start(arguments);
+    }
+};
+
 function GraphStore(config, engine) {
     var self = this;
     this.gremlin = new Gremlin({

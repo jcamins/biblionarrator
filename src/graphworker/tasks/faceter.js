@@ -70,9 +70,7 @@ module.exports = function (input, callback) {
         var pipeline;
         var countlist;
         if (results.list) {
-            g.v(results.list, function (err, res) {
-                facet(res, results.list.length);
-            });
+            facet(g.start(results.list), results.list.length);
         } else if (results.pipe) {
             countlist = new g.ArrayList();
             pipeline = results.pipe.store(countlist);
