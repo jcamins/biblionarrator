@@ -127,9 +127,7 @@ GraphModel.prototype.save = function (callback) {
                 results.props.forEach(function (prop) {
                     if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
                 });
-                if (typeof self.deleted === 'undefined') {
-                    self.deleted = 0;
-                }
+                self.deleted = self.deleted || 0;
                 var oparray = [ ];
                 var props = { };
                 for (var prop in self) {
@@ -169,7 +167,6 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
         callback();
     }
     this.v(false, function (err, sv) {
-        if (target === null) return callback(new Error('Target not specified'), null);
         graphstore.g.getVertex(typeof target === 'string' || typeof target === 'number' ? target : target.id, function (err, tv) {
             if (err) return callback(err, null);
             graphstore.g.addEdge(null, reverse ? tv : sv, reverse ? sv : tv, type, function (err, edge) {
@@ -182,10 +179,11 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
                     }
                 }
                 async.parallel([
-                    sv.setProperty.bind(sv, 'vorder', sv.unwrap().getPropertySync('vorder') + 1),
-                    tv.setProperty.bind(tv, 'vorder', tv.unwrap().getPropertySync('vorder') + 1),
+                    retry.bind(null, 3, 5, sv.setProperty.bind(sv, 'vorder', sv.unwrap().getPropertySync('vorder') + 1)),
+                    retry.bind(null, 3, 5, tv.setProperty.bind(tv, 'vorder', tv.unwrap().getPropertySync('vorder') + 1)),
                     edge.setProperties.bind(edge, props)
                 ], function (err, res) {
+                    if (err) console.log(err);
                     if (graphstore.autocommit) {
                         graphstore.g.commit(callback);
                     } else {
@@ -196,6 +194,23 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
         });
     });
 };
+
+function retry (times, pause, method, callback) {
+    var queue = [ ];
+    for (var ii = 0; ii < times; ii++) {
+        queue.push(method);
+    }
+    var run = function () {
+        method = queue.shift();
+        method(function (err, res) {
+            if (!err || queue.length === 0) return callback.apply(this, arguments);
+            setTimeout(function () {
+                run();
+            }, pause);
+        });
+    };
+    run();
+}
 
 
 /*jshint unused:false */ /* Not yet implemented */

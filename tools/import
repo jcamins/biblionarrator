@@ -199,14 +199,14 @@ function doLink(rec, link, callback) {
         },
         function (target, cb) {
             if (valid(target)) {
-                cb(target);
+                cb(null, target);
             } else {
                 Record.findOne(link.match || { '^': '^' }, cb);
             }
         }, 
         function (target, cb) {
             if (valid(target)) {
-                cb(target);
+                cb(null, target);
             } else {
                 Record.findOne({ key: link.key }, cb);
             }

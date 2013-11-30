@@ -139,6 +139,9 @@ GraphStore.prototype.connect = function connect(config, engine) {
                 index.id = LongEncoding.encodeSync(index.id);
             }
         }
+        Gremlin.ElementWrapper.prototype.getId = function () {
+            return this.el.getIdSync().longValue;
+        };
     } else if (engine === 'orient') {
         var OrientGraph = this.gremlin.java.import('com.tinkerpop.blueprints.impls.orient.OrientGraph');
         db = new OrientGraph(config.graphconf[engine].path, config.graphconf[engine].username, config.graphconf[engine].password);
