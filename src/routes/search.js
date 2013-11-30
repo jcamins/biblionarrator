@@ -7,7 +7,7 @@ var util = require('util'),
     Q = require('q'),
     searchengine = require('../lib/searchengine'),
     extend = require('extend');
-var offload = require('../graphworker'),
+var offload = require('../graphworker/standalone'),
     environment = require('../lib/environment'),
     cache = environment.cache;
 

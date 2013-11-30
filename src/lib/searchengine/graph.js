@@ -1,5 +1,5 @@
 var environment = require('../environment'),
-    offload = require('../../graphworker');
+    offload = require('../../graphworker/standalone');
 
 module.exports.search = function (options, recordcb, facetcb) {
     if (typeof options.query !== 'undefined') {
