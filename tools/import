@@ -100,9 +100,9 @@ var linkcount = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
 var rejects = [ ];
-var linkfuncs = [ ];
 
 var lookup = { }, linksleft = { };
+var linkfuncs = [ ];
 
 importer.on('record', function (record, mypromise) {
     mainrecordcount++;
@@ -126,17 +126,7 @@ importer.on('record', function (record, mypromise) {
         if (typeof rec.key !== 'undefined') lookup[rec.key] = rec.id;
         var links = rec.getLinks();
         links.forEach(function (link) {
-            var target = (link.match ? lookup[JSON.stringify(link.match)] : undefined)
-                 || lookup[link.key];
-            if (target) {
-                var linkpromise = Q.defer();
-                subpromises.push(linkpromise.promise);
-                makeLink(rec, link, target, function () {
-                    linkpromise.resolve(true);
-                });
-            } else {
-                linkfuncs.push(doLink.bind(rec, link));
-            }
+            linkfuncs.push(doLink.bind(undefined, rec, link));
         });
         if (options.lookup && typeof rec.key !== 'undefined') {
             if (linksleft[rec.key]) {
@@ -159,6 +149,13 @@ importer.on('record', function (record, mypromise) {
     });
 });
 
+/*var Runtime = graphstore.g.java.import('java.lang.Runtime');
+var memcheck = setInterval(function () {
+    var usage = process.memoryUsage();
+    console.log("Node memory usage: " + (usage.heapUsed / 1048576).toFixed(2) + "/" + (usage.heapTotal / 1048576).toFixed(2));
+    console.log("Java memory usage: " + (Runtime.getRuntimeSync().freeMemorySync() / 1048576).toFixed(2) + "/" + (Runtime.getRuntimeSync().totalMemorySync() / 1048576).toFixed(2));
+}, 30000);
+memcheck.unref();*/
 importer.on('commit', function (promise) {
     async.series(linkfuncs, function (err, res) {
         linkfuncs = [ ];
@@ -194,11 +191,18 @@ function valid(object) {
     return typeof object !== 'undefined' && object !== null;
 }
 
-function doLink(link, callback) {
-    var rec = this;
+function doLink(rec, link, callback) {
     async.waterfall([
         function (cb) {
-            Record.findOne(link.match || { '^': '^' }, cb);
+            cb(null, (link.match ? lookup[JSON.stringify(link.match)] : undefined)
+                 || lookup[link.key]);
+        },
+        function (target, cb) {
+            if (valid(target)) {
+                cb(target);
+            } else {
+                Record.findOne(link.match || { '^': '^' }, cb);
+            }
         }, 
         function (target, cb) {
             if (valid(target)) {

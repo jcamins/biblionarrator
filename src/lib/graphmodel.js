@@ -12,16 +12,24 @@ function GraphModel () {
 }
 
 GraphModel.findOne = function findOne (Model, filter, callback) {
-    return Model.findAll(filter, function (err, model) {
-        if (!model && !model[0]) return callback(err, null);
+    Model.findAll(filter, function (err, model) {
+        if (!model || !model[0]) return callback(err, null);
         callback(err, model[0]);
     });
 };
 
 GraphModel.findAll = function findAll (Model, filter, callback) {
     if (filter.id) {
-        graphstore.g.v(filter.id).toJSON(function (err, all) {
-            callback(err, Model.fromJSON(all));
+        graphstore.g.v(filter.id, function (err, pipe) {
+            if (typeof pipe.getProperties === 'function') {
+                pipe.getProperties(function (err, all) {
+                    callback(err, [ Model.fromJSON(all) ]);
+                });
+            } else {
+                pipe.toJSON(function (err, all) {
+                    callback(err, Model.fromJSON(all));
+                });
+            }
         });
     } else {
         filter.model = Model.model;
@@ -48,6 +56,7 @@ GraphModel.fromJSON = function (Model, all) {
 };
 
 GraphModel.prototype.v = function (create, callback) {
+    var self = this;
     if (this.id) {
         graphstore.g.getVertex(this.id, callback);
     } else if (create) {
@@ -98,50 +107,50 @@ GraphModel.prototype.save = function (callback) {
         if (v) {
             var oldprops = { };
             async.series({
-                    vorder: function (cb) {
-                        graphstore.g.start(v).both().count(cb);
-                    },
-                    props: function (cb) {
-                        v.el.getPropertyKeys(function (err, props) {
-                            if (props) {
-                                props.toArray(cb)
-                            } else {
-                                cb(null, []);
-                            }
-                        });
-                    }
+                vorder: function (cb) {
+                    graphstore.g.start(v).both().count(cb);
                 },
-                function (err, results) {
-                    var oldprops = { };
-                    self.vorder = parseInt(results.vorder, 10) || 0;
-                    results.props = results.props || [ ];
-                    results.props.forEach(function (prop) {
-                        if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
-                    });
-                    if (typeof self.deleted === 'undefined') {
-                        self.deleted = 0;
-                    }
-                    var oparray = [ ];
-                    var props = { };
-                    for (var prop in self) {
-                        if (prop !== 'id' && self.hasOwnProperty(prop) && typeof self[prop] !== 'function' && typeof self[prop] !== 'undefined') {
-                            props[prop] = _isObject(self[prop]) ?  JSON.stringify(self[prop]) : self[prop];
-                            if (oldprops[prop]) delete oldprops[prop];
-                        }
-                    }
-                    async.parallel([
-                        v.setProperties.bind(v, props),
-                        v.removeProperties.bind(v, Object.keys(oldprops))
-                    ], function (err, res) {
-                        self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
-                        if (graphstore.autocommit) {
-                            graphstore.g.commit(function (err) {
-                                callback(err, self);
-                            });
+                props: function (cb) {
+                    v.el.getPropertyKeys(function (err, props) {
+                        if (props) {
+                            props.toArray(cb)
                         } else {
-                            callback(err, self);
+                            cb(null, []);
                         }
                     });
+                }
+            },
+            function (err, results) {
+                var oldprops = { };
+                self.vorder = parseInt(results.vorder, 10) || 0;
+                results.props = results.props || [ ];
+                results.props.forEach(function (prop) {
+                    if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
+                });
+                if (typeof self.deleted === 'undefined') {
+                    self.deleted = 0;
+                }
+                var oparray = [ ];
+                var props = { };
+                for (var prop in self) {
+                    if (prop !== 'id' && self.hasOwnProperty(prop) && typeof self[prop] !== 'function' && typeof self[prop] !== 'undefined') {
+                        props[prop] = _isObject(self[prop]) ?  JSON.stringify(self[prop]) : self[prop];
+                        if (oldprops[prop]) delete oldprops[prop];
+                    }
+                }
+                async.series([
+                    v.setProperties.bind(v, props),
+                    v.removeProperties.bind(v, Object.keys(oldprops))
+                ], function (err, res) {
+                    self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
+                    if (graphstore.autocommit) {
+                        graphstore.g.commit(function (err) {
+                            callback(err, self);
+                        });
+                    } else {
+                        callback(err, self);
+                    }
+                });
             });
         } else {
             callback(err, undefined);

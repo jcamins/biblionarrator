@@ -27,33 +27,39 @@ exports.linklist = function(req, res) {};
 /*jshint unused:true */
 
 exports.view = function(req, res) {
-    var record = Record.findOne({id: req.params.record_id}) || new Record();
-    var accept = req.accepts([ 'json', 'html' ]);
-    if (accept === 'html') {
-        Q.all([sharedview()]).then(function(defdata) {
-            var data = defdata[0];
-            data.view = 'record';
-            data.record = record;
-            Field.all(function (err, fieldmap) {
-                data.fields = [ ];
-                for (var field in fieldmap) {
-                    data.fields.push(fieldmap[field]);
-                }
-                data.recordtypes = RecordType.findAll();
-                data.record.rendered = data.record.render();
-                res.render('record/interface', data);
+    Record.findOne({id: req.params.record_id}, function (err, record) {
+        record = record || new Record();
+        var accept = req.accepts([ 'json', 'html' ]);
+        if (accept === 'html') {
+            Q.all([sharedview()]).then(function(defdata) {
+                var data = defdata[0];
+                data.view = 'record';
+                data.record = record;
+                Field.all(function (err, fieldmap) {
+                    data.fields = [ ];
+                    for (var field in fieldmap) {
+                        data.fields.push(fieldmap[field]);
+                    }
+                    data.record.rendered = data.record.render();
+                    recordtypes = RecordType.findAll({ }, function (err, recordtypes) {
+                        data.recordtypes = recordtypes;
+                        res.render('record/interface', data);
+                    });
+                });
+            }, function(errs) {
+                res.send(404, errs);
             });
-        }, function(errs) {
-            res.send(404, errs);
-        });
-    } else {
-        res.json(record);
-    }
+        } else {
+            res.json(record);
+        }
+    });
 };
 
 exports.snippet = function(req, res) {
-    var record = Record.findOne({id: req.params.record_id}) || new Record();
-    res.json(record.snippet());
+    Record.findOne({id: req.params.record_id}, function (err, record) {
+        record = record || new Record();
+        res.json(record.snippet());
+    });
 };
 
 exports.save = function(req, res) {
@@ -65,6 +71,7 @@ exports.save = function(req, res) {
         key: req.body.key,
         format: 'bnjson'
     });
-    record.save();
-    res.json(record);
+    record.save(function (err) {
+        res.json(record);
+    });
 };
