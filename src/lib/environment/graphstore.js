@@ -18,6 +18,14 @@ Gremlin.GraphWrapper.prototype.start = function (ids) {
     }
 };
 
+Gremlin.ElementWrapper.prototype.incrementProperty = function (key, callback) {
+    var self = this;
+    this.getProperty(key, function (err, val) {
+        if (err) return callback(err, null);
+        self.setProperty(key, val + 1, callback);
+    });
+};
+
 function GraphStore(config, engine) {
     var self = this;
     this.gremlin = new Gremlin({

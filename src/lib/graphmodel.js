@@ -69,10 +69,11 @@ GraphModel.prototype.v = function (create, callback) {
 GraphModel.prototype.suppress = function (callback) {
     this.v(false, function (err, v) {
         if (v) {
-            v.setPropertySync('deleted', 1);
-            if (graphstore.autocommit) {
-                graphstore.g.commit(callback);
-            }
+            retry(3, 5, v.setProperty.bind(v, 'deleted', 1), function (err, res) {
+                if (graphstore.autocommit) {
+                    graphstore.g.commit(callback);
+                }
+            });
         }
     });
 };
@@ -137,8 +138,8 @@ GraphModel.prototype.save = function (callback) {
                     }
                 }
                 async.series([
-                    v.setProperties.bind(v, props),
-                    v.removeProperties.bind(v, Object.keys(oldprops))
+                    retry.bind(null, 3, 5, v.setProperties.bind(v, props)),
+                    retry.bind(null, 3, 5, v.removeProperties.bind(v, Object.keys(oldprops)))
                 ], function (err, res) {
                     self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
                     if (graphstore.autocommit) {
@@ -179,9 +180,9 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
                     }
                 }
                 async.parallel([
-                    retry.bind(null, 3, 5, sv.setProperty.bind(sv, 'vorder', sv.unwrap().getPropertySync('vorder') + 1)),
-                    retry.bind(null, 3, 5, tv.setProperty.bind(tv, 'vorder', tv.unwrap().getPropertySync('vorder') + 1)),
-                    edge.setProperties.bind(edge, props)
+                    retry.bind(null, 3, 5, sv.incrementProperty.bind(sv, 'vorder')),
+                    retry.bind(null, 3, 5, tv.incrementProperty.bind(tv, 'vorder')),
+                    retry.bind(null, 3, 5, edge.setProperties.bind(edge, props))
                 ], function (err, res) {
                     if (err) console.log(err);
                     if (graphstore.autocommit) {
