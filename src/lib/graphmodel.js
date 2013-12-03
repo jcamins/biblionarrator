@@ -21,14 +21,16 @@ GraphModel.findOne = function findOne (Model, filter, callback) {
 GraphModel.findAll = function findAll (Model, filter, callback) {
     if (filter.id) {
         graphstore.g.v(filter.id, function (err, pipe) {
-            if (typeof pipe.getProperties === 'function') {
+            if (pipe && typeof pipe.getProperties === 'function') {
                 pipe.getProperties(function (err, all) {
                     callback(err, [ Model.fromJSON(all) ]);
                 });
-            } else {
+            } else if (pipe) {
                 pipe.toJSON(function (err, all) {
                     callback(err, Model.fromJSON(all));
                 });
+            } else {
+                callback(null, null);
             }
         });
     } else {
