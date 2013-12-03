@@ -1,0 +1,165 @@
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+    <div id="controlbar" class="navbar-inner">
+        <div class="container-fluid">
+            <ul class="nav">
+                <li><button id="save-all" class="btn btn-inverse">{{#trhtml 'label.saveall'}}Save all{{/trhtml}}</button></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="content" class="container-fluid">
+    <div class="row-fluid">
+        <div class="span3 pull-left">
+            <h3>{{#trhtml 'label.enterisbns'}}Enter ISBNs{{/trhtml}}</h3>
+            <textarea id="isbn-entry" cols="16"></textarea>
+            <button id="search-all" class="btn">{{#trhtml 'label.searchall'}}Search all{{/trhtml}}</button>
+        </div>
+        <div class="span9 pull-right">
+            <div class="row-fluid">
+                <div id="record-list" class="span7">
+                </div>
+                <div id="record-selector" class="span5">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{{#contentFor 'styles'}}
+    <link href="/css/fields.css" media="all" type="text/css" rel="stylesheet">
+{{/contentFor}}
+
+{{#contentFor 'javascript'}}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/views/partials/z3950preview.handlebars"
+            }).done(function (template) {
+                environment.renderer.register('marc21', template);
+            });
+            $('#isbn-entry').focus();
+            $('#isbn-entry').on('keydown', function (ev) {
+                var self = this;
+                if (ev.keyCode === 13) {
+                    search(self.value.substring(0, self.selectionStart).split('\n').pop());
+                }
+            });
+            $('body').on('keydown', '[contenteditable="true"]', null, function (ev) {
+                $(this).parents('.recordContainer').removeClass('saved');
+            });
+            $('body').on('click', 'button.select-bulk', null, function (ev) {
+                var isbn = this.parentNode.getAttribute('data-isbn');
+                var optlists = document.querySelectorAll('bulk-options');
+                for (var ii = 0; ii < optlists.length; ii++) {
+                    optlists[ii].style.display = 'none';
+                }
+                document.querySelector('.bulk-options[data-isbn="' + isbn + '"]').style.display = 'block';
+            });
+            $('body').on('click', 'button.choose-record', null, function (ev) {
+                var isbn = this.parentNode.parentNode.getAttribute('data-isbn');
+                var entrylist = document.querySelector('#record-list .recordContainer[data-isbn="' + isbn + '"]');
+                entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + isbn + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
+
+                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+            });
+            $('body').on('click', 'button.remove-record', null, function (ev) {
+                this.parentNode.parentNode.removeChild(this.parentNode);
+            });
+            $('body').on('click', 'button.save-bulk', null, function (ev) {
+                var container = this.parentNode;
+                $.ajax({
+                    type: "POST",
+                    url: "/record/" + (container.getAttribute('data-id') ? encodeURIComponent(container.getAttribute('data-id')) : 'new'),
+                    dataType: "json",
+                    data: { data: JSON.stringify(window.formatters.bnjson.decompile(container.querySelector('article'))),
+                            key: container.querySelector('.record-key').textContent
+                          },
+                }).done(function(msg) {
+                    container.setAttribute('data-id', msg.id);
+                    container.className = 'recordContainer saved';
+                });
+            });
+            $('#save-all').click(function (ev) {
+                var buttons = document.querySelectorAll('.save-bulk');
+                for (var ii = 0; ii < buttons.length; ii++) {
+                    $(buttons[ii]).click()
+                }
+            });
+            $('#search-all').click(function (ev) {
+                var ta = document.getElementById('isbn-entry');
+                var isbns = ta.value.substring(0, ta.selectionStart).split('\n');
+                isbns.forEach(function (isbn) {
+                    search(isbn);
+                });
+            });
+        });
+
+        function makeEditable(el) {
+            var editable = el.querySelectorAll('.record-key, header, section');
+            for (var ii = 0; ii < editable.length; ii++) {
+                editable[ii].contentEditable = true;
+            }
+        }
+
+        function search(isbn) {
+            var ta = document.querySelector('#isbn-entry');
+            if (isbn.length === 0) return;
+            $.ajax({
+                type: "GET",
+                url: "/cataloging/copy",
+                dataType: "json",
+                data: {
+                    q: encodeURIComponent('@attr 1=7 "' + isbn + '"')
+                }
+            }).done(function (res) {
+                var records = [ ];
+                res.records.forEach(function (rec) {
+                    records.push(new models.Record({ data: rec, format: res.format }));
+                });
+                var listentry = document.createElement('div');
+                listentry.className = 'recordContainer';
+                listentry.setAttribute('data-isbn', isbn);
+                if (records.length === 0) {
+                    listentry.innerHTML = 'Unable to find record for ISBN ' + isbn;
+                } else if (records.length === 1) {
+                    listentry.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + isbn + '</h4>' + records[0].render() + '<button class="btn save-bulk">Save</button>';
+                    makeEditable(listentry);
+                } else {
+                    listentry.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4>' + isbn + '</h4><span>Multiple records matched your search.</span><button class="btn select-bulk">Select</button>';
+                    var options = document.createElement('div');
+                    options.className = 'bulk-options';
+                    options.setAttribute('data-isbn', isbn);
+                    options.innerHTML = '<h4>' + isbn + '</h4>';
+                    options.style.display = 'none';
+                    records.forEach(function (rec) {
+                        var opt = document.createElement('div');
+                        opt.className = 'recordContainer';
+                        opt.innerHTML = rec.render() + '<button class="btn choose-record">Choose</button><button class="btn remove-record">Remove</button>';
+                        options.appendChild(opt);
+                    });
+                    document.getElementById('record-selector').appendChild(options);
+                }
+                document.getElementById('record-list').appendChild(listentry);
+                if (records.length > 0) {
+                    var oldstart = ta.selectionStart;
+                    var oldend = ta.selectionEnd;
+                    ta.value = ta.value.replace(isbn + '\n', '');
+                    ta.selectionStart = oldstart - ta.value.length - 1;
+                    ta.selectionEnd = oldend - ta.value.length - 1;
+                }
+            });
+        }
+
+        var fieldlist = {
+            {{#each fields}}
+                "{{schema}}_{{name}}": {
+                    'label': "{{label}}",
+                    'link': '{{link}}',
+                    'id': '{{id}}',
+                },
+            {{/each}}
+            };
+    </script>
+{{/contentFor}}

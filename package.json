@@ -70,7 +70,9 @@
     "grunt-configure-biblionarrator": "https://github.com/biblionarrator/grunt-configure-biblionarrator/tarball/master",
     "csv": "~0.3.6",
     "marcrecord": "https://github.com/biblionarrator/marcrecord/tarball/master",
-    "grunt-exec": "~0.4.2"
+    "grunt-exec": "~0.4.2",
+    "marcjs": "~0.1.2",
+    "node-zoom": "~0.0.3"
   },
   "devDependencies": {
     "chai": "1.7.x",

@@ -695,6 +695,38 @@ footer {
     }
 }
 
+#record-list .recordContainer {
+    background-color: #f2dede;
+    color: #b94a48;
+    border-radius: 4px;
+    border: 1px solid #eed3d7;
+    padding: 8px 35px 8px 14px;
+    margin-bottom: 20px;
+
+    &.saved {
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+        color: #468847;
+    }
+
+    article [contenteditable="true"] {
+        border: 1px #bbb solid;
+        border-radius: 6px;
+        margin: 0.5em 0em;
+        min-height: 18pt;
+        
+        &:empty:after {
+            color: #ccc;
+        }
+    }
+
+    .remove-record {
+        color: black;
+        float: right;
+        margin-right: -25px;
+    }
+}
+
 
 .linkrecordview {
     a {

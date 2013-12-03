@@ -1,0 +1,10 @@
+<article><header>
+{{#marc record}}
+{{#field '[17](00|10|11)'}}{{#if index}}, {{/if}}<span class="isbd_author">{{subfstring this 'abcdefghijklmnopqrstu'}}</span> {{/field}}<span class="isbd_titleproper">{{f245.a}}</span> <span class="isbd_titleremainder">{{subfstring f245 'hbfgknpsc'}}</span> {{#field f250}}</span><span class="isbd_edition">{{subfstring this 'ab'}}</span> {{/field}}{{#field f260}} <span class="isbd_publisher">{{subfstring this 'abcg'}}</span>{{/field}}
+</header>
+<section>
+{{#field f300}}<span class="isbd_pagination">{{a}}</span> <span class="isbd_physdesc">{{b}}</span> <span class="isbd_dimensions">{{c}}</span>{{/field}}
+{{#field '5..'}}<span class="isbd_note">{{subfstring this 'abcdefghijklmnopqrstuvwxyz'}}</span> {{/field}}
+{{/marc}}
+</section>
+</article>

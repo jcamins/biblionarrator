@@ -72,6 +72,8 @@ exports.init = function(app) {
     app.get('/lang/:locale', lang);
 
     app.get('/cataloging/suggest', cataloging.suggest);
+    app.get('/cataloging/copy', cataloging.copy);
+    app.get('/cataloging/bulk', cataloging.bulk);
 
     i18next.registerAppHelper(app)
         .serveChangeKeyRoute(app, auth.can('edit', 'translation'))

@@ -58,7 +58,10 @@ GraphModel.fromJSON = function (Model, all) {
 GraphModel.prototype.v = function (create, callback) {
     var self = this;
     if (this.id) {
-        graphstore.g.getVertex(this.id, callback);
+        graphstore.g.getVertex(this.id, function (err, v) {
+            if (v) return callback.apply(arguments);
+            if (create) graphstore.g.addVertex(null, callback);
+        });
     } else if (create) {
         graphstore.g.addVertex(null, callback);
     } else {

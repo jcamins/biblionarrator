@@ -63,15 +63,13 @@ exports.snippet = function(req, res) {
 };
 
 exports.save = function(req, res) {
-    req.body.recordtype_id = req.body.recordtype_id || 1;
     var record = new Record({
         id: decodeURIComponent(req.params.record_id),
         data: req.body.data,
-        recordtype_id: req.body.recordtype_id,
         key: req.body.key,
         format: 'bnjson'
     });
-    record.save(function (err) {
-        res.json(record);
+    record.save(function (err, rec) {
+        res.json(rec);
     });
 };
