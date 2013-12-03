@@ -11,7 +11,7 @@
   ],
   "bin": {},
   "scripts": {
-    "install": "grunt build"
+    "install": "grunt install"
   },
   "repository": {
     "type": "git",
