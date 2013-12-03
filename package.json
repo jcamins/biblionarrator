@@ -73,6 +73,7 @@
     "grunt-exec": "~0.4.2",
     "marcjs": "https://github.com/jcamins/marcjs/tarball/master",
     "node-zoom": "~0.0.3",
+    "zoomstream": "https://github.com/biblionarrator/zoomstream/tarball/master",
     "chai": "1.7.x",
     "jshint": "2.1.x",
     "less": "1.4.x",
