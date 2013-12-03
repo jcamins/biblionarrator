@@ -1,0 +1,124 @@
+/**
+ * complete.ly 2.0.0
+ * MIT Licensing
+ * Copyright (c) 2013 Lorenzo Puccetti, parts (c) Jared Camins-Esakov
+ * 
+ * This Software shall be used for doing good things, not bad things.
+**/
+
+/**
+ *  Customizations
+ *  =============
+ * 
+ *  In order to get the customizations previously managed with Javascript
+ *  configuration options, override the specified CSS styles.
+ *
+ *  fontSize: .completely-dropdown, .completely-prompt, .completely-input, .completely-hint, .completely-spacer { font-size: 16px; }
+ *  fontFamily: .completely-dropdown, .completely-prompt, .completely-input, .completely-hint, .completely-spacer { font-family: "sans-serif"; }
+ *  color: .completely-option, .completely-prompt, .completely-input { color: #333; }
+ *  hintColor: .completely-hint { color: #aaa; }
+ *  backgroundColor: .completely-option, .completely-prompt, .completely-input, .completely-hint { color: #333; }
+ *  dropDownBorderColor: .completely-dropdown { border-color: #aaa; }
+ *  dropDownZIndex: .completely-dropdown { z-index: 100; }
+ *  dropDownOnHoverBackgroundCover: .completely-option.selected { background-color: #ddd; }
+ *
+**/
+
+.completely-dropdown {
+    position:         absolute;
+    visibility:       hidden;
+    outline:          0;
+    margin:           0;
+    padding:          0;  
+    text-align:       left;
+    font-size:        16px;
+    font-family:      "sans-serif";
+    background-color: #fff;
+    z-index:          100; 
+    cursor:           default;
+    border-style:     solid;
+    border-width:     1px;
+    border-color:     #aaa;
+    overflow-x:       hidden;
+    white-space:      pre;
+    overflow-y:       scroll;  /* note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account */
+    
+}
+
+input[type="text"].completely-hint, input[type="text"].completely-input {
+    font-size:   16px;
+    font-family: "sans-serif";
+    color:       #333;
+    width:       100%;
+    outline:     0;
+    border:      0;
+    margin:      0;
+    padding:     0;
+}
+
+input[type="text"].completely-hint {
+    position:     absolute;
+    top:          0;
+    left:         0;
+    border-color: transparent;
+    box-shadow:   none;
+    color:        #aaa;
+}
+
+input[type="text"].completely-input {
+    background-color: transparent;
+    vertical-align:   top;
+    position:         relative;
+}
+
+.completely-option {
+    color: #333;
+    background-color: #fff;
+}
+
+.completely-option.selected {
+    background-color: #ddd;
+}
+
+.completely-option:hover {
+    outline: 1px solid #ddd;
+}
+
+.completely-prompt {
+    position:         absolute;
+    outline:          0;
+    margin:           0;
+    padding:          0;
+    border:           0;
+    font-size:        16px;
+    font-family:      "sans-serif";
+    color:            #333;
+    background-color: #fff;
+    top:              0;
+    left:             0;
+    overflow:         hidden;
+    background:       transparent;
+}
+
+.completely-spacer {
+    visibility:  hidden;
+    position:    fixed;
+    outline:     0;
+    margin:      0;
+    padding:     0;
+    border:      0;
+    left:        0;
+    white-space: pre;
+    font-size:   16px;
+    font-family: "sans-serif";
+    font-weight: normal;
+}
+
+.completely-wrapper {
+    position: relative;
+    outline:  0;
+    border:   0;
+    margin:   0;
+    padding:  0;
+}
+
