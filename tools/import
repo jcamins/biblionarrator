@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// vim: set filetype=javascript:
 var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
         'format': {
             alias: 'f',
@@ -97,9 +98,9 @@ if (options.map) {
 }
 
 var linkcount = 0;
+var linkerr = 0;
 var recordcount = 0;
 var mainrecordcount = 0;
-var rejects = [ ];
 
 var lookup = { }, linksleft = { };
 var linkfuncs = [ ];
@@ -134,6 +135,7 @@ importer.on('record', function (record, mypromise) {
                     var linkpromise = Q.defer();
                     subpromises.push(linkpromise.promise);
                     rec.link(link.label, link.source, link.properties, true, function (err, res) {
+                        if (err) linkerr++;
                         linkpromise.resolve(true);
                         linkcount++;
                     });
@@ -166,8 +168,9 @@ importer.on('commit', function (promise) {
 });
 
 importer.on('done', function (rejects) {
-    console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links');
-    if (typeof rejects !== 'undefined' && rejects.length > 0) {
+    rejects = rejects || [ ];
+    console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links with ' + rejects.length + ' record errors/' + linkerr + ' link errors');
+    if (rejects.length > 0) {
         fs.writeFileSync(options.reject, rejects.join('\n'));
     }
     process.exit();
@@ -200,8 +203,10 @@ function doLink(rec, link, callback) {
         function (target, cb) {
             if (valid(target)) {
                 cb(null, target);
+            } else if (link.match) {
+                Record.findOne(link.match, cb);
             } else {
-                Record.findOne(link.match || { '^': '^' }, cb);
+                cb(null, null);
             }
         }, 
         function (target, cb) {
@@ -243,7 +248,7 @@ function makeLink(rec, link, target, callback) {
         lookup[matchkey] = lookup[matchkey] || lookup[link.key];
     }
     rec.link(link.label, target, link.properties, false, function (err, res) {
-        if (err) console.log(err);
+        if (err) { linkerr++; console.log(err) };
         linkcount++;
         callback()
     });
