@@ -26,6 +26,7 @@ module.exports = function (input, callback) {
             g.start(source).copySplit(g._().out().in(), g._().in().out()).fairMerge().groupCount().cap().orderMap(g.Tokens.decr).range(0, input.size).aggregate(list).iterate(function () {
                 var edges = [ ];
                 var recmap = { };
+                records = records || [ ];
                 records.forEach(function (rec, index) {
                     records[index].recordtype = recordtypes[index] || '';
                     records[index].weight = 0;
@@ -35,6 +36,7 @@ module.exports = function (input, callback) {
                 var needed = { };
                 var newedge;
                 var edgemap = { };
+                res.paths = res.paths || [ ];
                 res.paths.forEach(function (path) {
                     edgeparts = path[1].split('^');
                     edgeparts[0] = parseInt(edgeparts[0], 10);
@@ -68,7 +70,7 @@ module.exports = function (input, callback) {
                 var finishProcessing = function (err, res) {
                     if (typeof input.landmarks !== 'undefined') {
                         input.landmarks.forEach(function (landmark) {
-                            records[recmap[landmark]].landmark = true;
+                            if (recmap[landmark] && records[recmap[landmark]]) records[recmap[landmark]].landmark = true;
                         });
                     }
                     var removes = [ ];
@@ -91,6 +93,7 @@ module.exports = function (input, callback) {
                     recordtypes = new g.ArrayList();
                     g.start(Object.keys(needed)).as('records').out('recordtype').property('key').store(recordtypes).optional('records').toJSON(function (err, newrecords) {
                         g.toJSON(recordtypes, function(err, recordtypes) {
+                            newrecords = newrecords || [ ];
                             newrecords.forEach(function (newrecord, index) {
                                 newrecord.recordtype = recordtypes[index] || '';
                                 newrecord.weight = 0;
