@@ -103,7 +103,7 @@ GraphStore.prototype.connect = function connect(config, engine) {
             var index = config.indexes[name];
             if (index.id) continue;
             var backends;
-            var propertyclass = Type.Vertex.class;
+            var propertyclass = Type.Vertex;
             /*jshint -W086*/
             switch (index.type) {
                 case 'edge':
@@ -114,14 +114,14 @@ GraphStore.prototype.connect = function connect(config, engine) {
                     }
                     break;
                 case 'edgeproperty':
-                    propertyclass = Type.Edge.class;
+                    propertyclass = Type.Edge;
                 case 'property':
                     if (index.system) {
                         backends = [ 'standard', 'search' ];
                     } else {
                         backends = [ 'standard' ];
                     }
-                    var type = db.makeKeySync(name).dataTypeSync(Type[index.datatype].class);
+                    var type = db.makeKeySync(name).dataTypeSync(Type[index.datatype]);
                     backends.forEach(function (backend) {
                         type = type.indexedSync(backend, propertyclass, self.gremlin.java.newArray('com.thinkaurelius.titan.core.Parameter', []));
                     });
@@ -137,8 +137,8 @@ GraphStore.prototype.connect = function connect(config, engine) {
                     index.id = type.makeSync().getIdSync();
                     break;
                 case 'text':
-                    index.id = db.makeKeySync(name).dataTypeSync(Type.String.class)
-                        .indexedSync("search", Type.Vertex.class, this.gremlin.java.newArray('com.thinkaurelius.titan.core.Parameter', []))
+                    index.id = db.makeKeySync(name).dataTypeSync(Type.String)
+                        .indexedSync("search", Type.Vertex, this.gremlin.java.newArray('com.thinkaurelius.titan.core.Parameter', []))
                         .singleSync().makeSync().getIdSync();
                     break;
             }
