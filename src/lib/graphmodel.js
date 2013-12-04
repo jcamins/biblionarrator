@@ -20,18 +20,17 @@ GraphModel.findOne = function findOne (Model, filter, callback) {
 
 GraphModel.findAll = function findAll (Model, filter, callback) {
     if (filter.id) {
-        graphstore.g.v(filter.id, function (err, pipe) {
-            if (pipe && typeof pipe.getProperties === 'function') {
-                pipe.getProperties(function (err, all) {
-                    callback(err, [ Model.fromJSON(all) ]);
-                });
-            } else if (pipe) {
-                pipe.toJSON(function (err, all) {
-                    callback(err, Model.fromJSON(all));
-                });
-            } else {
-                callback(null, null);
+        graphstore.g.v(filter.id, function (err, recs) {
+            if (util.isArray(recs)) {
+                var array = new graphstore.g.ArrayList();
+                for (var ii = 0; ii < recs.length; ii++) {
+                    array.addSync(recs[ii].el);
+                }
+                recs = array;
             }
+            graphstore.gremlin.toJSON(recs, function (err, all) {
+                callback(err, Model.fromJSON(all));
+            });
         });
     } else {
         filter.model = Model.model;
