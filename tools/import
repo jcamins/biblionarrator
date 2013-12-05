@@ -41,6 +41,11 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
         'commit': {
             default: 1000,
             describe: 'Number of records to process between commits'
+        },
+        'quiet': {
+            alias: 'q',
+            default: false,
+            describe: 'Quiet mode (do not print progress)'
         }
     }),
     environment = require('../src/lib/environment'),
@@ -63,7 +68,8 @@ var importer,
     importopts = {
         files: options._,
         commit: options.commit,
-        pause: (options.map ? true : false)
+        pause: (options.map ? true : false),
+        quiet: options.quiet
     };
 if (typeof handler.importoptions !== 'undefined') {
     importer = options.importer || handler.importoptions.importer;
@@ -169,10 +175,10 @@ importer.on('commit', function (promise) {
 
 importer.on('done', function (rejects) {
     rejects = rejects || [ ];
-    console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links with ' + rejects.length + ' record errors/' + linkerr + ' link errors');
     if (rejects.length > 0) {
         fs.writeFileSync(options.reject, rejects.join('\n'));
     }
+    if (!options.quiet) console.log('Processed ' + mainrecordcount + ' and created ' + recordcount + ' records/' + linkcount + ' links with ' + rejects.length + ' record errors/' + linkerr + ' link errors in ' + process.uptime() + ' seconds');
     process.exit();
 });
 
