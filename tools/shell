@@ -52,15 +52,15 @@ function evalFunc(code, context, file, cb) {
         'print': {
             get: function () {
                 async = true;
-                return function (err, it) { cb(err, outFunc(it)); }
+                return function (err, it) { context._ = it; cb(err, outFunc(it)); }
             }
         },
         'json': {
             get: function () {
                 async = true;
-                return function (err, it) { cb(err, jsonFunc(it)); }
+                return function (err, it) { context._ = it; cb(err, jsonFunc(it)); }
             }
-        },
+        }
     });
     try {
         var result = vm.runInContext(code, context, file);
