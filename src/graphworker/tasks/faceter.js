@@ -29,6 +29,7 @@ module.exports = function (input, callback) {
                 for (var key in rawfacets) {
                     parts = key.split('@');
                     linktype = linktypes[parts[0]];
+                    if (parts[2] === 'null') continue;
                     if (linktype && parts[1] === 'out' && (rawfacets[key] > 1 || rawfacets[key] >= count - 1)) {
                         facets[parts[0]] = facets[parts[0]] || { label: linktype['facetlabel'], options: [ ], coverage: 0 };
                         facets[parts[0]].options.push({ label: parts[2], link: encodeURIComponent(parts[0] + '["' + parts[2] + '"]'), count: rawfacets[key], type: parts[0] });
