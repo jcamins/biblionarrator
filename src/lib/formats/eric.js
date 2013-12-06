@@ -31,7 +31,7 @@ module.exports.links = function(recorddata) {
     var links = [ ];
     if (recorddata.metadata.dc_creator) {
         recorddata.metadata.dc_creator.personal.forEach(function (creator) {
-            links.push({ key: creator, label: 'author',
+            links.push({ key: creator, label: 'creator_e',
                 vivify: {
                     key: creator,
                     format: 'bnjson',
@@ -43,7 +43,7 @@ module.exports.links = function(recorddata) {
             });
         });
         recorddata.metadata.dc_creator.institution.forEach(function (creator) {
-            links.push({ key: creator, label: 'author',
+            links.push({ key: creator, label: 'creator_e',
                 vivify: {
                     key: creator,
                     format: 'bnjson',
@@ -71,7 +71,7 @@ module.exports.links = function(recorddata) {
     }
     if (recorddata.metadata.dc_subject) {
         recorddata.metadata.dc_subject.forEach(function (subject) {
-            links.push({ key: subject, label: 'subject',
+            links.push({ key: subject, label: 'subject_e',
                 vivify: {
                     key: subject,
                     format: 'bnjson',
