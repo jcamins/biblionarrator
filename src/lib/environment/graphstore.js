@@ -106,6 +106,7 @@ GraphStore.prototype.connect = function connect(config, engine) {
             var propertyclass = Type.Vertex;
             /*jshint -W086*/
             switch (index.type) {
+                case 'biedge':
                 case 'edge':
                     if (index.unidirected) {
                         index.id = db.makeLabelSync(name).unidirectedSync().makeSync().getIdSync();
