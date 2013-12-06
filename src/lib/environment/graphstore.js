@@ -12,7 +12,7 @@ Gremlin.GraphWrapper.prototype.start = function (ids) {
         for (var ii = 0; ii < ids.length; ii++) {
             list.addSync(txn.getVertexSync(ids[ii]));
         }
-        return new this.gremlin.PipelineWrapper(this.gremlin, list.iteratorSync());
+        return new Gremlin.PipelineWrapper(this.gremlin, list.iteratorSync());
     } else {
         return this._start(arguments);
     }
