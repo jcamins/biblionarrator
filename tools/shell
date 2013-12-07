@@ -47,24 +47,29 @@ function jsonFunc(it) {
 }
 
 function evalFunc(code, context, file, cb) {
+    var start = process.hrtime();
     var async = false;
     Object.defineProperties(context, {
         'print': {
             get: function () {
                 async = true;
-                return function (err, it) { context._ = it; cb(err, outFunc(it)); }
+                return function (err, it) { context._ = it; var res = outFunc(it); end = process.hrtime(start); context.time = Number(end[0] + end[1] / 1e9).toFixed(3); cb(err, res); }
             }
         },
         'json': {
             get: function () {
                 async = true;
-                return function (err, it) { context._ = it; cb(err, jsonFunc(it)); }
+                return function (err, it) { context._ = it; var res = jsonFunc(it); end = process.hrtime(start); context.time = Number(end[0] + end[1] / 1e9).toFixed(3); cb(err, res); }
             }
         }
     });
     try {
         var result = vm.runInContext(code, context, file);
-        if (!async) cb(null, result);
+        if (!async) {
+            var end = process.hrtime(start);
+            context.time = Number(end[0] + end[1] / 1e9).toFixed(3);
+            cb(null, result);
+        }
     } catch (err) {
         cb(err);
     }
