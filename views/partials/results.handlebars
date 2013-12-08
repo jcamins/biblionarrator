@@ -8,7 +8,7 @@
     <div class="span10 facets">
         <span class="facet-label">{{#trhtml 'label.limits'}}Limits{{/trhtml}}</span>
             {{#each query.facets}}
-                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="{{#trhtml 'label.removefacet'}}Remove {{label}} facet{{/trhtml}}" class="remove-facet" data-index="{{@index}}" href="#">x</a></sub></span>
+                &gt; <span class="selected-facet"><span class="facet-label">{{label}}</span><span class="facet-value">{{value}}</span> <sub><a title="{{#tr 'label.removefacet'}}Remove {{label}} facet{{/tr}}" class="remove-facet" data-index="{{@index}}" href="#">x</a></sub></span>
             {{/each}}
         </span>
     </div>
@@ -20,7 +20,7 @@
         <span class="sort-label">{{#trhtml 'label.sort'}}Sort{{/trhtml}}</span> &gt;
         {{#with sortings}}
             {{#each used}}
-                <span class="sort-facet">{{label}} <sub><a title="{{#trhtml 'label.removesort'}}Remove {{label}} sort{{/trhtml}}" class="remove-sort">x</a></sub></span> &gt;
+                <span class="sort-facet">{{label}} <sub><a title="{{#tr 'label.removesort'}}Remove {{label}} sort{{/tr}}" class="remove-sort">x</a></sub></span> &gt;
             {{/each}}
             {{#if available}}
                 <span data-toggle="dropdown-select" class="button-dropdown white">
