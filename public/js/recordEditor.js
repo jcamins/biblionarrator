@@ -385,7 +385,7 @@ function initializeContentEditable() {
             var editor = this;
             this.setAttribute('contenteditable', 'true');
             this.onkeydown = function (ev) {
-                if (ev.keyCode === 50) {
+                if (ev.keyCode === 50 && ev.shiftKey) {
                     ev.preventDefault();
                     var sel = rangy.getSelection();
                     var savedsel = rangy.saveSelection();
@@ -416,8 +416,14 @@ function initializeContentEditable() {
                                 });
                             }
                         },
+                        onkeydown: function (ev) {
+                            if (ev.keyCode === 50 && ev.shiftKey) ev.stopPropagation();
+                        },
                         completed: function (opt) {
-                            $('#' + acid).replaceWith(opt.key);
+                            if (opt && opt.key) {
+                                opt = opt.key;
+                            }
+                            $('#' + acid).replaceWith(opt);
                             editor.focus();
                             rangy.restoreSelection(savedsel);
                         },
@@ -427,6 +433,7 @@ function initializeContentEditable() {
                             rangy.restoreSelection(savedsel);
                         }
                     });
+                    c._controls.input.focus();
                 }
             };
         });

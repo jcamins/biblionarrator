@@ -116,8 +116,10 @@ function Completely(container, config) {
             ev.stopPropagation();
             if (self.current) {
                 self.completed(self.current);
-                return; 
+            } else {
+                self.completed(self._controls.input.value);
             }
+            return; 
         }
         
         if (keyCode == 40) return self.moveSelection(+1); // down
@@ -266,7 +268,7 @@ Completely.prototype.highlightSelection = function() {
 
 /* You will probably want to overload the following methods */
 
-Completely.prototype.tokenentry = function (input) {
+Completely.prototype.tokenentry = function (input, ev) {
     this.update();
 };
 
