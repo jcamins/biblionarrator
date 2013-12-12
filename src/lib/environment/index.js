@@ -255,7 +255,7 @@ function Environment(config, filename) {
 }
 
 Environment.load = function loadConfig(file) {
-    module.exports = new Environment(require(resolveRoot(file)), resolveRoot(file));
+    module.exports = new Environment(JSON.parse(fs.readFileSync(resolveRoot(file))), resolveRoot(file));
     module.exports.object = Environment;
     return module.exports;
 };
@@ -276,7 +276,7 @@ if (typeof process.env['BN_CONFIG'] !== 'undefined') {
     Environment.set(JSON.parse(process.env['BN_CONFIG']));
 } else {
     try {
-        Environment.load('config/config');
+        Environment.load('config/config.json');
     } catch (e) {
         if (e.code === 'MODULE_NOT_FOUND') {
             Environment.set(defaultconfig);

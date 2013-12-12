@@ -33,7 +33,7 @@ module.exports = function (usage, options) {
     /*jshint unused:true */
     var environment;
     if (typeof argv.config !== 'undefined') {
-        environment = require('./environment').load(argv.c);
+        environment = require('./environment').load(argv.config);
     } else {
         environment = require('./environment');
     }
