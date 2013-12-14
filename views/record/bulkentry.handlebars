@@ -77,7 +77,7 @@
                     }
                 }
             });
-            $('body').on('keydown', '#recordlist [contenteditable="true"]', null, function (ev) {
+            $('body').on('keydown', '#record-list [contenteditable="true"]', null, function (ev) {
                 $(this).parents('.recordContainer').removeClass('saved');
             });
             $('body').on('click', 'button.select-bulk', null, function (ev) {
@@ -94,6 +94,7 @@
                 entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + term + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
 
                 this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                if ($('body').hasClass('autosave-enabled')) saveAll();
             });
             $('body').on('click', 'button.remove-record', null, function (ev) {
                 this.parentNode.parentNode.removeChild(this.parentNode);
@@ -196,11 +197,15 @@
             if ($('body').hasClass('autosave-enabled')) saveAll();
         }
 
+        var autosaveTimeout;
         function saveAll() {
+            if (autosaveTimeout) clearTimeout(autosaveTimeout)
+            delete autosaveTimeout;
             var buttons = document.querySelectorAll('.recordContainer:not(.saved) .save-bulk');
             for (var ii = 0; ii < buttons.length; ii++) {
                 $(buttons[ii]).click()
             }
+            if ($('body').hasClass('autosave-enabled')) autosaveTimeout = setTimeout(saveAll, 60000);
         }
 
         var fieldlist = {
