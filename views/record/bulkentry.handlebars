@@ -35,7 +35,9 @@
 {{/contentFor}}
 
 {{#contentFor 'javascript'}}
+    <script src="/lib/js/isbn.js"></script>
     <script type="text/javascript">
+        var searching = { };
         $(document).ready(function () {
             $.ajax({
                 type: "GET",
@@ -52,38 +54,48 @@
             });
             $('#record-entry').on('keydown', function (ev) {
                 var self = this;
-                if (ev.keyCode === 13 && self.value.substr(self.selectionStart-1, 1) === '\n') {
-                    var sections = self.value.substring(0, self.selectionStart).split('\n');
-                    self.value = self.value.substring(self.selectionStart);
-
-                    var listentry = document.createElement('div');
-                    listentry.className = 'recordContainer';
-                    var html = '<button class="remove-record btn btn-link">&times;</button><article><header>' + sections[0] + '</header>';
-                    for (var ii = 1; ii < sections.length - 1; ii++) {
-                        html += '<section>' + sections[ii] + '</section>';
+                if (ev.keyCode === 13) {
+                    var lines = self.value.substring(0, self.selectionStart).split('\n');
+                    var remainder = '';
+                    var sections = [ ];
+                    lines.forEach(function (line) {
+                        if (line.substring(0,1) === '*') {
+                            if (!searching[line.substring(1)]) {
+                                searching[line.substring(1)] = true
+                                search(line);
+                            }
+                            remainder += line + '\n';
+                        } else {
+                            sections.push(line);
+                        }
+                    });
+                    if (self.value.substr(self.selectionStart-1, 1) === '\n') {
+                        self.value = remainder + self.value.substring(self.selectionStart);
+                        var rendered = '<article><header>' + sections[0] + '</header>';
+                        for (var ii = 1; ii < sections.length - 1; ii++) {
+                            rendered += '<section>' + sections[ii] + '</section>';
+                        }
+                        rendered += '</article>';
+                        addRecord(null, rendered);
+                        ev.preventDefault();
                     }
-                    html += '</article><button class="btn save-bulk">Save</button>';
-                    listentry.innerHTML = html;
-                    makeEditable(listentry);
-                    document.getElementById('record-list').appendChild(listentry);
-                    ev.preventDefault();
                 }
             });
             $('body').on('keydown', '#recordlist [contenteditable="true"]', null, function (ev) {
                 $(this).parents('.recordContainer').removeClass('saved');
             });
             $('body').on('click', 'button.select-bulk', null, function (ev) {
-                var isbn = this.parentNode.getAttribute('data-isbn');
+                var term = this.parentNode.getAttribute('data-key');
                 var optlists = document.querySelectorAll('bulk-options');
                 for (var ii = 0; ii < optlists.length; ii++) {
                     optlists[ii].style.display = 'none';
                 }
-                document.querySelector('.bulk-options[data-isbn="' + isbn + '"]').style.display = 'block';
+                document.querySelector('.bulk-options[data-key="' + term + '"]').style.display = 'block';
             });
             $('body').on('click', 'button.choose-record', null, function (ev) {
-                var isbn = this.parentNode.parentNode.getAttribute('data-isbn');
-                var entrylist = document.querySelector('#record-list .recordContainer[data-isbn="' + isbn + '"]');
-                entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + isbn + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
+                var term = this.parentNode.parentNode.getAttribute('data-key');
+                var entrylist = document.querySelector('#record-list .recordContainer[data-key="' + term + '"]');
+                entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + term + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
 
                 this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
             });
@@ -110,13 +122,6 @@
                     $(buttons[ii]).click()
                 }
             });
-            $('#search-all').click(function (ev) {
-                var ta = document.getElementById('isbn-entry');
-                var isbns = ta.value.substring(0, ta.selectionStart).split('\n');
-                isbns.forEach(function (isbn) {
-                    search(isbn);
-                });
-            });
         });
 
         function makeEditable(el) {
@@ -126,35 +131,47 @@
             }
         }
 
-        function search(isbn) {
-            var ta = document.querySelector('#isbn-entry');
-            if (isbn.length === 0) return;
+        function search(term) {
+            if (term.substring(0,1) === '*') term = term.substring(1);
+            var original = term;
+            term = term.trim();
+            var ta = document.querySelector('#record-entry');
+            if (term.length === 0) return;
+            var query;
+            var isbn = ISBN.parse(term), lccn = /^([0-9]{2}|[0-9]{4})-([0-9]{0,6})$/;
+            if (isbn) {
+                query = '@or @attr 1=7 "' + isbn.asIsbn13() + '" @attr 1=7 "' + isbn.asIsbn10() + '"';
+            } else if ((lccn = lccn.exec(term))) {
+                query = '@attr 1=9 "' + lccn[1];
+                for (var ii = 6; ii > lccn[2].length; ii--) {
+                    query += '0';
+                }
+                query += lccn[2] + '"';
+            } else {
+                query = '@attr 1=1016 "' + term +'"';
+            }
             $.ajax({
                 type: "GET",
                 url: "/cataloging/copy",
                 dataType: "json",
                 data: {
-                    q: encodeURIComponent('@attr 1=7 "' + isbn + '"')
+                    q: encodeURIComponent(query)
                 }
             }).done(function (res) {
                 var records = [ ];
                 res.records.forEach(function (rec) {
                     records.push(new models.Record({ data: rec, format: res.format }));
                 });
-                var listentry = document.createElement('div');
-                listentry.className = 'recordContainer';
-                listentry.setAttribute('data-isbn', isbn);
                 if (records.length === 0) {
-                    listentry.innerHTML = 'Unable to find record for ISBN ' + isbn;
+                    addRecord(term, 'Unable to find record for "' + term + '"', true);
                 } else if (records.length === 1) {
-                    listentry.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + isbn + '</h4>' + records[0].render() + '<button class="btn save-bulk">Save</button>';
-                    makeEditable(listentry);
+                    addRecord(term, records[0].render());
                 } else {
-                    listentry.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4>' + isbn + '</h4><span>Multiple records matched your search.</span><button class="btn select-bulk">Select</button>';
+                    addRecord(term, '<span>Multiple records matched your search.</span><button class="btn select-bulk">Select</button>', true);
                     var options = document.createElement('div');
                     options.className = 'bulk-options';
-                    options.setAttribute('data-isbn', isbn);
-                    options.innerHTML = '<h4>' + isbn + '</h4>';
+                    options.setAttribute('data-key', term);
+                    options.innerHTML = '<h4>' + term + '</h4>';
                     options.style.display = 'none';
                     records.forEach(function (rec) {
                         var opt = document.createElement('div');
@@ -164,15 +181,27 @@
                     });
                     document.getElementById('record-selector').appendChild(options);
                 }
-                document.getElementById('record-list').appendChild(listentry);
                 if (records.length > 0) {
                     var oldstart = ta.selectionStart;
                     var oldend = ta.selectionEnd;
-                    ta.value = ta.value.replace(isbn + '\n', '');
-                    ta.selectionStart = oldstart - ta.value.length - 1;
-                    ta.selectionEnd = oldend - ta.value.length - 1;
+                    ta.value = ta.value.replace('*' + original + '\n', '');
+                    ta.selectionStart = oldstart - original.length - 2;
+                    ta.selectionEnd = oldend - original.length - 2;
                 }
             });
+        }
+
+        function addRecord(key, rendered, controlsincluded) {
+            var listentry = document.createElement('div');
+            listentry.className = 'recordContainer';
+            listentry.setAttribute('data-key', key);
+            var html = '<button class="remove-record btn btn-link">&times;</button>';
+            if (key) html += '<h4 class="record-key">' + key + '</h4>';
+            html += rendered;
+            if (!controlsincluded) html += '<button class="btn save-bulk">Save</button>';
+            listentry.innerHTML = html;
+            makeEditable(listentry);
+            document.getElementById('record-list').appendChild(listentry);
         }
 
         var fieldlist = {
