@@ -165,7 +165,7 @@ var memcheck = setInterval(function () {
 }, 30000);
 memcheck.unref();*/
 importer.on('commit', function (promise) {
-    async.parallel(linkfuncs, function (err, res) {
+    async.series(linkfuncs, function (err, res) {
         linkfuncs = [ ];
         graphstore.g.commit(function (err, res) {
             promise.resolve(true);
