@@ -9,20 +9,24 @@
 </nav>
 <div id="content" class="container-fluid">
     <div class="row-fluid">
-        <div class="span3 pull-left">
+        <div class="span3">
             <h3>{{#trhtml 'label.enterisbns'}}Enter ISBNs{{/trhtml}}</h3>
             <textarea id="isbn-entry" cols="16"></textarea>
             <button id="search-all" class="btn">{{#trhtml 'label.searchall'}}Search all{{/trhtml}}</button>
         </div>
-        <div class="span9 pull-right">
+        <div class="span5">
             <div class="row-fluid">
-                <div id="record-list" class="span7">
+                <div id="record-list">
                 </div>
-                <div id="record-selector" class="span5">
+            </div>
+            <div class="row-fluid">
+                <div>
+                    <textarea id="record-entry"></textarea>
                 </div>
             </div>
         </div>
-        
+        <div id="record-selector" class="span4">
+        </div>
     </div>
 </div>
 
@@ -46,7 +50,26 @@
                     search(self.value.substring(0, self.selectionStart).split('\n').pop());
                 }
             });
-            $('body').on('keydown', '[contenteditable="true"]', null, function (ev) {
+            $('#record-entry').on('keydown', function (ev) {
+                var self = this;
+                if (ev.keyCode === 13 && self.value.substr(self.selectionStart-1, 1) === '\n') {
+                    var sections = self.value.substring(0, self.selectionStart).split('\n');
+                    self.value = self.value.substring(self.selectionStart);
+
+                    var listentry = document.createElement('div');
+                    listentry.className = 'recordContainer';
+                    var html = '<button class="remove-record btn btn-link">&times;</button><article><header>' + sections[0] + '</header>';
+                    for (var ii = 1; ii < sections.length - 1; ii++) {
+                        html += '<section>' + sections[ii] + '</section>';
+                    }
+                    html += '</article><button class="btn save-bulk">Save</button>';
+                    listentry.innerHTML = html;
+                    makeEditable(listentry);
+                    document.getElementById('record-list').appendChild(listentry);
+                    ev.preventDefault();
+                }
+            });
+            $('body').on('keydown', '#recordlist [contenteditable="true"]', null, function (ev) {
                 $(this).parents('.recordContainer').removeClass('saved');
             });
             $('body').on('click', 'button.select-bulk', null, function (ev) {
