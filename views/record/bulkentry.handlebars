@@ -2,6 +2,7 @@
     <div id="controlbar" class="navbar-inner">
         <div class="container-fluid">
             <ul class="nav">
+                <li class="autosave"><a href="#"><i class="icon-white icon-ok-circle"></i><i class="icon-white icon-ban-circle"></i> Autosave</a></li>
                 <li><button id="save-all" class="btn btn-inverse">{{#trhtml 'label.saveall'}}Save all{{/trhtml}}</button></li>
             </ul>
         </div>
@@ -10,9 +11,6 @@
 <div id="content" class="container-fluid">
     <div class="row-fluid">
         <div class="span3">
-            <h3>{{#trhtml 'label.enterisbns'}}Enter ISBNs{{/trhtml}}</h3>
-            <textarea id="isbn-entry" cols="16"></textarea>
-            <button id="search-all" class="btn">{{#trhtml 'label.searchall'}}Search all{{/trhtml}}</button>
         </div>
         <div class="span5">
             <div class="row-fluid">
@@ -39,18 +37,16 @@
     <script type="text/javascript">
         var searching = { };
         $(document).ready(function () {
+            $('body').addClass('autosave-enabled');
             $.ajax({
                 type: "GET",
                 url: "/views/partials/z3950preview.handlebars"
             }).done(function (template) {
                 environment.renderer.register('marc21', template);
             });
-            $('#isbn-entry').focus();
-            $('#isbn-entry').on('keydown', function (ev) {
-                var self = this;
-                if (ev.keyCode === 13) {
-                    search(self.value.substring(0, self.selectionStart).split('\n').pop());
-                }
+            $('.autosave a').on('click', function (ev) {
+                $('body').toggleClass('autosave-enabled');
+                ev.preventDefault();
             });
             $('#record-entry').on('keydown', function (ev) {
                 var self = this;
@@ -116,12 +112,7 @@
                     container.className = 'recordContainer saved';
                 });
             });
-            $('#save-all').click(function (ev) {
-                var buttons = document.querySelectorAll('.save-bulk');
-                for (var ii = 0; ii < buttons.length; ii++) {
-                    $(buttons[ii]).click()
-                }
-            });
+            $('#save-all').click(saveAll);
         });
 
         function makeEditable(el) {
@@ -202,6 +193,14 @@
             listentry.innerHTML = html;
             makeEditable(listentry);
             document.getElementById('record-list').appendChild(listentry);
+            if ($('body').hasClass('autosave-enabled')) saveAll();
+        }
+
+        function saveAll() {
+            var buttons = document.querySelectorAll('.recordContainer:not(.saved) .save-bulk');
+            for (var ii = 0; ii < buttons.length; ii++) {
+                $(buttons[ii]).click()
+            }
         }
 
         var fieldlist = {

@@ -732,6 +732,34 @@ footer {
     width: 100%;
 }
 
+.autosave {
+    a {
+        .autosave-enabled & {
+            color: #ffffff;
+            background-color: #111111;
+            text-decoration: none;
+            .box-shadow;
+        }
+    }
+
+    .icon-ok-circle {
+        display: none;
+
+        .autosave-enabled & {
+            display: inline-block;
+        }
+    }
+
+    .icon-ban-circle {
+        display: inline-block;
+        opacity: 0.6;
+
+        .autosave-enabled & {
+            display: none;
+        }
+    }
+}
+
 
 .linkrecordview {
     a {
