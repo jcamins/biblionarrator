@@ -19,7 +19,9 @@
             </div>
             <div class="row-fluid">
                 <div>
-                    <textarea id="record-entry"></textarea>
+                    <textarea placeholder="{{#tr 'label.bulkhint'}}Scan ISBN/LCCN with * prefix or enter records with each section on a separate line and records separated by a blank line{{/tr}}" id="record-entry"></textarea>
+                    <div id="record-entry-div" style="display: none;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +68,7 @@
                         }
                     });
                     if (self.value.substr(self.selectionStart-1, 1) === '\n') {
-                        self.value = remainder + self.value.substring(self.selectionStart);
+                        self.value = remainder + self.value.substring(self.selectionStart + 1);
                         var rendered = '<article><header>' + sections[0] + '</header>';
                         for (var ii = 1; ii < sections.length - 1; ii++) {
                             rendered += '<section>' + sections[ii] + '</section>';
@@ -76,6 +78,12 @@
                         ev.preventDefault();
                     }
                 }
+            });
+            $('#record-entry').on('keyup', function (ev) {
+                var content = $(this).val();
+                content = content.replace(/\n/g, '<br>');
+                $('#record-entry-div').html(content);
+                $(this).css('height', $('#record-entry-div').height() + 40);
             });
             $('body').on('keydown', '#record-list [contenteditable="true"]', null, function (ev) {
                 $(this).parents('.recordContainer').removeClass('saved');
@@ -101,12 +109,16 @@
             });
             $('body').on('click', 'button.save-bulk', null, function (ev) {
                 var container = this.parentNode;
+                var key;
+                if (container.querySelector('.record-key')) {
+                    key = container.querySelector('.record-key').textContent;
+                }
                 $.ajax({
                     type: "POST",
                     url: "/record/" + (container.getAttribute('data-id') ? encodeURIComponent(container.getAttribute('data-id')) : 'new'),
                     dataType: "json",
                     data: { data: JSON.stringify(window.formatters.bnjson.decompile(container.querySelector('article'))),
-                            key: container.querySelector('.record-key').textContent
+                            key: key
                           },
                 }).done(function(msg) {
                     container.setAttribute('data-id', msg.id);
