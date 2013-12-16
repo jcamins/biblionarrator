@@ -48,10 +48,13 @@ function GraphStore(config, engine) {
     });
 
     this.destroy = function () {
-        self.g.shutdown(function (err, res) {
-            delete self.g;
-            if (err) environment.errorlog.write(err + '\n');
-        });
+        try {
+            self.g.shutdown(function (err, res) {
+                delete self.g;
+                if (err) environment.errorlog.write(err + '\n');
+            });
+        } catch (e) {
+        }
     };
 
     self.autocommit = true;
@@ -161,6 +164,14 @@ GraphStore.prototype.connect = function connect(config, engine) {
         } else {
             db = new TinkerGraph(config.graphconf[engine].path);
         }
+        db.commitSync = function () {
+            return;
+        };
+        db.commit = function (cb) {
+            setImmediate(function () {
+                cb(null);
+            });
+        };
     } else if (engine === 'neo4j') {
         var Neo4jGraph = this.gremlin.java.import("com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
         db = new Neo4jGraph(config.graphconf[engine].path);

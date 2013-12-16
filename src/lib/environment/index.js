@@ -12,7 +12,7 @@ var QueryParser = require('queryparser'),
     Renderer = require('./renderer'),
     i18next = require('i18next');
 
-var defaultconfig = {
+var defaultgrammar = {
     "operators": {
         "AND": "&&",
         "OR": "\\|\\|",
@@ -28,28 +28,6 @@ var defaultconfig = {
         "FACET_END": "\\]",
         "FILTER_START": "(range)<",
         "FILTER_END": ">"
-    },
-    "schemas": [
-        "ericthesaurus",
-        "eric"
-    ],
-    "graphconf": {
-        "engine": "tinker",
-        "titan": {
-            "storage.backend": "cassandra",
-            "storage.hostname": "127.0.0.1",
-            "storage.keyspace": "biblionarrator",
-            "storage.index.search.backend": "elasticsearch",
-            "storage.index.search.client-only": true,
-            "storage.index.search.hostname": "127.0.0.1",
-            "storage.index.search.index-name": "biblionarrator"
-        },
-        "orient": {
-            "path": "local:/var/lib/orient/biblionarrator",
-            "username": "admin",
-            "password": "admin"
-        },
-        "tinker": { }
     }
 };
 
@@ -65,6 +43,7 @@ function Environment(config, filename) {
         backendconf: { redis: { }, mongo: { } },
         cacheconf: { backend: 'redis' },
         dataconf: { backend: 'redis' },
+        graphconf: { engine: 'tinker', tinker: { } },
         sessionconf: { backend: 'redis' },
         i18nextconf: { backend: 'local' },
         mediaconf: { backend: 'file', path: resolveRoot('uploads') },
@@ -80,7 +59,7 @@ function Environment(config, filename) {
         languages: [ 'en' ],
         errorlog: process.stderr,
         accesslog: process.stdout
-    });
+    }, defaultgrammar);
     try {
         if (config.logs.error && config.logs.error !== '-') {
             self.errorlog = fs.createWriteStream(resolveRoot(config.logs.error), { flags: 'a' });
@@ -278,11 +257,10 @@ if (typeof process.env['BN_CONFIG'] !== 'undefined') {
     try {
         Environment.load('config/config.json');
     } catch (e) {
-        if (e.code === 'MODULE_NOT_FOUND') {
-            Environment.set(defaultconfig);
+        if (e.code === 'ENOENT') {
+            Environment.set({ })
         } else {
-            console.log(e.stack);
-            process.exit();
+            throw(e);
         }
     }
 }
