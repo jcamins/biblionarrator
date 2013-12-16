@@ -54,7 +54,8 @@ function initializeApp() {
         app.locals({
             user: req.user,
             translations: environment.languages,
-            lasturl: req.flash('url')
+            lasturl: req.flash('url'),
+            url: req.url
         });
         req.flash('url', req.url);
         next();

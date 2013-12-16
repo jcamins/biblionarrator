@@ -73,3 +73,17 @@ exports.save = function(req, res) {
         res.json(rec);
     });
 };
+
+exports.delete = function(req, res) {
+    Record.findOne({id: req.params.record_id}, function (err, record) {
+        if (record) {
+            record.destroy(function (err, rec) {
+                if (err) console.log(err);
+                res.redirect('/');
+            });
+        } else {
+            res.redirect('/');
+        }
+    });
+};
+

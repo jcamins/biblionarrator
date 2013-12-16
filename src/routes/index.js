@@ -49,6 +49,8 @@ exports.init = function(app) {
     app.get('/record/:record_id', record.view);
     app.get('/record/:record_id/snippet', record.snippet);
     app.post('/record/:record_id', auth.can('edit', 'record'), record.save);
+    app.delete('/record/:record_id', auth.can('edit', 'record'), record.delete);
+    app.get('/record/:record_id/delete', auth.can('edit', 'record'), record.delete);
     app.post('/record/new', auth.can('edit', 'record'), record.save);
 
     /* Media */

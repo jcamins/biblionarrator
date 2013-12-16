@@ -87,7 +87,7 @@ GraphModel.prototype.destroy = function (callback) {
         if (v) {
             v.remove(function (err, res) {
                 if (graphstore.autocommit && typeof err === 'undefined') {
-                    graphstore.commit(callback);
+                    graphstore.g.commit(callback);
                 } else {
                     calback(err, res);
                 }
