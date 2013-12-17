@@ -4,10 +4,14 @@ var environment = require('../lib/environment'),
     models = require('../models'),
     LongEncoding = environment.graphstore.g.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding'),
     socketserver = require('../lib/socketserver'),
-    ZOOMStream = require('zoomstream'),
+    ZOOMStream,
     marcjs = require('marcjs'),
     Field = models.Field;
 
+try {
+    ZOOMStream = require('zoomstream');
+} catch (e) {
+}
 exports.suggest = function(req, res) {
     if (typeof req.query.q !== 'undefined' && req.query.q) {
         var query = { query: { match_phrase_prefix: { } }, fields: environment.esclient.fields };
@@ -35,14 +39,18 @@ exports.suggest = function(req, res) {
 };
 
 exports.copy = function(req, res) {
-    var stream = new marcjs.MarcxmlReader(new ZOOMStream('lx2.loc.gov:210/LCDB', decodeURIComponent(req.query.q)));
-    var records = [ ];
-    stream.on('data', function (rec) {
-        records.push(marcjs.MiJWriter.toMiJ(rec));
-    });
-    stream.on('end', function () {
-        res.json({ format: 'marc21', records: records });
-    });
+    if (ZOOMStream) {
+        var stream = new marcjs.MarcxmlReader(new ZOOMStream('lx2.loc.gov:210/LCDB', decodeURIComponent(req.query.q)));
+        var records = [ ];
+        stream.on('data', function (rec) {
+            records.push(marcjs.MiJWriter.toMiJ(rec));
+        });
+        stream.on('end', function () {
+            res.json({ format: 'marc21', records: records });
+        });
+    } else {
+        res.json({ format: 'marc21', records: [ ] });
+    }
 };
 
 exports.bulk = function (req, res) {
