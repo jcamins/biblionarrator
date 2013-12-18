@@ -72,8 +72,6 @@
     "marcrecord": "https://github.com/biblionarrator/marcrecord/tarball/master",
     "grunt-exec": "~0.4.2",
     "marcjs": "https://github.com/jcamins/marcjs/tarball/master",
-    "node-zoom": "~0.0.3",
-    "zoomstream": "https://github.com/biblionarrator/zoomstream/tarball/master",
     "chai": "1.7.x",
     "jshint": "2.1.x",
     "less": "1.4.x",
@@ -90,6 +88,10 @@
     "grunt-prompt": "~0.1.2",
     "grunt-file-creator": "~0.1.0",
     "async": "~0.2.9"
+  },
+  "optionalDependencies": {
+    "node-zoom": "~0.0.3",
+    "zoomstream": "https://github.com/biblionarrator/zoomstream/tarball/master"
   },
   "bundledDependencies": [],
   "license": "AGPLv3",
