@@ -10,15 +10,15 @@ var options = require('../src/lib/cmd')("Import Biblionarrator graph", {
         graphson: {
             alias: [ 'json', 'j' ],
             boolean: true,
-            describe: 'Export GraphSON'
+            describe: 'Import GraphSON'
         },
         gml: {
             boolean: true,
-            describe: 'Export GML (Graph Modelling Language)'
+            describe: 'Import GML (Graph Modelling Language)'
         },
         graphml: {
             boolean: true,
-            describe: 'Export GraphML'
+            describe: 'Import GraphML'
         }
     }),
     environment = require('../src/lib/environment'),
@@ -47,12 +47,14 @@ if (options.graphfile) {
 
     promises.push(graphpromise.promise);
     try {
-        GraphReader.inputGraphSync(graphstore.db, options.graphfile);
+        GraphReader.inputGraphSync(graphstore.g.graph, options.graphfile);
         graphpromise.resolve(options.graphfile);
     } catch (e) {
+        console.log(e);
         graphpromise.reject(e)
     };
 }
+
 
 Q.all(promises).then(function () {
     process.exit();
