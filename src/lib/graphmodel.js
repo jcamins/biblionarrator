@@ -113,7 +113,7 @@ GraphModel.prototype.save = function (callback) {
             var oldprops = { };
             async.series({
                 vorder: function (cb) {
-                    graphstore.g.start(v).both().count(cb);
+                    v.getProperty('vorder', cb);
                 },
                 props: function (cb) {
                     v.el.getPropertyKeys(function (err, props) {
@@ -127,7 +127,7 @@ GraphModel.prototype.save = function (callback) {
             },
             function (err, results) {
                 var oldprops = { };
-                self.vorder = parseInt(results.vorder, 10) || 0;
+                self.vorder = results.props.vorder || 0;
                 results.props = results.props || [ ];
                 results.props.forEach(function (prop) {
                     if (prop.substring(0, 1) !== '_') oldprops[prop] = true;
@@ -139,12 +139,11 @@ GraphModel.prototype.save = function (callback) {
                     if (prop !== 'id' && self.hasOwnProperty(prop) && typeof self[prop] !== 'function' && typeof self[prop] !== 'undefined') {
                         props[prop] = _isObject(self[prop]) ?  JSON.stringify(self[prop]) : self[prop];
                         if (oldprops[prop]) delete oldprops[prop];
+                        oparray.push(retry.bind(null, 3, 5, v.setProperty.bind(v, prop, props[prop])));
                     }
                 }
-                async.series([
-                    retry.bind(null, 3, 5, v.setProperties.bind(v, props)),
-                    retry.bind(null, 3, 5, v.removeProperties.bind(v, Object.keys(oldprops)))
-                ], function (err, res) {
+                oparray.push(retry.bind(null, 3, 5, v.removeProperties.bind(v, Object.keys(oldprops))));
+                async.parallel(oparray, function (err, res) {
                     self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
                     if (graphstore.autocommit) {
                         graphstore.g.commit(function (err) {
@@ -201,22 +200,13 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
 };
 
 function retry (times, pause, method, callback) {
-    var queue = [ ];
-    for (var ii = 0; ii < times; ii++) {
-        queue.push(method);
-    }
-    var run = function () {
-        method = queue.shift();
-        method(function (err, res) {
-            if (!err || queue.length === 0) return callback.apply(this, arguments);
-            setTimeout(function () {
-                run();
-            }, pause);
-        });
-    };
-    run();
+    method(function (err, res) {
+        if (!err || --times === 0) return callback.apply(this, arguments);
+        setTimeout(function () {
+            retry(times, pause, method, callback);
+        }, pause);
+    });
 }
-
 
 /*jshint unused:false */ /* Not yet implemented */
 function aclMiddleeware(req, res, Model, action) {

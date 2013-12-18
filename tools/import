@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 // vim: set filetype=javascript:
+require('nodetime').profile({
+    accountKey: '31204de8fec9524fa3e4dd4546788e03c938cad1', 
+    appName: 'Biblionarrator importer'
+});
+
 var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
         'format': {
             alias: 'f',
@@ -45,7 +50,13 @@ var options = require('../src/lib/cmd')("Load records into Biblionarrator", {
         'quiet': {
             alias: 'q',
             default: false,
+            boolean: true,
             describe: 'Quiet mode (do not print progress)'
+        },
+        'nosearch': {
+            default: false,
+            boolean: true,
+            describe: 'Do not search for link targets (use only when loading an empty database)'
         }
     }),
     environment = require('../src/lib/environment'),
@@ -207,7 +218,7 @@ function doLink(rec, link, callback) {
                  || lookup[link.key]);
         },
         function (target, cb) {
-            if (valid(target)) {
+            if (valid(target) || options.nosearch) {
                 cb(null, target);
             } else if (link.match) {
                 Record.findOne(link.match, cb);
@@ -216,7 +227,7 @@ function doLink(rec, link, callback) {
             }
         }, 
         function (target, cb) {
-            if (valid(target)) {
+            if (valid(target) || options.nosearch) {
                 cb(null, target);
             } else {
                 Record.findOne({ key: link.key }, cb);
