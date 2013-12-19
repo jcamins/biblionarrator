@@ -172,7 +172,7 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
     }
     this.v(false, function (err, sv) {
         graphstore.g.getVertex(typeof target === 'string' || typeof target === 'number' ? target : target.id, function (err, tv) {
-            if (err) return callback(err, null);
+            if (err || tv === null) { console.log(target); return callback(err || 'no such target', null); }
             graphstore.g.addEdge(null, reverse ? tv : sv, reverse ? sv : tv, type, function (err, edge) {
                 var props = { };
                 if (typeof properties === 'object' && properties !== null) {

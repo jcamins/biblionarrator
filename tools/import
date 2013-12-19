@@ -246,7 +246,12 @@ function doLink(rec, link, callback) {
         }
     ], function (err, target) {
         if (typeof target !== 'undefined' && target !== null) {
-            makeLink(rec, link, target, callback);
+            try {
+                makeLink(rec, link, target, callback);
+            } catch (e) {
+                linkerr++;
+                console.log(rec, link, target, err);
+            }
         } else if (options.lookup) {
             linksleft[link.key] = linksleft[link.key] || [ ];
             link.source = rec.id;
