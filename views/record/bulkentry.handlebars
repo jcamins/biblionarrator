@@ -99,9 +99,10 @@
             $('body').on('click', 'button.choose-record', null, function (ev) {
                 var term = this.parentNode.parentNode.getAttribute('data-key');
                 var entrylist = document.querySelector('#record-list .recordContainer[data-key="' + term + '"]');
-                entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key">' + term + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
+                entrylist.innerHTML = '<button class="remove-record btn btn-link">&times;</button><h4 class="record-key" contenteditable="true">' + term + '</h4><article>' + this.parentNode.querySelector('article').innerHTML + '</article><button class="btn save-bulk">Save</button>';
 
                 this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                $(entrylist).children('article').children('section, header').attr('contenteditable', true);
                 if ($('body').hasClass('autosave-enabled')) saveAll();
             });
             $('body').on('click', 'button.remove-record', null, function (ev) {
