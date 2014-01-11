@@ -3,9 +3,7 @@ var environment = require('../environment'),
 
 module.exports.search = function (options, recordcb, facetcb) {
     if (typeof options.query !== 'undefined') {
-        if (typeof options.query.plan === 'undefined') {
-            options.query.plan = environment.querybuilder.build(options.query.ast);
-        }
+        options.query.plan = environment.querybuilder.build(options.query.ast);
         options.query.offset = options.offset;
         options.query.size = options.perpage;
     }
@@ -20,7 +18,7 @@ module.exports.search = function (options, recordcb, facetcb) {
 };
 
 module.exports.facet = function (options, facetcb) {
-    if (typeof options.query !== 'undefined' && typeof options.query.plan === 'undefined') {
+    if (typeof options.query !== 'undefined') {
         options.query.plan = environment.querybuilder.build(options.query.ast);
     }
     offload('facet', options, function (results) {
