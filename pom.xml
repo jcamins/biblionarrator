@@ -9,7 +9,7 @@
   <version>0.1.0</version>
 
   <properties>
-    <titan.version>0.4.1</titan.version>
+    <titan.version>0.4.2</titan.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
