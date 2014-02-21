@@ -67,6 +67,7 @@
     "bn-backend-mongo": "https://github.com/biblionarrator/bn-backend-mongo/tarball/master",
     "bn-backend-redis": "https://github.com/biblionarrator/bn-backend-redis/tarball/master",
     "bn-backend-inproc": "https://github.com/biblionarrator/bn-backend-inproc/tarball/master",
+    "bn-backend-cassandra": "https://github.com/biblionarrator/bn-backend-cassandra/tarball/master",
     "grunt-configure-biblionarrator": "https://github.com/biblionarrator/grunt-configure-biblionarrator/tarball/master",
     "csv": "~0.3.6",
     "marcrecord": "https://github.com/biblionarrator/marcrecord/tarball/master",
