@@ -4,7 +4,7 @@ var path = require('path'),
     mv = require('mv');
 
 function MediaStore(config) {
-    if (config.dataconf.backend === 'file') {
+    if (config.mediaconf.backend === 'file') {
         var base = path.resolve(config.mediaconf.path);
 
         this.get = function (recordid, name, callback) {
@@ -23,7 +23,7 @@ function MediaStore(config) {
             fs.unlink(base + '/' + recordid + '/' + name, callback);
         };
     } else {
-        var backend = config.backend('mongo');
+        var backend = config.backend(config.mediaconf.backend);
         this.send = backend.media.send;
         this.save = backend.media.save;
         this.del = backend.media.del;

@@ -11,11 +11,13 @@ exports.upload = function(req, res) {
             });
         } else {
             req.body.description = req.body.description || '';
-            var rec = Record.findOne({ id: req.params.record_id });
-            rec.addMedia(filename, req.body.description, req.files.media.type);
-            rec.save();
-            res.json({
-                'description': req.body.description,
+            Record.findOne({ id: req.params.record_id }, function (err, rec) {
+                rec.addMedia(filename, req.body.description, req.files.media.type);
+                rec.save(function () {
+                    res.json({
+                        'description': req.body.description,
+                    });
+                });
             });
         }
     });
@@ -26,12 +28,14 @@ exports.get = function(req, res) {
 };
 
 exports.del = function(req, res) {
-    var rec = Record.findOne({ id: req.params.record_id });
-    rec.delMedia(req.params.filename);
-    rec.save();
-    environment.mediastore.del(req.params.record_id, req.params.filename, function () {
-        res.json({
-            id: req.params.filename
+    Record.findOne({ id: req.params.record_id }, function (err, rec) {
+        rec.delMedia(req.params.filename);
+        rec.save(function () {
+            environment.mediastore.del(req.params.record_id, req.params.filename, function () {
+                res.json({
+                    id: req.params.filename
+                });
+            });
         });
     });
 };
