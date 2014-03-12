@@ -10,6 +10,8 @@ been designed for bibliophile and bibliographer alike and offers
 unprecedented flexibility and power in that most important of all tasks,
 bibliographic description.
 
+Biblionarrator is currently used in production by a number of collections.
+
 
 Installation
 ------------
