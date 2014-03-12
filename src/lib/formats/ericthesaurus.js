@@ -46,10 +46,8 @@ function relationshipLink(term, recordtype, relationship) {
     return { key: term, label: relationship, properties: { target: term, marker: term } };
 }
 
-/*jshint unused:false */ /* Not yet implemented */
 module.exports.decompile = function(htmldom) {
 };
-/*jshint unused:true */
 
 module.exports.import = function (term, options, maps, matcher) {
     var rec = { Name: term.Name, Attributes: { }, Relationships: { } };

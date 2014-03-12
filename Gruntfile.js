@@ -163,6 +163,6 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [ 'browserify', 'uglify', 'less' ]);
     grunt.registerTask('install', [ 'exec:mvn', 'build' ]);
     grunt.registerTask('test', [ 'jshint', 'mochaTest', 'jsdoc' ]);
-    grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'mochaTest', 'jsdoc' ]);
+    grunt.registerTask('default', [ 'browserify', 'uglify', 'less', 'jshint', 'jsdoc' ]);
     grunt.registerTask('release', [ 'default', 'compress' ]);
 };
