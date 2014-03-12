@@ -12,6 +12,8 @@ bibliographic description.
 
 Biblionarrator is currently used in production by a number of collections.
 
+All the source code for Biblionarrator can be found at https://github.com/biblionarrator
+
 
 Installation
 ------------
