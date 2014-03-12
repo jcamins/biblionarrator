@@ -88,7 +88,8 @@
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-prompt": "~0.1.2",
     "grunt-file-creator": "~0.1.0",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "npm-registry-client": "^0.4.4"
   },
   "optionalDependencies": {
     "node-zoom": "~0.0.3",

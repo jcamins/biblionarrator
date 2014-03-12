@@ -16,8 +16,8 @@ Biblionarrator requires a server with the following:
 * Redis
 
 These instructions assume you will be using Titan with Apache Cassandra
-and ElasticSearch 0.90+. However, depending on your desired configuration, you
-may not need one or both of them.
+and ElasticSearch 0.90.x (where x >= 3). However, depending on your
+desired configuration, you may not need one or both of them.
 
 If you are setting up a development environment, you will also need git.
 
@@ -34,7 +34,8 @@ Installation procedure
 
 2) Install Cassandra by following the instructions at http://www.datastax.com/documentation/gettingstarted/index.html
 
-3) Install ElasticSearch from http://www.elasticsearch.org/overview/#installation
+3) Install ElasticSearch from http://www.elasticsearch.org/overview/#installation (make sure to get the
+   latest 0.90.x release)
 
 4) Install redis from http://redis.io/
    
@@ -72,7 +73,7 @@ Installation procedure
 9) Run the grunt-based installer and answer the questions based on your planned
    configuration
 
-    grunt install
+    grunt install config
 
    Make any further changes your configuration requires to the configuration files
    in config/
