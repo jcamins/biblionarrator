@@ -101,7 +101,6 @@ module.exports.links = function(recorddata) {
 /*jshint unused:false */ /* Not yet implemented */
 module.exports.decompile = function(htmldom) {
 };
-/*jshint unused:true */
 
 module.exports.import = function (record, options, maps, matcher, format) {
     try {
@@ -166,6 +165,7 @@ module.exports.import = function (record, options, maps, matcher, format) {
         return { format: 'eric', data: record, recordclass: 'biblio' };
     }
 };
+/*jshint unused:true */
 
 module.exports.importoptions = {
     importer: 'xml',

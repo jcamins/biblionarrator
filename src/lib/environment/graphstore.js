@@ -49,9 +49,9 @@ function GraphStore(config, engine) {
 
     this.destroy = function () {
         try {
-            self.g.shutdown(function (err, res) {
+            self.g.shutdown(function (err) {
                 delete self.g;
-                if (err) environment.errorlog.write(err + '\n');
+                if (err) config.errorlog.write(err + '\n');
             });
         } catch (e) {
         }
@@ -81,8 +81,8 @@ GraphStore.prototype.connect = function connect(config, engine) {
         var TitanFactory = this.gremlin.java.import('com.thinkaurelius.titan.core.TitanFactory');
         var Type = this.gremlin.ClassTypes;
         var LongEncoding = this.gremlin.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding');
-        var Parameter = this.gremlin.java.import('com.thinkaurelius.titan.core.Parameter');
-        var Mapping = this.gremlin.java.import('com.thinkaurelius.titan.core.Mapping');
+        //var Parameter = this.gremlin.java.import('com.thinkaurelius.titan.core.Parameter');
+        //var Mapping = this.gremlin.java.import('com.thinkaurelius.titan.core.Mapping');
         var TitanType = this.gremlin.java.getClassLoader().loadClassSync('com.thinkaurelius.titan.core.TitanType');
 
         var gconf = new BaseConfiguration();
@@ -92,9 +92,10 @@ GraphStore.prototype.connect = function connect(config, engine) {
         db = TitanFactory.openSync(gconf);
 
         var types = db.getTypesSync(TitanType).iteratorSync();
+        var type;
 
         while (types.hasNextSync()) {
-            var type = types.nextSync();
+            type = types.nextSync();
             if (typeof config.indexes[type.getNameSync()] !== 'undefined') {
                 config.indexes[type.getNameSync()].id = LongEncoding.encodeSync(type.getIdSync());
             } else {
@@ -125,7 +126,7 @@ GraphStore.prototype.connect = function connect(config, engine) {
                     } else {
                         backends = [ 'standard' ];
                     }
-                    var type = db.makeKeySync(name).dataTypeSync(Type[index.datatype]);
+                    type = db.makeKeySync(name).dataTypeSync(Type[index.datatype]);
                     backends.forEach(function (backend) {
                         type = type.indexedSync(backend, propertyclass, self.gremlin.java.newArray('com.thinkaurelius.titan.core.Parameter', []));
                     });
@@ -178,7 +179,7 @@ GraphStore.prototype.connect = function connect(config, engine) {
     }
     db.commitSync();
     return this.gremlin.wrap(db);
-}
+};
 /*
 GraphStore.prototype.newTx = function () {
     return this._g.newTransaction();

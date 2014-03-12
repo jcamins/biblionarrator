@@ -1,7 +1,7 @@
 var landmarks = [ ];
 
 function getRecordId(object) {
-    return $(object).parents('tr').attr('data-id')
+    return $(object).parents('tr').attr('data-id');
 }
 
 function initializeList() {
@@ -71,7 +71,7 @@ function initializeList() {
         if (!$(this).parent().hasClass('active')) {
             window.bnvis.landmarks(landmarks);
         }
-        $(this).parent().toggleClass('active')
+        $(this).parent().toggleClass('active');
     });
 
     $('#visualize-search').click(function () {
@@ -80,7 +80,7 @@ function initializeList() {
         if (!$(this).parent().hasClass('active')) {
             window.bnvis.searchmap(window.location.href);
         }
-        $(this).parent().toggleClass('active')
+        $(this).parent().toggleClass('active');
     });
 
 

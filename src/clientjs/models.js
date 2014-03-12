@@ -13,7 +13,7 @@ GraphModel.extend = function (Model) {
         if (typeof this.id === 'string') {
             this.id = this.id.replace('#', '');
         }
-    }
+    };
 };
 
 Record.init({ }, {

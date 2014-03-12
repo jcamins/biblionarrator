@@ -36,7 +36,6 @@ module.exports.links = function(recorddata) {
 
 module.exports.decompile = function(htmldom) {
 };
-/*jshint unused:true */
 
 module.exports.import = function (record, options, maps, matcher) {
     var otherids = { };
@@ -49,6 +48,7 @@ module.exports.import = function (record, options, maps, matcher) {
     }
     return { format: 'medline', data: record };
 };
+/*jshint unused:true */
 
 module.exports.importoptions = {
     importer: 'xml',

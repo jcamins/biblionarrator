@@ -77,7 +77,7 @@ exports.save = function(req, res) {
 exports.delete = function(req, res) {
     Record.findOne({id: req.params.record_id}, function (err, record) {
         if (record) {
-            record.destroy(function (err, rec) {
+            record.destroy(function (err) {
                 if (err) console.log(err);
                 res.redirect('/');
             });

@@ -57,7 +57,6 @@ GraphModel.fromJSON = function (Model, all) {
 };
 
 GraphModel.prototype.v = function (create, callback) {
-    var self = this;
     if (this.id) {
         graphstore.g.getVertex(this.id, function (err, v) {
             if (v) return callback.apply(this, arguments);
@@ -74,8 +73,10 @@ GraphModel.prototype.suppress = function (callback) {
     this.v(false, function (err, v) {
         if (v) {
             retry(3, 5, v.setProperty.bind(v, 'deleted', 1), function (err, res) {
-                if (graphstore.autocommit) {
+                if (graphstore.autocommit && typeof err === 'undefined') {
                     graphstore.g.commit(callback);
+                } else {
+                    callback(err, res);
                 }
             });
         }
@@ -89,7 +90,7 @@ GraphModel.prototype.destroy = function (callback) {
                 if (graphstore.autocommit && typeof err === 'undefined') {
                     graphstore.g.commit(callback);
                 } else {
-                    calback(err, res);
+                    callback(err, res);
                 }
             });
         }
@@ -110,7 +111,6 @@ GraphModel.prototype.save = function (callback) {
     var self = this;
     this.v(true, function (err, v) {
         if (v) {
-            var oldprops = { };
             async.series({
                 vorder: function (cb) {
                     v.getProperty('vorder', cb);
@@ -118,7 +118,7 @@ GraphModel.prototype.save = function (callback) {
                 props: function (cb) {
                     v.el.getPropertyKeys(function (err, props) {
                         if (props) {
-                            props.toArray(cb)
+                            props.toArray(cb);
                         } else {
                             cb(null, []);
                         }
@@ -143,7 +143,7 @@ GraphModel.prototype.save = function (callback) {
                     }
                 }
                 oparray.push(retry.bind(null, 3, 5, v.removeProperties.bind(v, Object.keys(oldprops))));
-                async.parallel(oparray, function (err, res) {
+                async.parallel(oparray, function (err) {
                     self.id = v.getId(); // TODO: handle Orient, where ID changes after commit
                     if (graphstore.autocommit) {
                         graphstore.g.commit(function (err) {
@@ -186,7 +186,7 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
                     retry.bind(null, 3, 5, sv.incrementProperty.bind(sv, 'vorder')),
                     retry.bind(null, 3, 5, tv.incrementProperty.bind(tv, 'vorder')),
                     retry.bind(null, 3, 5, edge.setProperties.bind(edge, props))
-                ], function (err, res) {
+                ], function (err) {
                     if (err) console.log(err);
                     if (graphstore.autocommit) {
                         graphstore.g.commit(callback);
@@ -200,7 +200,7 @@ GraphModel.prototype.link = function (type, target, properties, reverse, callbac
 };
 
 function retry (times, pause, method, callback) {
-    method(function (err, res) {
+    method(function (err) {
         if (!err || --times === 0) return callback.apply(this, arguments);
         setTimeout(function () {
             retry(times, pause, method, callback);
@@ -209,14 +209,15 @@ function retry (times, pause, method, callback) {
 }
 
 /*jshint unused:false */ /* Not yet implemented */
-function aclMiddleeware(req, res, Model, action) {
+/*function aclMiddleware(req, res, Model, action) {
     if (action === 'create') {
     } else {
         if (req.params[Model.model + '_id']) {
-            var model = Model.findOne({ id: req.params[Model.model + '_id'] });
+            Model.findOne({ id: req.params[Model.model + '_id'] }, function (err, model) {
+            });
         }
     }
-}
+}*/
 /*jshint unused:true */
 
 module.exports.extend = function (Model) {

@@ -258,7 +258,7 @@ if (typeof process.env['BN_CONFIG'] !== 'undefined') {
         Environment.load('config/config.json');
     } catch (e) {
         if (e.code === 'ENOENT') {
-            Environment.set({ })
+            Environment.set({ });
         } else {
             throw(e);
         }

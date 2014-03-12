@@ -103,7 +103,7 @@ function Record(data) {
 }
 
 Record.render = function (rec) {
-    var rec = new Record(rec);
+    rec = new Record(rec);
     return rec.render();
 };
 

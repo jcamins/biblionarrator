@@ -3,7 +3,6 @@
 var environment = require('../lib/environment'),
     models = require('../models'),
     LongEncoding = environment.graphstore.g.java.import('com.thinkaurelius.titan.util.encoding.LongEncoding'),
-    socketserver = require('../lib/socketserver'),
     ZOOMStream,
     marcjs = require('marcjs'),
     Field = models.Field;
