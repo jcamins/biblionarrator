@@ -60,15 +60,9 @@ Installation procedure
 
     npm install
 
-8) Configure Biblionarrator with grunt
+8) Build/configure Biblionarrator with grunt
 
     grunt
-
-   The above command will run all the unit tests, check the code for violations,
-   and generate API documentation. If you do not want to do those three things
-   in addition to the regular build, you can use:
-
-    grunt build
 
 9) Run the grunt-based installer and answer the questions based on your planned
    configuration
@@ -85,8 +79,8 @@ Installation procedure
 11) Enjoy Biblionarrator
 
 
-Vagrant installation
-====================
+Vagrant installation (NOT CURRENTLY SUPPORTED)
+==============================================
 
 1) Install VirtualBox from https://www.virtualbox.org/
 
